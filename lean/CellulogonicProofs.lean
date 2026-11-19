@@ -1,0 +1,67 @@
+/-
+  CELLULOGONIC MECHA v1.0 — Root Formal Verification & Axiom Audit Module
+  Machine-checks all 44 theorems across Theorems I–V under Lean 4 v4.35.0
+  with zero Mathlib dependencies, zero `sorryAx`, and zero custom axioms.
+
+  Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
+-/
+
+import CellulogonicProofs.StoichiometryThermo
+import CellulogonicProofs.MembraneGeometry
+import CellulogonicProofs.BioenergeticsEndosymbiosis
+import CellulogonicProofs.ChemiosmosisAutopoiesis
+import CellulogonicProofs.EutelicOrganogenesis
+
+-- Theorem I: Exact Stoichiometric Mass Conservation, First-Law & Second-Law Closure (T01–T10)
+#print axioms Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass
+#print axioms Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact
+#print axioms Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law
+#print axioms Cellulogonic.StoichiometryThermo.T04_endergonic_biosynthesis_requires_atp
+#print axioms Cellulogonic.StoichiometryThermo.T05_respiration_quadruples_fermentation_yield
+#print axioms Cellulogonic.StoichiometryThermo.T06_closed_box_cycle_dissipation_strict
+#print axioms Cellulogonic.StoichiometryThermo.T07_step_preserves_total_mass
+#print axioms Cellulogonic.StoichiometryThermo.T08_step_preserves_first_law_ledger
+#print axioms Cellulogonic.StoichiometryThermo.T09_heat_sink_monotone
+#print axioms Cellulogonic.StoichiometryThermo.T10_fission_and_engulfment_exact_conservation
+
+-- Theorem II: Discrete Canham-Helfrich Isoperimetric Fission Trichotomy & Minimax Law (T11–T19)
+#print axioms Cellulogonic.MembraneGeometry.T11_symmetric_fission_doubles_Q
+#print axioms Cellulogonic.MembraneGeometry.T12_symmetric_fission_iff_half_threshold
+#print axioms Cellulogonic.MembraneGeometry.T13_high_Q_blocks_symmetric_fission
+#print axioms Cellulogonic.MembraneGeometry.T14_equal_ratio_asymmetric_split_suboptimal
+#print axioms Cellulogonic.MembraneGeometry.T15_exosome_asymmetric_budding_escapes_half_barrier
+#print axioms Cellulogonic.MembraneGeometry.T16_optimal_area_partition_strictly_improves_budding
+#print axioms Cellulogonic.MembraneGeometry.T17_osmotic_lysis_monotone_in_volume
+#print axioms Cellulogonic.MembraneGeometry.T18_lipid_synthesis_relieves_membrane_stress
+#print axioms Cellulogonic.MembraneGeometry.T19_double_membrane_vesicle_preservation
+
+-- Theorem III: Prokaryotic 1/R Bioenergetic Ceiling & Endosymbiotic Liberation (T20–T27)
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T20_prokaryotic_bioenergetic_ceiling
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T21_prokaryotic_power_density_strictly_decreasing
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T22_endosymbiotic_scaling_liberation
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T23_endosymbiont_surface_amplification
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T24_secondary_endosymbiosis_additive_power
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T25_mitotic_heteroplasmy_conservation
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T26_asymmetric_bottleneck_purifying_selection
+#print axioms Cellulogonic.BioenergeticsEndosymbiosis.T27_egt_reduces_organelle_maintenance
+
+-- Theorem IV: Chemiosmosis, Levin Bioelectric Laplacian & Anti-Gaming Bounds (T28–T36)
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T28_cring_terran_threshold
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T29_cring_acidophile_shift
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T30_cring_cryogenic_shift
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T31_gap_junction_pairwise_dissipation_nonneg
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T32_gap_junction_laplacian_energy_decrease
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T33_gap_junction_homogenization_bound
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T34_inert_crystal_covi_zero
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T35_white_noise_entropy_gate_zero
+#print axioms Cellulogonic.ChemiosmosisAutopoiesis.T36_markov_blanket_boundary_separation
+
+-- Theorem V: 3D Hollow-Tube Geometry, 7-Organ Eutelic Tardigrade Budget & Bioglass Anhydrobiosis (T37–T44)
+#print axioms Cellulogonic.EutelicOrganogenesis.T37_3d_tube_geometry_lumen_lower_bound
+#print axioms Cellulogonic.EutelicOrganogenesis.T38_minimum_viable_organ_budget_bound
+#print axioms Cellulogonic.EutelicOrganogenesis.T39_syncytial_compression_factor
+#print axioms Cellulogonic.EutelicOrganogenesis.T40_hydrostatic_skeleton_incompressibility
+#print axioms Cellulogonic.EutelicOrganogenesis.T41_eutely_hypertrophy_cancels_hyperplasia
+#print axioms Cellulogonic.EutelicOrganogenesis.T42_anhydrobiosis_bioglass_vitrification
+#print axioms Cellulogonic.EutelicOrganogenesis.T43_flames_excretory_osmoregulation_balance
+#print axioms Cellulogonic.EutelicOrganogenesis.T44_dna_to_organ_hierarchical_conservation

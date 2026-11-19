@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+title: "CELLULOGONIC MECHA — Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic Cellular Artificial Life Engine with Lean 4 Formal Verification"
+message: "If you reference, verify, or build upon CELLULOGONIC MECHA in academic or independent non-commercial research, please cite this software and preprint using the metadata below."
+type: software
+version: "1.0.0"
+date-released: "2026-11-19"
+authors:
+  - family-names: "Donahue"
+    given-names: "Alexander S."
+    affiliation: "0thernes LLC"
+    email: "0_0@0thernes.art"
+    orcid: "https://orcid.org/0009-0006-8168-9648"
+  - name: "0thernes LLC"
+    website: "https://0thernes.art"
+    email: "0_0@0thernes.art"
+repository-code: "https://github.com/0thernes/cellulogonic-mecha"
+url: "https://github.com/0thernes/cellulogonic-mecha"
+license: "NOASSERTION"
+license-url: "https://github.com/0thernes/cellulogonic-mecha/blob/main/LICENSE"
+keywords:
+  - artificial-life
+  - cellular-biology
+  - chemoton
+  - autopoiesis
+  - chemiosmosis
+  - endosymbiosis
+  - canham-helfrich
+  - bioelectricity
+  - xenobiology
+  - open-ended-evolution
+  - non-equilibrium-thermodynamics
+  - lean4
+  - formal-verification
+  - deterministic-simulation
+  - c11

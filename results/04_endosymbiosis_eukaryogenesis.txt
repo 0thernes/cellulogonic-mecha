@@ -1,0 +1,14 @@
+=== EXPERIMENT 2: PROKARYOTIC 1/R CEILING vs. SERIAL ENDOSYMBIOSIS ===
+
+[ARM A: ENDOSYMBIOSIS ENABLED (Eukaryogenesis)]
+t= 200 | alive= 116 (prok= 95 euk= 21 sec= 9 spore= 0 tun=  0) | org= 45 (mito=  8 chlo=37) | tis= 12 maxT=  4 | sym= 522 bud=  6 endo=107 | COVI=79.42 (S5, MET=6/7) | mRes=0 eRes=0 2nd=0
+  Mean Prok Vol=71.28 | Mean Euk Vol=165.95 | Max Cell Vol=565.00
+  Captures=107 (Secondary Chimeras=26) | EGT=25 | Mitophagy=1 | HeteroplasmyVar=0.0000
+  Ambient Oxidant X=153.54 | Assembly A=35.25 | SHA-256=74cd515673684142a4e35e0439e57493649811dfe1bb9933219d83ff7279f4e7
+
+[ARM B: ENDOSYMBIOSIS ABLATED (Prokaryotes Only)]
+t= 200 | alive= 151 (prok=151 euk=  0 sec= 0 spore= 0 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis= 32 maxT= 11 | sym= 212 bud= 16 endo=  0 | COVI=65.52 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
+  Mean Prok Vol=73.55 | Mean Euk Vol=0.00 | Max Cell Vol=210.00
+  Captures=0 (Secondary Chimeras=0) | EGT=0 | Mitophagy=0 | HeteroplasmyVar=0.0000
+  Ambient Oxidant X=154.23 | Assembly A=18.60 | SHA-256=5ad36bf9b13f6c072410dd0b9496c7648c9ca22b915503795617be4340978619
+

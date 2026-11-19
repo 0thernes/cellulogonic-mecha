@@ -1,0 +1,25 @@
+# Build artifacts & object files
+*.o
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.tmp
+bin/*.exe
+bin/*.dll
+bin/*.dll.a
+bin/*.a
+bin/*.so
+bin/*_linux
+bin/*.cmbin
+test_tmp_*.cmbin
+
+# Lean build cache
+lean/.lake/build/
+lean/.lake/packages/
+
+# OS & editor clutter
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/

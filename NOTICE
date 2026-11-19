@@ -1,0 +1,19 @@
+CELLULOGONIC MECHA
+Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
+All commercial rights reserved. Licensed under the COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY (see LICENSE).
+
+Third-Party Runtime Dependencies:
+  NONE. The Cellulogonic Mecha C11 cellular engine, AVX2/SIMD and scalar kernels,
+  Philox4x32-10 PRNG, SHA-256 hasher, Kahan-Neumaier thermodynamic ledger,
+  20-gate falsification suite, interactive HTML5 Canvas Cellular Observatory,
+  and local Node.js HTTP server contain ZERO third-party npm packages or vendored libraries.
+
+External Toolchains Used for Compilation, Execution & Formal Proof Checking (not vendored):
+  - Clang / LLD (Apache License 2.0 with LLVM Exception) — builds Win64 PE64 binaries and DLLs.
+  - GCC (GPLv3 with GCC Runtime Library Exception) — builds Linux ELF64 binaries and .so libraries.
+  - Lean 4 v4.35.0 & Lake (Apache License 2.0) — machine-checks all formal proofs in lean/
+    using core Lean 4 only (no Mathlib dependency).
+  - Node.js (MIT License) — executes the optional local Cellular Observatory HTTP server (web/server.mjs).
+
+Mention of Clang, GCC, Lean, Node.js, or any cited academic authors does not imply
+institutional sponsorship, endorsement, or relicensing of this work.

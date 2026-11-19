@@ -1,0 +1,7 @@
+=== EXPERIMENT 8: 4-BUILD ECOSYSTEM BRIDGE (AUTOPHAGE DNA -> CELLULOGONIC -> ASMODENSIUS 112-TRAIT) ===
+
+AUTOPHAGE 256B Ingestion RC : 0
+Apex Cellular Specimen      : slot=304 (16,9) lineage=39 gen=1 orgs=2 depth=2 vol=378 Q=0.586 Vm=-47 mV
+Asmodensius 112-Trait Vec   : min=0.0000 max=1.0000 mean=0.4995 std=0.2820 (all strictly in [0,1])
+First 16 Physiological      : 1.000,0.391,0.250,1.000,0.331,0.000,0.333,0.000,0.000,0.075,0.000,1.000,1.000,0.025,0.013,0.225
+Ledger Closure              : mRes=0 amu | eRes=0 uq | SHA=d23aff5bd7b310c72baadc9eb67adb3d4b6f0d1c15de06361de503932f45d795

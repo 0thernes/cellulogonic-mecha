@@ -1,0 +1,6 @@
+name = "CellulogonicProofs"
+version = "1.0.0"
+defaultTargets = ["CellulogonicProofs"]
+
+[[lean_lib]]
+name = "CellulogonicProofs"

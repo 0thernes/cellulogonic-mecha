@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CELLULOGONIC MECHA v1.0 — Live Cellular A-Life Microscopy Observatory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div>
+        <h1>CELLULOGONIC MECHA <span>v1.0</span></h1>
+        <p>Clean-Room Chemiosmotic, Canham–Helfrich, Endosymbiotic &amp; Bioelectric Cellular A-Life Lab</p>
+      </div>
+    </div>
+    <div class="badges" id="ledger-badges">
+      <span class="badge ok" id="badge-mass">MASS Δ: 0 amu</span>
+      <span class="badge ok" id="badge-energy">1ST LAW Δ: 0 uq</span>
+      <span class="badge ok" id="badge-2nd">2ND LAW VIOL: 0</span>
+      <span class="badge sha" id="badge-sha">SHA-256: —</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>Experiment Bench</h2>
+      <div class="field">
+        <label>Operating Regime</label>
+        <select id="sel-regime">
+          <option value="0" selected>0 · Zero-Seed Spontaneous Protocell Abiogenesis</option>
+          <option value="3">3 · Serial Endosymbiosis &amp; Eukaryogenesis Lab</option>
+          <option value="1">1 · Track B Feral Multicellular Ecosystem</option>
+          <option value="2">2 · Track A Constitutional (Anti-Cancer Policing)</option>
+          <option value="4">4 · 13-Vector Castration / Restraint Workbench</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Planetary / Xenocellular Solvent</label>
+        <select id="sel-solvent">
+          <option value="0" selected>0 · Terran Aqueous H2O (e_pmf=10, c-ring≥3)</option>
+          <option value="1">1 · Titan Cryogenic Azotosome CH4/N2 (e_pmf=7, c-ring≥4)</option>
+          <option value="2">2 · Hydrothermal Vent Tetraether GDGT (e_pmf=10, c-ring≥3)</option>
+          <option value="3">3 · Venusian Sulfuric Acid H2SO4 (e_pmf=15, c-ring≥2)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Fluorescence Microscopy Channel</label>
+        <select id="sel-layer">
+          <option value="composite" selected>Composite (Membranes + Organelles + Biofilm Bonds)</option>
+          <option value="vmem">Levin Bioelectric Voltage Field V_m (-90..+40 mV)</option>
+          <option value="strain">Canham–Helfrich Reduced Volume Q (Fission vs Lysis)</option>
+          <option value="solvent">Xenocellular Lipid Chemistry Adaptation Map</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Locked Seed</label>
+          <input id="inp-seed" type="number" value="5000" min="1" max="999999" />
+        </div>
+        <div class="field">
+          <label>Epoch (0..400)</label>
+          <input id="inp-epoch" type="number" value="96" min="0" max="400" />
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button id="btn-play" class="primary">▶ Play Live</button>
+        <button id="btn-step">+12 Ep</button>
+        <button id="btn-reset">t=0</button>
+      </div>
+
+      <h3>Tardigrade TDP Bioglass Shock</h3>
+      <div class="btn-row">
+        <button id="btn-tun">92% Desiccate (Tun)</button>
+        <button id="btn-shock">Desiccate + 90% Shock + Rehydrate</button>
+      </div>
+
+      <h3>13 Omega Restraints (<span id="rest-lbl">0%</span>)</h3>
+      <div class="btn-row">
+        <button id="btn-r0">0% Feral</button>
+        <button id="btn-r50">50% Escape Zone</button>
+        <button id="btn-r100">100% Castrated</button>
+      </div>
+      <input id="rng-rest" type="range" min="0" max="100" value="0" />
+      <p class="hint">50% partial restraints empirically trigger the Escape-Breeding Paradox across kill-switch deletions, dormancy spores, HGT smuggles &amp; metabolic bypasses.</p>
+
+      <div class="legend">
+        <div><span class="sw sw-prok"></span> Prokaryote (0 orgs)</div>
+        <div><span class="sw sw-euk"></span> Eukaryote (Mito/Chloro)</div>
+        <div><span class="sw sw-sec"></span> Secondary Chimera (depth=2)</div>
+        <div><span class="sw sw-tun"></span> TDP Bioglass Tun / Spore</div>
+        <div><span class="sw sw-bond"></span> Bioelectric Gap-Junction Bond</div>
+      </div>
+    </section>
+
+    <section class="panel viewport">
+      <div class="vp-head">
+        <span id="vp-title">Live 32×32 Conserved Spatial Micro-Habitat (1,024 Voxels)</span>
+        <span id="vp-status">Ready</span>
+      </div>
+      <canvas id="microscope" width="640" height="640"></canvas>
+      <div class="pillars-wrap">
+        <h3>8-Pillar Cellular Omega Vitality Index (COVI)</h3>
+        <div id="pillars" class="pillars"></div>
+      </div>
+    </section>
+
+    <section class="panel telemetry">
+      <h2>Live Lab-Grade Metrology</h2>
+      <div class="kpi-grid">
+        <div class="kpi"><label>COVI Score</label><strong id="k-covi">—</strong><small id="k-stage">Stage —</small></div>
+        <div class="kpi"><label>Major Transitions</label><strong id="k-met">—</strong><small>out of 7</small></div>
+        <div class="kpi"><label>Living Cells</label><strong id="k-alive">—</strong><small id="k-split">Prok / Euk / Sec</small></div>
+        <div class="kpi"><label>Organelles</label><strong id="k-orgs">—</strong><small id="k-org-split">Mito / Chloro</small></div>
+        <div class="kpi"><label>Lane 1/R Scaling</label><strong id="k-lane">—</strong><small>Euk / Prok Mean Vol</small></div>
+        <div class="kpi"><label>Multicellular</label><strong id="k-tis">—</strong><small id="k-maxt">Max Cluster</small></div>
+        <div class="kpi"><label>Bioelectric V_m</label><strong id="k-vmem">—</strong><small id="k-vstd">Std Dev (mV)</small></div>
+        <div class="kpi"><label>Assembly A / L_eff</label><strong id="k-assm">—</strong><small id="k-anew">Bedau A_new</small></div>
+      </div>
+
+      <h3>Emergent Cellular Events</h3>
+      <table class="stat-table" id="tbl-events"></table>
+
+      <h3>Constraint-Backlash Escape Counters</h3>
+      <table class="stat-table" id="tbl-backlash"></table>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

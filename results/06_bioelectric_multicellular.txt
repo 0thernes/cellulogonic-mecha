@@ -1,0 +1,17 @@
+=== EXPERIMENT 4: LEVIN BIOELECTRIC MORPHOGENESIS & TRACK B FERAL vs. TRACK A CONSTITUTIONAL ===
+
+[TRACK B (FERAL + BIOELECTRIC)]
+t= 180 | alive=  92 (prok= 77 euk= 15 sec= 5 spore= 0 tun=  0) | org= 25 (mito=  6 chlo=19) | tis= 19 maxT=  5 | sym= 239 bud=  4 endo= 55 | COVI=76.59 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+  V_mem mean=-36.60 mV, std=26.61 mV | Roles: boundary=17 soma=26 germ=23 interior=2
+  Somatic Cancer Defections=2 | Constitutional Apoptotic Policings=0 | SHA=00e6c23eff91b68c1773a71b538d2e8a0d845da1c6e5e77813e1c8dd7103f3c0
+
+[TRACK A (CONSTITUTIONAL + BIOELECTRIC)]
+t= 180 | alive=  92 (prok= 77 euk= 15 sec= 5 spore= 0 tun=  0) | org= 25 (mito=  6 chlo=19) | tis= 19 maxT=  5 | sym= 239 bud=  4 endo= 55 | COVI=76.59 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+  V_mem mean=-36.60 mV, std=26.61 mV | Roles: boundary=17 soma=26 germ=23 interior=2
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=a4ee303b436816ad695a59e5a4d42a9a54baf5e16b89e7e5fa1a27aae47ed581
+
+[NEGATIVE CONTROL (BIOELECTRICITY ABLATED)]
+t= 180 | alive= 101 (prok= 88 euk= 13 sec= 3 spore= 0 tun=  0) | org= 32 (mito= 12 chlo=20) | tis=  0 maxT=  0 | sym= 441 bud=  3 endo= 54 | COVI=73.04 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
+  V_mem mean=-33.09 mV, std=9.21 mV | Roles: boundary=0 soma=0 germ=0 interior=0
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=d3d64905d045d3e6b5af04d5075e7af6d6f5d2c0cdd15fae69dae12a0aea7115
+

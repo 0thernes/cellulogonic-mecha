@@ -1,0 +1,23 @@
+# CELLULOGONIC MECHA — Pure Lean 4 Formal Proof Suite (`v4.35.0`)
+
+This directory contains **44 machine-checked theorems** (`T01`–`T44`) across **5 flagship theorem groups** formalizing the exact discrete biophysical, thermodynamic, geometric, bioenergetic, bioelectric, and eutelic 7-organ metazoan invariants of **CELLULOGONIC MECHA v1.0** using **core Lean 4 (`v4.35.0`) only** (zero Mathlib dependencies, zero `sorryAx`, zero custom axioms).
+
+## Build & Verify
+
+```bash
+cd lean
+lake build
+lake env lean CellulogonicProofs.lean
+```
+
+Full archived kernel output and `#print axioms` transcript: [`../results/lean4-audit.txt`](../results/lean4-audit.txt).
+
+## Theorem Index & Axiom Audit Summary
+
+| Module | Theorems | Flagship Result Formalized | Axioms Used |
+|---|---|---|---|
+| [`CellulogonicProofs/StoichiometryThermo.lean`](CellulogonicProofs/StoichiometryThermo.lean) | `T01`–`T10` | **Theorem I**: Exact 8-species atomic mass conservation across all 17 reactions (`0` residual), exact First-Law energy closure (`0 uq`), strict Second-Law entropy production (`q_r > 0`), mandatory ATP coupling for endergonic `L`/`P`/`T` biosynthesis, exact 4× respiration-vs-fermentation ATP yield, and impossibility of closed-box cellular perpetual-motion cycles | `none` / `[propext, Quot.sound]` |
+| [`CellulogonicProofs/MembraneGeometry.lean`](CellulogonicProofs/MembraneGeometry.lean) | `T11`–`T19` | **Theorem II**: Exact Canham–Helfrich isoperimetric reduced-volume doubling under symmetric halving, necessary & sufficient `Q ≤ 1/2` symmetric fission threshold, swollen interphase blockage (`1/2 < Q ≤ 1`), suboptimality of equal-ratio asymmetric splits, constructive exosome escape `(47,72) -> (6,16)+(41,56)`, and exact algebraic **Global Minimax Theorem of Vesicle Division** via $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4 + 2x^3y + 2xy^3 + y^4)$ | `none` / `[propext, Classical.choice, Quot.sound]` |
+| [`CellulogonicProofs/BioenergeticsEndosymbiosis.lean`](CellulogonicProofs/BioenergeticsEndosymbiosis.lean) | `T20`–`T27` | **Theorem III**: Nick Lane's prokaryotic $1/R$ bioenergetic ceiling ($c_V R < 3 c_A$), strictly decreasing prokaryotic specific power density, **Endosymbiotic $O(1)$ Scaling Liberation** shattering the ceiling for arbitrarily large host $R$, organelle $R/r$ surface amplification, secondary endosymbiosis additivity, mitotic heteroplasmy purifying selection theorem, and Endosymbiotic Gene Transfer (EGT) genome economy | `[propext, Classical.choice, Quot.sound]` |
+| [`CellulogonicProofs/ChemiosmosisAutopoiesis.lean`](CellulogonicProofs/ChemiosmosisAutopoiesis.lean) | `T28`–`T36` | **Theorem IV**: Solvent-dependent chemiosmotic c-ring stoichiometry thresholds (Terran $n_H \ge 3$, Venusian $\text{H}_2\text{SO}_4$ $n_H \ge 2$, Titan cryogenic $n_H \ge 4$), passive Levin bioelectric gap-junction Dirichlet energy dissipation and charge conservation, voltage contraction stability, inert-crystal & white-noise `COVI = 0` anti-gaming bounds, and Markov-blanket boundary separation | `[propext, Classical.choice, Quot.sound]` |
+| [`CellulogonicProofs/EutelicOrganogenesis.lean`](CellulogonicProofs/EutelicOrganogenesis.lean) | `T37`–`T44` | **Theorem V**: 3D hollow-tube lumen lower bound ($\ge 3 L_{\text{rings}}$ cells), minimum viable 7-organ metazoan cell budget ($\ge 355$ absolute / $[500, 1000]$ eutelic Tardigrade–*C. elegans*–Rotifer scale + 800-cell constructive witness), syncytial & myoepithelial sub-500 compression, hydrostatic skeleton incompressibility ($A_2 < A_1 \implies L_1 < L_2$), eutely hypertrophy zero-hyperplasia law, Tardigrade TDP/CAHS bioglass anhydrobiosis protection, protonephridial flame-cell osmoregulation balance, and 5-tier DNA→Organism mass conservation | `none` / `[propext, Classical.choice, Quot.sound]` |

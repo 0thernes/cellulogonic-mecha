@@ -1,0 +1,38 @@
+name: Cellulogonic Mecha CI — Build, Falsification & Lean 4 Proof Audit
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  linux-c11-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Linux ELF64 & Run 20-Gate Falsification Suite
+        run: |
+          chmod +x build_linux.sh
+          ./build_linux.sh
+      - name: Run Deterministic Cross-Kernel Parity Benchmark
+        run: |
+          ./bin/cellulogonic_linux bench --epochs 120 --size 32 --seed 5055
+
+  lean4-formal-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Elan & Lean v4.35.0
+        run: |
+          curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Build Lean 4 Proof Suite & Audit Axioms
+        working-directory: lean
+        run: |
+          lake build
+          lake env lean CellulogonicProofs.lean | tee ../lean4-ci-audit.txt
+          if grep -q "sorryAx" ../lean4-ci-audit.txt; then
+            echo "ERROR: sorryAx detected in Lean 4 audit!"
+            exit 1
+          fi

@@ -1,0 +1,9 @@
+=== CELLULOGONIC MECHA v1.0 DUAL-KERNEL BENCHMARK & PARITY ===
+Grid: 32x32 (1024 voxels) | Epochs: 200 | Seed: 5055
+
+[SIMD_AVX2 ] elapsed=0.0164s | cell_steps=28384 (1.727 M/s) | rxns=487108 (29.640 M/s)
+             SHA-256=5d515453972d9aeade24fa893488cb0b4cb4af6b1fd7e99f948d5e25e515174a
+[SCALAR_REF] elapsed=0.0163s | cell_steps=28384 (1.746 M/s) | rxns=487108
+             SHA-256=5d515453972d9aeade24fa893488cb0b4cb4af6b1fd7e99f948d5e25e515174a
+Dual-Kernel Bit-Exact Parity : EXACT 0-BIT DIFF MATCH (Speedup=0.99x)
+Ledger Closure: mass_res=0 amu | energy_res=0 uq | drift=0.00e+00 | 2nd_law_viol=0 | allocs=0
