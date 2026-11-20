@@ -1,6 +1,6 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Root Formal Verification & Axiom Audit Module
-  Machine-checks all 44 theorems across Theorems I–V under Lean 4 v4.35.0
+  CELLULOGONIC MECHA v1.2 — Root Formal Verification & Axiom Audit Module
+  Machine-checks all 58 theorems across Theorems I–VII under Lean 4 v4.35.0
   with zero Mathlib dependencies, zero `sorryAx`, and zero custom axioms.
 
   Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
@@ -11,6 +11,8 @@ import CellulogonicProofs.MembraneGeometry
 import CellulogonicProofs.BioenergeticsEndosymbiosis
 import CellulogonicProofs.ChemiosmosisAutopoiesis
 import CellulogonicProofs.EutelicOrganogenesis
+import CellulogonicProofs.CytoskeletonNanomechanics
+import CellulogonicProofs.MorphogeneticGRN
 
 -- Theorem I: Exact Stoichiometric Mass Conservation, First-Law & Second-Law Closure (T01–T10)
 #print axioms Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass
@@ -65,3 +67,21 @@ import CellulogonicProofs.EutelicOrganogenesis
 #print axioms Cellulogonic.EutelicOrganogenesis.T42_anhydrobiosis_bioglass_vitrification
 #print axioms Cellulogonic.EutelicOrganogenesis.T43_flames_excretory_osmoregulation_balance
 #print axioms Cellulogonic.EutelicOrganogenesis.T44_dna_to_organ_hierarchical_conservation
+
+-- Theorem VI: 3D Off-Lattice Cytoskeletal Nanomechanics, Actomyosin & GHz Microtubule Coherence (T45–T50)
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T45_stokes_overdamped_dissipation_nonneg
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T46_soft_body_pairwise_momentum_conservation
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T47_cytokinetic_prolate_elongation_area_excess
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T48_frohlich_mt_coherence_pumping_threshold
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T49_mt_gigahertz_standing_wave_frequency_scaling
+#print axioms Cellulogonic.CytoskeletonNanomechanics.T50_actomyosin_pulsatile_work_bounded_by_atp
+
+-- Theorem VII: 3D Embryogenesis, Morphogen GPS, GRN Fates, Differential Adhesion, Apical Folding, Hippo/Eutely, Axon Pruning & CPG Waves (T51–T58)
+#print axioms Cellulogonic.MorphogeneticGRN.T51_wolpert_french_flag_partition
+#print axioms Cellulogonic.MorphogeneticGRN.T52_steinberg_differential_adhesion_sorting
+#print axioms Cellulogonic.MorphogeneticGRN.T53_apical_constriction_wedge_curvature
+#print axioms Cellulogonic.MorphogeneticGRN.T54_eutelic_lineage_countdown_bound
+#print axioms Cellulogonic.MorphogeneticGRN.T55_hippo_contact_inhibition_growth_stop
+#print axioms Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation
+#print axioms Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound
+#print axioms Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift

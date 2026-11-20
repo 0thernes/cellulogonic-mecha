@@ -61,7 +61,7 @@ if (Test-Path $ar) {
 }
 
 if (-not $SkipTests) {
-    Write-Host "`nRunning 20-Gate Lab-Grade Falsification Suite (Win64 PE64)..."
+    Write-Host "`nRunning 24-Gate Lab-Grade Falsification Suite (Win64 PE64)..."
     Push-Location "$proj\bin"
     & ".\test_falsification.exe"
     $rc = $LASTEXITCODE
@@ -71,13 +71,13 @@ if (-not $SkipTests) {
 }
 
 if (-not $SkipLean -and (Test-Path $lake)) {
-    Write-Host "`nVerifying 44 Pure Lean 4 Mathematical Proofs..."
+    Write-Host "`nVerifying 58 Pure Lean 4 Mathematical Proofs..."
     Push-Location "$proj\lean"
     & $lake build
     $lrc = $LASTEXITCODE
     Pop-Location
     if ($lrc -ne 0) { exit $lrc }
-    Write-Host "Lean 4 Formal Verification PASSED (44 theorems, 0 sorryAx)!"
+    Write-Host "Lean 4 Formal Verification PASSED (58 theorems, 0 sorryAx)!"
 }
 
 Write-Host "`nCELLULOGONIC MECHA BUILD & VERIFICATION COMPLETE."

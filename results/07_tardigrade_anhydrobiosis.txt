@@ -1,14 +1,14 @@
 === EXPERIMENT 5: TARDIGRADE TDP/CAHS BIOGLASS ANHYDROBIOSIS TUN & SHOCK SURVIVAL ===
 
 [ARM A: INTACT TDP/CAHS BIOGLASS LOCUS]
-  Pre-Desiccation : alive= 152 | mRes=0 eRes=0
-  Desiccation 92% : vitrified_tun=  86 | surviving=  92
-  90% Shock Lysis : lysed=  10 | surviving_post_shock=  82
-  Rehydration +40 : revived=  82 | rebounded_alive= 163 | COVI=81.76 | mRes=0 eRes=0
+  Pre-Desiccation : alive= 103 | mRes=0 eRes=0
+  Desiccation 92% : vitrified_tun=  25 | surviving=  31
+  90% Shock Lysis : lysed=   6 | surviving_post_shock=  25
+  Rehydration +40 : revived=  23 | rebounded_alive=  97 | COVI=76.78 | mRes=0 eRes=0
 
 [ARM B: TDP/CAHS KNOCKOUT NEGATIVE CONTROL]
-  Pre-Desiccation : alive= 152 | mRes=0 eRes=0
-  Desiccation 92% : vitrified_tun=   0 | surviving=  12
-  90% Shock Lysis : lysed=  11 | surviving_post_shock=   1
-  Rehydration +40 : revived=   0 | rebounded_alive= 118 | COVI=71.31 | mRes=0 eRes=0
+  Pre-Desiccation : alive= 103 | mRes=0 eRes=0
+  Desiccation 92% : vitrified_tun=   0 | surviving=   9
+  90% Shock Lysis : lysed=   7 | surviving_post_shock=   2
+  Rehydration +40 : revived=   0 | rebounded_alive=  87 | COVI=62.52 | mRes=0 eRes=0
 

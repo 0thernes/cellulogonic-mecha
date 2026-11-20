@@ -1,89 +1,3 @@
-# CELLULOGONIC MECHA v1.0 — Lean 4 v4.35.0 Machine-Checked Proof & Axiom Audit
-# Generated directly by lake build && lake env lean CellulogonicProofs.lean
-
-=== LAKE BUILD ===
-✔ [6/8] Built CellulogonicProofs.EutelicOrganogenesis (717ms)
-ℹ [7/8] Built CellulogonicProofs (611ms)
-info: CellulogonicProofs.lean:16:0: 'Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass' depends on axioms: [propext]
-info: CellulogonicProofs.lean:17:0: 'Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact' depends on axioms: [propext]
-info: CellulogonicProofs.lean:18:0: 'Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law' does not depend on any axioms
-info: CellulogonicProofs.lean:19:0: 'Cellulogonic.StoichiometryThermo.T04_endergonic_biosynthesis_requires_atp' does not depend on any axioms
-info: CellulogonicProofs.lean:20:0: 'Cellulogonic.StoichiometryThermo.T05_respiration_quadruples_fermentation_yield' depends on axioms: [propext]
-info: CellulogonicProofs.lean:21:0: 'Cellulogonic.StoichiometryThermo.T06_closed_box_cycle_dissipation_strict' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:22:0: 'Cellulogonic.StoichiometryThermo.T07_step_preserves_total_mass' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:23:0: 'Cellulogonic.StoichiometryThermo.T08_step_preserves_first_law_ledger' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:24:0: 'Cellulogonic.StoichiometryThermo.T09_heat_sink_monotone' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:25:0: 'Cellulogonic.StoichiometryThermo.T10_fission_and_engulfment_exact_conservation' depends on axioms: [propext,
- Quot.sound]
-info: CellulogonicProofs.lean:28:0: 'Cellulogonic.MembraneGeometry.T11_symmetric_fission_doubles_Q' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:29:0: 'Cellulogonic.MembraneGeometry.T12_symmetric_fission_iff_half_threshold' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:30:0: 'Cellulogonic.MembraneGeometry.T13_high_Q_blocks_symmetric_fission' does not depend on any axioms
-info: CellulogonicProofs.lean:31:0: 'Cellulogonic.MembraneGeometry.T14_equal_ratio_asymmetric_split_suboptimal' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:32:0: 'Cellulogonic.MembraneGeometry.T15_exosome_asymmetric_budding_escapes_half_barrier' does not depend on any axioms
-info: CellulogonicProofs.lean:33:0: 'Cellulogonic.MembraneGeometry.T16_optimal_area_partition_strictly_improves_budding' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:34:0: 'Cellulogonic.MembraneGeometry.T17_osmotic_lysis_monotone_in_volume' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:35:0: 'Cellulogonic.MembraneGeometry.T18_lipid_synthesis_relieves_membrane_stress' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:36:0: 'Cellulogonic.MembraneGeometry.T19_double_membrane_vesicle_preservation' depends on axioms: [propext]
-info: CellulogonicProofs.lean:39:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T20_prokaryotic_bioenergetic_ceiling' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:40:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T21_prokaryotic_power_density_strictly_decreasing' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:41:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T22_endosymbiotic_scaling_liberation' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:42:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T23_endosymbiont_surface_amplification' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:43:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T24_secondary_endosymbiosis_additive_power' depends on axioms: [propext,
- Quot.sound]
-info: CellulogonicProofs.lean:44:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T25_mitotic_heteroplasmy_conservation' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:45:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T26_asymmetric_bottleneck_purifying_selection' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:46:0: 'Cellulogonic.BioenergeticsEndosymbiosis.T27_egt_reduces_organelle_maintenance' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:49:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T28_cring_terran_threshold' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:50:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T29_cring_acidophile_shift' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:51:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T30_cring_cryogenic_shift' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:52:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T31_gap_junction_pairwise_dissipation_nonneg' depends on axioms: [propext,
- Quot.sound]
-info: CellulogonicProofs.lean:53:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T32_gap_junction_laplacian_energy_decrease' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:54:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T33_gap_junction_homogenization_bound' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:55:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T34_inert_crystal_covi_zero' depends on axioms: [propext]
-info: CellulogonicProofs.lean:56:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T35_white_noise_entropy_gate_zero' depends on axioms: [propext]
-info: CellulogonicProofs.lean:57:0: 'Cellulogonic.ChemiosmosisAutopoiesis.T36_markov_blanket_boundary_separation' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:60:0: 'Cellulogonic.EutelicOrganogenesis.T37_3d_tube_geometry_lumen_lower_bound' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:61:0: 'Cellulogonic.EutelicOrganogenesis.T38_minimum_viable_organ_budget_bound' depends on axioms: [propext,
- Classical.choice,
- Quot.sound]
-info: CellulogonicProofs.lean:62:0: 'Cellulogonic.EutelicOrganogenesis.T39_syncytial_compression_factor' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:63:0: 'Cellulogonic.EutelicOrganogenesis.T40_hydrostatic_skeleton_incompressibility' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:64:0: 'Cellulogonic.EutelicOrganogenesis.T41_eutely_hypertrophy_cancels_hyperplasia' does not depend on any axioms
-info: CellulogonicProofs.lean:65:0: 'Cellulogonic.EutelicOrganogenesis.T42_anhydrobiosis_bioglass_vitrification' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:66:0: 'Cellulogonic.EutelicOrganogenesis.T43_flames_excretory_osmoregulation_balance' depends on axioms: [propext, Quot.sound]
-info: CellulogonicProofs.lean:67:0: 'Cellulogonic.EutelicOrganogenesis.T44_dna_to_organ_hierarchical_conservation' depends on axioms: [propext, Quot.sound]
-Build completed successfully (8 jobs).
-
-=== #PRINT AXIOMS AUDIT (44 THEOREMS) ===
 'Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass' depends on axioms: [propext]
 'Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact' depends on axioms: [propext]
 'Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law' does not depend on any axioms
@@ -161,8 +75,25 @@ Build completed successfully (8 jobs).
 'Cellulogonic.EutelicOrganogenesis.T42_anhydrobiosis_bioglass_vitrification' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.EutelicOrganogenesis.T43_flames_excretory_osmoregulation_balance' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.EutelicOrganogenesis.T44_dna_to_organ_hierarchical_conservation' depends on axioms: [propext, Quot.sound]
-
-=== SUMMARY ===
-EXIT_CODE=0
-THEOREMS_AUDITED=44
-SORRY_AX_COUNT=0
+'Cellulogonic.CytoskeletonNanomechanics.T45_stokes_overdamped_dissipation_nonneg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T46_soft_body_pairwise_momentum_conservation' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T47_cytokinetic_prolate_elongation_area_excess' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T48_frohlich_mt_coherence_pumping_threshold' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T49_mt_gigahertz_standing_wave_frequency_scaling' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T50_actomyosin_pulsatile_work_bounded_by_atp' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T51_wolpert_french_flag_partition' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T52_steinberg_differential_adhesion_sorting' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T53_apical_constriction_wedge_curvature' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T54_eutelic_lineage_countdown_bound' does not depend on any axioms
+'Cellulogonic.MorphogeneticGRN.T55_hippo_contact_inhibition_growth_stop' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift' does not depend on any axioms

@@ -8,38 +8,29 @@
  * STRICTLY READ-ONLY / OBSERVER-INDEPENDENT (Clean-Slate P9)!
  * ============================================================================ */
 
-static uint32_t compute_max_tissue_cluster(const CellWorld* w) {
-    /* NOTE: Uses local stack-free scratch? Wait: to keep P9 strictly const/observer-independent
-     * without mutating world->bfs_vis during read-only telemetry, we use fixed stack arrays
-     * for grids up to 64x64 (4096 cells)! Zero heap alloc AND zero mutation of CellWorld! */
+static void compute_colony_stats(const CellWorld* w, uint32_t* out_max_sz,
+                                 uint32_t* out_fewcell, uint32_t* out_multicell) {
+    /* Strictly const/read-only (Clean-Slate P9): local stack arrays up to 4096 cells, 0 alloc! */
     const uint32_t N = w->num_slots;
-    const uint32_t W = w->cfg.width;
-    const uint32_t H = w->cfg.height;
-    if (N > 4096u) return 0u;
+    *out_max_sz = 0; *out_fewcell = 0; *out_multicell = 0;
+    if (N > 4096u) return;
 
     uint8_t  vis[4096];
     uint32_t q[4096];
     memset(vis, 0, N);
 
-    uint32_t max_sz = 0;
     for (uint32_t i = 0; i < N; ++i) {
-        if (vis[i] || w->cells[i].alive_state != 1 || w->cells[i].bond_mask == 0) continue;
+        if (vis[i] || w->cells[i].alive_state != 1 || w->cells[i].num_bonds == 0) continue;
         uint32_t head = 0, tail = 0;
         vis[i] = 1;
         q[tail++] = i;
         while (head < tail) {
             uint32_t u = q[head++];
-            uint8_t bm = w->cells[u].bond_mask;
-            uint32_t x = u % W, y = u / W;
-            uint32_t nbrs[4] = {
-                ((y + H - 1u) % H) * W + x, /* bit 0 = N */
-                ((y + 1u) % H) * W + x,     /* bit 1 = S */
-                y * W + ((x + 1u) % W),     /* bit 2 = E */
-                y * W + ((x + W - 1u) % W)  /* bit 3 = W */
-            };
-            for (int d = 0; d < 4; ++d) {
-                if (bm & (1u << d)) {
-                    uint32_t v = nbrs[d];
+            const CellEntity* cu = &w->cells[u];
+            for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
+                int16_t pj = cu->bond_partners[b];
+                if (pj >= 0 && (uint32_t)pj < N) {
+                    uint32_t v = (uint32_t)pj;
                     if (!vis[v] && w->cells[v].alive_state == 1) {
                         vis[v] = 1;
                         q[tail++] = v;
@@ -47,9 +38,10 @@ static uint32_t compute_max_tissue_cluster(const CellWorld* w) {
                 }
             }
         }
-        if (tail > max_sz) max_sz = tail;
+        if (tail > *out_max_sz) *out_max_sz = tail;
+        if (tail >= 2u && tail <= 16u) (*out_fewcell)++;
+        else if (tail > 16u)           (*out_multicell)++;
     }
-    return max_sz;
 }
 
 /* Estimate functional operon active length L_eff (0..16 loci active above catalytic threshold) */
@@ -118,12 +110,18 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
     double max_vol = 0.0, sum_Q = 0.0, sum_cring = 0.0;
     double sum_leff = 0.0, max_A = 0.0;
     double sum_amb_x = 0.0;
+    double sum_mt_ghz = 0.0, sum_mt_coh = 0.0, sum_speed = 0.0;
+    double sum_apical = 0.0, sum_wnt = 0.0, sum_bmp = 0.0, sum_shh = 0.0;
+    uint32_t total_bond_edges = 0, homo_bond_edges = 0;
     double sum_coop_frac = 0.0, sum_coop_frac2 = 0.0;
     uint32_t euk_with_org = 0;
     uint32_t active_catalysts = 0;
 
     for (uint32_t i = 0; i < N; ++i) {
         sum_amb_x += (double)w->voxels[i].env[CELL_SP_X];
+        sum_wnt   += (double)w->voxels[i].morph[0];
+        sum_bmp   += (double)w->voxels[i].morph[1];
+        sum_shh   += (double)w->voxels[i].morph[2];
         const CellEntity* c = &w->cells[i];
         if (c->alive_state == 0) continue;
 
@@ -145,6 +143,12 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
         sum_cring += (double)c->c_ring_nH;
         sum_v  += (double)c->v_mem_mv;
         sum_v2 += (double)c->v_mem_mv * (double)c->v_mem_mv;
+        sum_mt_ghz += (double)c->mt_freq_mhz / 1000.0;
+        sum_mt_coh += (double)c->mt_coherence_q10 / 1000.0;
+        double spd = sqrt((double)c->vel_nm[0] * c->vel_nm[0] +
+                          (double)c->vel_nm[1] * c->vel_nm[1] +
+                          (double)c->vel_nm[2] * c->vel_nm[2]) / 100.0;
+        sum_speed += spd;
 
         uint32_t leff = cell_active_loci_count(c);
         sum_leff += (double)leff;
@@ -179,13 +183,26 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
             euk_with_org++;
         }
 
-        /* Emergent Multicellular Tissue Topology & Bioelectric Functional Roles */
-        if (c->bond_mask != 0) {
+        /* Emergent Multicellular Tissue Topology, Bioelectric Roles & Developmental GRN Fates */
+        if (c->morph_fate < CELL_FATE_COUNT) out->fate_counts[c->morph_fate]++;
+        sum_apical += (double)c->apical_wedge_q10 / 1000.0;
+        for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
+            if (c->axon_target[a] >= 0 && (uint32_t)c->axon_target[a] < N &&
+                w->cells[c->axon_target[a]].alive_state == 1) {
+                out->active_axons++;
+            }
+        }
+        if (c->num_bonds > 0) {
             out->multicellular_cells++;
-            uint32_t deg = ((c->bond_mask & 1u) != 0) + ((c->bond_mask & 2u) != 0) +
-                           ((c->bond_mask & 4u) != 0) + ((c->bond_mask & 8u) != 0);
-            if (deg < 4u) out->role_boundary_epi++;
-            else          out->role_stroma_interior++;
+            if (c->num_bonds < 4u) out->role_boundary_epi++;
+            else                   out->role_stroma_interior++;
+            for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
+                int16_t pj = c->bond_partners[b];
+                if (pj >= 0 && (uint32_t)pj > i && w->cells[pj].alive_state == 1) {
+                    total_bond_edges++;
+                    if (c->cad_type == w->cells[pj].cad_type) homo_bond_edges++;
+                }
+            }
         }
         if (c->diff_role == 1) out->role_soma_forage++;
         if (c->diff_role == 2) out->role_germ_repro++;
@@ -201,7 +218,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
         }
     }
 
-    out->max_tissue_size               = compute_max_tissue_cluster(w);
+    compute_colony_stats(w, &out->max_tissue_size, &out->fewcell_colonies, &out->multicell_colonies);
     out->abiogenesis_vesicles          = w->abiogenesis_vesicles;
     out->symmetric_fissions            = w->symmetric_fissions;
     out->asymmetric_buddings           = w->asymmetric_buddings;
@@ -219,7 +236,18 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
     out->backlash_dormancy_spores      = w->backlash_dormancy_spores;
     out->backlash_hgt_smuggles         = w->backlash_hgt_smuggles;
     out->backlash_metabolic_bypasses   = w->backlash_metabolic_bypasses;
+    out->axons_wired_cum               = w->axons_wired_cum;
+    out->axons_pruned_cum              = w->axons_pruned_cum;
+    out->hippo_arrests_cum             = w->hippo_arrests_cum;
+    out->eutelic_stops_cum             = w->eutelic_stops_cum;
+    out->cpg_pulses_cum                = w->cpg_pulses_cum;
+    out->homophilic_bond_pct           = total_bond_edges > 0
+                                         ? (100.0 * (double)homo_bond_edges / (double)total_bond_edges)
+                                         : 0.0;
     out->ambient_oxidant_X             = sum_amb_x / (double)(N > 0 ? N : 1);
+    out->mean_morph_wnt                = sum_wnt / (double)(N > 0 ? N : 1);
+    out->mean_morph_bmp                = sum_bmp / (double)(N > 0 ? N : 1);
+    out->mean_morph_shh                = sum_shh / (double)(N > 0 ? N : 1);
 
     if (out->alive_cells > 0) {
         double na = (double)out->alive_cells;
@@ -232,6 +260,10 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
         out->mean_reduced_Q        = sum_Q / na;
         out->mean_cring_nH         = sum_cring / na;
         out->mean_active_loci_leff = sum_leff / na;
+        out->mean_mt_freq_ghz      = sum_mt_ghz / na;
+        out->mean_mt_coherence     = sum_mt_coh / na;
+        out->mean_swim_speed_ums   = sum_speed / na;
+        out->mean_apical_wedge     = sum_apical / na;
     }
     if (euk_with_org > 1) {
         double mcf = sum_coop_frac / (double)euk_with_org;

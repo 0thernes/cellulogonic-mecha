@@ -2,20 +2,20 @@
 Initial alive cells: 0 (pure abiotic spatial soup + CMC self-assembly)
 
 t=   0 | alive=   0 (prok=  0 euk=  0 sec= 0 spore= 0 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis=  0 maxT=  0 | sym=   0 bud=  0 endo=  0 | COVI= 0.00 (S0, MET=0/7) | mRes=0 eRes=0 2nd=0
-t=  24 | alive= 206 (prok=203 euk=  3 sec= 0 spore= 0 tun=  0) | org=  4 (mito=  2 chlo= 2) | tis= 14 maxT=  3 | sym=  49 bud= 14 endo=  6 | COVI=63.32 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
-t=  48 | alive= 370 (prok=352 euk= 18 sec= 4 spore= 0 tun=  0) | org= 20 (mito= 10 chlo=10) | tis= 38 maxT=  4 | sym= 247 bud= 38 endo= 42 | COVI=79.67 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
-t=  72 | alive= 502 (prok=476 euk= 26 sec=10 spore= 0 tun=  0) | org= 47 (mito= 22 chlo=25) | tis=129 maxT= 26 | sym= 951 bud= 79 endo=165 | COVI=86.71 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
-t=  96 | alive= 543 (prok=485 euk= 58 sec=12 spore=11 tun=  0) | org= 90 (mito= 57 chlo=33) | tis=143 maxT= 21 | sym=2233 bud= 97 endo=351 | COVI=91.30 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 120 | alive= 479 (prok=437 euk= 42 sec=13 spore=47 tun=  0) | org= 96 (mito= 64 chlo=32) | tis=110 maxT= 13 | sym=3331 bud=105 endo=451 | COVI=90.35 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 144 | alive= 426 (prok=388 euk= 38 sec=14 spore=56 tun=  0) | org= 94 (mito= 62 chlo=32) | tis=136 maxT= 27 | sym=3921 bud=105 endo=494 | COVI=91.18 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 168 | alive= 382 (prok=350 euk= 32 sec=13 spore=66 tun=  0) | org= 89 (mito= 58 chlo=31) | tis=148 maxT= 50 | sym=4197 bud=108 endo=507 | COVI=90.90 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 192 | alive= 340 (prok=309 euk= 31 sec=14 spore=69 tun=  0) | org= 86 (mito= 57 chlo=29) | tis=133 maxT= 49 | sym=4302 bud=108 endo=510 | COVI=90.43 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 216 | alive= 295 (prok=265 euk= 30 sec=13 spore=69 tun=  0) | org= 86 (mito= 57 chlo=29) | tis=118 maxT= 24 | sym=4373 bud=108 endo=522 | COVI=89.33 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
-t= 240 | alive= 267 (prok=240 euk= 27 sec=12 spore=71 tun=  0) | org= 73 (mito= 45 chlo=28) | tis=109 maxT= 23 | sym=4402 bud=108 endo=526 | COVI=88.80 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
+t=  24 | alive= 208 (prok=206 euk=  2 sec= 0 spore= 0 tun=  0) | org=  2 (mito=  1 chlo= 1) | tis= 37 maxT=  4 | sym=  41 bud= 17 endo=  8 | COVI=68.12 (S4, MET=7/7) | mRes=0 eRes=0 2nd=0
+t=  48 | alive= 380 (prok=371 euk=  9 sec= 1 spore= 0 tun=  0) | org= 12 (mito=  5 chlo= 7) | tis= 83 maxT=  8 | sym= 179 bud= 48 endo= 33 | COVI=79.32 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t=  72 | alive= 597 (prok=574 euk= 23 sec= 3 spore= 0 tun=  0) | org= 30 (mito= 17 chlo=13) | tis=210 maxT= 14 | sym= 620 bud=101 endo= 92 | COVI=86.59 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t=  96 | alive= 607 (prok=546 euk= 61 sec=19 spore=50 tun=  0) | org=101 (mito= 36 chlo=65) | tis=202 maxT= 12 | sym=1457 bud=162 endo=289 | COVI=90.26 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 120 | alive= 421 (prok=353 euk= 68 sec=28 spore=84 tun=  0) | org=125 (mito= 47 chlo=78) | tis=108 maxT= 16 | sym=2131 bud=181 endo=460 | COVI=89.29 (S6, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 144 | alive= 308 (prok=242 euk= 66 sec=39 spore=94 tun=  0) | org=135 (mito= 43 chlo=92) | tis= 53 maxT= 11 | sym=2555 bud=183 endo=606 | COVI=83.99 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 168 | alive= 252 (prok=188 euk= 64 sec=38 spore=94 tun=  0) | org=135 (mito= 37 chlo=98) | tis= 43 maxT= 16 | sym=2699 bud=183 endo=662 | COVI=83.47 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 192 | alive= 222 (prok=159 euk= 63 sec=38 spore=95 tun=  0) | org=139 (mito= 37 chlo=102) | tis= 32 maxT=  8 | sym=2774 bud=183 endo=696 | COVI=81.09 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 216 | alive= 197 (prok=138 euk= 59 sec=41 spore=95 tun=  0) | org=144 (mito= 34 chlo=110) | tis= 25 maxT=  7 | sym=2833 bud=183 endo=734 | COVI=79.45 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
+t= 240 | alive= 176 (prok=125 euk= 51 sec=35 spore=95 tun=  0) | org=134 (mito= 29 chlo=105) | tis= 18 maxT=  6 | sym=2860 bud=183 endo=754 | COVI=78.19 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
 
 Final Abiogenesis Summary:
-  CMC Vesicles Condensed : 1760
-  Alive Cells / Lineages : 267 / 84
-  Symmetric / Budding    : 4402 / 108
-  High-Copy Assembly A   : 28.65 | Mean L_eff=10.53 | Bedau A_new=0.071
-  Final COVI             : 88.80 (Stage 6) | SHA-256=9c672081ceed7da6c6b1d0a4f9338b777f66a7b9d01577c4b7050c9d3af29e71
+  CMC Vesicles Condensed : 1715
+  Alive Cells / Lineages : 176 / 86
+  Symmetric / Budding    : 2860 / 183
+  High-Copy Assembly A   : 33.85 | Mean L_eff=9.78 | Bedau A_new=0.033
+  Final COVI             : 78.19 (Stage 5) | SHA-256=f7fc6c05dc7b46e4d94373a65c3280edee32d259782d71c9706c6144e747063a

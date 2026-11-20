@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CELLULOGONIC MECHA v1.0 — Live Cellular A-Life Microscopy Observatory</title>
+  <title>CELLULOGONIC MECHA v1.2 — 3D Developmental Embryogenesis &amp; Cellular Observatory</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,11 +11,11 @@
     <div class="brand">
       <div class="dot"></div>
       <div>
-        <h1>CELLULOGONIC MECHA <span>v1.0</span></h1>
-        <p>Clean-Room Chemiosmotic, Canham–Helfrich, Endosymbiotic &amp; Bioelectric Cellular A-Life Lab</p>
+        <h1>CELLULOGONIC MECHA <span>v1.2 · 3D EMBRYOGENESIS, GRN MORPHOGENESIS &amp; FLUID CHAMBER</span></h1>
+        <p>Morphogen GPS (Wnt/BMP/Shh) · Conditional GRN Fates · Cadherin Sorting · Apical Folding · Netrin/Slit Axons · CPG Waves · GHz Microtubules</p>
       </div>
     </div>
-    <div class="badges" id="ledger-badges">
+    <div class="badges">
       <span class="badge ok" id="badge-mass">MASS Δ: 0 amu</span>
       <span class="badge ok" id="badge-energy">1ST LAW Δ: 0 uq</span>
       <span class="badge ok" id="badge-2nd">2ND LAW VIOL: 0</span>
@@ -25,13 +25,14 @@
 
   <main class="layout">
     <section class="panel controls">
-      <h2>Experiment Bench</h2>
+      <h2>3D Fluid Specimen Bench</h2>
       <div class="field">
         <label>Operating Regime</label>
         <select id="sel-regime">
-          <option value="0" selected>0 · Zero-Seed Spontaneous Protocell Abiogenesis</option>
-          <option value="3">3 · Serial Endosymbiosis &amp; Eukaryogenesis Lab</option>
-          <option value="1">1 · Track B Feral Multicellular Ecosystem</option>
+          <option value="5" selected>5 · 3D Embryogenesis &amp; GRN Organogenesis (Zygote → Creature)</option>
+          <option value="3">3 · Wild 3D Endosymbiosis &amp; Free-Swimming Pond</option>
+          <option value="0">0 · Zero-Seed Spontaneous Protocell Abiogenesis</option>
+          <option value="1">1 · Track B Feral Colonies &amp; Multicellular Rafts</option>
           <option value="2">2 · Track A Constitutional (Anti-Cancer Policing)</option>
           <option value="4">4 · 13-Vector Castration / Restraint Workbench</option>
         </select>
@@ -46,61 +47,94 @@
         </select>
       </div>
       <div class="field">
-        <label>Fluorescence Microscopy Channel</label>
+        <label>3D Microscopy Optical Mode</label>
         <select id="sel-layer">
-          <option value="composite" selected>Composite (Membranes + Organelles + Biofilm Bonds)</option>
+          <option value="fates" selected>Developmental GRN Germ Layers (Ecto · Neural · Muscle · Gut)</option>
+          <option value="morphogens">3D Chemical GPS Morphogens (Wnt Red · BMP Green · Shh Blue)</option>
+          <option value="composite">Spectral Chromophore 3D (Infinite Genome Colors &amp; Organelles)</option>
+          <option value="glyphs">Bio-Glyph &amp; Genetic Operon Syntax 3D HUD</option>
           <option value="vmem">Levin Bioelectric Voltage Field V_m (-90..+40 mV)</option>
           <option value="strain">Canham–Helfrich Reduced Volume Q (Fission vs Lysis)</option>
-          <option value="solvent">Xenocellular Lipid Chemistry Adaptation Map</option>
+          <option value="solvent">Xenocellular Lipid Adaptation Map</option>
         </select>
       </div>
+
       <div class="row2">
         <div class="field">
-          <label>Locked Seed</label>
-          <input id="inp-seed" type="number" value="5000" min="1" max="999999" />
+          <label>Seed (0 = Feral RDSEED)</label>
+          <input id="inp-seed" type="number" value="5000" min="0" max="99999999" />
         </div>
         <div class="field">
-          <label>Epoch (0..400)</label>
-          <input id="inp-epoch" type="number" value="96" min="0" max="400" />
+          <label>Live Tempo (Ep/Tick)</label>
+          <select id="sel-speed">
+            <option value="1" selected>1 ep (Smooth Swim)</option>
+            <option value="2">2 ep (Fast Evolution)</option>
+            <option value="5">5 ep (Hyper-Lapse)</option>
+          </select>
         </div>
       </div>
 
       <div class="btn-row">
-        <button id="btn-play" class="primary">▶ Play Live</button>
-        <button id="btn-step">+12 Ep</button>
-        <button id="btn-reset">t=0</button>
+        <button id="btn-play" class="primary">⏸ Pause Live</button>
+        <button id="btn-embryo" class="embryo">🧫 Grow 3D Embryo</button>
+      </div>
+      <div class="btn-row">
+        <button id="btn-feral" class="feral">⚡ Feral RDSEED</button>
+        <button id="btn-autophage" class="dna">🧬 AUTOPHAGE DNA</button>
+      </div>
+      <div class="btn-row">
+        <button id="btn-plume">💧 Nutrient Plume</button>
+        <button id="btn-focus">🔬 Zoom Apex</button>
+        <button id="btn-cam">↺ Reset 3D</button>
+      </div>
+
+      <div class="toggles">
+        <label><input type="checkbox" id="chk-orbit" checked /> Auto-Orbit</label>
+        <label><input type="checkbox" id="chk-axons" checked /> 3D Axons &amp; CPG</label>
+        <label><input type="checkbox" id="chk-mt" checked /> GHz Microtubules</label>
+        <label><input type="checkbox" id="chk-flag" checked /> 3D Flagella</label>
+        <label><input type="checkbox" id="chk-glyph" checked /> Bio-Glyphs</label>
       </div>
 
       <h3>Tardigrade TDP Bioglass Shock</h3>
       <div class="btn-row">
-        <button id="btn-tun">92% Desiccate (Tun)</button>
-        <button id="btn-shock">Desiccate + 90% Shock + Rehydrate</button>
+        <button id="btn-tun">❄ 92% Desiccate (Tun)</button>
+        <button id="btn-shock">☢ 90% Shock</button>
+        <button id="btn-rehyd">💧 Rehydrate</button>
       </div>
 
       <h3>13 Omega Restraints (<span id="rest-lbl">0%</span>)</h3>
       <div class="btn-row">
         <button id="btn-r0">0% Feral</button>
-        <button id="btn-r50">50% Escape Zone</button>
-        <button id="btn-r100">100% Castrated</button>
+        <button id="btn-r50">50% Escape</button>
+        <button id="btn-r100">100% Castrate</button>
       </div>
       <input id="rng-rest" type="range" min="0" max="100" value="0" />
-      <p class="hint">50% partial restraints empirically trigger the Escape-Breeding Paradox across kill-switch deletions, dormancy spores, HGT smuggles &amp; metabolic bypasses.</p>
-
-      <div class="legend">
-        <div><span class="sw sw-prok"></span> Prokaryote (0 orgs)</div>
-        <div><span class="sw sw-euk"></span> Eukaryote (Mito/Chloro)</div>
-        <div><span class="sw sw-sec"></span> Secondary Chimera (depth=2)</div>
-        <div><span class="sw sw-tun"></span> TDP Bioglass Tun / Spore</div>
-        <div><span class="sw sw-bond"></span> Bioelectric Gap-Junction Bond</div>
-      </div>
+      <p class="hint">Drag to 3D orbit · Wheel to fly inside a cell · Right-drag to pan. GHz microtubule waves are time-dilated 10⁹× for visual observation.</p>
     </section>
 
     <section class="panel viewport">
       <div class="vp-head">
-        <span id="vp-title">Live 32×32 Conserved Spatial Micro-Habitat (1,024 Voxels)</span>
-        <span id="vp-status">Ready</span>
+        <span id="vp-title">Live 32×32×32 μm Continuous 3D Fluid Chamber (Off-Lattice WebGL2)</span>
+        <span id="vp-status">Streaming live...</span>
       </div>
-      <canvas id="microscope" width="640" height="640"></canvas>
+      <div class="stage-wrap">
+        <canvas id="gl-canvas"></canvas>
+        <canvas id="hud-canvas"></canvas>
+      </div>
+      <div class="scope-row">
+        <div class="scope-box">
+          <h3>GHz Microtubule Eigenmode Spectrum (1.2 – 14.8 GHz) &amp; Actomyosin Pulse</h3>
+          <canvas id="scope-canvas" width="540" height="74"></canvas>
+        </div>
+        <div class="scope-box bridge-box">
+          <div class="bridge-head">
+            <h3>🧬 Build 1 AUTOPHAGE DNA → Build 3 Asmodensius 112-Trait Live Projection</h3>
+            <span id="bridge-meta">Apex — · AUTOPHAGE carriers: 0</span>
+          </div>
+          <canvas id="asmo-canvas" width="540" height="62"></canvas>
+        </div>
+      </div>
       <div class="pillars-wrap">
         <h3>8-Pillar Cellular Omega Vitality Index (COVI)</h3>
         <div id="pillars" class="pillars"></div>
@@ -108,19 +142,22 @@
     </section>
 
     <section class="panel telemetry">
-      <h2>Live Lab-Grade Metrology</h2>
+      <h2>Live 3D Biophysical Metrology</h2>
       <div class="kpi-grid">
         <div class="kpi"><label>COVI Score</label><strong id="k-covi">—</strong><small id="k-stage">Stage —</small></div>
-        <div class="kpi"><label>Major Transitions</label><strong id="k-met">—</strong><small>out of 7</small></div>
-        <div class="kpi"><label>Living Cells</label><strong id="k-alive">—</strong><small id="k-split">Prok / Euk / Sec</small></div>
-        <div class="kpi"><label>Organelles</label><strong id="k-orgs">—</strong><small id="k-org-split">Mito / Chloro</small></div>
-        <div class="kpi"><label>Lane 1/R Scaling</label><strong id="k-lane">—</strong><small>Euk / Prok Mean Vol</small></div>
-        <div class="kpi"><label>Multicellular</label><strong id="k-tis">—</strong><small id="k-maxt">Max Cluster</small></div>
-        <div class="kpi"><label>Bioelectric V_m</label><strong id="k-vmem">—</strong><small id="k-vstd">Std Dev (mV)</small></div>
+        <div class="kpi"><label>MT Resonance</label><strong id="k-mt">—</strong><small id="k-coh">Fröhlich Coh</small></div>
+        <div class="kpi"><label>Free Swimmers</label><strong id="k-alive">—</strong><small id="k-split">Prok / Euk / Sec</small></div>
+        <div class="kpi"><label>Colonies (3D)</label><strong id="k-col">—</strong><small id="k-maxt">Few / Multi / Max</small></div>
+        <div class="kpi"><label>Swim Speed</label><strong id="k-spd">—</strong><small>Orthokinetic μm/s</small></div>
+        <div class="kpi"><label>Lane 1/R Scale</label><strong id="k-lane">—</strong><small>Euk / Prok Vol</small></div>
+        <div class="kpi"><label>Bioelectric V_m</label><strong id="k-vmem">—</strong><small id="k-vstd">σ (mV)</small></div>
         <div class="kpi"><label>Assembly A / L_eff</label><strong id="k-assm">—</strong><small id="k-anew">Bedau A_new</small></div>
       </div>
 
-      <h3>Emergent Cellular Events</h3>
+      <h3>Developmental GRN &amp; Morphogenesis (No Master Blueprint)</h3>
+      <table class="stat-table" id="tbl-morph"></table>
+
+      <h3>Emergent 3D Cellular Events</h3>
       <table class="stat-table" id="tbl-events"></table>
 
       <h3>Constraint-Backlash Escape Counters</h3>
@@ -128,6 +165,6 @@
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script type="module" src="app.js"></script>
 </body>
 </html>

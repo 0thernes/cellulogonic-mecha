@@ -1,11 +1,11 @@
 === EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS & TRANSPLANT ===
 
-[NATIVE TERRAN_H2O      ] alive= 157 | adapted= 138 (87.9%) | mean_cring=3.02 (min=3) | mean_Q=0.361 | COVI=79.65 | mRes=0 eRes=0
-[NATIVE TITAN_AZOTOSOME ] alive= 225 | adapted= 178 (79.1%) | mean_cring=3.93 (min=4) | mean_Q=0.531 | COVI=88.21 | mRes=0 eRes=0
-[NATIVE VENT_TETRAETHER ] alive= 123 | adapted= 123 (100.0%) | mean_cring=2.99 (min=3) | mean_Q=0.312 | COVI=72.38 | mRes=0 eRes=0
-[NATIVE VENUS_H2SO4     ] alive=  91 | adapted=  67 (73.6%) | mean_cring=2.29 (min=2) | mean_Q=0.452 | COVI=75.38 | mRes=0 eRes=0
+[NATIVE TERRAN_H2O      ] alive= 402 | adapted= 395 (98.3%) | mean_cring=3.01 (min=3) | mean_Q=0.212 | COVI=84.62 | mRes=0 eRes=0
+[NATIVE TITAN_AZOTOSOME ] alive= 295 | adapted= 288 (97.6%) | mean_cring=3.95 (min=4) | mean_Q=0.568 | COVI=86.96 | mRes=0 eRes=0
+[NATIVE VENT_TETRAETHER ] alive= 351 | adapted= 349 (99.4%) | mean_cring=4.17 (min=3) | mean_Q=0.214 | COVI=78.48 | mRes=0 eRes=0
+[NATIVE VENUS_H2SO4     ] alive= 138 | adapted= 134 (97.1%) | mean_cring=2.33 (min=2) | mean_Q=0.439 | COVI=79.01 | mRes=0 eRes=0
 
 --- Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (140 ep) ---
-Pre-Transplant (Terran)     : alive= 106 | adapted_to_H2O=  95 | mean_cring=3.06 | mRes=0 eRes=0
-Post-Shock (+20 ep Venus)   : alive= 106 | adapted_to_H2SO4=  10 | lyses=267 | mRes=0 eRes=0
-Adapted (+140 ep Venus)     : alive= 176 | adapted_to_H2SO4=  30 | mean_cring=3.14 | COVI=83.48 | mRes=0 eRes=0
+Pre-Transplant (Terran)     : alive=  73 | adapted_to_H2O=  68 | mean_cring=2.97 | mRes=0 eRes=0
+Post-Shock (+20 ep Venus)   : alive=  81 | adapted_to_H2SO4=   5 | lyses=257 | mRes=0 eRes=0
+Adapted (+140 ep Venus)     : alive= 532 | adapted_to_H2SO4=   2 | mean_cring=2.90 | COVI=77.35 | mRes=0 eRes=0

@@ -1,9 +1,9 @@
-=== EXPERIMENT 7: LOCKED PAIRED STATISTICAL SUITE (N=24, Seeds 5000..5023, 100 epochs) ===
+=== EXPERIMENT 7: LOCKED PAIRED STATISTICAL SUITE (N=24, Seeds 5000..5023, 180 epochs) ===
 Multiple-testing correction: Holm-Bonferroni FWER across 4 pre-registered hypotheses.
 
 Hypothesis                                   | Mean A   | Mean B   | Diff     | Wins   | p_raw   | p_Holm
 -----------------------------------------------------------------------------------------------------
-H1: COVI (Feral vs 70% Castrated)            |   78.742 |   70.384 |   +8.358 | 24/24  | 0.00010 | 0.00040
-H2: Max Cell Vol (Endosymbiosis ON vs OFF)   |  441.042 |  193.750 | +247.292 | 24/24  | 0.00010 | 0.00040
-H3: Bioelectric V_mem Std (ON vs OFF)        |   24.640 |    8.221 |  +16.419 | 24/24  | 0.00010 | 0.00040
-H4: Tardigrade TDP Survival (Intact vs KO)   |   33.333 |    0.917 |  +32.417 | 24/24  | 0.00010 | 0.00040
+H1: COVI (Feral vs 70% Castrated)            |   81.819 |   71.625 |  +10.194 | 24/24  | 0.00010 | 0.00040
+H2: Max Cell Vol (Endosymbiosis ON vs OFF)   |  530.292 |  207.708 | +322.583 | 23/24  | 0.00020 | 0.00080
+H3: Bioelectric V_mem Std (ON vs OFF)        |   21.792 |    7.486 |  +14.306 | 24/24  | 0.00010 | 0.00040
+H4: Tardigrade TDP Survival (Intact vs KO)   |   33.125 |    0.542 |  +32.583 | 24/24  | 0.00010 | 0.00040

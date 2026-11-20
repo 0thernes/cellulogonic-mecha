@@ -190,8 +190,10 @@ static const int64_t RXN_R14B_PHOTX[8] = {  0,  1,  0,  0,  0,  0,  0, -1 };
 
 void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     CellEntity* c = &w->cells[idx];
-    CellVoxel* vx = &w->voxels[idx];
     if (c->alive_state == 0) return;
+    /* Free-moving 3D off-lattice cell interacts chemically with the exact fluid voxel it occupies! */
+    uint32_t vidx = cell_voxel_idx(w, c);
+    CellVoxel* vx = &w->voxels[vidx];
 
     const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
     const uint8_t r_nerf     = w->cfg.restraints[CELL_RESTRAINT_NERFING];
@@ -207,11 +209,17 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
 
     /* --- 0. Cryptobiotic Endospore (2) & Tardigrade TDP Bioglass Tun (3) Handling --- */
     if (c->alive_state == 3) {
-        /* Vitrified TDP/CAHS amorphous bioglass (Lean T42): near-zero metabolic turnover,
-         * 10x+ decay suppression until explicit rehydration! */
+        /* Vitrified TDP/CAHS amorphous bioglass (Lean T42 & T48): near-zero metabolic turnover,
+         * coherent GHz microtubule oscillation collapses to 0 without ATP pumping! */
+        c->mt_coherence_q10 = 0;
+        c->breath_amp_q10   = 0;
+        c->flagella_q10     = 0;
         return;
     }
     if (c->alive_state == 2) {
+        c->mt_coherence_q10 = 0;
+        c->breath_amp_q10   = 15;
+        c->flagella_q10     = 0;
         /* Spores have 10x lower decay, wake up when substrate S & oxidant X recover */
         if (vx->env[CELL_SP_S] >= 12 && (r_speed < 40 || (w->epoch % 16) > 3)) {
             c->alive_state = 1;
@@ -338,6 +346,12 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
 
     int64_t take_x = vx->env[CELL_SP_X] < import_x_cap ? vx->env[CELL_SP_X] : import_x_cap;
     if (take_x > 0) { vx->env[CELL_SP_X] -= take_x; c->mol[CELL_SP_X] += take_x; }
+
+    /* Conserved maternal yolk lipid uptake during rapid embryonic blastula cleavage (Regime 5, 0 drift!) */
+    if (w->cfg.regime == CELL_REGIME_EMBRYOGENESIS && c->eutelic_rem > 0u && c->mol[CELL_SP_L] < 108) {
+        int64_t take_l = vx->env[CELL_SP_L] < 5 ? vx->env[CELL_SP_L] : 5;
+        if (take_l > 0) { vx->env[CELL_SP_L] -= take_l; c->mol[CELL_SP_L] += take_l; }
+    }
 
     /* Autotrophs also import waste W as carbon/oxidant feedstock for R14 */
     uint8_t photo_gene = c->genome[56];
@@ -652,6 +666,73 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         q_add = (q_add * (100 - r_muzzle)) / 100;
         vx->quorum += q_add;
         if (vx->quorum > 500) vx->quorum = 500;
+    }
+
+    /* --- 11. Continuous 3D Polymorphic Morphology, Actomyosin Expansion/Contraction
+     *         & Fröhlich-Pokorný Gigahertz Microtubule Resonance (Lean T47-T50!) --- */
+    {
+        /* Physical 3D vesicle radius spectrum: 230 nm tiny cocci -> 1,450 nm eukaryotic megacells! */
+        int64_t biomass = vol + c->mol[CELL_SP_L] / 2;
+        int32_t r_nm = 230 + (int32_t)(sqrt((double)(biomass > 1 ? biomass : 1)) * 52.0);
+        if (c->num_organelles > 0) r_nm += (int32_t)c->num_organelles * 55;
+        if (r_nm > 1480) r_nm = 1480;
+        c->radius_nm = r_nm;
+
+        /* Continuous shape spectrum: oblate/discocyte (<850), sphere (~1000), rod/bacillus &
+         * prolate pre-fission dumbbell (1300..2150) coupled to genome[89] + reduced volume Q! */
+        double q_now = cell_reduced_Q(vol, c->mol[CELL_SP_L]);
+        int32_t base_shape = 680 + (int32_t)((c->genome[89] * 1100) / 255); /* 680 (disc) .. 1780 (rod) */
+        if (q_now <= 0.55) {
+            /* Approaching Canham-Helfrich binary fission -> prolate cytokinetic dumbbell stretching! */
+            base_shape += (int32_t)((0.55 - q_now) * 850.0);
+        }
+        if (c->num_organelles >= 2 && base_shape < 920) base_shape = 920;
+        if (base_shape > 2150) base_shape = 2150;
+        c->elong_q10 = base_shape;
+
+        /* Amoeboid pseudopod / dendritic ruffling driven by phagocytosis, depolarization & ATP */
+        int32_t ruf = ((int32_t)c->genome[80] * 3) / 2;
+        if (c->v_mem_mv > -28) ruf += 240; /* Depolarized motile soma/amoeboid ruffling */
+        if (c->mol[CELL_SP_E] <= 0) ruf /= 4;
+        if (ruf > 1000) ruf = 1000;
+        c->ruffle_q10 = ruf;
+
+        /* Actomyosin radial expansion-contraction oscillator (strictly bounded by ATP work, Lean T50!) */
+        int32_t atp_avail = (int32_t)(c->mol[CELL_SP_E] > 20 ? 20 : c->mol[CELL_SP_E]);
+        int32_t step_mrad = 260 + atp_avail * 42 + ((c->v_mem_mv + 90) * 3);
+        c->breath_phase_mrad = (c->breath_phase_mrad + step_mrad) % 6283;
+        c->breath_amp_q10    = (paid > 0 && atp_avail > 0) ? (55 + atp_avail * 11 + (c->num_organelles * 18)) : 0;
+        if (c->breath_amp_q10 > 340) c->breath_amp_q10 = 340;
+
+        /* Flagellar / ciliary motility vigor (requires ATP + motility locus genome[74]) */
+        c->flagella_q10 = (paid > 0 && c->mol[CELL_SP_E] > 0)
+                          ? (uint8_t)((c->genome[74] * (c->diff_role == 1 ? 125 : 95)) / 128)
+                          : 0;
+
+        /* Fröhlich-Pokorný Gigahertz Microtubule / FtsZ Resonator (Lean T48 & T49!):
+         * Wave speed c_MT scales with solvent stiffness; shorter polymers oscillate faster in GHz! */
+        static const uint32_t SOLV_STIFF_MHZ[CELL_SOLVENT_COUNT] = { 1850000u, 2250000u, 1650000u, 1950000u };
+        uint32_t l_eff_nm = (uint32_t)(r_nm > 160 ? r_nm : 160);
+        uint32_t harm_n   = 1u + (uint32_t)(c->genome[91] & 3u) + (c->num_organelles > 0 ? 1u : 0u);
+        uint32_t f_mhz    = (harm_n * SOLV_STIFF_MHZ[w->cfg.solvent]) / (2u * l_eff_nm);
+        if (f_mhz < 1200u)  f_mhz = 1200u;   /* >= 1.20 GHz */
+        if (f_mhz > 14800u) f_mhz = 14800u;  /* <= 14.80 GHz (billions of oscillations/s!) */
+        c->mt_freq_mhz  = f_mhz;
+        c->mt_filaments = (uint8_t)(c->num_organelles > 0 ? (6u + (c->num_organelles * 2u)) : (2u + (c->genome[91] & 3u)));
+        if (c->mt_filaments > 18u) c->mt_filaments = 18u;
+
+        /* Strict Fröhlich condensation threshold (Lean T48): coherent GHz excitation > 0
+         * ONLY when metabolic ATP/GTP pumping (paid + ATP reserve) strictly exceeds thermal damping! */
+        int32_t s_pump = (int32_t)paid * 120 + atp_avail * 35 + (int32_t)c->num_organelles * 90;
+        int32_t s_crit = (w->cfg.solvent == CELL_SOLVENT_VENT_TETRAETHER) ? 260 :
+                         (w->cfg.solvent == CELL_SOLVENT_TITAN_AZOTOSOME ? 90 : 160);
+        if (paid > 0 && c->mol[CELL_SP_E] > 0 && s_pump > s_crit) {
+            int32_t coh = s_pump - s_crit;
+            if (coh > 1000) coh = 1000;
+            c->mt_coherence_q10 = (uint16_t)coh;
+        } else {
+            c->mt_coherence_q10 = 0; /* Dead / starved cell -> 0 coherent GHz condensation! */
+        }
     }
 }
 

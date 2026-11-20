@@ -48,6 +48,28 @@ uint32_t cell_philox_u32(uint64_t seed, uint32_t domain, uint64_t ctr_hi, uint64
     return (uint32_t)(cell_philox_u64(seed, domain, ctr_hi, ctr_lo) >> 32);
 }
 
+/* True Hardware Thermal Silicon Entropy via x86-64 RDSEED / RDRAND (for seed == 0 Feral Mode!) */
+uint64_t cell_hw_rdseed_u64(void) {
+    uint64_t val = 0;
+#if defined(__x86_64__) || defined(_M_X64)
+    unsigned char ok = 0;
+    for (int tries = 0; tries < 32; ++tries) {
+        __asm__ __volatile__("rdseed %0; setc %1" : "=r"(val), "=qm"(ok));
+        if (ok && val != 0) return val;
+    }
+    for (int tries = 0; tries < 32; ++tries) {
+        __asm__ __volatile__("rdrand %0; setc %1" : "=r"(val), "=qm"(ok));
+        if (ok && val != 0) return val;
+    }
+    uint32_t lo = 0, hi = 0;
+    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
+    val = (((uint64_t)hi << 32) | lo) ^ 0x9E3779B97F4A7C15ULL;
+#else
+    val = (uint64_t)(cell_wall_seconds() * 1e9) ^ 0xD1B54A32D192ED03ULL;
+#endif
+    return val ? val : 0xCAFEBABE12345678ULL;
+}
+
 /* ============================================================================
  * High-Resolution Wall Timer (Windows QPC / POSIX clock_gettime)
  * ============================================================================ */

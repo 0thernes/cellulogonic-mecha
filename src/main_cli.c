@@ -31,7 +31,7 @@ static void print_telemetry_line(const CellTelemetry* t) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.0 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.1 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -49,7 +49,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.1 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -592,6 +592,147 @@ static int cmd_bridge(uint64_t seed) {
     return 0;
 }
 
+static int cmd_embryo(uint32_t epochs, uint32_t size, uint64_t seed) {
+    printf("=== EXPERIMENT 9: 3D EMBRYOGENESIS & MORPHOGENETIC GRN ORGANOGENESIS (ZERO MASTER BLUEPRINT) ===\n");
+    printf("Initial Zygote: 8 clonal blastomeres (IDENTICAL DNA!), maternal Wnt/BMP/Shh pole cues, eutelic_rem=5\n\n");
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width  = size;
+    cfg.height = size;
+    cfg.seed   = seed;
+    cfg.regime = CELL_REGIME_EMBRYOGENESIS;
+
+    CellWorld* w = cellulogonic_create(&cfg);
+    CellTelemetry t;
+    uint32_t step = epochs >= 8 ? epochs / 8 : 1;
+    for (uint32_t e = 0; e <= epochs; e += step) {
+        if (e > 0) cellulogonic_step_epochs(w, step);
+        cellulogonic_get_telemetry(w, &t);
+        printf("t=%3u | alive=%3u (maxT=%3u) | Fates[P=%2u Ec=%2u N=%2u M=%2u G=%2u Gm=%2u] | "
+               "HomoCad=%5.1f%% | Axons=%2u(w=%llu/p=%llu) | CPG=%4llu | Hippo=%3llu Eut=%3llu | mRes=%lld eRes=%lld\n",
+               (unsigned)t.epoch, t.alive_cells, t.max_tissue_size,
+               t.fate_counts[0], t.fate_counts[1], t.fate_counts[2],
+               t.fate_counts[3], t.fate_counts[4], t.fate_counts[5],
+               t.homophilic_bond_pct, t.active_axons,
+               (unsigned long long)t.axons_wired_cum, (unsigned long long)t.axons_pruned_cum,
+               (unsigned long long)t.cpg_pulses_cum,
+               (unsigned long long)t.hippo_arrests_cum, (unsigned long long)t.eutelic_stops_cum,
+               (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq);
+    }
+    printf("\nFinal 3D Morphogenetic Summary:\n");
+    printf("  Chemical GPS Means : Wnt=%.2f | BMP/Slit=%.2f | Shh/Netrin=%.2f | ApicalWedge=%.3f\n",
+           t.mean_morph_wnt, t.mean_morph_bmp, t.mean_morph_shh, t.mean_apical_wedge);
+    printf("  Ledger Closure     : mass_res=%lld amu | energy_res=%lld uq | 2nd_law_viol=%u | SHA=%s\n",
+           (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq,
+           t.ledger.second_law_violations, t.state_sha256);
+    cellulogonic_destroy(w);
+    return 0;
+}
+
+static void emit_world_json(const CellWorld* w) {
+    CellTelemetry t;
+    cellulogonic_get_telemetry(w, &t);
+    size_t gcap = (size_t)w->num_slots * 220 + 65536;
+    char* gbuf = (char*)malloc(gcap);
+    if (!gbuf) return;
+    cellulogonic_export_grid_json(w, gbuf, gcap);
+
+    /* Live 4-Build Ecosystem Bridge: AUTOPHAGE 256B DNA -> Cell Engine -> Asmodensius 112-Trait Vector */
+    CellSpecimen apex;
+    float traits[112];
+    memset(&apex, 0, sizeof(apex));
+    memset(traits, 0, sizeof(traits));
+    int has_apex = (cellulogonic_inspect_apex(w, &apex) == 0);
+    if (has_apex) cellulogonic_project_asmodensius_112(&apex, traits);
+
+    uint32_t ap_carriers = 0;
+    for (uint32_t i = 0; i < w->num_slots; ++i) {
+        if (w->cells[i].alive_state != 0 && w->cells[i].autophage_dna_sig != 0ULL) ap_carriers++;
+    }
+    double tmin = has_apex ? 1.0 : 0.0, tmax = 0.0, tsum = 0.0, tsum2 = 0.0;
+    for (int i = 0; i < 112; ++i) {
+        double v = (double)traits[i];
+        if (v < tmin) tmin = v;
+        if (v > tmax) tmax = v;
+        tsum  += v;
+        tsum2 += v * v;
+    }
+    double tmean = tsum / 112.0;
+    double tstd  = sqrt(fabs(tsum2 / 112.0 - tmean * tmean));
+
+    printf("{\"telemetry\":{"
+           "\"epoch\":%llu,\"alive\":%u,\"prok\":%u,\"euk\":%u,\"sec\":%u,"
+           "\"spores\":%u,\"tuns\":%u,\"orgs\":%u,\"mito\":%u,\"chlo\":%u,\"selfish_org\":%u,"
+           "\"multicellular\":%u,\"max_tissue\":%u,\"fewcell\":%u,\"multicell\":%u,"
+           "\"lineages\":%u,\"adapted\":%u,\"autotrophs\":%u,\"respirers\":%u,"
+           "\"abiogenesis\":%llu,\"sym_fiss\":%llu,\"asym_bud\":%llu,\"lyses\":%llu,"
+           "\"endo_cap\":%llu,\"sec_cap\":%llu,\"egt\":%llu,\"mitophagy\":%llu,"
+           "\"hgt\":%llu,\"phages\":%llu,\"cancer\":%llu,\"apoptosis\":%llu,"
+           "\"mean_vmem\":%.2f,\"std_vmem\":%.2f,\"mean_prok_vol\":%.2f,\"mean_euk_vol\":%.2f,"
+           "\"max_vol\":%.2f,\"mean_Q\":%.3f,\"mean_cring\":%.2f,\"amb_X\":%.2f,"
+           "\"mean_mt_ghz\":%.2f,\"mean_mt_coh\":%.3f,\"mean_speed\":%.2f,"
+           "\"covi\":%.2f,\"stage\":%u,\"met\":%u,\"assembly\":%.2f,\"leff\":%.2f,\"anew\":%.3f,"
+           "\"mass_res\":%lld,\"energy_res\":%lld,\"drift\":%.2e,\"second_law\":%u,"
+           "\"heat_sink\":%lld,\"sha256\":\"%s\","
+           "\"pillars\":[%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f],"
+           "\"roles\":[%u,%u,%u,%u],"
+           "\"backlash\":[%llu,%llu,%llu,%llu],"
+           "\"fates\":[%u,%u,%u,%u,%u,%u],"
+           "\"active_axons\":%u,\"axons_wired\":%llu,\"axons_pruned\":%llu,"
+           "\"hippo_arrests\":%llu,\"eutelic_stops\":%llu,\"cpg_pulses\":%llu,"
+           "\"homo_cad_pct\":%.1f,\"mean_wedge\":%.3f,"
+           "\"morph_means\":[%.2f,%.2f,%.2f]"
+           "},\"bridge\":{"
+           "\"valid\":%d,\"apex_slot\":%u,\"apex_lineage\":%u,\"apex_gen\":%u,"
+           "\"apex_orgs\":%u,\"apex_mt_ghz\":%.2f,\"apex_vol\":%lld,\"apex_vmem\":%d,"
+           "\"apex_sig\":\"%016llx\",\"autophage_carriers\":%u,"
+           "\"min\":%.3f,\"max\":%.3f,\"mean\":%.3f,\"std\":%.3f,\"traits112\":[",
+           (unsigned long long)t.epoch, t.alive_cells, t.prokaryote_cells, t.eukaryote_cells,
+           t.secondary_chimeras, t.spore_cells, t.vitrified_tun_cells,
+           t.total_organelles, t.mitoch_organelles, t.chloro_organelles, t.selfish_organelles,
+           t.multicellular_cells, t.max_tissue_size, t.fewcell_colonies, t.multicell_colonies,
+           t.distinct_lineages, t.solvent_adapted_cells, t.autotroph_cells, t.respiratory_cells,
+           (unsigned long long)t.abiogenesis_vesicles, (unsigned long long)t.symmetric_fissions,
+           (unsigned long long)t.asymmetric_buddings, (unsigned long long)t.osmotic_lyses,
+           (unsigned long long)t.endosymbiosis_captures, (unsigned long long)t.secondary_captures,
+           (unsigned long long)t.egt_transfer_events, (unsigned long long)t.mitophagy_events,
+           (unsigned long long)t.hgt_uptake_events, (unsigned long long)t.phage_lysis_events,
+           (unsigned long long)t.cancer_defections, (unsigned long long)t.apoptotic_policings,
+           t.mean_v_mem_mv, t.std_v_mem_mv, t.mean_prok_volume, t.mean_euk_volume,
+           t.max_cell_volume, t.mean_reduced_Q, t.mean_cring_nH, t.ambient_oxidant_X,
+           t.mean_mt_freq_ghz, t.mean_mt_coherence, t.mean_swim_speed_ums,
+           t.covi_score, t.covi_stage, t.major_transitions_crossed,
+           t.max_assembly_index, t.mean_active_loci_leff, t.bedau_anew,
+           (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq,
+           t.ledger.relative_drift, t.ledger.second_law_violations,
+           (long long)t.ledger.e_heat_radiated_sink_uq, t.state_sha256,
+           t.pillar[0], t.pillar[1], t.pillar[2], t.pillar[3],
+           t.pillar[4], t.pillar[5], t.pillar[6], t.pillar[7],
+           t.role_boundary_epi, t.role_soma_forage, t.role_germ_repro, t.role_stroma_interior,
+           (unsigned long long)t.backlash_killswitch_deletions,
+           (unsigned long long)t.backlash_dormancy_spores,
+           (unsigned long long)t.backlash_hgt_smuggles,
+           (unsigned long long)t.backlash_metabolic_bypasses,
+           t.fate_counts[0], t.fate_counts[1], t.fate_counts[2],
+           t.fate_counts[3], t.fate_counts[4], t.fate_counts[5],
+           t.active_axons, (unsigned long long)t.axons_wired_cum, (unsigned long long)t.axons_pruned_cum,
+           (unsigned long long)t.hippo_arrests_cum, (unsigned long long)t.eutelic_stops_cum,
+           (unsigned long long)t.cpg_pulses_cum,
+           t.homophilic_bond_pct, t.mean_apical_wedge,
+           t.mean_morph_wnt, t.mean_morph_bmp, t.mean_morph_shh,
+           has_apex, apex.slot_index, apex.lineage_id, apex.generation,
+           (unsigned)apex.num_organelles, (double)apex.mt_freq_mhz / 1000.0,
+           (long long)apex.total_volume, apex.v_mem_mv,
+           (unsigned long long)apex.autophage_dna_sig, ap_carriers,
+           tmin, tmax, tmean, tstd);
+    for (int i = 0; i < 112; ++i) {
+        printf("%s%.3f", i == 0 ? "" : ",", traits[i]);
+    }
+    printf("]},\"grid\":%s}\n", gbuf);
+    fflush(stdout);
+    free(gbuf);
+}
+
 /* Interactive JSON snapshot command for live Observatory UI (web/server.mjs) */
 static int cmd_json_snap(uint32_t epochs, uint32_t size, uint64_t seed,
                          uint32_t regime, uint32_t solvent, const char* restraints_csv,
@@ -627,67 +768,137 @@ static int cmd_json_snap(uint32_t epochs, uint32_t size, uint64_t seed,
         cellulogonic_step_epochs(w, 12);
     }
 
-    CellTelemetry t;
-    cellulogonic_get_telemetry(w, &t);
-    size_t gcap = (size_t)size * (size_t)size * 64 + 4096;
-    char* gbuf = (char*)malloc(gcap);
-    cellulogonic_export_grid_json(w, gbuf, gcap);
-
-    printf("{\"telemetry\":{"
-           "\"epoch\":%llu,\"alive\":%u,\"prok\":%u,\"euk\":%u,\"sec\":%u,"
-           "\"spores\":%u,\"tuns\":%u,\"orgs\":%u,\"mito\":%u,\"chlo\":%u,\"selfish_org\":%u,"
-           "\"multicellular\":%u,\"max_tissue\":%u,\"lineages\":%u,\"adapted\":%u,"
-           "\"autotrophs\":%u,\"respirers\":%u,"
-           "\"abiogenesis\":%llu,\"sym_fiss\":%llu,\"asym_bud\":%llu,\"lyses\":%llu,"
-           "\"endo_cap\":%llu,\"sec_cap\":%llu,\"egt\":%llu,\"mitophagy\":%llu,"
-           "\"hgt\":%llu,\"phages\":%llu,\"cancer\":%llu,\"apoptosis\":%llu,"
-           "\"mean_vmem\":%.2f,\"std_vmem\":%.2f,\"mean_prok_vol\":%.2f,\"mean_euk_vol\":%.2f,"
-           "\"max_vol\":%.2f,\"mean_Q\":%.3f,\"mean_cring\":%.2f,\"amb_X\":%.2f,"
-           "\"covi\":%.2f,\"stage\":%u,\"met\":%u,\"assembly\":%.2f,\"leff\":%.2f,\"anew\":%.3f,"
-           "\"mass_res\":%lld,\"energy_res\":%lld,\"drift\":%.2e,\"second_law\":%u,"
-           "\"heat_sink\":%lld,\"sha256\":\"%s\","
-           "\"pillars\":[%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f,%.2f],"
-           "\"roles\":[%u,%u,%u,%u],"
-           "\"backlash\":[%llu,%llu,%llu,%llu]"
-           "},\"grid\":%s}\n",
-           (unsigned long long)t.epoch, t.alive_cells, t.prokaryote_cells, t.eukaryote_cells,
-           t.secondary_chimeras, t.spore_cells, t.vitrified_tun_cells,
-           t.total_organelles, t.mitoch_organelles, t.chloro_organelles, t.selfish_organelles,
-           t.multicellular_cells, t.max_tissue_size, t.distinct_lineages, t.solvent_adapted_cells,
-           t.autotroph_cells, t.respiratory_cells,
-           (unsigned long long)t.abiogenesis_vesicles, (unsigned long long)t.symmetric_fissions,
-           (unsigned long long)t.asymmetric_buddings, (unsigned long long)t.osmotic_lyses,
-           (unsigned long long)t.endosymbiosis_captures, (unsigned long long)t.secondary_captures,
-           (unsigned long long)t.egt_transfer_events, (unsigned long long)t.mitophagy_events,
-           (unsigned long long)t.hgt_uptake_events, (unsigned long long)t.phage_lysis_events,
-           (unsigned long long)t.cancer_defections, (unsigned long long)t.apoptotic_policings,
-           t.mean_v_mem_mv, t.std_v_mem_mv, t.mean_prok_volume, t.mean_euk_volume,
-           t.max_cell_volume, t.mean_reduced_Q, t.mean_cring_nH, t.ambient_oxidant_X,
-           t.covi_score, t.covi_stage, t.major_transitions_crossed,
-           t.max_assembly_index, t.mean_active_loci_leff, t.bedau_anew,
-           (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq,
-           t.ledger.relative_drift, t.ledger.second_law_violations,
-           (long long)t.ledger.e_heat_radiated_sink_uq, t.state_sha256,
-           t.pillar[0], t.pillar[1], t.pillar[2], t.pillar[3],
-           t.pillar[4], t.pillar[5], t.pillar[6], t.pillar[7],
-           t.role_boundary_epi, t.role_soma_forage, t.role_germ_repro, t.role_stroma_interior,
-           (unsigned long long)t.backlash_killswitch_deletions,
-           (unsigned long long)t.backlash_dormancy_spores,
-           (unsigned long long)t.backlash_hgt_smuggles,
-           (unsigned long long)t.backlash_metabolic_bypasses,
-           gbuf);
-
-    free(gbuf);
+    emit_world_json(w);
     cellulogonic_destroy(w);
+    return 0;
+}
+
+/* Stateful real-time streaming worker for butter-smooth 60 FPS WebGL2 live microscopy! */
+static int cmd_stream(void) {
+    CellWorld* w = NULL;
+    char line[512];
+    setvbuf(stdout, NULL, _IONBF, 0);
+    while (fgets(line, sizeof(line), stdin)) {
+        if (strncmp(line, "quit", 4) == 0) break;
+        if (strncmp(line, "init ", 5) == 0) {
+            /* init <regime> <solvent> <seed> <restraint_pct> <warmup_epochs> */
+            uint32_t reg = 0, solv = 0, rest = 0, warm = 0;
+            uint64_t seed = 5000;
+            const char* p = line + 5;
+            char* ep = NULL;
+            reg  = (uint32_t)strtoull(p, &ep, 10); p = ep;
+            solv = (uint32_t)strtoull(p, &ep, 10); p = ep;
+            seed = strtoull(p, &ep, 10);           p = ep;
+            rest = (uint32_t)strtoull(p, &ep, 10); p = ep;
+            warm = (uint32_t)strtoull(p, &ep, 10);
+            if (w) cellulogonic_destroy(w);
+            CellWorldConfig cfg;
+            cellulogonic_default_config(&cfg);
+            cfg.width   = 32;
+            cfg.height  = 32;
+            cfg.regime  = reg <= 5u ? reg : 0u;
+            cfg.solvent = solv < CELL_SOLVENT_COUNT ? solv : 0u;
+            cfg.seed    = seed; /* seed == 0 triggers live hardware Intel RDSEED thermal entropy! */
+            for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cfg.restraints[r] = (uint8_t)(rest > 100u ? 100u : rest);
+            w = cellulogonic_create(&cfg);
+            if (warm > 0 && warm <= 400u) cellulogonic_step_epochs(w, warm);
+            emit_world_json(w);
+        } else if (strncmp(line, "step ", 5) == 0 && w) {
+            uint32_t n = (uint32_t)atoi(line + 5);
+            if (n < 1u) n = 1u;
+            if (n > 50u) n = 50u;
+            cellulogonic_step_epochs(w, n);
+            emit_world_json(w);
+        } else if (strncmp(line, "solvent ", 8) == 0 && w) {
+            uint32_t s = (uint32_t)atoi(line + 8);
+            cellulogonic_set_solvent(w, s);
+            emit_world_json(w);
+        } else if (strncmp(line, "restraint ", 10) == 0 && w) {
+            uint32_t pct = (uint32_t)atoi(line + 10);
+            for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cellulogonic_set_restraint(w, (uint32_t)r, (uint8_t)pct);
+            emit_world_json(w);
+        } else if (strncmp(line, "tun", 3) == 0 && w) {
+            cellulogonic_apply_desiccation_tun(w, 92);
+            emit_world_json(w);
+        } else if (strncmp(line, "shock", 5) == 0 && w) {
+            cellulogonic_apply_shock_lysis(w, 90);
+            emit_world_json(w);
+        } else if (strncmp(line, "rehydrate", 9) == 0 && w) {
+            cellulogonic_rehydrate_tun(w);
+            emit_world_json(w);
+        } else if (strncmp(line, "plume ", 6) == 0 && w) {
+            /* Conservation-exact photochemical nutrient pulse around (cx, cy)!
+             * Converts ambient W into S (2W + 46uq -> S + 10uq heat) & X (W + 34uq -> X + 4uq heat)
+             * so MASS Δ == 0 amu AND 1ST LAW Δ == 0 uq remain IDENTICALLY EXACT! */
+            const char* p = line + 6;
+            char* ep = NULL;
+            int cx = (int)strtol(p, &ep, 10); p = ep;
+            int cy = (int)strtol(p, &ep, 10);
+            int W = (int)w->cfg.width, H = (int)w->cfg.height;
+            for (int dy = -3; dy <= 3; ++dy) {
+                for (int dx = -3; dx <= 3; ++dx) {
+                    if (dx * dx + dy * dy > 10) continue;
+                    int x = ((cx + dx) % W + W) % W;
+                    int y = ((cy + dy) % H + H) % H;
+                    CellVoxel* vx = &w->voxels[y * W + x];
+                    int64_t ks = vx->env[CELL_SP_W] / 4;
+                    if (ks > 35) ks = 35;
+                    if (ks > 0) {
+                        vx->env[CELL_SP_W] -= 2 * ks;
+                        vx->env[CELL_SP_S] += ks;
+                        w->e_inflow_cum_uq += 46 * ks;
+                        vx->heat_local_uq  += 10 * ks;
+                    }
+                    int64_t kx = vx->env[CELL_SP_W] / 3;
+                    if (kx > 25) kx = 25;
+                    if (kx > 0) {
+                        vx->env[CELL_SP_W] -= kx;
+                        vx->env[CELL_SP_X] += kx;
+                        w->e_inflow_cum_uq += 34 * kx;
+                        vx->heat_local_uq  += 4 * kx;
+                    }
+                }
+            }
+            emit_world_json(w);
+        } else if (strncmp(line, "autophage", 9) == 0 && w) {
+            /* Live Build-1 AUTOPHAGE 256-Byte Dual-Strand DNA Plasmid Ingestion into living cells!
+             * Conservation-exact (0 amu, 0 uq drift): reprograms operon, morphospace & Asmodensius 112-trait vector! */
+            uint64_t ap_seed = (line[9] == ' ') ? strtoull(line + 10, NULL, 10) : 0ULL;
+            if (ap_seed == 0ULL) ap_seed = cell_hw_rdseed_u64();
+            uint8_t autophage_dna[256];
+            for (int b = 0; b < 256; b += 8) {
+                uint64_t v = cell_philox_u64(0xA070F46EULL, 0x2026u, (uint64_t)b, ap_seed);
+                memcpy(&autophage_dna[b], &v, 8);
+            }
+            CellSpecimen apex;
+            if (cellulogonic_inspect_apex(w, &apex) == 0) {
+                cellulogonic_ingest_autophage_genome(w, apex.slot_index, autophage_dna);
+            }
+            uint32_t injected = 0;
+            uint32_t stride = (w->num_slots / 17u) | 1u;
+            uint32_t start  = (uint32_t)(ap_seed % w->num_slots);
+            for (uint32_t step = 0; step < w->num_slots && injected < 16u; ++step) {
+                uint32_t idx = (start + step * stride) % w->num_slots;
+                if (w->cells[idx].alive_state == 1) {
+                    /* Slight per-cell plasmid drift so each recipient diversifies into new traits */
+                    autophage_dna[(injected * 13u) & 255u] ^= (uint8_t)(0x5Au + injected * 17u);
+                    cellulogonic_ingest_autophage_genome(w, idx, autophage_dna);
+                    injected++;
+                }
+            }
+            emit_world_json(w);
+        }
+    }
+    if (w) cellulogonic_destroy(w);
     return 0;
 }
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        printf("CELLULOGONIC MECHA v1.0 — Clean-Room Cellular A-Life CLI\n");
+        printf("CELLULOGONIC MECHA v1.2 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
-        printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | json\n");
+        printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");
         return 0;
     }
 
@@ -719,7 +930,9 @@ int main(int argc, char** argv) {
     if (strcmp(argv[1], "ablation") == 0)      return cmd_ablation(epochs, size, seed, out_path);
     if (strcmp(argv[1], "stats") == 0)         return cmd_stats(pairs, epochs, size);
     if (strcmp(argv[1], "bridge") == 0)        return cmd_bridge(seed);
+    if (strcmp(argv[1], "embryo") == 0)        return cmd_embryo(epochs, size, seed);
     if (strcmp(argv[1], "json") == 0)          return cmd_json_snap(epochs, size, seed, regime, solvent, restraints_csv, do_tun);
+    if (strcmp(argv[1], "stream") == 0)        return cmd_stream();
 
     fprintf(stderr, "Unknown command: %s\n", argv[1]);
     return 1;

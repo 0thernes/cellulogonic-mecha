@@ -30,10 +30,10 @@ done
 ar rcs "$PROJ/bin/libcellulogonic_linux.a" "${OBJS[@]}"
 rm -f "${OBJS[@]}"
 
-echo "[4/4] Building & running Linux ELF64 20-gate falsification suite ..."
+echo "[4/4] Building & running Linux ELF64 24-gate falsification suite ..."
 "$CC" "${FLAGS[@]}" "${CORE[@]}" "$PROJ/test/test_falsification.c" -o "$PROJ/bin/test_falsification_linux" -lm
 
 cd "$PROJ/bin"
 ./test_falsification_linux
 rm -f test_tmp_cell.cmbin
-echo "LINUX ELF64 BUILD & 20-GATE VERIFICATION PASSED!"
+echo "LINUX ELF64 BUILD & 24-GATE VERIFICATION PASSED!"

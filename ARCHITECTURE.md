@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.0 — Technical Architecture & ABI Specification
+# CELLULOGONIC MECHA v1.1 — Technical Architecture & ABI Specification
 
 ## 1. Four-Build Ecosystem Architecture
 
@@ -16,9 +16,10 @@
 └───────────────────────────────▲────────────────────────────────────────────┘
                                 │ cellulogonic_project_asmodensius_112()
 ┌───────────────────────────────┴────────────────────────────────────────────┐
-│ Build 2 · CELLULAR ENGINE (CELLULOGONIC MECHA v1.0 — THIS REPOSITORY)      │
+│ Build 2 · 3D CELLULAR ENGINE (CELLULOGONIC MECHA v1.1 — THIS REPOSITORY)   │
+│ Continuous 3D Off-Lattice Fluid · Polymorphic Breathing · GHz Microtubules │
 │ 8-Species Chemoton · Canham-Helfrich Bilayers · Mitchell Chemiosmosis      │
-│ Nested Primary/Secondary Endosymbiosis · Levin Bioelectric Tissues         │
+│ Nested Primary/Secondary Endosymbiosis · Levin Bioelectric 3D Colonies     │
 │ Tardigrade TDP Bioglass Anhydrobiosis · 4 Xenocellular Planetary Solvents  │
 └───────────────────────────────▲────────────────────────────────────────────┘
                                 │ cellulogonic_ingest_autophage_genome()
@@ -30,14 +31,15 @@
 
 ---
 
-## 2. Zero-Allocation Spatial Memory Layout (Clean-Slate `HW02` / `P10`)
+## 2. Zero-Allocation 3D Off-Lattice Memory Layout (Clean-Slate `HW02` / `P10`)
 
 Every heap buffer is allocated once inside `cellulogonic_create()` via `calloc()`. During `cellulogonic_step_epochs()`, **zero dynamic allocations occur** (`post_warmup_allocs == 0`).
 
 | Buffer | Type | Count | Purpose |
 |---|---|---|---|
 | `voxels` | `CellVoxel` | $W \times H$ | Conserved extracellular `env[8]`, `quorum`, `heat_local_uq`, `free_plasmid[32]` |
-| `cells` | `CellEntity` | $W \times H$ | Living/spore/tun cells, `mol[8]`, `pmf`, `v_mem_mv`, `genome[128]`, nested `org[8]` |
+| `cells` | `CellEntity` | $W \times H$ | Free-swimming 3D cells (`pos_nm[3]`, `vel_nm[3]`, `heading_q10[3]`, `radius_nm`, `elong_q10`, `ruffle_q10`, `breath_*`, `mt_freq_mhz`, `mt_coherence_q10`, `bond_partners[4]`, `mol[8]`, `pmf`, `v_mem_mv`, `genome[128]`, nested `org[8]`) |
+| `hash_head` / `hash_next` | `int32_t` | $W \times H$ | Zero-allocation $O(N)$ 3D spatial hash linked list for soft-body collisions, docking & phagocytosis |
 | `diff_delta` | `int64_t` | $8 W H$ | Exact pairwise anti-symmetric finite-volume chemical flux accumulator |
 | `heat_delta` | `int64_t` | $W H$ | Exact conservative thermal diffusion accumulator |
 | `quorum_delta` | `int64_t` | $W H$ | Autoinducer morphogen diffusion accumulator |

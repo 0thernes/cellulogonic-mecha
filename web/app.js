@@ -1,3 +1,5 @@
+import { CellMicroscope3D } from "./renderer3d.js";
+
 const $ = (id) => document.getElementById(id);
 
 const PILLAR_NAMES = [
@@ -11,46 +13,70 @@ const PILLAR_NAMES = [
   "P7 Thermodynamic Closure"
 ];
 
-let playing = false;
-let timer = null;
-let lastData = null;
-let pendingTun = 0;
+const scope = new CellMicroscope3D($("gl-canvas"), $("hud-canvas"));
+const scopeCtx = $("scope-canvas").getContext("2d");
+const asmoCtx = $("asmo-canvas").getContext("2d");
 
-function getRestraintsCsv() {
-  const v = Number($("rng-rest").value);
-  if (v <= 0) return "";
-  return Array(13).fill(v).join(",");
+let playing = true;
+let inflight = false;
+let latestData = null;
+
+async function apiJson(url) {
+  const r = await fetch(url);
+  const j = await r.json();
+  if (j.error) throw new Error(j.error);
+  return j;
 }
 
-async function fetchAndRender() {
-  const epochs = Number($("inp-epoch").value);
-  const seed = Number($("inp-seed").value);
+function applyData(data) {
+  latestData = data;
+  scope.setGrid(data.grid);
+  renderTelemetry(data.telemetry);
+  renderBridge(data.bridge);
+  $("vp-status").textContent =
+    `t=${data.telemetry.epoch} | ${data.telemetry.alive} 3D cells | ${data.telemetry.mean_mt_ghz.toFixed(2)} GHz | 0-drift`;
+}
+
+async function initWorld(forceFeral = false) {
+  if (forceFeral) $("inp-seed").value = "0";
   const regime = Number($("sel-regime").value);
   const solvent = Number($("sel-solvent").value);
-  const restraints = getRestraintsCsv();
-
-  $("vp-status").textContent = "Computing native C11 AVX2 step...";
-  const qs = new URLSearchParams({
-    epochs: String(epochs),
-    size: "32",
-    seed: String(seed),
-    regime: String(regime),
-    solvent: String(solvent),
-    tun: String(pendingTun)
-  });
-  if (restraints) qs.set("restraints", restraints);
-
+  const seed = Number($("inp-seed").value);
+  const rest = Number($("rng-rest").value);
+  const warm = regime === 5 ? 28 : (regime === 0 ? 48 : 80);
+  $("vp-status").textContent = seed === 0 ? "Seeding from Intel RDSEED thermal entropy..." : "Initializing 3D specimen...";
   try {
-    const resp = await fetch(`/api/snapshot?${qs.toString()}`);
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error);
-    lastData = data;
-    pendingTun = 0;
-    renderTelemetry(data.telemetry);
-    renderMicroscope(data.grid, $("sel-layer").value);
-    $("vp-status").textContent = `t=${data.telemetry.epoch} | ${data.telemetry.alive} alive | 0-bit exact`;
-  } catch (err) {
-    $("vp-status").textContent = `Error: ${err.message}`;
+    const data = await apiJson(`/api/init?regime=${regime}&solvent=${solvent}&seed=${seed}&restraint=${rest}&warmup=${warm}`);
+    applyData(data);
+    if (regime === 5) {
+      scope.dist = 18.5; // Zoom in smoothly onto the growing 3D clonal embryo!
+    }
+  } catch (e) {
+    $("vp-status").textContent = `Init error: ${e.message}`;
+  }
+}
+
+async function stepWorld() {
+  if (!playing || inflight) return;
+  inflight = true;
+  try {
+    const n = Number($("sel-speed").value);
+    const data = await apiJson(`/api/step?n=${n}`);
+    applyData(data);
+  } catch (e) {
+    $("vp-status").textContent = `Step error: ${e.message}`;
+  } finally {
+    inflight = false;
+  }
+}
+
+async function doAction(op, params = {}) {
+  const qs = new URLSearchParams({ op, ...params });
+  try {
+    const data = await apiJson(`/api/action?${qs.toString()}`);
+    applyData(data);
+  } catch (e) {
+    $("vp-status").textContent = `Action error: ${e.message}`;
   }
 }
 
@@ -70,15 +96,17 @@ function renderTelemetry(t) {
   $("badge-sha").textContent = `SHA-256: ${t.sha256.slice(0, 14)}…`;
 
   $("k-covi").textContent = t.covi.toFixed(2);
-  $("k-stage").textContent = `Stage ${t.stage} / 6`;
-  $("k-met").textContent = `${t.met} / 7`;
+  $("k-stage").textContent = `Stage ${t.stage}/6 · MET ${t.met}/7`;
+  $("k-mt").textContent = `${t.mean_mt_ghz.toFixed(2)} GHz`;
+  $("k-coh").textContent = `Fröhlich Coh ${(t.mean_mt_coh * 100).toFixed(0)}%`;
   $("k-alive").textContent = String(t.alive);
   $("k-split").textContent = `P:${t.prok} E:${t.euk} S2:${t.sec} Tun:${t.tuns}`;
-  $("k-orgs").textContent = String(t.orgs);
-  $("k-org-split").textContent = `Mito:${t.mito} Chloro:${t.chlo} Self:${t.selfish_org}`;
-  $("k-lane").textContent = t.mean_euk_vol > 0 ? `${t.mean_euk_vol.toFixed(0)} / ${t.mean_prok_vol.toFixed(0)}` : `${t.mean_prok_vol.toFixed(0)} (Prok)`;
-  $("k-tis").textContent = String(t.multicellular);
-  $("k-maxt").textContent = `Max Cluster: ${t.max_tissue}`;
+  $("k-col").textContent = `${t.fewcell} / ${t.multicell}`;
+  $("k-maxt").textContent = `Few / Multi · Max ${t.max_tissue}`;
+  $("k-spd").textContent = `${t.mean_speed.toFixed(2)} μm/s`;
+  $("k-lane").textContent = t.mean_euk_vol > 0
+    ? `${t.mean_euk_vol.toFixed(0)} / ${t.mean_prok_vol.toFixed(0)}`
+    : `${t.mean_prok_vol.toFixed(0)} (Prok)`;
   $("k-vmem").textContent = `${t.mean_vmem.toFixed(1)} mV`;
   $("k-vstd").textContent = `σ = ${t.std_vmem.toFixed(1)} mV`;
   $("k-assm").textContent = `${t.assembly.toFixed(1)} / ${t.leff.toFixed(1)}`;
@@ -91,14 +119,24 @@ function renderTelemetry(t) {
     </div>
   `).join("");
 
+  const f = t.fates || [0,0,0,0,0,0];
+  const mm = t.morph_means || [0,0,0];
+  const morphRows = [
+    ["GRN Fates (Ec/N/M/G)", `${f[1]} / ${f[2]} / ${f[3]} / ${f[4]} (P:${f[0]})`],
+    ["Steinberg Cadherin Sorting", `${(t.homo_cad_pct || 0).toFixed(1)}% homophilic`],
+    ["3D Axons (Live · Wired/Pruned)", `${t.active_axons || 0} (${t.axons_wired || 0} / ${t.axons_pruned || 0})`],
+    ["CPG Rhythmic Motor Pulses", `${(t.cpg_pulses || 0).toLocaleString()}`],
+    ["Size Control (Hippo / Eutely)", `${t.hippo_arrests || 0} / ${t.eutelic_stops || 0}`],
+    ["GPS Wnt / BMP / Shh · Wedge", `${mm[0].toFixed(0)} / ${mm[1].toFixed(0)} / ${mm[2].toFixed(0)} · ${(t.mean_wedge || 0).toFixed(2)}`]
+  ];
+  $("tbl-morph").innerHTML = morphRows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
+
   const evRows = [
     ["CMC Abiogenesis Vesicles", t.abiogenesis],
-    ["Symmetric Fissions (Q ≤ 1/2)", t.sym_fiss],
-    ["Asymmetric Buddings (1/2 < Q < 1)", t.asym_bud],
-    ["Osmotic Lyses", t.lyses],
+    ["3D Binary Fissions / Buddings", `${t.sym_fiss} / ${t.asym_bud}`],
+    ["Organelles (Mito / Chloro)", `${t.orgs} (${t.mito} / ${t.chlo})`],
     ["Endosymbiotic Captures (Sec)", `${t.endo_cap} (${t.sec_cap})`],
-    ["Endosymbiotic Gene Transfers (EGT)", t.egt],
-    ["Mitophagy Policing", t.mitophagy],
+    ["EGT Transfers / Mitophagy", `${t.egt} / ${t.mitophagy}`],
     ["HGT Uptakes / Phage Lyses", `${t.hgt} / ${t.phages}`],
     ["Somatic Cancer / Apoptosis", `${t.cancer} / ${t.apoptosis}`],
     ["Mean c-Ring nH / Reduced Q", `${t.mean_cring.toFixed(2)} / ${t.mean_Q.toFixed(3)}`],
@@ -115,137 +153,159 @@ function renderTelemetry(t) {
   $("tbl-backlash").innerHTML = blRows.map(([k, v]) => `<tr><td>${k}</td><td>${v}</td></tr>`).join("");
 }
 
-function renderMicroscope(grid, layer) {
-  const canvas = $("microscope");
-  const ctx = canvas.getContext("2d");
-  const W = grid.w, H = grid.h;
-  const cw = canvas.width / W;
-  const ch = canvas.height / H;
-
-  ctx.fillStyle = "#04070d";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-  // 1. Background spatial substrate S & oxidant X field
-  for (let i = 0; i < grid.cells.length; i++) {
-    const c = grid.cells[i];
-    const x = i % W, y = Math.floor(i / W);
-    const sVal = Math.min(1, c[8] / 220);
-    const xVal = Math.min(1, c[9] / 180);
-    ctx.fillStyle = `rgb(${Math.floor(8 + sVal * 20)}, ${Math.floor(14 + xVal * 28)}, ${Math.floor(24 + sVal * 32)})`;
-    ctx.fillRect(x * cw, y * ch, cw, ch);
+function renderBridge(b) {
+  const c = $("asmo-canvas");
+  const W = c.width, H = c.height;
+  asmoCtx.fillStyle = "#040810";
+  asmoCtx.fillRect(0, 0, W, H);
+  if (!b || !b.valid || !b.traits112) {
+    $("bridge-meta").textContent = "Awaiting living cellular specimen...";
+    return;
   }
+  const sigTag = b.apex_sig && b.apex_sig !== "0000000000000000" ? `DNA:${b.apex_sig.slice(0, 8)}` : "Native Operon";
+  $("bridge-meta").textContent =
+    `Apex L#${b.apex_lineage} (G${b.apex_gen}, ${b.apex_orgs} org, ${b.apex_mt_ghz.toFixed(1)}GHz, ${sigTag}) · AUTOPHAGE carriers: ${b.autophage_carriers} · μ=${b.mean.toFixed(2)} σ=${b.std.toFixed(2)}`;
 
-  // 2. Bioelectric gap-junction tissue bonds
-  ctx.strokeStyle = "rgba(86, 240, 159, 0.55)";
-  ctx.lineWidth = 2;
-  for (let i = 0; i < grid.cells.length; i++) {
-    const c = grid.cells[i];
-    if (c[0] === 0 || c[3] === 0) continue;
-    const x = i % W, y = Math.floor(i / W);
-    const cx = (x + 0.5) * cw, cy = (y + 0.5) * ch;
-    const bm = c[3];
-    if ((bm & 4) && x + 1 < W) {
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + cw, cy); ctx.stroke();
+  const n = b.traits112.length;
+  const bw = (W - 12) / n;
+  for (let i = 0; i < n; i++) {
+    const v = Math.max(0, Math.min(1, b.traits112[i]));
+    const bh = Math.max(2, v * (H - 16));
+    // Traits 0..15: Direct cellular bioenergetics/morphology (Gold-Cyan); Traits 16..111: Operon 96D (Emerald-Violet)
+    if (i < 16) {
+      asmoCtx.fillStyle = `hsl(${38 + i * 10}, 95%, ${48 + v * 22}%)`;
+    } else {
+      asmoCtx.fillStyle = `hsl(${170 + ((i - 16) / 96) * 135}, 82%, ${38 + v * 30}%)`;
     }
-    if ((bm & 2) && y + 1 < H) {
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy + ch); ctx.stroke();
-    }
+    asmoCtx.fillRect(6 + i * bw, H - 12 - bh, Math.max(1.5, bw - 0.8), bh);
   }
+  // Divider between 16 direct cellular observables and 96 operon-projected traits
+  const divX = 6 + 16 * bw;
+  asmoCtx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+  asmoCtx.beginPath();
+  asmoCtx.moveTo(divX, 2);
+  asmoCtx.lineTo(divX, H - 12);
+  asmoCtx.stroke();
 
-  // 3. Living cells, bilayers & internalized nested organelles
-  const LIPID_COLORS = ["#38e8c6", "#60b8ff", "#ff9f43", "#e8ff59"];
-  for (let i = 0; i < grid.cells.length; i++) {
-    const c = grid.cells[i];
-    const state = c[0];
-    if (state === 0) continue;
-    const orgs = c[1], sec = c[2], lipClass = c[4], vmem = c[5], vol = c[6], lip = c[7];
-    const x = i % W, y = Math.floor(i / W);
-    const cx = (x + 0.5) * cw, cy = (y + 0.5) * ch;
-    const r = Math.max(3.5, Math.min(cw * 0.48, (cw * 0.24) + Math.sqrt(Math.max(1, vol)) * 0.35));
-
-    let fill = "#38e8c6";
-    let stroke = "#a8fff0";
-    if (layer === "composite") {
-      if (state === 3) { fill = "#7be3ff"; stroke = "#ffffff"; }
-      else if (state === 2) { fill = "#496988"; stroke = "#9ec3e6"; }
-      else if (sec > 0) { fill = "#b67cff"; stroke = "#f2ddff"; }
-      else if (orgs > 0) { fill = "#f5b942"; stroke = "#fff0c2"; }
-    } else if (layer === "vmem") {
-      const t = Math.max(0, Math.min(1, (vmem + 90) / 130));
-      const R = Math.floor(40 + t * 215);
-      const G = Math.floor(70 + (1 - Math.abs(t - 0.5) * 2) * 140);
-      const B = Math.floor(245 - t * 195);
-      fill = `rgb(${R},${G},${B})`;
-      stroke = "#ffffff";
-    } else if (layer === "strain") {
-      const Q = lip > 0 ? (100 * vol * vol) / (lip * lip * lip) : 1.2;
-      fill = Q <= 0.5 ? "#38e8c6" : (Q <= 0.9 ? "#f5b942" : "#ff5d73");
-      stroke = "#ffffff";
-    } else if (layer === "solvent") {
-      fill = LIPID_COLORS[lipClass & 3];
-      stroke = lipClass === grid.solvent ? "#ffffff" : "#ff5d73";
-    }
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = fill;
-    ctx.globalAlpha = state === 2 ? 0.55 : 0.85;
-    ctx.fill();
-    ctx.globalAlpha = 1.0;
-    ctx.lineWidth = sec > 0 ? 2.0 : 1.2;
-    ctx.strokeStyle = stroke;
-    ctx.stroke();
-
-    // Render internalized organelle dots inside eukaryotes!
-    if (layer === "composite" && orgs > 0 && state === 1) {
-      const shown = Math.min(6, orgs);
-      for (let k = 0; k < shown; k++) {
-        const ang = (k / shown) * Math.PI * 2 + i * 0.3;
-        const ox = cx + Math.cos(ang) * (r * 0.45);
-        const oy = cy + Math.sin(ang) * (r * 0.45);
-        ctx.beginPath();
-        ctx.arc(ox, oy, 1.7, 0, Math.PI * 2);
-        ctx.fillStyle = (k % 2 === 0) ? "#101828" : "#00ffd5";
-        ctx.fill();
-      }
-    }
-  }
+  asmoCtx.fillStyle = "#7f97ba";
+  asmoCtx.font = "9px ui-monospace, Consolas, monospace";
+  asmoCtx.fillText("0..15 Physio/V_m/Org", 6, H - 2);
+  asmoCtx.fillText("16..111 AUTOPHAGE Operon -> Asmodensius 112-Trait Vector [0,1]", divX + 5, H - 2);
 }
 
-$("sel-regime").addEventListener("change", fetchAndRender);
-$("sel-solvent").addEventListener("change", fetchAndRender);
-$("sel-layer").addEventListener("change", () => lastData && renderMicroscope(lastData.grid, $("sel-layer").value));
-$("inp-seed").addEventListener("change", fetchAndRender);
-$("inp-epoch").addEventListener("change", fetchAndRender);
-$("rng-rest").addEventListener("input", () => { $("rest-lbl").textContent = `${$("rng-rest").value}%`; });
-$("rng-rest").addEventListener("change", fetchAndRender);
+function drawGHzOscilloscope(nowMs) {
+  const c = $("scope-canvas");
+  const W = c.width, H = c.height;
+  scopeCtx.fillStyle = "#040810";
+  scopeCtx.fillRect(0, 0, W, H);
+  if (!latestData || !latestData.grid.cells.length) return;
 
-$("btn-step").addEventListener("click", () => {
-  $("inp-epoch").value = String(Math.min(400, Number($("inp-epoch").value) + 12));
-  fetchAndRender();
-});
-$("btn-reset").addEventListener("click", () => {
-  $("inp-epoch").value = "0";
-  fetchAndRender();
-});
-$("btn-tun").addEventListener("click", () => { pendingTun = 1; fetchAndRender(); });
-$("btn-shock").addEventListener("click", () => { pendingTun = 2; fetchAndRender(); });
-$("btn-r0").addEventListener("click", () => { $("rng-rest").value = "0"; $("rest-lbl").textContent = "0%"; fetchAndRender(); });
-$("btn-r50").addEventListener("click", () => { $("rng-rest").value = "50"; $("rest-lbl").textContent = "50%"; fetchAndRender(); });
-$("btn-r100").addEventListener("click", () => { $("rng-rest").value = "100"; $("rest-lbl").textContent = "100%"; fetchAndRender(); });
+  // Left half: live population GHz microtubule eigenfrequency spectrum (1..15 GHz)
+  const bins = new Float32Array(28);
+  let maxB = 1;
+  for (const cell of latestData.grid.cells) {
+    if (cell[1] !== 1) continue;
+    const ghz = cell[13] / 1000;
+    const coh = cell[14] / 1000;
+    const bi = Math.max(0, Math.min(27, Math.floor((ghz - 1.0) * 2.0)));
+    bins[bi] += (0.25 + coh);
+    if (bins[bi] > maxB) maxB = bins[bi];
+  }
+  const bw = (W * 0.56) / 28;
+  for (let i = 0; i < 28; i++) {
+    const h = (bins[i] / maxB) * (H - 18);
+    scopeCtx.fillStyle = `hsl(${175 + i * 4}, 92%, ${46 + (bins[i] / maxB) * 24}%)`;
+    scopeCtx.fillRect(6 + i * bw, H - 12 - h, bw - 2, h);
+  }
+  scopeCtx.fillStyle = "#7f97ba";
+  scopeCtx.font = "9.5px ui-monospace, Consolas, monospace";
+  scopeCtx.fillText("1 GHz", 6, H - 2);
+  scopeCtx.fillText("8 GHz", W * 0.27, H - 2);
+  scopeCtx.fillText("15 GHz (Fröhlich MT Modes)", W * 0.36, H - 2);
+
+  // Right half: live actomyosin expansion/contraction + GHz carrier envelope wave
+  const x0 = W * 0.60, ww = W * 0.38;
+  const t = nowMs * 0.004;
+  const coh = latestData.telemetry.mean_mt_coh || 0;
+  const f = latestData.telemetry.mean_mt_ghz || 3.0;
+  scopeCtx.strokeStyle = "#38e8c6";
+  scopeCtx.lineWidth = 1.6;
+  scopeCtx.beginPath();
+  for (let px = 0; px < ww; px++) {
+    const u = px / ww;
+    const breath = Math.sin(u * 10.0 - t * 1.8) * 18.0;
+    const ghzCarrier = Math.sin(u * (18.0 + f * 4.0) - t * 9.0) * (9.0 * coh);
+    const y = H * 0.48 + breath + ghzCarrier;
+    if (px === 0) scopeCtx.moveTo(x0 + px, y);
+    else scopeCtx.lineTo(x0 + px, y);
+  }
+  scopeCtx.stroke();
+  scopeCtx.fillText("Actomyosin Pulse + GHz Envelope", x0, H - 2);
+}
+
+// Wire controls
+$("sel-regime").addEventListener("change", () => initWorld(false));
+$("sel-solvent").addEventListener("change", () => doAction("solvent", { val: $("sel-solvent").value }));
+$("sel-layer").addEventListener("change", () => { scope.layer = $("sel-layer").value; });
+$("inp-seed").addEventListener("change", () => initWorld(false));
 
 $("btn-play").addEventListener("click", () => {
   playing = !playing;
-  $("btn-play").textContent = playing ? "⏸ Pause" : "▶ Play Live";
-  if (playing) {
-    timer = setInterval(() => {
-      const next = Number($("inp-epoch").value) + 6;
-      $("inp-epoch").value = String(next > 360 ? 0 : next);
-      fetchAndRender();
-    }, 550);
-  } else {
-    clearInterval(timer);
-  }
+  $("btn-play").textContent = playing ? "⏸ Pause Live" : "▶ Play Live";
 });
+$("btn-embryo").addEventListener("click", () => {
+  $("sel-regime").value = "5";
+  $("sel-layer").value = "fates";
+  scope.layer = "fates";
+  initWorld(false);
+});
+$("btn-feral").addEventListener("click", () => {
+  $("sel-regime").value = "3";
+  $("sel-layer").value = "composite";
+  scope.layer = "composite";
+  initWorld(true);
+});
+$("btn-plume").addEventListener("click", () => {
+  const rx = Math.floor(Math.random() * 32), ry = Math.floor(Math.random() * 32);
+  doAction("plume", { x: rx, y: ry });
+});
+$("btn-autophage").addEventListener("click", () => {
+  const s = Number($("inp-seed").value);
+  // If seed == 0, uses live Intel RDSEED hardware entropy for feral AUTOPHAGE 256B plasmid!
+  doAction("autophage", { seed: s === 0 ? 0 : Math.floor(Math.random() * 9999999) + 1 });
+});
+$("btn-focus").addEventListener("click", () => scope.focusApex());
+$("btn-cam").addEventListener("click", () => scope.resetCamera());
 
-fetchAndRender();
+$("chk-orbit").addEventListener("change", (e) => { scope.autoOrbit = e.target.checked; });
+$("chk-axons").addEventListener("change", (e) => { scope.showAxons = e.target.checked; });
+$("chk-mt").addEventListener("change", (e) => { scope.showMicrotubules = e.target.checked; });
+$("chk-flag").addEventListener("change", (e) => { scope.showFlagella = e.target.checked; });
+$("chk-glyph").addEventListener("change", (e) => { scope.showGlyphs = e.target.checked; });
+
+$("btn-tun").addEventListener("click", () => doAction("tun"));
+$("btn-shock").addEventListener("click", () => doAction("shock"));
+$("btn-rehyd").addEventListener("click", () => doAction("rehydrate"));
+
+const setRest = (v) => {
+  $("rng-rest").value = String(v);
+  $("rest-lbl").textContent = `${v}%`;
+  doAction("restraint", { val: v });
+};
+$("rng-rest").addEventListener("input", () => { $("rest-lbl").textContent = `${$("rng-rest").value}%`; });
+$("rng-rest").addEventListener("change", () => doAction("restraint", { val: $("rng-rest").value }));
+$("btn-r0").addEventListener("click", () => setRest(0));
+$("btn-r50").addEventListener("click", () => setRest(50));
+$("btn-r100").addEventListener("click", () => setRest(100));
+
+// Start smooth 60 FPS WebGL2 render loop + continuous live C11 simulation stepping (~10 Hz!)
+function rafLoop(now) {
+  scope.render(now);
+  drawGHzOscilloscope(now);
+  requestAnimationFrame(rafLoop);
+}
+requestAnimationFrame(rafLoop);
+
+initWorld(false).then(() => {
+  setInterval(stepWorld, 110);
+});

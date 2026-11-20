@@ -39,7 +39,7 @@ extern "C" {
   #define CELL_API __attribute__((visibility("default")))
 #endif
 
-#define CELLULOGONIC_ABI_VERSION 0x00010000u
+#define CELLULOGONIC_ABI_VERSION 0x00010200u
 
 /* 8 Conserved Molecular Species */
 typedef enum CellSpecies {
@@ -69,8 +69,20 @@ typedef enum CellOperatingRegime {
     CELL_REGIME_FERAL_ECOSYSTEM       = 1, /* Track B: Seeded protocells, 0% restraints, cancer allowed */
     CELL_REGIME_CONSTITUTIONAL        = 2, /* Track A: Apoptotic anti-cancer policing active */
     CELL_REGIME_ENDOSYMBIOSIS_LAB     = 3, /* High-gradient prokaryote->eukaryote & secondary chimeras */
-    CELL_REGIME_CASTRATION_LAB        = 4  /* Live 13-vector restraint ablation workbench */
+    CELL_REGIME_CASTRATION_LAB        = 4, /* Live 13-vector restraint ablation workbench */
+    CELL_REGIME_EMBRYOGENESIS         = 5  /* 3D Embryogenesis: Morphogen GPS, GRN fates, sorting, folding, axons & CPGs */
 } CellOperatingRegime;
+
+/* Developmental Morphogenetic Fates (No Master Blueprint — Pure Conditional GRN Cascades!) */
+typedef enum CellMorphFate {
+    CELL_FATE_PLURI  = 0, /* Pluripotent Stem / Morphogen Organizer Pole */
+    CELL_FATE_ECTO   = 1, /* Sensory Ectoderm / Epidermis (E-Cadherin, emits Slit repellent) */
+    CELL_FATE_NEURAL = 2, /* Neural / CPG Pacemaker Neuron (N-Cadherin, grows Netrin axons) */
+    CELL_FATE_MUSCLE = 3, /* Contractile Mesoderm / Muscle (M-Cadherin, emits Netrin attractant) */
+    CELL_FATE_GUT    = 4, /* Endoderm / Apical-Constricting Gut Tube (G-Cadherin, wedge folding) */
+    CELL_FATE_GERM   = 5, /* Germline / Mitotic Stem Reserve */
+    CELL_FATE_COUNT  = 6
+} CellMorphFate;
 
 /* Dual Execution Kernel Modes (Verified Bit-Exact Equivalent!) */
 typedef enum CellKernelMode {
@@ -195,7 +207,7 @@ typedef struct CellTelemetry {
     uint64_t backlash_hgt_smuggles;         /* Under DEGRESSING */
     uint64_t backlash_metabolic_bypasses;   /* Under NERFING/MUZZLING */
 
-    /* Bioelectric & Scaling Observables */
+    /* Bioelectric, 3D Off-Lattice Cytoskeletal & GHz Microtubule Observables */
     double   mean_v_mem_mv;
     double   std_v_mem_mv;             /* Bioelectric polarization diversity across tissue */
     double   mean_prok_volume;
@@ -204,6 +216,25 @@ typedef struct CellTelemetry {
     double   mean_reduced_Q;
     double   mean_cring_nH;
     double   ambient_oxidant_X;        /* Tracks emergent Great Oxidation Event */
+    double   mean_mt_freq_ghz;         /* Mean microtubule/FtsZ oscillation frequency (GHz) */
+    double   mean_mt_coherence;        /* Mean Fröhlich-Pokorný coherent GHz excitation [0..1] */
+    double   mean_swim_speed_ums;      /* Mean 3D free-swimming speed (um/s equivalent) */
+    uint32_t fewcell_colonies;         /* Count of floating 2..16 cell few-cell clusters */
+    uint32_t multicell_colonies;       /* Count of floating >16 cell multicellular clusters */
+
+    /* 3D Developmental Embryogenesis, Morphogen GPS, GRN Fates, Axons & CPG Telemetry */
+    uint32_t fate_counts[6];           /* PLURI, ECTO, NEURAL, MUSCLE, GUT, GERM */
+    uint32_t active_axons;             /* Currently live wired 3D Neural->Target axons */
+    uint64_t axons_wired_cum;          /* Total Netrin/Slit growth-cone synaptogenesis events */
+    uint64_t axons_pruned_cum;         /* Total use-it-or-lose-it Hebbian axon prunings */
+    uint64_t hippo_arrests_cum;        /* Total Hippo mechanical contact-inhibition stops */
+    uint64_t eutelic_stops_cum;        /* Total hardcoded eutelic lineage countdown exits */
+    uint64_t cpg_pulses_cum;           /* Total rhythmic CPG bioelectric motor firing waves */
+    double   homophilic_bond_pct;      /* Steinberg DAH oil-and-water cadherin sorting purity (%) */
+    double   mean_apical_wedge;        /* Mean apical actomyosin ring constriction [0..1] */
+    double   mean_morph_wnt;           /* Mean Wnt (A-P) morphogen concentration */
+    double   mean_morph_bmp;           /* Mean BMP (D-V) morphogen concentration */
+    double   mean_morph_shh;           /* Mean Shh/Netrin (Midline/Target) concentration */
 
     /* Exact Conservation Ledger */
     CellLedgerSnapshot ledger;
@@ -238,6 +269,12 @@ typedef struct CellSpecimen {
     uint8_t  differentiation_role;     /* Emergent bioelectric role: 0=undiff,1=soma,2=germ,3=stroma */
     uint8_t  pad[2];
     int32_t  v_mem_mv;                 /* Transmembrane voltage (-90..+40 mV) */
+    int32_t  pos_nm[3];                /* Continuous 3D off-lattice position (nm) */
+    int32_t  vel_nm[3];                /* Continuous 3D overdamped Stokes velocity */
+    int32_t  radius_nm;                /* Physical 3D vesicle radius (nm) */
+    int32_t  elong_q10;                /* Canham-Helfrich prolate elongation (1000=sphere) */
+    uint32_t mt_freq_mhz;              /* Microtubule/FtsZ GHz frequency in MHz (1200..14800) */
+    uint32_t mt_coherence_q10;         /* Fröhlich-Pokorný coherent GHz mode [0..1000] */
     int64_t  mol[8];
     int64_t  pmf;
     int64_t  total_volume;

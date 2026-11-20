@@ -489,14 +489,113 @@ static int test_g20(void) {
     return wins >= 7;
 }
 
+/* G21: 3D Off-Lattice Free-Swimming Non-Grid Coordinates, Polymorphic Size/Shape & Actomyosin Breathing */
+static int test_g21(void) {
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 32; cfg.height = 32; cfg.seed = 5210ULL;
+    cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
+    CellWorld* w = cellulogonic_create(&cfg);
+    cellulogonic_step_epochs(w, 80);
+
+    int off_grid_3d = 0, moving = 0, breathing = 0;
+    int32_t r_min = 999999, r_max = 0, el_min = 999999, el_max = 0;
+    for (uint32_t i = 0; i < w->num_slots; ++i) {
+        const CellEntity* c = &w->cells[i];
+        if (c->alive_state != 1) continue;
+        if ((c->pos_nm[0] % 1000) != 0 && (c->pos_nm[2] % 1000) != 0) off_grid_3d++;
+        if (c->vel_nm[0] != 0 || c->vel_nm[1] != 0 || c->vel_nm[2] != 0) moving++;
+        if (c->breath_amp_q10 > 0) breathing++;
+        if (c->radius_nm < r_min) r_min = c->radius_nm;
+        if (c->radius_nm > r_max) r_max = c->radius_nm;
+        if (c->elong_q10 < el_min) el_min = c->elong_q10;
+        if (c->elong_q10 > el_max) el_max = c->elong_q10;
+    }
+    CellTelemetry t;
+    cellulogonic_get_telemetry(w, &t);
+    cellulogonic_destroy(w);
+    return (off_grid_3d > 20 && moving > 20 && breathing > 20 &&
+            (r_max - r_min) > 150 && (el_max - el_min) > 300 &&
+            t.mean_swim_speed_ums > 0.2 &&
+            t.ledger.mass_residual_amu == 0 && t.ledger.int_ledger_residual_uq == 0);
+}
+
+/* G22: Fröhlich-Pokorný GHz Microtubule Coherence Strictly Requires ATP Pumping (Lean T48-T49) */
+static int test_g22(void) {
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 24; cfg.height = 24; cfg.seed = 5220ULL;
+    cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
+    CellWorld* w = cellulogonic_create(&cfg);
+    cellulogonic_step_epochs(w, 60);
+    CellTelemetry t_live;
+    cellulogonic_get_telemetry(w, &t_live);
+
+    /* Vitrify/starve into ametabolic bioglass tun -> coherent GHz mode MUST collapse to 0! */
+    cellulogonic_apply_desiccation_tun(w, 100);
+    int all_tun_zero_coh = 1;
+    for (uint32_t i = 0; i < w->num_slots; ++i) {
+        if (w->cells[i].alive_state == 3 && w->cells[i].mt_coherence_q10 != 0) {
+            all_tun_zero_coh = 0;
+        }
+    }
+    cellulogonic_destroy(w);
+    return (t_live.mean_mt_freq_ghz >= 1.2 && t_live.mean_mt_freq_ghz <= 14.8 &&
+            t_live.mean_mt_coherence > 0.15 && all_tun_zero_coh);
+}
+
+/* G23: 3D Embryogenesis — Morphogen GPS, GRN Fate Cascade, Steinberg Cadherin Sorting, Apical Folding & Hippo/Eutely Size Control (T51-T55) */
+static int test_g23(void) {
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 32; cfg.height = 32; cfg.seed = 5230ULL;
+    cfg.regime = CELL_REGIME_EMBRYOGENESIS;
+    CellWorld* w = cellulogonic_create(&cfg);
+    cellulogonic_step_epochs(w, 160);
+    CellTelemetry t;
+    cellulogonic_get_telemetry(w, &t);
+    cellulogonic_destroy(w);
+
+    int distinct_fates = 0;
+    for (int f = 1; f < 6; ++f) if (t.fate_counts[f] > 0) distinct_fates++;
+    return (t.alive_cells >= 20 && t.alive_cells <= 512 &&
+            distinct_fates >= 3 &&
+            t.mean_morph_wnt > 0.0 && t.mean_morph_bmp > 0.0 && t.mean_morph_shh > 0.0 &&
+            t.homophilic_bond_pct >= 50.0 &&
+            t.mean_apical_wedge > 0.05 &&
+            (t.hippo_arrests_cum > 0 || t.eutelic_stops_cum > 0) &&
+            t.ledger.mass_residual_amu == 0 && t.ledger.int_ledger_residual_uq == 0 &&
+            t.ledger.second_law_violations == 0);
+}
+
+/* G24: Axon Guidance (Netrin/Slit), Use-It-or-Lose-It Hebbian Pruning & CPG Motor Waves (T56-T58) */
+static int test_g24(void) {
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 32; cfg.height = 32; cfg.seed = 5240ULL;
+    cfg.regime = CELL_REGIME_EMBRYOGENESIS;
+    CellWorld* w = cellulogonic_create(&cfg);
+    cellulogonic_step_epochs(w, 180);
+    CellTelemetry t;
+    cellulogonic_get_telemetry(w, &t);
+    cellulogonic_destroy(w);
+
+    return (t.axons_wired_cum > 0 &&
+            t.axons_pruned_cum > 0 &&
+            t.cpg_pulses_cum > 0 &&
+            t.ledger.mass_residual_amu == 0 &&
+            t.ledger.int_ledger_residual_uq == 0 &&
+            t.ledger.second_law_violations == 0);
+}
+
 typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.0 — 20-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.2 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
-    struct { const char* id; const char* name; GateFn fn; } gates[20] = {
+    struct { const char* id; const char* name; GateFn fn; } gates[24] = {
         { "G01", "CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 Vector",        test_g01 },
         { "G02", "Exact Mass/First-Law Ledger + Mutant M1 (Phantom Energy)",    test_g02 },
         { "G03", "4-Solvent Second-Law Sink + Mutant M2 (Sink Reversal)",       test_g03 },
@@ -516,11 +615,15 @@ int main(void) {
         { "G17", "13-Vector Constraint-Backlash Escape Paradox (0/50/100%)",    test_g17 },
         { "G18", "Exact Atomic Mass Audit + Mutant M8 (1-Lipid Mass Leak)",     test_g18 },
         { "G19", "4-Build Bridges (AUTOPHAGE 256B DNA -> Asmodensius 112-Vec)", test_g19 },
-        { "G20", "Locked Multi-Seed Paired Statistical Dominance (N=8)",        test_g20 }
+        { "G20", "Locked Multi-Seed Paired Statistical Dominance (N=8)",        test_g20 },
+        { "G21", "3D Off-Lattice Free-Swimming, Polymorphism & Breathing",      test_g21 },
+        { "G22", "Frohlich-Pokorny GHz Microtubule Coherence (Lean T48-T49)",   test_g22 },
+        { "G23", "3D Embryogenesis: Morphogen GPS, GRN, Sorting & Hippo/Eutely",test_g23 },
+        { "G24", "Axon Guidance (Netrin/Slit), Pruning & CPG Waves (T56-T58)",  test_g24 }
     };
 
     double t_all = cell_wall_seconds();
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 0; i < 24; ++i) {
         double t0 = cell_wall_seconds();
         int ok = gates[i].fn();
         report_gate(gates[i].id, gates[i].name, ok, cell_wall_seconds() - t0);
@@ -528,7 +631,7 @@ int main(void) {
     double total_dt = cell_wall_seconds() - t_all;
 
     printf("==================================================================================\n");
-    printf(" SUMMARY: %d / 20 GATES PASSED | %d / 8 PLANTED MUTANTS CAUGHT | %.3fs\n",
+    printf(" SUMMARY: %d / 24 GATES PASSED | %d / 8 PLANTED MUTANTS CAUGHT | %.3fs\n",
            g_pass, g_mutants_caught, total_dt);
     printf("==================================================================================\n");
     return (g_fail == 0 && g_mutants_caught == 8) ? 0 : 1;

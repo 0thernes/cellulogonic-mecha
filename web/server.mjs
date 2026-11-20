@@ -1,7 +1,8 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
-import { execFile } from "node:child_process";
+import { spawn } from "node:child_process";
+import readline from "node:readline";
 import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -19,66 +20,112 @@ const MIME = {
   ".svg": "image/svg+xml"
 };
 
-function sanitizeInt(v, def, min, max) {
+/* Persistent Stateful Native C11 Streaming Engine Worker (Sub-3ms Live 3D Steps!) */
+let worker = null;
+let rl = null;
+let pending = [];
+
+function startWorker() {
+  if (worker) {
+    try { worker.kill(); } catch {}
+  }
+  worker = spawn(BIN, ["stream"], { stdio: ["pipe", "pipe", "pipe"] });
+  rl = readline.createInterface({ input: worker.stdout });
+  rl.on("line", (line) => {
+    const job = pending.shift();
+    if (job) job.resolve(line);
+  });
+  worker.stderr.on("data", (d) => console.error("[engine stderr]", String(d)));
+  worker.on("exit", (code) => {
+    while (pending.length > 0) {
+      pending.shift().reject(new Error(`Engine exited with code ${code}`));
+    }
+    worker = null;
+  });
+}
+
+function sendEngineCmd(cmd) {
+  if (!worker) startWorker();
+  return new Promise((resolve, reject) => {
+    pending.push({ resolve, reject });
+    worker.stdin.write(cmd + "\n");
+  });
+}
+
+function clampInt(v, def, min, max) {
   const n = Number.parseInt(v, 10);
   if (!Number.isFinite(n)) return def;
   return Math.max(min, Math.min(max, n));
 }
 
-function sanitizeRestraints(raw) {
-  if (!raw) return "";
-  const parts = String(raw).split(",").slice(0, 13).map((x) => sanitizeInt(x, 0, 0, 100));
-  return parts.join(",");
-}
+startWorker();
+// Warm up initial rich 3D Embryogenesis specimen immediately on server launch
+sendEngineCmd("init 5 0 5000 0 36").catch((e) => console.error("Warmup error:", e));
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, `http://127.0.0.1:${PORT}`);
 
-  if (u.pathname === "/api/snapshot") {
-    const epochs = sanitizeInt(u.searchParams.get("epochs"), 80, 0, 400);
-    const size = sanitizeInt(u.searchParams.get("size"), 32, 16, 48);
-    const seed = sanitizeInt(u.searchParams.get("seed"), 5000, 1, 9999999);
-    const regime = sanitizeInt(u.searchParams.get("regime"), 0, 0, 4);
-    const solvent = sanitizeInt(u.searchParams.get("solvent"), 0, 0, 3);
-    const tun = sanitizeInt(u.searchParams.get("tun"), 0, 0, 2);
-    const restraints = sanitizeRestraints(u.searchParams.get("restraints"));
-
-    const args = [
-      "json",
-      "--epochs", String(epochs),
-      "--size", String(size),
-      "--seed", String(seed),
-      "--regime", String(regime),
-      "--solvent", String(solvent),
-      "--tun", String(tun)
-    ];
-    if (restraints) args.push("--restraints", restraints);
-
-    execFile(BIN, args, { maxBuffer: 8 * 1024 * 1024, timeout: 15000 }, (err, stdout, stderr) => {
-      if (err) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: String(err.message || err), stderr }));
-        return;
-      }
+  if (u.pathname === "/api/init") {
+    const regime = clampInt(u.searchParams.get("regime"), 5, 0, 5);
+    const solvent = clampInt(u.searchParams.get("solvent"), 0, 0, 3);
+    const seed = clampInt(u.searchParams.get("seed"), 5000, 0, 99999999);
+    const rest = clampInt(u.searchParams.get("restraint"), 0, 0, 100);
+    const warm = clampInt(u.searchParams.get("warmup"), regime === 5 ? 36 : (regime === 0 ? 72 : 90), 0, 300);
+    try {
+      const jsonStr = await sendEngineCmd(`init ${regime} ${solvent} ${seed} ${rest} ${warm}`);
       res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
-      res.end(stdout);
-    });
+      res.end(jsonStr);
+    } catch (e) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: String(e.message || e) }));
+    }
+    return;
+  }
+
+  if (u.pathname === "/api/step") {
+    const n = clampInt(u.searchParams.get("n"), 1, 1, 30);
+    try {
+      const jsonStr = await sendEngineCmd(`step ${n}`);
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+      res.end(jsonStr);
+    } catch (e) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: String(e.message || e) }));
+    }
+    return;
+  }
+
+  if (u.pathname === "/api/action") {
+    const op = u.searchParams.get("op") || "";
+    let cmd = null;
+    if (op === "solvent")   cmd = `solvent ${clampInt(u.searchParams.get("val"), 0, 0, 3)}`;
+    if (op === "restraint") cmd = `restraint ${clampInt(u.searchParams.get("val"), 0, 0, 100)}`;
+    if (op === "tun")       cmd = "tun";
+    if (op === "shock")     cmd = "shock";
+    if (op === "rehydrate") cmd = "rehydrate";
+    if (op === "plume")     cmd = `plume ${clampInt(u.searchParams.get("x"), 16, 0, 31)} ${clampInt(u.searchParams.get("y"), 16, 0, 31)}`;
+    if (op === "autophage") cmd = `autophage ${clampInt(u.searchParams.get("seed"), 0, 0, 99999999)}`;
+    if (!cmd) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Invalid action" }));
+      return;
+    }
+    try {
+      const jsonStr = await sendEngineCmd(cmd);
+      res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
+      res.end(jsonStr);
+    } catch (e) {
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: String(e.message || e) }));
+    }
     return;
   }
 
   let rel = u.pathname === "/" ? "index.html" : u.pathname.replace(/^\/+/, "");
-  if (rel.includes("..")) {
-    res.writeHead(403);
-    res.end("Forbidden");
-    return;
-  }
+  if (rel.includes("..")) { res.writeHead(403); res.end("Forbidden"); return; }
   const fp = path.join(__dirname, rel);
   fs.readFile(fp, (err, data) => {
-    if (err) {
-      res.writeHead(404);
-      res.end("Not found");
-      return;
-    }
+    if (err) { res.writeHead(404); res.end("Not found"); return; }
     const ext = path.extname(fp);
     res.writeHead(200, { "Content-Type": MIME[ext] || "application/octet-stream" });
     res.end(data);
@@ -86,6 +133,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, "127.0.0.1", () => {
-  console.log(`CELLULOGONIC MECHA v1.0 Cellular Observatory running at http://127.0.0.1:${PORT}`);
-  console.log(`Native engine binary: ${BIN}`);
+  console.log(`CELLULOGONIC MECHA v1.2 3D Embryogenesis & Cellular Observatory running at http://127.0.0.1:${PORT}`);
+  console.log(`Native 3D off-lattice engine binary: ${BIN}`);
 });
