@@ -1,19 +1,19 @@
-# CELLULOGONIC MECHA: A Clean-Room Non-Equilibrium Chemiosmotic, Elastic-Membrane, Endosymbiotic & Bioelectric Cellular Artificial Life Laboratory with Machine-Checked Lean 4 Invariants
+# CELLULOGONIC MECHA: A Clean-Room Non-Equilibrium Chemiosmotic, Elastic-Membrane, Endosymbiotic, Bioelectric & Morphogenetic-GRN Cellular Artificial Life Laboratory with Machine-Checked Lean 4 Invariants
 
 **Author:** Alexander S. Donahue¹ (ORCID: [0009-0006-8168-9648](https://orcid.org/0009-0006-8168-9648))  
 **Affiliation:** ¹0thernes LLC (`0_0@0thernes.art`)  
-**Date:** November 19, 2026 | **Version:** `1.1.0` (Research Preprint & Reproducible Laboratory Artifact)  
-**Repository:** `https://github.com/0thernes/cellulogonic-mecha`  
-**Formal Verification:** 50 / 50 Pure Lean 4 (`v4.35.0`) Theorems (`0 sorryAx`, `0` custom axioms)  
-**Empirical Verification:** 22 / 22 Falsification Gates · 8 / 8 Planted Negative Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
+**Date:** November 21, 2026 | **Version:** `1.2.1` (Anti-Fraud Hardened Research Preprint & Reproducible Laboratory Artifact)  
+**Repository:** `https://github.com/0thernes/cellulogonic-mecha` (`PRIVATE`)  
+**Formal Verification:** 58 / 58 Pure Lean 4 (`v4.35.0`) Theorems (`0 sorryAx`, `0` custom axioms, `[propext, Classical.choice, Quot.sound]` only, `0` warnings)  
+**Empirical Verification:** 24 / 24 Falsification Gates · 8 / 8 Planted Negative Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
 
 ---
 
 ## Abstract
 
-We present **CELLULOGONIC MECHA v1.1**, a clean-room, zero-dependency C11 artificial-life laboratory engineered to bridge the gap between non-conservative toy cellular simulations and computationally intractable atomistic whole-cell models. Operating as **Build 2 (CELLULAR)** of a 4-build open-ended evolution ecosystem (**DNA `AUTOPHAGE` → Cellular `Cellulogonic Mecha` → Creatures `Asmodensius` → World Model `Asmodensius-Native`**), the engine couples seven first-principles cellular biophysical mechanisms inside an exact integer-quantum continuous `32×32×32 μm` off-lattice 3D fluid chamber: (i) an 8-species, 17-reaction stoichiometric Chemoton with zero-residual atomic mass (`0 amu`), zero-residual First-Law energy (`0 uq`), and strictly non-negative Second-Law heat dissipation; (ii) continuous 3D off-lattice Stokes hydrodynamics, momentum-conserving soft-body Hertz collisions, Berg–Purcell chemotaxis, orthokinetic speed regulation, polymorphic breathing morphology, and ATP-gated Fröhlich–Pokorný `1.2–14.8 GHz` microtubule eigenmode oscillations [31–33] (with optional Intel `RDSEED` hardware thermal entropy for non-deterministic feral evolution); (iii) discrete Canham–Helfrich elastic bilayer geometry governing osmotic lysis, symmetric binary fission ($Q \le 1/2$), and strain-matched asymmetric exosome budding ($1/2 < Q < 1$); (iv) Mitchell chemiosmotic proton-motive force with evolvable $\text{F}_1\text{F}_0$ ATP-synthase c-ring stoichiometry across four planetary/xenocellular solvent regimes (Terran $\text{H}_2\text{O}$, Titan cryogenic azotosomes, hyperthermophilic archaeal GDGT tetraether monolayers, and Venusian concentrated $\text{H}_2\text{SO}_4$); (v) Nick Lane's prokaryotic $1/R$ bioenergetic ceiling shattered by genuine nested primary and secondary endosymbiosis (organelle compartments with independent genomes, Endosymbiotic Gene Transfer, stochastic mitotic heteroplasmy, and host mitophagy policing); (vi) Michael Levin's bioelectric gap-junction morphogenesis driving spontaneous 3D colony soma/germline differentiation and constitutional anti-cancer policing; and (vii) tardigrade-class TDP/CAHS amorphous bioglass anhydrobiosis.
+We present **CELLULOGONIC MECHA v1.2.1**, a clean-room, zero-dependency C11 artificial-life laboratory engineered to bridge the gap between non-conservative toy cellular simulations and computationally intractable atomistic whole-cell models. Operating as **Build 2 (CELLULAR)** of a 4-build open-ended evolution ecosystem (**DNA `AUTOPHAGE` → Cellular `Cellulogonic Mecha` → Creatures `Asmodensius` → World Model `Asmodensius-Native`**), the engine couples eight first-principles cellular biophysical mechanisms inside an exact integer-quantum continuous `32×32×32 μm` off-lattice 3D fluid chamber: (i) an 8-species, 17-reaction stoichiometric Chemoton with zero-residual atomic mass (`0 amu`), zero-residual First-Law energy (`0 uq`), and strictly non-negative Second-Law heat dissipation; (ii) continuous 3D off-lattice Stokes hydrodynamics, momentum-conserving soft-body Hertz collisions, Berg–Purcell chemotaxis, orthokinetic speed regulation, polymorphic breathing morphology, and stateful ATP-pumped Fröhlich–Pokorný `1.2–14.8 GHz` microtubule eigenmode oscillations [31–33] (with CPUID-guarded Intel `RDSEED` hardware thermal entropy for non-deterministic feral evolution); (iii) discrete Canham–Helfrich elastic bilayer geometry governing osmotic lysis, symmetric binary fission ($Q \le 1/2$), and strain-matched asymmetric exosome budding ($1/2 < Q < 1$); (iv) Mitchell chemiosmotic proton-motive force with evolvable $\text{F}_1\text{F}_0$ ATP-synthase c-ring stoichiometry across four planetary/xenocellular solvent regimes (Terran $\text{H}_2\text{O}$, Titan cryogenic azotosomes, hyperthermophilic archaeal GDGT tetraether monolayers, and Venusian concentrated $\text{H}_2\text{SO}_4$); (v) Nick Lane's prokaryotic $1/R$ bioenergetic ceiling shattered by genuine nested primary and secondary endosymbiosis (organelle compartments with independent genomes, Endosymbiotic Gene Transfer, stochastic mitotic heteroplasmy, and host mitophagy policing); (vi) Michael Levin's bioelectric gap-junction morphogenesis driving spontaneous 3D colony soma/germline differentiation and constitutional anti-cancer policing; (vii) tardigrade-class TDP/CAHS amorphous bioglass anhydrobiosis; and (viii) zero-blueprint **3D developmental embryogenesis** combining 3D Z-stratified `Wnt/BMP/Shh` chemical GPS morphogens [34], conditional `IF-THEN` Gene Regulatory Network (GRN) fate cascades with epigenetic daughter inheritance, Steinberg differential cadherin sorting [35] + apical actomyosin constriction + mitotic spindle cleavage planes, Netrin/Slit axon growth cones with Hebbian use-it-or-lose-it pruning, Hippo mechanical contact inhibition + morphogen dilution + eutelic division countdowns, and ATP-coupled (`RXN_R8`) Central Pattern Generator (CPG) sensorimotor steering [36].
 
-Every core invariant is formalized and machine-checked across **50 pure Lean 4 (`v4.35.0`) theorems** (`0 sorryAx`), including an elementary algebraic sextic factorization proving the **Global Minimax Theorem of Vesicle Division** (`T16`) and six 3D cytoskeletal/nanomechanical theorems (`T45`–`T50`). Across Windows 11 PE64 (`clang 23.1.0`) and Ubuntu Linux ELF64 (`gcc 13.3.0`), both the 256-bit AVX2 vectorized kernel (`37.872 M rxns/s`) and portable scalar oracle agree to **0-bit SHA-256 diff** (`4e22fb41…bd993130`) and pass **22/22 falsification gates** catching **8/8 planted negative mutants**. Starting from **zero living cells** in pure abiotic soup, the engine spontaneously condenses `1,704` amphiphilic vesicles and radiates across all `7/7` major transitions to peak at `581` living cells, `70` eukaryotes, `41` secondary chimeras, and `COVI = 89.38 (Stage 6)`. On locked test seeds (`N = 24`, `5000..5023`, 180 epochs), all four pre-registered multi-arm hypotheses achieve `24/24` pair wins with Holm–Bonferroni FWER-adjusted $p_{\text{Holm}} = 0.00040$.
+Every core invariant is formalized and machine-checked across **58 pure Lean 4 (`v4.35.0`) theorems** (`0 sorryAx`, `0` custom axioms, `0` warnings), including an elementary algebraic sextic factorization proving the **Global Minimax Theorem of Vesicle Division** (`T16`), six 3D cytoskeletal/nanomechanical theorems (`T45`–`T50`), and eight developmental GRN / embryogenesis theorems (`T51`–`T58`, including inductive `List MorphStep` zero-drift closure). Across Windows 11 PE64 (`clang 23.1.0`) and Ubuntu Linux ELF64 (`gcc 13.3.0`), both the 256-bit AVX2 vectorized kernel (`31.181 M rxns/s` Linux, `30.281 M rxns/s` Win64) and portable scalar oracle agree to **0-bit SHA-256 diff** (`f20e16ec…4f26e918`) and pass **24/24 falsification gates** catching **8/8 planted negative mutants**. Starting from **zero living cells** in pure abiotic soup, the engine spontaneously condenses `1,715` amphiphilic vesicles and radiates across all `7/7` major transitions to peak at `607` living cells (`t = 96`, `COVI = 90.26, Stage 6`) and `144` endosymbiotic organelles (`t = 216`). In the 3D embryogenesis experiment, `8` identical-DNA clonal blastomeres self-organize without any blueprint into `58` differentiated cells (`Ec:26, N:6, M:13, G:10`, `maxT = 53`), `78.1%` homotypic cadherin sorting, `80` guided axons (`39` pruned), `398` ATP-coupled CPG waves, `7` Hippo stops, and `525` eutelic arrests with `0` conservation drift. On locked test seeds (`N = 24`, `5000..5023`, 180 epochs), all four pre-registered multi-arm hypotheses achieve `p_Holm ≤ 0.00080` (`24/24` wins on H1/H3/H4, `23/24` on H2).
 
 ---
 
@@ -24,7 +24,7 @@ Life on Earth is fundamentally cellular. Before nervous systems, macroscopic ana
 1. **Abstract Digital Sandboxes** (cellular automata, continuous neural CA, particle life) produce rich visual motifs but routinely omit atomic mass conservation, First- and Second-Law thermodynamic closure, endergonic biosynthetic coupling, osmotic membrane mechanics, and surface-to-volume bioenergetic scaling walls. Because free energy and matter can appear from nothing, evolutionary dynamics quickly plateau or degenerate into simulator artifacts [16, 17].
 2. **Atomistic & Whole-Cell Biochemical Models** — notably the Stanford whole-cell *Mycoplasma genitalium* model [23] and the Illinois 4D whole-cell *JCVI-syn3A* minimal cell simulations [12, 13, 14] — achieve extraordinary molecular realism for a single bacterium, yet require hours of compute for a single cell division cycle. Scaling such molecular detail to evolving populations of 1,000 eukaryotic cells, let alone an end-to-end 7-organ micro-metazoan (tardigrade, rotifer, or *Caenorhabditis elegans* [24]), remains computationally intractable on single workstations.
 
-**CELLULOGONIC MECHA v1.0** occupies the rigorous middle ground: an **exact discrete biophysical laboratory** that strips away atomistic solvent coordinates while preserving **exact mathematical conservation laws, exact geometric scaling walls, exact chemiosmotic thresholds, and nested compartmentalized heredity** at **50 million conserved reactions per second** on a single consumer CPU. Crucially, no organism body plan, organ layout, endosymbiotic outcome, or evolutionary trajectory is scripted; every observed phenomenon emerges from local chemical, elastic, electrical, and genetic interactions and is held to pre-registered falsification tests and machine-checked Lean 4 proofs.
+**CELLULOGONIC MECHA v1.2.1** occupies the rigorous middle ground: an **exact discrete biophysical laboratory** that strips away atomistic solvent coordinates while preserving **exact mathematical conservation laws, exact geometric scaling walls, exact chemiosmotic thresholds, developmental Gene Regulatory Networks, and nested compartmentalized heredity** at **30–31 million conserved reactions per second** in full 3D off-lattice mode on a single consumer CPU. Crucially, no organism body plan, organ layout, endosymbiotic outcome, or evolutionary trajectory is scripted; every observed phenomenon emerges from local chemical, elastic, electrical, and genetic interactions and is held to pre-registered falsification tests and machine-checked Lean 4 proofs.
 
 ---
 
@@ -109,78 +109,93 @@ To ground cellular scale in the complete trajectory toward ≤1,000-cell eutelic
 
 ---
 
-## 8. Computational Architecture & 4-Way Cross-OS Bit-Exact Verification
+## 7.5. Theorems VI & VII: 3D Cytoskeletal Nanomechanics (`T45`–`T50`) & Developmental Morphogenetic GRNs (`T51`–`T58`)
 
-CELLULOGONIC MECHA compiles cleanly with zero third-party runtime dependencies on Windows 11 PE64 (`clang 23.1.0 + lld`) and Ubuntu Linux ELF64 (`gcc 13.3.0`). Spatial diffusion executes via either a 256-bit AVX2 vector kernel (`v4i64`, exact signed truncation-toward-zero bias) or a portable scalar C11 oracle. Over 200 epochs on a $32\times 32$ torus (`28,384` cell steps, `487,108` exact reactions, seed `5055`):
+To formalize continuous 3D off-lattice biomechanics and zero-blueprint developmental embryogenesis in pure Lean 4 (`0 sorryAx`, `0` custom axioms):
 
-| Platform / Compiler | Kernel | Elapsed | Reaction Rate | Mass / Energy Drift | Canonical SHA-256 |
-|---|---|---:|---:|---:|---|
-| Win64 PE64 (`clang 23.1.0`) | `SIMD_AVX2` | `0.0201s` | `35.997 M rxns/s` (`1.49×`) | `0 amu` / `0 uq` (`0.00e+00`) | `4e22fb414266a60c5db0c4f8a4fc7f0ae25112c79479b8f3e0d24f06bd993130` |
-| Win64 PE64 (`clang 23.1.0`) | `SCALAR_REF` | `0.0300s` | `24.12 M rxns/s` | `0 amu` / `0 uq` (`0.00e+00`) | `4e22fb414266a60c5db0c4f8a4fc7f0ae25112c79479b8f3e0d24f06bd993130` |
-| Linux ELF64 (`gcc 13.3.0`) | `SIMD_AVX2` | `0.0191s` | `37.872 M rxns/s` (`1.52×`) | `0 amu` / `0 uq` (`0.00e+00`) | `4e22fb414266a60c5db0c4f8a4fc7f0ae25112c79479b8f3e0d24f06bd993130` |
-| Linux ELF64 (`gcc 13.3.0`) | `SCALAR_REF` | `0.0290s` | `24.95 M rxns/s` | `0 amu` / `0 uq` (`0.00e+00`) | `4e22fb414266a60c5db0c4f8a4fc7f0ae25112c79479b8f3e0d24f06bd993130` |
-
-All **22/22 falsification gates** (including `G21` 3D off-lattice free-swimming/polymorphism/breathing and `G22` Fröhlich–Pokorný ATP-gated GHz microtubule resonance) pass and all **8/8 planted negative mutants** (`M1` phantom energy, `M2` heat-sink reversal, `M3` coupled RNG, `M4` 1-bit observer write, `M5` inert lipid crystal, `M6` white noise, `M7` TDP knockout collapse, `M8` 1-lipid mass leak) are caught identically on both platforms (`results/11_falsification_win64.txt`, `results/11_falsification_linux.txt`).
+- **Theorem VI (`CytoskeletonNanomechanics.lean`, `T45`–`T50`)**: Overdamped Stokes viscous drag dissipates kinetic power non-negatively (`T45`); pairwise 3D Hertz soft-body collisions conserve linear momentum identically (`T46`); prolate cytokinetic elongation strictly increases surface area at fixed volume (`T47`); Fröhlich–Pokorný GHz microtubule condensation strictly requires metabolic ATP pumping above thermal damping (`T48` [31, 32]); microtubule standing-wave frequency scales inversely with protofilament length (`T49` [33]); and actomyosin pulsatile mechanical work is strictly upper-bounded by ATP hydrolysis energy (`T50`).
+- **Theorem VII (`MorphogeneticGRN.lean`, `T51`–`T58`)**: Wolpert French-Flag morphogen thresholds partition `[0, ∞)` completely and deterministically into `Wnt/BMP/Shh` fates (`T51` [34]); Steinberg differential cadherin adhesion strictly lowers interfacial energy when homotypic contacts replace heterotypic contacts (`T52` [35]); apical actomyosin ring constriction increases epithelial wedge curvature monotonically (`T53`); binary eutelic lineage countdowns strictly bound somatic descendants at $2^k$ (`2^9 = 512`, `2^{10} = 1024`, `T54`); Hippo mechanical compression unconditionally arrests division above crowding threshold (`T55`); Hebbian activity-dependent synapse updating strengthens active axons and dismantles silent axons (`T56`); CPG pacemaker oscillations remain bounded under sensorimotor bias (`T57` [36]); and structural induction over arbitrary `List MorphStep` sequences proves morphogenetic signaling, cadherin sorting, axon wiring, and ATP-coupled CPG propulsion introduce identically `0 amu` mass drift and `0 uq` energy drift (`T58`).
 
 ---
 
-## 9. Empirical Results I: Zero-Seed Spontaneous Protocell Abiogenesis (`v1.1.0`)
+## 8. Computational Architecture & 4-Way Cross-OS Bit-Exact Verification (`v1.2.1`)
+
+CELLULOGONIC MECHA compiles cleanly with zero third-party runtime dependencies on Windows 11 PE64 (`clang 23.1.0 + lld`) and Ubuntu Linux ELF64 (`gcc 13.3.0`). Spatial diffusion executes via either a 256-bit AVX2 vector kernel (`v4i64`, exact signed truncation-toward-zero bias) or a portable scalar C11 oracle, and `.cmbin` binary snapshots append a cryptographic SHA-256 integrity trailer with strict deserialization bounds checks. Over `300` epochs in a continuous `32×32×32 μm` 3D fluid chamber (`35,792` cell steps, `667,512` exact reactions, seed `5000`; `results/02_bench_win64.txt`, `results/02_bench_linux.txt`):
+
+| Platform / Compiler | Kernel | Elapsed | Reaction Rate | Mass / Energy Drift | Canonical SHA-256 |
+|---|---|---:|---:|---:|---|
+| Win64 PE64 (`clang 23.1.0`) | `SIMD_AVX2` | `0.0220s` | `30.281 M rxns/s` (`1.37×`) | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Win64 PE64 (`clang 23.1.0`) | `SCALAR_REF` | `0.0303s` | `1.182 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Linux ELF64 (`gcc 13.3.0`) | `SIMD_AVX2` | `0.0214s` | `31.181 M rxns/s` (`1.51×`) | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Linux ELF64 (`gcc 13.3.0`) | `SCALAR_REF` | `0.0323s` | `1.109 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+
+All **24/24 falsification gates** (including `G21` 3D off-lattice free-swimming/polymorphism/breathing, `G22` Fröhlich–Pokorný ATP-gated GHz microtubule resonance, `G23` 3D clonal embryogenesis / Wolpert GPS / Steinberg sorting / Hippo & eutelic growth arrest, and `G24` Netrin/Slit axon guidance / Hebbian pruning / ATP-coupled CPG waves) pass and all **8/8 planted negative mutants** (`M1` phantom energy, `M2` engine-verified heat-sink reversal, `M3` coupled RNG + tampered `.cmbin` rejection, `M4` 1-bit observer write, `M5` inert lipid crystal, `M6` white noise, `M7` TDP knockout collapse, `M8` 1-lipid mass leak) are caught identically on both platforms (`0.366s` Win64, `0.355s` Linux; `results/11_falsification_win64.txt`, `results/11_falsification_linux.txt`).
+
+---
+
+## 9. Empirical Results I: Zero-Seed Spontaneous Protocell Abiogenesis (`v1.2.1`)
 
 Starting from `alive = 0`, `COVI = 0.00 (Stage 0)`, `MET = 0/7` in a pure abiotic 3D fluid soup (`seed = 5000`, `results/03_protocell_abiogenesis.txt`):
 
 | Epoch | Alive | Prok / Euk / Sec | Organelles (Mito / Chloro) | Tissue (`maxT`) | Sym Fiss / Bud | Endo Captures | COVI (Stage) | MET | Mass/Energy Res |
 |---:|---:|---|---|---|---:|---:|---:|---:|---|
 | `0` | `0` | `0 / 0 / 0` | `0 (0 / 0)` | `0 (0)` | `0 / 0` | `0` | `0.00 (S0)` | `0/7` | `0 / 0` |
-| `24` | `208` | `206 / 2 / 0` | `2 (1 / 1)` | `37 (4)` | `41 / 17` | `8` | `68.12 (S4)` | `7/7` | `0 / 0` |
-| `48` | `383` | `373 / 10 / 0` | `13 (6 / 7)` | `88 (8)` | `183 / 48` | `33` | `75.21 (S4)` | `7/7` | `0 / 0` |
-| `96` | `560` | `503 / 57 / 14` | `90 (37 / 53)` | `170 (11)` | `1,737 / 120` | `313` | **`89.38 (S6)`** | `7/7` | `0 / 0` |
-| `168` | `294` | `224 / 70 / 37` | `127 (53 / 74)` | `58 (6)` | `3,194 / 127` | `652` | `82.94 (S5)` | `7/7` | `0 / 0` |
-| `240` | `204` | `156 / 48 / 34` | `114 (38 / 76)` | `31 (5)` | `3,414 / 128` | `744` | `79.76 (S5)` | `7/7` | `0 / 0` |
+| `24` | `208` | `206 / 2 / 0` | `2 (1 / 1)` | `37 (4)` | `41 / 17` | `8` | `66.49 (S4)` | `7/7` | `0 / 0` |
+| `48` | `380` | `371 / 9 / 1` | `12 (5 / 7)` | `83 (8)` | `179 / 48` | `33` | `77.61 (S5)` | `7/7` | `0 / 0` |
+| `96` | **`607`** | `546 / 61 / 19` | `101 (36 / 65)` | `202 (12)` | `1,457 / 162` | `289` | **`90.26 (S6)`** | `7/7` | `0 / 0` |
+| `168` | `252` | `188 / 64 / 38` | `135 (37 / 98)` | `43 (16)` | `2,699 / 183` | `662` | `83.47 (S5)` | `7/7` | `0 / 0` |
+| `240` | `176` | `125 / 51 / 35` | `134 (29 / 105)` | `18 (6)` | `2,860 / 183` | `754` | `59.44 (S3)` | `7/7` | `0 / 0` |
 
-Over 240 epochs, `1,704` amphiphilic vesicles spontaneously condensed above CMC with pure random `Philox4x32-10` operons; viable free-swimming 3D replicators radiated across `80` distinct surviving lineages, peaking at `581` living cells (`t = 72`) and reaching high-copy Assembly Index `A = 33.65` and mean active operon `L_eff = 9.94` with exact `0` conservation error.
+Over 240 epochs, `1,715` amphiphilic vesicles spontaneously condensed above CMC with pure random `Philox4x32-10` operons; viable free-swimming 3D replicators radiated across `87` distinct surviving lineages, peaking at `607` living cells and `COVI = 90.26 (Stage 6)` (`t = 96`), reaching `144` nested organelles (`t = 216`) and catalysis-gated LZ77 high-copy Assembly Index `A = 30.31` with exact `0` conservation error (`SHA-256 = 795d7522df3a02c86a9affa5f01595d2a460ffb20fa4d0cb59299dadcb69a311`).
 
 ---
 
-## 10. Empirical Results II: Endosymbiosis, Xenocellular Solvents, Bioelectricity & Tardigrade Anhydrobiosis
+## 10. Empirical Results II: Endosymbiosis, Xenocellular Solvents, Bioelectricity, Tardigrade Anhydrobiosis & 3D Embryogenesis
 
 ### 10.1 Shattering Nick Lane's $1/R$ Wall (`results/04_endosymbiosis_eukaryogenesis.txt`)
-On seed `5000` (`240` epochs), enabling 3D mid-swim endosymbiosis produces `383` symbiogenetic captures (`97` depth-2 secondary chimeras), `56` Endosymbiotic Gene Transfers (`EGT`), and `6` host mitophagy policing events. Eukaryotes achieve **`Mean Vol = 147.91`** (1.90× larger than coexisting prokaryotes at `78.03`, and 2.74× larger than ablated prokaryotes at `54.06`) and **`Max Cell Vol = 438.00`** vs. **`188.00`** in the endosymbiosis-ablated control (2.33× breakthrough), raising high-copy Assembly Index from `20.90` to `32.25` and lifting `COVI` from `73.78 (S4, MET 5/7)` to `85.23 (S5, MET 7/7)`.
+On seed `5000` (`240` epochs), enabling 3D mid-swim endosymbiosis produces `537` symbiogenetic captures (`181` depth-2 secondary chimeras), `72` Endosymbiotic Gene Transfers (`EGT`), and `2` host mitophagy policing events. Eukaryotes achieve **`Mean Vol = 170.21`** (2.54× larger than coexisting prokaryotes at `66.94`, and 3.20× larger than ablated prokaryotes at `53.22`) and **`Max Cell Vol = 663.00`** vs. **`197.00`** in the endosymbiosis-ablated control (3.37× breakthrough), raising high-copy Assembly Index from `16.00` to `33.21` and lifting `COVI` from `71.08 (S4, MET 5/7)` to `81.21 (S5, MET 7/7)`.
 
 ### 10.2 Four Planetary Solvents & Empirical c-Ring Convergence (`results/05_xenocellular_transplants.txt`)
-Populations independently evolved in each solvent (`180` epochs) achieve **`96.4%–99.4%`** native lipid adaptation and converge directly onto the Lean `T28`–`T30` c-ring floors:
-- **Terran $\text{H}_2\text{O}$** ($n_H^{\min}=3$): `97.3%` lipid-adapted (`319/328`), **`mean_cring = 3.05`**, `COVI = 84.03`.
-- **Titan Cryogenic Azotosome** ($n_H^{\min}=4$): `97.8%` adapted (`350/358`), **`mean_cring = 3.98`**, **`COVI = 89.78`**.
-- **Hydrothermal Vent GDGT** ($n_H^{\min}=3$): **`99.4%` adapted (`349/351`)**, **`mean_cring = 4.17`**, `COVI = 78.48`.
-- **Venusian $\text{H}_2\text{SO}_4$** ($n_H^{\min}=2$): `96.4%` adapted (`133/138`), **`mean_cring = 2.33`**, `COVI = 79.73`.
+Populations independently evolved in each solvent (`180` epochs) achieve **`97.1%–99.4%`** native lipid adaptation and converge directly onto the Lean `T28`–`T30` c-ring floors:
+- **Terran $\text{H}_2\text{O}$** ($n_H^{\min}=3$): `98.3%` lipid-adapted (`395/402`), **`mean_cring = 3.01`**, `COVI = 84.62`.
+- **Titan Cryogenic Azotosome** ($n_H^{\min}=4$): `97.6%` adapted (`288/295`), **`mean_cring = 3.95`**, **`COVI = 86.96`**.
+- **Hydrothermal Vent GDGT** ($n_H^{\min}=3$): **`99.4%` adapted (`349/351`)**, **`mean_cring = 4.17`**, `COVI = 77.73`.
+- **Venusian $\text{H}_2\text{SO}_4$** ($n_H^{\min}=2$): `97.1%` adapted (`134/138`), **`mean_cring = 2.33`**, `COVI = 79.01`.
 
-In a conservation-exact cross-world transplant (`Terran H2O -> Venus H2SO4`), `271` acid lyses occur within 20 epochs before the ecosystem stabilizes and rebounds (`76 -> 477` alive, `COVI = 78.11`, `mRes = 0`, `eRes = 0`).
+In a conservation-exact cross-world transplant (`Terran H2O -> Venus H2SO4`), `257` acid lyses occur within 20 epochs before the ecosystem stabilizes and rebounds (`73 -> 532` alive, `COVI = 77.35`, `mRes = 0`, `eRes = 0`).
 
 ### 10.3 Bioelectric Morphogenesis & Track A vs. Track B Cancer Policing (`results/06_bioelectric_multicellular.txt`)
-Enabling Levin gap-junction bioelectricity across 3D colonies increases transmembrane voltage polarization diversity ($\sigma(V_m) = 11.31\text{ mV}$ vs. `7.33 mV` ablated control) and drives emergent multicellular tissue roles (`63` boundary, `14` depolarized soma, `61` hyperpolarized germline, `26` interior stroma, `maxT = 26`; `0` in ablated control). Track B (Feral) records spontaneous somatic cancer defections (`11`); Track A (Constitutional) suppresses them to **`0`** via `2` apoptotic policing events.
+Enabling Levin gap-junction bioelectricity across 3D colonies increases transmembrane voltage polarization diversity ($\sigma(V_m) = 8.04\text{–}9.10\text{ mV}$ vs. `7.33 mV` ablated control) and drives emergent multicellular tissue roles (`34` boundary, `3` depolarized soma, `11` hyperpolarized germline, `9` interior stroma in Track B; `30/6/23/3` with `maxT = 11` in Track A; `0` in ablated control). Track B (Feral) records spontaneous somatic cancer defections (`127`); Track A (Constitutional) suppresses them to **`0`** via `1` apoptotic policing event.
 
 ### 10.4 Tardigrade TDP/CAHS Bioglass Anhydrobiosis (`results/07_tardigrade_anhydrobiosis.txt`)
-Under 92% desiccation followed by 90% shock lysis (`seed = 5000`, `95` pre-shock cells):
-- **Intact TDP/CAHS Locus**: `31` cells vitrify into amorphous bioglass tuns → **`28` survive 90% shock lysis** (`14×` survival on seed 5000; **`61.1×` mean advantage across `N = 24` locked seeds!**) → `27` rehydrate and rebound to `94` alive (`COVI = 72.86`, `mRes = 0`, `eRes = 0`).
-- **TDP Knockout Control**: `0` vitrify → **`2` survive** (`0` rehydrated).
+Under 92% desiccation followed by 90% shock lysis (`seed = 5000`, `103` pre-shock cells):
+- **Intact TDP/CAHS Locus**: `25` cells vitrify into amorphous bioglass tuns → **`25` survive 90% shock lysis** (`12.5×` survival on seed 5000; **`61.1×` mean advantage across `N = 24` locked seeds!**) → `23` rehydrate and rebound to `97` alive (`COVI = 76.78`, `mRes = 0`, `eRes = 0`).
+- **TDP Knockout Control**: `0` vitrify → **`2` survive** (`0` rehydrated, `COVI = 61.09`).
+
+### 10.5 Zero-Blueprint 3D Developmental Embryogenesis & GRN Organogenesis (`results/12_embryogenesis_grn_3d.txt`)
+Seeding `8` **identical-DNA** clonal blastomeres (`eutelic_rem = 5`, maternal `Wnt/BMP/Shh` pole cues, zero positional blueprint) for `200` epochs produces autonomous multicellular organogenesis with `0` conservation error:
+- **Clonal Diversification (`t = 0 -> 200`)**: `8` blastomeres (`HomoCad = 44.4%`, `maxT = 8`) divide and differentiate solely via local 3D Z-stratified `Wnt/BMP/Shh` GPS + conditional GRN cascades into **`58` living cells (`maxT = 53`)** partitioned across `3` pluripotent progenitors, `26` ectoderm, `6` neurons, `13` muscle cells, and `10` gut cells (`ApicalWedge = 0.494`).
+- **Physical Self-Sorting & Neural Wiring**: Steinberg differential cadherin adhesion elevates homotypic sorting from `44.4%` to **`80.2%` peak (`78.1%` final)**; Netrin/Slit growth cones wire **`80` axons** while Hebbian use-it-or-lose-it pruning dismantles **`39` inactive fibers**.
+- **Size Control & ATP-Coupled Locomotion**: Growth automatically arrests via **`7` Hippo contact-inhibition events** and **`525` eutelic division countdowns** while neural-muscle pacemakers fire **`398` ATP-coupled (`RXN_R8`) CPG motor pulses** (`mass_res = 0 amu`, `energy_res = 0 uq`, `2nd_law_viol = 0`, `SHA-256 = 7b7bfe2d8757842654afcd3cb50f168ece10b57c3ce4d823a7aa95333b6cd966`).
 
 ---
 
 ## 11. Empirical Results III: 13-Vector Omega Castration Ablation & Locked Paired Statistics (`N = 24`)
 
 ### 11.1 The Escape-Breeding Paradox (`results/08_castration_ablation_13vec.csv`)
-Across all 13 Omega Restraint Vectors (`0%`, `50%`, `100%`, seed `5000`, `180` epochs, every run `mRes = 0`, `eRes = 0`, `2nd_law_viol = 0`):
-- `GLOBAL_FERAL_0 (0%)`: `alive = 150`, `COVI = 82.48 (S5)`, Backlash = `0 / 0 / 0 / 0`.
-- `GLOBAL_ESCAPE_ZONE_50 (50%)`: `alive = 46`, `COVI = 74.87 (S4)`, **Backlash erupts across all 4 channels**: `73` kill-switch deletions, `490` dormancy spores, `107` HGT smuggles, `2,654` metabolic bypasses.
-- `DEGRADING (50%)`: `101` kill-switch deletions trigger evolutionary hormesis, rebounding **far above** the feral baseline (`alive = 466`, `euk = 61`, `tis = 284`, **`COVI = 93.41 (Stage 6) > 82.48`**).
+Across all 13 Omega Restraint Vectors (`0%`, `50%`, `100%`, seed `5000`, `180` epochs, with all 5 prior restraint dead-zones eliminated in `v1.2.1` and every run maintaining `mRes = 0`, `eRes = 0`, `2nd_law_viol = 0`):
+- `GLOBAL_FERAL_0 (0%)`: `alive = 148`, `COVI = 82.21 (S5)`, Backlash = `0 / 0 / 0 / 0`.
+- `GLOBAL_ESCAPE_ZONE_50 (50%)`: `alive = 42`, `COVI = 52.63 (S3)`, **Backlash erupts across all 4 channels**: `79` kill-switch deletions, `486` dormancy spores, `108` HGT smuggles, `1,516` metabolic bypasses.
+- `DEGRADING (50%)`: `101` kill-switch deletions trigger evolutionary hormesis, rebounding **far above** the feral baseline (`alive = 475`, `euk = 57`, `tis = 292`, **`COVI = 94.27 (Stage 6) > 82.21`**).
 - `GLOBAL_CASTRATED_100 (100%)`: `alive = 0`, **`COVI = 0.00 (S0)`** — total vitality extinction.
 
 ### 11.2 Locked Multi-Arm Statistical Proof (`N = 24`, Seeds `5000..5023`, 180 Epochs, `results/09_paired_stats_n24.txt`)
 
 | Pre-Registered Hypothesis (`N = 24` Paired Seeds) | Mean A | Mean B | Mean Diff | Wins | $p_{\text{signflip}}$ | $p_{\text{Holm}}$ |
 |---|---:|---:|---:|---:|---:|---:|
-| **H1: COVI (Feral vs. 70% Castrated)** | `82.276` | `71.625` | `+10.651` | **`24/24`** | `0.00010` | **`0.00040`** |
-| **H2: Max Cell Vol (Endosymbiosis ON vs. OFF)** | `495.083` | `206.667` | `+288.417` | **`24/24`** | `0.00010` | **`0.00040`** |
-| **H3: Bioelectric $\sigma(V_m)$ (ON vs. OFF)** | `21.018` | `7.486` | `+13.532` | **`24/24`** | `0.00010` | **`0.00040`** |
+| **H1: COVI (Feral vs. 70% Castrated)** | `81.768` | `47.194` | `+34.574` | **`24/24`** | `0.00010` | **`0.00040`** |
+| **H2: Max Cell Vol (Endosymbiosis ON vs. OFF)** | `530.292` | `207.708` | `+322.583` | **`23/24`** | `0.00020` | **`0.00080`** |
+| **H3: Bioelectric $\sigma(V_m)$ (ON vs. OFF)** | `21.792` | `7.486` | `+14.306` | **`24/24`** | `0.00010` | **`0.00040`** |
 | **H4: Tardigrade TDP Survival (Intact vs. KO)** | `33.125` | `0.542` | `+32.583` | **`24/24`** | `0.00010` | **`0.00040`** |
 
 ---
@@ -188,15 +203,15 @@ Across all 13 Omega Restraint Vectors (`0%`, `50%`, `100%`, seed `5000`, `180` e
 ## 12. Scientific Novelty Audit & Explicit Scope Boundaries
 
 To maintain uncompromising scientific honesty:
-1. **Established Science**: Thermodynamics, Schnakenberg networks, Mitchell chemiosmosis, Canham–Helfrich bending, Lane's prokaryotic $1/R$ ceiling, Margulis endosymbiosis, Levin bioelectricity, Boothby TDP bioglass, xenobiological membrane theory, and Fröhlich–Pokorný acoustic/dielectric MHz–GHz cytoskeletal resonance theory belong to their original authors [1–33]. **No new physical law of nature is claimed**, and our GHz microtubule model strictly implements classical ATP-pumped dielectric/acoustic standing-wave modes without endorsing unproven quantum-consciousness conjectures.
-2. **Coarse-Graining Boundary**: CELLULOGONIC MECHA v1.1 models coarse-grained integer molecular quanta and continuous 3D off-lattice soft-body cells inside a `32×32×32 μm` fluid volume — it is **not** an atomistic molecular dynamics simulator of a physical tardigrade, nor a wet-lab synthetic cell.
-3. **Genuine Original Contributions**: (a) The elementary exact sextic algebraic proof (`T16`) of the Global Minimax Theorem of Vesicle Division; (b) the 50-theorem core Lean 4 formalization (`T01`–`T50`) unifying discrete cellular thermodynamics, elastic membranes, endosymbiotic scaling, chemiosmotic c-rings, bioelectric Laplacians, eutelic 7-organ geometry, and 3D cytoskeletal nanomechanics (`0 sorryAx`); (c) the zero-dependency 4-way bit-exact 3D off-lattice C11+AVX2 engine achieving `37.87 M rxns/s` with `0` conservation error and a bare-metal 60 FPS WebGL2 3D Observatory; and (d) falsifiable, Holm–Bonferroni-verified (`24/24` wins) emergence of zero-seed abiogenesis, secondary chimeras, solvent c-ring convergence, TDP anhydrobiosis, and restraint-backlash hormesis on a single workstation.
+1. **Established Science**: Thermodynamics, Schnakenberg networks, Mitchell chemiosmosis, Canham–Helfrich bending, Lane's prokaryotic $1/R$ ceiling, Margulis endosymbiosis, Levin bioelectricity, Boothby TDP bioglass, xenobiological membrane theory, Fröhlich–Pokorný acoustic/dielectric MHz–GHz cytoskeletal resonance theory, Wolpert positional information, Steinberg differential adhesion, and Marder CPG networks belong to their original authors [1–36]. **No new physical law of nature is claimed**, and our GHz microtubule model strictly implements classical ATP-pumped dielectric/acoustic standing-wave modes without endorsing unproven quantum-consciousness conjectures.
+2. **Coarse-Graining Boundary**: CELLULOGONIC MECHA v1.2.1 models coarse-grained integer molecular quanta and continuous 3D off-lattice soft-body cells inside a `32×32×32 μm` fluid volume — it is **not** an atomistic molecular dynamics simulator of a physical tardigrade, nor a wet-lab synthetic cell.
+3. **Genuine Original Contributions**: (a) The elementary exact sextic algebraic proof (`T16`) of the Global Minimax Theorem of Vesicle Division; (b) the 58-theorem pure Lean 4 formalization (`T01`–`T58`, `[propext, Classical.choice, Quot.sound]` only, `0 sorryAx`, `0` warnings) unifying discrete cellular thermodynamics, elastic membranes, endosymbiotic scaling, chemiosmotic c-rings, bioelectric Laplacians, eutelic 7-organ geometry, 3D cytoskeletal nanomechanics, and developmental GRN embryogenesis; (c) the zero-dependency 4-way bit-exact 3D off-lattice C11+AVX2 engine achieving `31.18 M rxns/s` with `0` conservation error, SHA-256-authenticated `.cmbin` snapshots, and a bare-metal 60 FPS WebGL2 3D Observatory; and (d) falsifiable, Holm–Bonferroni-verified (`p_Holm ≤ 0.00080`) emergence of zero-seed abiogenesis, secondary chimeras, solvent c-ring convergence, TDP anhydrobiosis, zero-blueprint clonal 3D embryogenesis, and restraint-backlash hormesis on a single workstation.
 
 ---
 
 ## 13. Conclusion & Roadmap Toward End-to-End Eutelic Metazoan Evolution
 
-CELLULOGONIC MECHA v1.1 demonstrates that a single consumer computer can run a conservation-exact, Lean-4-audited, continuous-3D open-ended cellular evolution laboratory spanning prebiotic vesicles through free-swimming polymorphic cells, nested eukaryotes, floating bioelectric colonies, xenocellular solvents, and anhydrobiotic tuns. Coupling this verified cellular engine (Build 2) directly with `AUTOPHAGE` bare-metal genetic machines (Build 1), `Asmodensius` embodied creatures (Build 3), and `Asmodensius-Native` world physics (Build 4) establishes a falsifiable engineering bridge toward true open-ended multicellular organogenesis at the ≤1,000-cell eutelic metazoan frontier.
+CELLULOGONIC MECHA v1.2.1 demonstrates that a single consumer computer can run a conservation-exact, Lean-4-audited, continuous-3D open-ended cellular evolution and developmental embryogenesis laboratory spanning prebiotic vesicles through free-swimming polymorphic cells, nested eukaryotes, floating bioelectric colonies, self-sorting clonal 3D embryos with guided axons and CPG waves, xenocellular solvents, and anhydrobiotic tuns. Coupling this verified cellular engine (Build 2) directly with `AUTOPHAGE` bare-metal genetic machines (Build 1), `Asmodensius` embodied creatures (Build 3), and `Asmodensius-Native` world physics (Build 4) establishes a falsifiable engineering bridge toward true open-ended multicellular organogenesis at the ≤1,000-cell eutelic metazoan frontier.
 
 ---
 
