@@ -228,6 +228,9 @@ void cell_sha256_init(CellSha256Ctx* ctx);
 void cell_sha256_update(CellSha256Ctx* ctx, const uint8_t* data, size_t len);
 void cell_sha256_final(CellSha256Ctx* ctx, uint8_t out_hash[32]);
 void cell_sha256_to_hex(const uint8_t hash[32], char hex[65]);
+int  cell_verify_second_law(CellWorld* w, int64_t prev_sink_uq);
+int64_t cell_hydrolyze_atp_exact(CellWorld* w, uint32_t idx, int64_t k_req);
+int  cellulogonic_ingest_autophage_128b(CellWorld* w, uint32_t slot, const uint8_t genome_128b[128]);
 
 /* Exact Stoichiometry & Chemoton Physics (src/chemoton_physics.c) */
 int64_t cell_species_mass(const int64_t mol[CELL_SPECIES_COUNT]);

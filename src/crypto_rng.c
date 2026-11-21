@@ -48,18 +48,34 @@ uint32_t cell_philox_u32(uint64_t seed, uint32_t domain, uint64_t ctr_hi, uint64
     return (uint32_t)(cell_philox_u64(seed, domain, ctr_hi, ctr_lo) >> 32);
 }
 
-/* True Hardware Thermal Silicon Entropy via x86-64 RDSEED / RDRAND (for seed == 0 Feral Mode!) */
+/* True Hardware Thermal Silicon Entropy via CPUID-guarded x86-64 RDSEED / RDRAND (for seed == 0 Feral Mode!) */
 uint64_t cell_hw_rdseed_u64(void) {
     uint64_t val = 0;
 #if defined(__x86_64__) || defined(_M_X64)
-    unsigned char ok = 0;
-    for (int tries = 0; tries < 32; ++tries) {
-        __asm__ __volatile__("rdseed %0; setc %1" : "=r"(val), "=qm"(ok));
-        if (ok && val != 0) return val;
+    uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
+    __asm__ __volatile__("cpuid" : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) : "a"(0u), "c"(0u));
+    uint32_t max_leaf = eax;
+    int has_rdrand = 0, has_rdseed = 0;
+    if (max_leaf >= 1u) {
+        __asm__ __volatile__("cpuid" : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) : "a"(1u), "c"(0u));
+        has_rdrand = (int)((ecx >> 30) & 1u);
     }
-    for (int tries = 0; tries < 32; ++tries) {
-        __asm__ __volatile__("rdrand %0; setc %1" : "=r"(val), "=qm"(ok));
-        if (ok && val != 0) return val;
+    if (max_leaf >= 7u) {
+        __asm__ __volatile__("cpuid" : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) : "a"(7u), "c"(0u));
+        has_rdseed = (int)((ebx >> 18) & 1u);
+    }
+    unsigned char ok = 0;
+    if (has_rdseed) {
+        for (int tries = 0; tries < 32; ++tries) {
+            __asm__ __volatile__("rdseed %0; setc %1" : "=r"(val), "=qm"(ok));
+            if (ok && val != 0) return val;
+        }
+    }
+    if (has_rdrand) {
+        for (int tries = 0; tries < 32; ++tries) {
+            __asm__ __volatile__("rdrand %0; setc %1" : "=r"(val), "=qm"(ok));
+            if (ok && val != 0) return val;
+        }
     }
     uint32_t lo = 0, hi = 0;
     __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));

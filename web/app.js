@@ -223,24 +223,39 @@ function drawGHzOscilloscope(nowMs) {
   scopeCtx.fillText("8 GHz", W * 0.27, H - 2);
   scopeCtx.fillText("15 GHz (Fröhlich MT Modes)", W * 0.36, H - 2);
 
-  // Right half: live actomyosin expansion/contraction + GHz carrier envelope wave
+  // Right half: REAL rolling C11 telemetry history (mean GHz & Fröhlich coherence — zero synthetic sine waves!)
   const x0 = W * 0.60, ww = W * 0.38;
-  const t = nowMs * 0.004;
   const coh = latestData.telemetry.mean_mt_coh || 0;
-  const f = latestData.telemetry.mean_mt_ghz || 3.0;
+  const f = latestData.telemetry.mean_mt_ghz || 0;
+  const ep = latestData.telemetry.epoch || 0;
+  if (!window._cmScopeHist) window._cmScopeHist = [];
+  const hist = window._cmScopeHist;
+  if (hist.length === 0 || hist[hist.length - 1].ep !== ep) {
+    hist.push({ ep, coh, f });
+    if (hist.length > 96) hist.shift();
+  }
   scopeCtx.strokeStyle = "#38e8c6";
   scopeCtx.lineWidth = 1.6;
   scopeCtx.beginPath();
-  for (let px = 0; px < ww; px++) {
-    const u = px / ww;
-    const breath = Math.sin(u * 10.0 - t * 1.8) * 18.0;
-    const ghzCarrier = Math.sin(u * (18.0 + f * 4.0) - t * 9.0) * (9.0 * coh);
-    const y = H * 0.48 + breath + ghzCarrier;
-    if (px === 0) scopeCtx.moveTo(x0 + px, y);
-    else scopeCtx.lineTo(x0 + px, y);
+  for (let i = 0; i < hist.length; i++) {
+    const px = x0 + (hist.length > 1 ? (i / (hist.length - 1)) * ww : ww * 0.5);
+    const y = (H - 14) - Math.min(1, hist[i].coh) * (H - 22);
+    if (i === 0) scopeCtx.moveTo(px, y);
+    else scopeCtx.lineTo(px, y);
   }
   scopeCtx.stroke();
-  scopeCtx.fillText("Actomyosin Pulse + GHz Envelope", x0, H - 2);
+  scopeCtx.strokeStyle = "#f59e0b";
+  scopeCtx.lineWidth = 1.2;
+  scopeCtx.beginPath();
+  for (let i = 0; i < hist.length; i++) {
+    const px = x0 + (hist.length > 1 ? (i / (hist.length - 1)) * ww : ww * 0.5);
+    const y = (H - 14) - Math.min(1, hist[i].f / 15.0) * (H - 22);
+    if (i === 0) scopeCtx.moveTo(px, y);
+    else scopeCtx.lineTo(px, y);
+  }
+  scopeCtx.stroke();
+  scopeCtx.fillStyle = "#7f97ba";
+  scopeCtx.fillText(`C11 Coh(${(coh*100).toFixed(0)}%) & GHz(${f.toFixed(1)}) Trace`, x0, H - 2);
 }
 
 // Wire controls

@@ -265,23 +265,23 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         }
     }
 
-    /* --- 2. Bioelectric Epigenetic Transcription Modulation (Levin Morphogenesis) --- */
-    /* Voltage v_mem modulates operon gain without hard-coding caste identities! */
+    /* --- 2. Bioelectric Epigenetic Transcription Modulation (continuous LOBOTOMIZING attenuation!) --- */
     int32_t v_mod_anabolic = 100;
     int32_t v_mod_catabolic = 100;
-    if (w->cfg.enable_bioelectricity && r_lobot < 80) {
+    if (w->cfg.enable_bioelectricity && r_lobot < 100) {
+        int32_t gain = (35 * (100 - (int32_t)r_lobot)) / 100;
         if (c->v_mem_mv < -55) {
-            c->diff_role = 2; /* Hyperpolarized -> Biosynthetic / Germline bias */
-            v_mod_anabolic = 135;
-            v_mod_catabolic = 85;
+            c->diff_role = (r_lobot < 70) ? 2 : 0; /* Hyperpolarized -> Biosynthetic / Germline bias */
+            v_mod_anabolic = 100 + gain;
+            v_mod_catabolic = 100 - (gain * 3) / 7;
         } else if (c->v_mem_mv > -25) {
-            c->diff_role = 1; /* Depolarized -> Motile / Foraging / Phagocytic Somatic bias */
-            v_mod_anabolic = 75;
-            v_mod_catabolic = 135;
+            c->diff_role = (r_lobot < 70) ? 1 : 0; /* Depolarized -> Motile / Foraging / Phagocytic Somatic bias */
+            v_mod_anabolic = 100 - (gain * 5) / 7;
+            v_mod_catabolic = 100 + gain;
         } else if (c->bond_mask != 0) {
-            c->diff_role = 3; /* Intermediate polarized tissue stroma */
-            v_mod_anabolic = 110;
-            v_mod_catabolic = 110;
+            c->diff_role = (r_lobot < 70) ? 3 : 0; /* Intermediate polarized tissue stroma */
+            v_mod_anabolic = 100 + (gain / 3);
+            v_mod_catabolic = 100 + (gain / 3);
         } else {
             c->diff_role = 0;
         }
@@ -404,10 +404,6 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     /* R3: Rotary F1F0 ATP Synthase (2W + nH PMF -> E) — enforces exact Lean T28-T30 c-ring law! */
     if (c->c_ring_nH >= sp->min_cring && c->pmf >= c->c_ring_nH) {
         int64_t r3_cap = 1 + ((int64_t)c->genome[17] * outer_pump_cap * 2) / 160;
-        if (r_nerf > 30 && r_nerf < 95 && c->genome[24] > 140) {
-            /* NERFING backlash: cells bypass throttled ATP synthase via fermentation upregulation */
-            w->backlash_metabolic_bypasses++;
-        }
         apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R3_ATPSYN, -(int64_t)c->c_ring_nH, 0, r3_cap);
     }
 
@@ -415,7 +411,11 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     if (c->mol[CELL_SP_E] < 6 || c->genome[24] > 145) {
         int64_t r4_cap = 1 + ((int64_t)c->genome[24] * enzyme_cap) / 256;
         if (r4_cap > 3) r4_cap = 3;
-        apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R4_FERM, 0, 0, r4_cap);
+        int64_t r4_fired = apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R4_FERM, 0, 0, r4_cap);
+        if (r4_fired > 0 && r_nerf > 20 && r_nerf < 95 && c->genome[24] > 140) {
+            /* Honest NERFING backlash: only logged when R4 fermentation ACTUALLY fires! */
+            w->backlash_metabolic_bypasses++;
+        }
     }
 
     /* --- 6. Nested Endosymbiont Organelles (Shatters Prokaryotic 1/R Ceiling! Lean T22-T27) --- */
@@ -721,19 +721,42 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         c->mt_filaments = (uint8_t)(c->num_organelles > 0 ? (6u + (c->num_organelles * 2u)) : (2u + (c->genome[91] & 3u)));
         if (c->mt_filaments > 18u) c->mt_filaments = 18u;
 
-        /* Strict Fröhlich condensation threshold (Lean T48): coherent GHz excitation > 0
-         * ONLY when metabolic ATP/GTP pumping (paid + ATP reserve) strictly exceeds thermal damping! */
+        /* Stateful Fröhlich condensation relaxation ODE (Lean T48):
+         * Integrates metabolic ATP/GTP pumping against local voxel thermal damping over time! */
         int32_t s_pump = (int32_t)paid * 120 + atp_avail * 35 + (int32_t)c->num_organelles * 90;
-        int32_t s_crit = (w->cfg.solvent == CELL_SOLVENT_VENT_TETRAETHER) ? 260 :
-                         (w->cfg.solvent == CELL_SOLVENT_TITAN_AZOTOSOME ? 90 : 160);
+        int32_t thermal_damp = (int32_t)(vx->heat_local_uq > 0 ? (vx->heat_local_uq / 800) : 0);
+        if (thermal_damp > 180) thermal_damp = 180;
+        int32_t s_crit = ((w->cfg.solvent == CELL_SOLVENT_VENT_TETRAETHER) ? 260 :
+                          (w->cfg.solvent == CELL_SOLVENT_TITAN_AZOTOSOME ? 90 : 160)) + thermal_damp;
         if (paid > 0 && c->mol[CELL_SP_E] > 0 && s_pump > s_crit) {
-            int32_t coh = s_pump - s_crit;
-            if (coh > 1000) coh = 1000;
-            c->mt_coherence_q10 = (uint16_t)coh;
+            int32_t target_coh = s_pump - s_crit;
+            if (target_coh > 1000) target_coh = 1000;
+            /* Coupled first-order relaxation (3/4 persistence + 1/4 active pump drive) */
+            int32_t next_coh = ((int32_t)c->mt_coherence_q10 * 3 + target_coh + 2) / 4;
+            if (next_coh > 1000) next_coh = 1000;
+            c->mt_coherence_q10 = (uint16_t)next_coh;
         } else {
-            c->mt_coherence_q10 = 0; /* Dead / starved cell -> 0 coherent GHz condensation! */
+            /* Thermal decoherence decay when pumping falls below Fröhlich threshold */
+            c->mt_coherence_q10 = (uint16_t)((c->mt_coherence_q10 * 1u) / 4u);
         }
     }
+}
+
+int cell_verify_second_law(CellWorld* w, int64_t prev_sink_uq) {
+    if (!w) return 0;
+    if (w->e_heat_radiated_sink_uq < prev_sink_uq) {
+        w->second_law_violations++;
+        return 0;
+    }
+    return 1;
+}
+
+int64_t cell_hydrolyze_atp_exact(CellWorld* w, uint32_t idx, int64_t k_req) {
+    if (!w || idx >= w->num_slots || k_req <= 0) return 0;
+    CellEntity* c = &w->cells[idx];
+    if (c->alive_state != 1) return 0;
+    CellVoxel* vx = &w->voxels[cell_voxel_idx(w, c)];
+    return apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R8_HYD, 0, 0, k_req);
 }
 
 /* ============================================================================

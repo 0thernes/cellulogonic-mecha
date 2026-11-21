@@ -44,32 +44,55 @@ static void compute_colony_stats(const CellWorld* w, uint32_t* out_max_sz,
     }
 }
 
-/* Estimate functional operon active length L_eff (0..16 loci active above catalytic threshold) */
+/* Estimate functional operon active length L_eff (0..16 loci gated on active living catalysis,
+ * excluding dead vesicles and metabolically arrested spores/tuns) */
 static uint32_t cell_active_loci_count(const CellEntity* c) {
+    if (c->alive_state != 1 || (c->mol[CELL_SP_P] == 0 && c->mol[CELL_SP_T] == 0)) return 0u;
+    int64_t met_flux = c->mol[CELL_SP_S] + c->mol[CELL_SP_M] + c->mol[CELL_SP_E];
     uint32_t active = 0;
-    if (c->genome[0]  > 80)  active++; /* R1 catabolism */
-    if (c->genome[8]  > 80)  active++; /* R2 proton pump */
-    if (c->genome[17] > 80)  active++; /* R3 ATP synthase */
-    if (c->genome[24] > 90)  active++; /* R4 fermentation */
-    if (c->genome[32] > 80)  active++; /* R5 lipid synthesis */
-    if (c->genome[40] > 90)  active++; /* R6 translation */
-    if (c->genome[48] > 80)  active++; /* R7 template replication */
-    if (c->genome[56] > 125) active++; /* R14 autotrophy */
-    if (c->genome[57] > 120) active++; /* R14b oxygenesis */
-    if (c->genome[72] > 90)  active++; /* S permease */
-    if (c->genome[80] > 150) active++; /* phagocytosis */
-    if (c->genome[84] > 115) active++; /* mitophagy */
-    if (c->genome[88] > 140) active++; /* asymmetric budding */
-    if (c->genome[98] > 64)  active++; /* gap-junction connexin */
-    if (c->genome[105]> 115) active++; /* tissue adhesion */
-    if (c->genome[122]> 110) active++; /* TDP/CAHS bioglass protectant */
+    if (c->genome[0]  > 80  && met_flux > 0) active++; /* R1 catabolism */
+    if (c->genome[8]  > 80  && (c->mol[CELL_SP_M] > 0 || c->pmf > 0 || c->mol[CELL_SP_E] > 0)) active++; /* R2 proton pump */
+    if (c->genome[17] > 80  && (c->pmf > 0 || c->mol[CELL_SP_E] > 0)) active++; /* R3 ATP synthase */
+    if (c->genome[24] > 90  && met_flux > 0) active++; /* R4 fermentation */
+    if (c->genome[32] > 80  && c->mol[CELL_SP_L] > 0) active++; /* R5 lipid synthesis */
+    if (c->genome[40] > 90  && c->mol[CELL_SP_P] > 0) active++; /* R6 translation */
+    if (c->genome[48] > 80  && c->mol[CELL_SP_T] > 0) active++; /* R7 template replication */
+    if (c->genome[56] > 125 && c->mol[CELL_SP_P] > 0) active++; /* R14 autotrophy */
+    if (c->genome[57] > 120 && c->mol[CELL_SP_P] > 0) active++; /* R14b oxygenesis */
+    if (c->genome[72] > 90  && c->mol[CELL_SP_L] > 0) active++; /* S permease */
+    if (c->genome[80] > 150 && c->mol[CELL_SP_P] > 0) active++; /* phagocytosis */
+    if (c->genome[84] > 115 && c->num_organelles > 0) active++; /* mitophagy */
+    if (c->genome[88] > 140 && c->mol[CELL_SP_L] > 0) active++; /* asymmetric budding */
+    if (c->genome[98] > 64  && c->num_bonds > 0)      active++; /* gap-junction connexin */
+    if (c->genome[105]> 115 && c->num_bonds > 0)      active++; /* tissue adhesion */
+    if (c->genome[122]> 110 && c->mol[CELL_SP_P] >= 2)active++; /* TDP/CAHS bioglass protectant */
     return active;
 }
 
-/* Estimate cellular Assembly Index A (structural & nested compositional depth of high-copy lineages) */
+/* Genuine non-overlapping LZ77 motif reuse + nested organelle compositional Assembly Index A */
 static double cell_assembly_index(const CellEntity* c) {
+    uint32_t reuse_hits = 0u, covered = 0u;
+    size_t i = 0u;
+    while (i < CELL_GENOME_BYTES) {
+        size_t best_len = 0u;
+        for (size_t prev = 0u; prev < i; ++prev) {
+            size_t m = 0u;
+            while (prev + m < i && i + m < CELL_GENOME_BYTES && m < 16u &&
+                   c->genome[prev + m] == c->genome[i + m]) {
+                m++;
+            }
+            if (m > best_len) best_len = m;
+        }
+        if (best_len >= 2u) {
+            reuse_hits++;
+            covered += (uint32_t)best_len;
+            i += best_len;
+        } else {
+            i++;
+        }
+    }
     uint32_t loci = cell_active_loci_count(c);
-    double a = (double)loci * 1.15;
+    double a = (double)loci * 0.90 + (double)reuse_hits * 0.35 + (double)covered * 0.08;
     if (c->num_organelles > 0) a += 4.0 + (double)c->num_organelles * 1.5;
     for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
         if (c->org[k].active && c->org[k].nesting_depth >= 2) {
@@ -80,6 +103,36 @@ static double cell_assembly_index(const CellEntity* c) {
     if (c->bond_mask != 0) a += 2.5;
     if (c->egt_genes > 0)  a += 1.5;
     return a;
+}
+
+static uint32_t lineage_table_find_or_insert(uint32_t hashes[1024], uint32_t counts[1024],
+                                             uint32_t lineage_id, uint32_t* distinct_out) {
+    uint32_t slot = lineage_id & 1023u;
+    for (uint32_t probe = 0; probe < 1024u; ++probe) {
+        uint32_t idx = (slot + probe) & 1023u;
+        if (counts[idx] == 0u) {
+            hashes[idx] = lineage_id;
+            counts[idx] = 1u;
+            if (distinct_out) (*distinct_out)++;
+            return idx;
+        }
+        if (hashes[idx] == lineage_id) {
+            counts[idx]++;
+            return idx;
+        }
+    }
+    return slot;
+}
+
+static uint32_t lineage_table_lookup(const uint32_t hashes[1024], const uint32_t counts[1024],
+                                     uint32_t lineage_id) {
+    uint32_t slot = lineage_id & 1023u;
+    for (uint32_t probe = 0; probe < 1024u; ++probe) {
+        uint32_t idx = (slot + probe) & 1023u;
+        if (counts[idx] == 0u) return 0u;
+        if (hashes[idx] == lineage_id) return counts[idx];
+    }
+    return 0u;
 }
 
 static double clamp100(double x) {
@@ -129,12 +182,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
         if (c->alive_state == 3) out->vitrified_tun_cells++;
         out->alive_cells++;
 
-        uint32_t lslot = c->lineage_id & 1023u;
-        if (lineage_counts[lslot] == 0) {
-            lineage_hashes[lslot] = c->lineage_id;
-            out->distinct_lineages++;
-        }
-        lineage_counts[lslot]++;
+        (void)lineage_table_find_or_insert(lineage_hashes, lineage_counts, c->lineage_id, &out->distinct_lineages);
 
         int64_t vol = cell_internal_volume(c);
         double dvol = (double)vol;
@@ -198,7 +246,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
             else                   out->role_stroma_interior++;
             for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
                 int16_t pj = c->bond_partners[b];
-                if (pj >= 0 && (uint32_t)pj > i && w->cells[pj].alive_state == 1) {
+                if (pj >= 0 && (uint32_t)pj < N && (uint32_t)pj > i && w->cells[pj].alive_state == 1) {
                     total_bond_edges++;
                     if (c->cad_type == w->cells[pj].cad_type) homo_bond_edges++;
                 }
@@ -212,7 +260,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
     for (uint32_t i = 0; i < N; ++i) {
         const CellEntity* c = &w->cells[i];
         if (c->alive_state == 0) continue;
-        if (lineage_counts[c->lineage_id & 1023u] >= 4u) {
+        if (lineage_table_lookup(lineage_hashes, lineage_counts, c->lineage_id) >= 4u) {
             double a = cell_assembly_index(c);
             if (a > max_A) max_A = a;
         }
@@ -354,19 +402,17 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
  * Cellulogonic Mecha cell's 128-byte catalytic operon!
  * ============================================================================ */
 
-CELL_API int cellulogonic_ingest_autophage_genome(
-    CellWorld* w, uint32_t slot, const uint8_t autophage_256b[256])
+int cellulogonic_ingest_autophage_128b(
+    CellWorld* w, uint32_t slot, const uint8_t genome_128b[128])
 {
-    if (!w || !autophage_256b || slot >= w->num_slots) return -1;
+    if (!w || !genome_128b || slot >= w->num_slots) return -1;
     CellEntity* c = &w->cells[slot];
     if (c->alive_state == 0) return -2;
 
-    /* Fold 256-byte AUTOPHAGE dual-strand (Strand alpha [64..127] + Strand beta [128..191] +
-     * Cache Line 0 ribosome/centromere header [0..63]) deterministically into 128-byte operon */
     uint8_t digest[32];
     CellSha256Ctx sha;
     cell_sha256_init(&sha);
-    cell_sha256_update(&sha, autophage_256b, 256);
+    cell_sha256_update(&sha, genome_128b, 128);
     cell_sha256_final(&sha, digest);
 
     uint64_t sig = 0;
@@ -374,7 +420,7 @@ CELL_API int cellulogonic_ingest_autophage_genome(
     c->autophage_dna_sig = sig;
 
     for (uint32_t i = 0; i < CELL_GENOME_BYTES; ++i) {
-        c->genome[i] = (uint8_t)(autophage_256b[i] ^ autophage_256b[128u + i] ^ digest[i & 31u]);
+        c->genome[i] = (uint8_t)(genome_128b[i] ^ digest[i & 31u]);
     }
     /* Ensure minimal catalytic viability after cross-layer genomic integration */
     c->genome[0]  |= 0x80u;
@@ -383,35 +429,69 @@ CELL_API int cellulogonic_ingest_autophage_genome(
     return 0;
 }
 
+CELL_API int cellulogonic_ingest_autophage_genome(
+    CellWorld* w, uint32_t slot, const uint8_t autophage_256b[256])
+{
+    if (!w || !autophage_256b || slot >= w->num_slots) return -1;
+    CellEntity* c = &w->cells[slot];
+    if (c->alive_state == 0) return -2;
+
+    /* Sanitize non-deterministic RDTSC bytes at [0xE0..0xE7] if a raw 256B AutophageCell struct is passed */
+    uint8_t clean_256b[256];
+    memcpy(clean_256b, autophage_256b, 256u);
+    memset(&clean_256b[0xE0], 0, 8u);
+
+    uint8_t digest[32];
+    CellSha256Ctx sha;
+    cell_sha256_init(&sha);
+    cell_sha256_update(&sha, clean_256b, 256);
+    cell_sha256_final(&sha, digest);
+
+    uint64_t sig = 0;
+    memcpy(&sig, digest, 8);
+    c->autophage_dna_sig = sig;
+
+    for (uint32_t i = 0; i < CELL_GENOME_BYTES; ++i) {
+        c->genome[i] = (uint8_t)(clean_256b[i] ^ clean_256b[128u + i] ^ digest[i & 31u]);
+    }
+    c->genome[0]  |= 0x80u;
+    c->genome[32] |= 0x80u;
+    cell_decode_genome_traits(c);
+    return 0;
+}
+
+static inline float cell_clamp01f(double v) {
+    if (v != v) return 0.0f;
+    if (v < 0.0) return 0.0f;
+    if (v > 1.0) return 1.0f;
+    return (float)v;
+}
+
 /* ============================================================================
  * Ecosystem Bridge 2: Asmodensius 112-Trait Deterministic Physiological Bridge
- * Projects a Cellulogonic Mecha specimen into [0.0, 1.0]^112 for Asmodensius!
+ * Projects a Cellulogonic Mecha specimen strictly into [0.0, 1.0]^112!
  * ============================================================================ */
 
 CELL_API void cellulogonic_project_asmodensius_112(
     const CellSpecimen* spec, float out_traits_112[112])
 {
     if (!spec || !out_traits_112) return;
-    /* Traits 0..15: Exact cellular physiological & bioenergetic observables */
-    out_traits_112[0]  = (float)(spec->total_volume > 250 ? 1.0 : (double)spec->total_volume / 250.0);
-    out_traits_112[1]  = (float)(spec->reduced_Q > 1.5 ? 1.0 : spec->reduced_Q / 1.5);
-    out_traits_112[2]  = (float)((double)spec->num_organelles / (double)CELL_MAX_ORGANELLES);
-    out_traits_112[3]  = (float)((double)spec->max_nesting_depth / 2.0);
-    out_traits_112[4]  = (float)((double)(spec->v_mem_mv + 90) / 130.0);
-    out_traits_112[5]  = (float)((double)spec->lipid_class / 3.0);
-    out_traits_112[6]  = (float)((double)(spec->c_ring_nH - 2) / 3.0);
-    out_traits_112[7]  = (float)((double)spec->differentiation_role / 3.0);
+    /* Traits 0..15: Strictly clamped [0.0f, 1.0f] physiological & bioenergetic observables */
+    out_traits_112[0]  = cell_clamp01f((double)spec->total_volume / 250.0);
+    out_traits_112[1]  = cell_clamp01f(spec->reduced_Q / 1.5);
+    out_traits_112[2]  = cell_clamp01f((double)spec->num_organelles / (double)CELL_MAX_ORGANELLES);
+    out_traits_112[3]  = cell_clamp01f((double)spec->max_nesting_depth / 2.0);
+    out_traits_112[4]  = cell_clamp01f((double)(spec->v_mem_mv + 90) / 130.0);
+    out_traits_112[5]  = cell_clamp01f((double)spec->lipid_class / 3.0);
+    out_traits_112[6]  = cell_clamp01f((double)(spec->c_ring_nH - 2) / 3.0);
+    out_traits_112[7]  = cell_clamp01f((double)spec->differentiation_role / 3.0);
     for (int s = 0; s < 8; ++s) {
-        double v = (double)spec->mol[s] / 80.0;
-        out_traits_112[8 + s] = (float)(v > 1.0 ? 1.0 : (v < 0.0 ? 0.0 : v));
+        out_traits_112[8 + s] = cell_clamp01f((double)spec->mol[s] / 80.0);
     }
     /* Traits 16..111: Exact deterministic projection from the 128-byte catalytic operon */
     for (int i = 0; i < 96; ++i) {
         uint8_t b0 = spec->genome[i];
         uint8_t b1 = spec->genome[(i + 32) & 127];
-        float val = (float)(((uint32_t)b0 * 3u + (uint32_t)b1) & 0x3FFu) / 1023.0f;
-        if (val < 0.0f) val = 0.0f;
-        if (val > 1.0f) val = 1.0f;
-        out_traits_112[16 + i] = val;
+        out_traits_112[16 + i] = cell_clamp01f((double)(((uint32_t)b0 * 3u + (uint32_t)b1) & 0x3FFu) / 1023.0);
     }
 }

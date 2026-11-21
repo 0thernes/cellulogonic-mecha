@@ -14,7 +14,8 @@ if (-not (Test-Path $clang)) {
     throw "Bundled Clang toolchain not found at $clang"
 }
 
-New-Item -ItemType Directory -Force -Path "$proj\bin","$proj\results" | Out-Null
+[System.IO.Directory]::CreateDirectory("$proj\bin") | Out-Null
+[System.IO.Directory]::CreateDirectory("$proj\results") | Out-Null
 
 $core = @(
     "$proj\src\crypto_rng.c",
@@ -57,12 +58,12 @@ if (Test-Path $ar) {
         $objs += $obj
     }
     & $ar rcs "$proj\bin\libcellulogonic.a" @objs
-    Remove-Item -Force -Path $objs
+    Remove-Item -Force -LiteralPath $objs
 }
 
 if (-not $SkipTests) {
     Write-Host "`nRunning 24-Gate Lab-Grade Falsification Suite (Win64 PE64)..."
-    Push-Location "$proj\bin"
+    Push-Location -LiteralPath "$proj\bin"
     & ".\test_falsification.exe"
     $rc = $LASTEXITCODE
     Remove-Item -Force -ErrorAction SilentlyContinue "test_tmp_cell.cmbin"
@@ -70,9 +71,9 @@ if (-not $SkipTests) {
     if ($rc -ne 0) { exit $rc }
 }
 
-if (-not $SkipLean -and (Test-Path $lake)) {
+if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
     Write-Host "`nVerifying 58 Pure Lean 4 Mathematical Proofs..."
-    Push-Location "$proj\lean"
+    Push-Location -LiteralPath "$proj\lean"
     & $lake build
     $lrc = $LASTEXITCODE
     Pop-Location

@@ -73,10 +73,14 @@ static int test_g03(void) {
         if (led.second_law_violations != 0 || led.mass_residual_amu != 0 || led.int_ledger_residual_uq != 0) ok = 0;
 
         if (s == 0) {
-            /* Planted Mutant M2: reverse radiated sink back into free ATP (perpetual motion!) */
+            /* Planted Mutant M2: reverse radiated sink back into free ATP — MUST BE CAUGHT BY ENGINE VERIFIER! */
             int64_t before = w->e_heat_radiated_sink_uq;
+            uint32_t v_before = w->second_law_violations;
             w->e_heat_radiated_sink_uq -= 10;
-            int caught = (w->e_heat_radiated_sink_uq < before);
+            int sec_ok = cell_verify_second_law(w, before);
+            int caught = (!sec_ok && w->second_law_violations == v_before + 1u);
+            w->e_heat_radiated_sink_uq = before;
+            w->second_law_violations = v_before;
             if (caught) g_mutants_caught++;
             else ok = 0;
         }
@@ -121,16 +125,50 @@ static int test_g05(void) {
     return ok;
 }
 
-/* G06: Domain-Isolated Philox4x32-10 RNG + Planted Mutant M3 (coupled RNG caught!) */
+/* G06: Domain-Isolated Philox4x32-10 RNG + Planted Mutant M3 + Clamped 112T + Tampered .cmbin Reject */
 static int test_g06(void) {
     uint64_t a = cell_philox_u64(5000ULL, RNG_DOMAIN_WORLD_EXOG, 1, 1);
     uint64_t b = cell_philox_u64(5000ULL, RNG_DOMAIN_ABIOGENESIS, 1, 1);
     uint64_t c = cell_philox_u64(5000ULL, RNG_DOMAIN_CELL_MUT, 1, 1);
     uint64_t d = cell_philox_u64(5000ULL, RNG_DOMAIN_MITOSIS_PART, 1, 1);
     int ortho = (a != b && a != c && a != d && b != c && b != d && c != d);
-    /* Planted Mutant M3: coupling two domains to same ID produces exact collision -> detected! */
-    uint64_t coupled = cell_philox_u64(5000ULL, RNG_DOMAIN_WORLD_EXOG, 1, 1);
-    int caught = (coupled == a);
+    /* Planted Mutant M3: Verify real world-step isolation & tampered .cmbin rejection & 112T clamping */
+    uint64_t shifted = cell_philox_u64(5000ULL, RNG_DOMAIN_CELL_MUT, 1, 2);
+    int caught = (shifted != c && a != c);
+    /* Verify out-of-range specimen fields are strictly clamped into [0.0f, 1.0f] */
+    CellSpecimen ext;
+    memset(&ext, 0, sizeof(ext));
+    ext.v_mem_mv = -140;
+    ext.c_ring_nH = 0;
+    ext.reduced_Q = -2.0;
+    ext.total_volume = 9999;
+    float t112[112];
+    cellulogonic_project_asmodensius_112(&ext, t112);
+    for (int k = 0; k < 112; ++k) {
+        if (!(t112[k] >= 0.0f && t112[k] <= 1.0f)) caught = 0;
+    }
+    /* Verify corrupted .cmbin snapshot with tampered byte is rejected by SHA-256 verifier */
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 16; cfg.height = 16; cfg.seed = 5026ULL;
+    CellWorld* wt = cellulogonic_create(&cfg);
+    if (cellulogonic_save_snapshot(wt, "test_tamper_tmp.cmbin") == 0) {
+        FILE* fp = fopen("test_tamper_tmp.cmbin", "rb");
+        if (fp) {
+            uint8_t* raw = (uint8_t*)malloc(262144);
+            size_t nr = raw ? fread(raw, 1, 262144, fp) : 0;
+            fclose(fp);
+            if (raw && nr > 256) {
+                raw[200] ^= 0xFFu;
+                FILE* fw = fopen("test_tamper_tmp.cmbin", "wb");
+                if (fw) { (void)fwrite(raw, 1, nr, fw); fclose(fw); }
+                CellWorld* bad = cellulogonic_load_snapshot("test_tamper_tmp.cmbin");
+                if (bad != NULL) { cellulogonic_destroy(bad); caught = 0; }
+            }
+            free(raw);
+        }
+    }
+    cellulogonic_destroy(wt);
     if (caught) g_mutants_caught++;
     return ortho && caught;
 }

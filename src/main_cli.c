@@ -31,7 +31,7 @@ static void print_telemetry_line(const CellTelemetry* t) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.1 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.2.1 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -49,7 +49,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.1 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.2.1 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -773,10 +773,18 @@ static int cmd_json_snap(uint32_t epochs, uint32_t size, uint64_t seed,
     return 0;
 }
 
-/* Stateful real-time streaming worker for butter-smooth 60 FPS WebGL2 live microscopy! */
+static int hex_nibble(char c) {
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'f') return 10 + (c - 'a');
+    if (c >= 'A' && c <= 'F') return 10 + (c - 'A');
+    return -1;
+}
+
+/* Stateful real-time streaming worker for butter-smooth 60 FPS WebGL2 live microscopy!
+ * FIFO-DEADLOCK PROOF: auto-initializes world if w == NULL and ALWAYS emits 1 JSON line per command! */
 static int cmd_stream(void) {
     CellWorld* w = NULL;
-    char line[512];
+    char line[1024];
     setvbuf(stdout, NULL, _IONBF, 0);
     while (fgets(line, sizeof(line), stdin)) {
         if (strncmp(line, "quit", 4) == 0) break;
@@ -803,33 +811,55 @@ static int cmd_stream(void) {
             w = cellulogonic_create(&cfg);
             if (warm > 0 && warm <= 400u) cellulogonic_step_epochs(w, warm);
             emit_world_json(w);
-        } else if (strncmp(line, "step ", 5) == 0 && w) {
+            continue;
+        }
+        /* Guarantee w != NULL before any non-init command so stdout NEVER drops a reply line! */
+        if (!w) {
+            CellWorldConfig cfg;
+            cellulogonic_default_config(&cfg);
+            cfg.width = 32; cfg.height = 32; cfg.regime = 5; cfg.seed = 5000ULL;
+            w = cellulogonic_create(&cfg);
+        }
+        if (strncmp(line, "step ", 5) == 0) {
             uint32_t n = (uint32_t)atoi(line + 5);
             if (n < 1u) n = 1u;
             if (n > 50u) n = 50u;
             cellulogonic_step_epochs(w, n);
             emit_world_json(w);
-        } else if (strncmp(line, "solvent ", 8) == 0 && w) {
+        } else if (strncmp(line, "solvent ", 8) == 0) {
             uint32_t s = (uint32_t)atoi(line + 8);
             cellulogonic_set_solvent(w, s);
             emit_world_json(w);
-        } else if (strncmp(line, "restraint ", 10) == 0 && w) {
+        } else if (strncmp(line, "restraint_vec ", 14) == 0) {
+            /* Independent 13-vector restraint control (T1:13 <-> T2:13 full parity!) */
+            const char* p = line + 14;
+            char* ep = NULL;
+            for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) {
+                while (*p == ' ' || *p == ',') p++;
+                if (*p == '\0' || *p == '\n' || *p == '\r') break;
+                unsigned long long v = strtoull(p, &ep, 10);
+                if (ep == p) break;
+                p = ep;
+                if (v > 100ull) v = 100ull;
+                cellulogonic_set_restraint(w, (uint32_t)r, (uint8_t)v);
+            }
+            emit_world_json(w);
+        } else if (strncmp(line, "restraint ", 10) == 0) {
             uint32_t pct = (uint32_t)atoi(line + 10);
+            if (pct > 100u) pct = 100u;
             for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cellulogonic_set_restraint(w, (uint32_t)r, (uint8_t)pct);
             emit_world_json(w);
-        } else if (strncmp(line, "tun", 3) == 0 && w) {
+        } else if (strncmp(line, "tun", 3) == 0) {
             cellulogonic_apply_desiccation_tun(w, 92);
             emit_world_json(w);
-        } else if (strncmp(line, "shock", 5) == 0 && w) {
+        } else if (strncmp(line, "shock", 5) == 0) {
             cellulogonic_apply_shock_lysis(w, 90);
             emit_world_json(w);
-        } else if (strncmp(line, "rehydrate", 9) == 0 && w) {
+        } else if (strncmp(line, "rehydrate", 9) == 0) {
             cellulogonic_rehydrate_tun(w);
             emit_world_json(w);
-        } else if (strncmp(line, "plume ", 6) == 0 && w) {
-            /* Conservation-exact photochemical nutrient pulse around (cx, cy)!
-             * Converts ambient W into S (2W + 46uq -> S + 10uq heat) & X (W + 34uq -> X + 4uq heat)
-             * so MASS Δ == 0 amu AND 1ST LAW Δ == 0 uq remain IDENTICALLY EXACT! */
+        } else if (strncmp(line, "plume ", 6) == 0) {
+            /* Conservation-exact photochemical nutrient pulse around (cx, cy)! */
             const char* p = line + 6;
             char* ep = NULL;
             int cx = (int)strtol(p, &ep, 10); p = ep;
@@ -860,9 +890,37 @@ static int cmd_stream(void) {
                 }
             }
             emit_world_json(w);
-        } else if (strncmp(line, "autophage", 9) == 0 && w) {
-            /* Live Build-1 AUTOPHAGE 256-Byte Dual-Strand DNA Plasmid Ingestion into living cells!
-             * Conservation-exact (0 amu, 0 uq drift): reprograms operon, morphospace & Asmodensius 112-trait vector! */
+        } else if (strncmp(line, "autophage_dna ", 14) == 0) {
+            /* REAL 128-byte (256 hex char) evolved AUTOPHAGE DNA transfection (0 synthetic bytes!) */
+            const char* hx = line + 14;
+            uint8_t dna128[128];
+            memset(dna128, 0, sizeof(dna128));
+            int parsed = 0;
+            for (int b = 0; b < 128; ++b) {
+                int hi = hex_nibble(hx[b * 2]);
+                int lo = (hi >= 0) ? hex_nibble(hx[b * 2 + 1]) : -1;
+                if (hi < 0 || lo < 0) break;
+                dna128[b] = (uint8_t)((hi << 4) | lo);
+                parsed++;
+            }
+            if (parsed >= 32) {
+                CellSpecimen apex;
+                if (cellulogonic_inspect_apex(w, &apex) == 0) {
+                    cellulogonic_ingest_autophage_128b(w, apex.slot_index, dna128);
+                }
+                uint32_t injected = 0;
+                uint32_t start = ((uint32_t)dna128[0] * 17u + (uint32_t)dna128[1]) % w->num_slots;
+                uint32_t stride = (w->num_slots / 17u) | 1u;
+                for (uint32_t step = 0; step < w->num_slots && injected < 16u; ++step) {
+                    uint32_t idx = (start + step * stride) % w->num_slots;
+                    if (w->cells[idx].alive_state == 1) {
+                        cellulogonic_ingest_autophage_128b(w, idx, dna128);
+                        injected++;
+                    }
+                }
+            }
+            emit_world_json(w);
+        } else if (strncmp(line, "autophage", 9) == 0) {
             uint64_t ap_seed = (line[9] == ' ') ? strtoull(line + 10, NULL, 10) : 0ULL;
             if (ap_seed == 0ULL) ap_seed = cell_hw_rdseed_u64();
             uint8_t autophage_dna[256];
@@ -880,12 +938,14 @@ static int cmd_stream(void) {
             for (uint32_t step = 0; step < w->num_slots && injected < 16u; ++step) {
                 uint32_t idx = (start + step * stride) % w->num_slots;
                 if (w->cells[idx].alive_state == 1) {
-                    /* Slight per-cell plasmid drift so each recipient diversifies into new traits */
                     autophage_dna[(injected * 13u) & 255u] ^= (uint8_t)(0x5Au + injected * 17u);
                     cellulogonic_ingest_autophage_genome(w, idx, autophage_dna);
                     injected++;
                 }
             }
+            emit_world_json(w);
+        } else {
+            /* Always reply with current state so FIFO protocol NEVER stalls on unknown/blank line */
             emit_world_json(w);
         }
     }

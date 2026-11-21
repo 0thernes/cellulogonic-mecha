@@ -365,9 +365,19 @@ CELL_API int cellulogonic_save_snapshot(const CellWorld* w, const char* path) {
     hdr.counters[21] = w->eutelic_stops_cum;
     hdr.counters[22] = w->cpg_pulses_cum;
 
+    /* Compute cryptographic SHA-256 integrity trailer over (hdr, voxels, cells) */
+    uint8_t digest[32];
+    CellSha256Ctx sha;
+    cell_sha256_init(&sha);
+    cell_sha256_update(&sha, (const uint8_t*)&hdr, sizeof(hdr));
+    cell_sha256_update(&sha, (const uint8_t*)w->voxels, (size_t)w->num_slots * sizeof(CellVoxel));
+    cell_sha256_update(&sha, (const uint8_t*)w->cells,  (size_t)w->num_slots * sizeof(CellEntity));
+    cell_sha256_final(&sha, digest);
+
     int ok = (fwrite(&hdr, sizeof(hdr), 1, f) == 1) &&
              (fwrite(w->voxels, sizeof(CellVoxel), w->num_slots, f) == w->num_slots) &&
-             (fwrite(w->cells,  sizeof(CellEntity), w->num_slots, f) == w->num_slots);
+             (fwrite(w->cells,  sizeof(CellEntity), w->num_slots, f) == w->num_slots) &&
+             (fwrite(digest, 1, 32, f) == 32);
     fclose(f);
     return ok ? 0 : -3;
 }
@@ -380,21 +390,62 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
     SnapshotHeader hdr;
     if (fread(&hdr, sizeof(hdr), 1, f) != 1 ||
         hdr.magic != CELL_SNAPSHOT_MAGIC ||
-        hdr.abi_version != CELLULOGONIC_ABI_VERSION) {
+        hdr.abi_version != CELLULOGONIC_ABI_VERSION ||
+        hdr.cfg.width < 8u || hdr.cfg.width > 64u ||
+        hdr.cfg.height < 8u || hdr.cfg.height > 64u ||
+        hdr.cfg.solvent >= CELL_SOLVENT_COUNT ||
+        hdr.num_slots != hdr.cfg.width * hdr.cfg.height) {
         fclose(f);
         return NULL;
     }
 
     CellWorld* w = cellulogonic_create(&hdr.cfg);
     if (!w) { fclose(f); return NULL; }
+    uint8_t file_digest[32];
     if (hdr.num_slots != w->num_slots ||
         fread(w->voxels, sizeof(CellVoxel), w->num_slots, f) != w->num_slots ||
-        fread(w->cells,  sizeof(CellEntity), w->num_slots, f) != w->num_slots) {
+        fread(w->cells,  sizeof(CellEntity), w->num_slots, f) != w->num_slots ||
+        fread(file_digest, 1, 32, f) != 32) {
         fclose(f);
         cellulogonic_destroy(w);
         return NULL;
     }
     fclose(f);
+
+    /* Verify SHA-256 cryptographic integrity before trusting any heap indices! */
+    uint8_t calc_digest[32];
+    CellSha256Ctx sha;
+    cell_sha256_init(&sha);
+    cell_sha256_update(&sha, (const uint8_t*)&hdr, sizeof(hdr));
+    cell_sha256_update(&sha, (const uint8_t*)w->voxels, (size_t)w->num_slots * sizeof(CellVoxel));
+    cell_sha256_update(&sha, (const uint8_t*)w->cells,  (size_t)w->num_slots * sizeof(CellEntity));
+    cell_sha256_final(&sha, calc_digest);
+    if (memcmp(calc_digest, file_digest, 32) != 0) {
+        cellulogonic_destroy(w);
+        return NULL;
+    }
+
+    /* Strict structural & bounds validation on every loaded cell (blocks heap OOB R/W!) */
+    for (uint32_t i = 0; i < w->num_slots; ++i) {
+        CellEntity* c = &w->cells[i];
+        if (c->alive_state > 3u || c->num_organelles > CELL_MAX_ORGANELLES ||
+            c->morph_fate >= CELL_FATE_COUNT) {
+            cellulogonic_destroy(w);
+            return NULL;
+        }
+        for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
+            if (c->bond_partners[b] >= (int16_t)w->num_slots || c->bond_partners[b] < -1) {
+                cellulogonic_destroy(w);
+                return NULL;
+            }
+        }
+        for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
+            if (c->axon_target[a] >= (int16_t)w->num_slots || c->axon_target[a] < -1) {
+                cellulogonic_destroy(w);
+                return NULL;
+            }
+        }
+    }
 
     w->next_lineage_id         = hdr.next_lineage_id;
     w->epoch                   = hdr.epoch;

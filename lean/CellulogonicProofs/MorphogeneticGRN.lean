@@ -182,25 +182,58 @@ theorem T57_cpg_pacemaker_sensorimotor_bound
   constructor <;> omega
 
 /- ============================================================================
-   8. Zero-Drift Morphogenetic Conservation Invariant (T58)
+   8. Zero-Drift Morphogenetic & ATP-Coupled CPG Conservation Invariant (T58)
    ============================================================================ -/
 
 structure MorphState where
   massTotal   : Int
-  energyTotal : Int
+  chemEnergy  : Int
+  heatEnergy  : Int
   tfActive    : Nat
   cadType     : Nat
   axonCount   : Nat
   cpgPhase    : Int
 
-/-- T58 (Zero-Drift Developmental Conservation Invariant):
-    Pure regulatory & signaling transitions (updating GRN transcription factors, switching
-    cadherin adhesion labels, wiring/pruning axon pointers, or advancing CPG phases) leave
-    total atomic mass and total First-Law energy strictly invariant (`ΔMass = 0`, `ΔE = 0`). -/
+/-- Elementary developmental transitions: pure GRN signaling updates OR conserved
+    ATP-hydrolysis CPG muscle firing (`Δchem = -dE`, `Δheat = +dE`). -/
+inductive MorphStep where
+  | signalUpdate (tf' cad' ax' : Nat) (cpg' : Int)
+  | cpgAtpBurn   (dE : Int) (cpg' : Int)
+
+def applyMorphStep (s : MorphState) : MorphStep → MorphState
+  | .signalUpdate tf' cad' ax' cpg' =>
+      { s with tfActive := tf', cadType := cad', axonCount := ax', cpgPhase := cpg' }
+  | .cpgAtpBurn dE cpg' =>
+      { s with chemEnergy := s.chemEnergy - dE, heatEnergy := s.heatEnergy + dE, cpgPhase := cpg' }
+
+def runMorphTrace (s : MorphState) : List MorphStep → MorphState
+  | [] => s
+  | st :: rest => runMorphTrace (applyMorphStep s st) rest
+
+/-- T58 (Inductive Multi-Step Developmental & CPG Conservation Theorem):
+    For ANY finite trace `steps : List MorphStep` of arbitrary GRN regulatory switches,
+    cadherin updates, axon wirings, and ATP-hydrolyzing CPG muscle contractions, total
+    atomic mass AND total First-Law energy (`chemEnergy + heatEnergy`) are strictly invariant! -/
 theorem T58_morphogenetic_signaling_zero_drift
-    (s : MorphState) (tf' cad' ax' : Nat) (cpg' : Int) :
-    let s' : MorphState := { s with tfActive := tf', cadType := cad', axonCount := ax', cpgPhase := cpg' }
-    s'.massTotal = s.massTotal ∧ s'.energyTotal = s.energyTotal := by
-  exact ⟨rfl, rfl⟩
+    (steps : List MorphStep) (s : MorphState) :
+    let s' := runMorphTrace s steps
+    s'.massTotal = s.massTotal ∧
+    s'.chemEnergy + s'.heatEnergy = s.chemEnergy + s.heatEnergy := by
+  induction steps generalizing s with
+  | nil =>
+      exact ⟨rfl, rfl⟩
+  | cons st rest ih =>
+      cases st with
+      | signalUpdate tf' cad' ax' cpg' =>
+          have h1 := ih (applyMorphStep s (.signalUpdate tf' cad' ax' cpg'))
+          dsimp only [runMorphTrace, applyMorphStep] at h1 ⊢
+          exact h1
+      | cpgAtpBurn dE cpg' =>
+          have h1 := ih (applyMorphStep s (.cpgAtpBurn dE cpg'))
+          dsimp only [runMorphTrace, applyMorphStep] at h1 ⊢
+          have hE := h1.2
+          constructor
+          · exact h1.1
+          · omega
 
 end Cellulogonic.MorphogeneticGRN

@@ -358,9 +358,18 @@ export class CellMicroscope3D {
     this.cellProg  = linkProgram(gl, CELL_VS, CELL_FS);
     this.lineProg  = linkProgram(gl, LINE_VS, LINE_FS);
     this.pointProg = linkProgram(gl, POINT_VS, POINT_FS);
+    /* Cache all GL uniform locations once (zero per-frame getUniformLocation overhead!) */
+    this.uLocs = {
+      ptVP:    gl.getUniformLocation(this.pointProg, "u_viewProj"),
+      ptScale: gl.getUniformLocation(this.pointProg, "u_scale"),
+      lnVP:    gl.getUniformLocation(this.lineProg, "u_viewProj"),
+      clVP:    gl.getUniformLocation(this.cellProg, "u_viewProj"),
+      clCam:   gl.getUniformLocation(this.cellProg, "u_camPos"),
+      clTime:  gl.getUniformLocation(this.cellProg, "u_time")
+    };
 
     this.sphere = buildIcosphere(2);
-    this.maxCells = 1200;
+    this.maxCells = 4096;
 
     // Cell instanced VAO
     this.cellVao = gl.createVertexArray();
@@ -580,12 +589,13 @@ export class CellMicroscope3D {
     }
 
     // Soft 3D nutrient S / oxidant X / quorum Q OR RGB Chemical GPS Morphogen (Wnt/BMP/Shh) clouds!
-    if (this.grid.plumes) {
-      const gw = 16;
+    if (this.grid.plumes && this.grid.plumes.length > 0) {
+      const gw = Math.max(1, Math.round(Math.sqrt(this.grid.plumes.length)));
+      const cellSpan = 32.0 / gw;
       for (let i = 0; i < this.grid.plumes.length; i++) {
         const pl = this.grid.plumes[i];
-        const px = ((i % gw) + 0.5) * 2.0 - 16.0;
-        const pz = (Math.floor(i / gw) + 0.5) * 2.0 - 16.0;
+        const px = ((i % gw) + 0.5) * cellSpan - 16.0;
+        const pz = (Math.floor(i / gw) + 0.5) * cellSpan - 16.0;
         const wntN = Math.min(1, (pl[3] || 0) / 140);
         const bmpN = Math.min(1, (pl[4] || 0) / 140);
         const shhN = Math.min(1, (pl[5] || 0) / 140);
@@ -665,13 +675,15 @@ export class CellMicroscope3D {
         const aa = firing ? 0.98 : (0.42 + 0.45 * wNorm);
         pushSeg(A.pos[0], A.pos[1], A.pos[2], mx, my, mz, ar, ag, ab, aa);
         pushSeg(mx, my, mz, B.pos[0], B.pos[1], B.pos[2], ar, ag, ab, aa);
-        // Animated action-potential spark gliding along curved quadratic Bezier axon at 60 FPS!
-        const u = (t * (firing ? 2.6 : 0.9) + ia * 0.19) % 1.0;
-        const inv = 1.0 - u;
-        const sx = inv*inv*A.pos[0] + 2*inv*u*mx + u*u*B.pos[0];
-        const sy = inv*inv*A.pos[1] + 2*inv*u*my + u*u*B.pos[1];
-        const sz = inv*inv*A.pos[2] + 2*inv*u*mz + u*u*B.pos[2];
-        pushPt(sx, sy, sz, firing ? 19.0 : 10.5, 1.0, firing ? 0.94 : 0.55, firing ? 0.28 : 1.0, firing ? 0.98 : 0.65);
+        // Render action-potential spark ONLY when C11 CPG neuron actually fires!
+        if (firing) {
+          const u = (t * 2.6 + ia * 0.19) % 1.0;
+          const inv = 1.0 - u;
+          const sx = inv*inv*A.pos[0] + 2*inv*u*mx + u*u*B.pos[0];
+          const sy = inv*inv*A.pos[1] + 2*inv*u*my + u*u*B.pos[1];
+          const sz = inv*inv*A.pos[2] + 2*inv*u*mz + u*u*B.pos[2];
+          pushPt(sx, sy, sz, 19.0, 1.0, 0.94, 0.28, 0.98);
+        }
       }
     }
 
@@ -829,8 +841,8 @@ export class CellMicroscope3D {
     gl.depthMask(false);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
     gl.useProgram(this.pointProg);
-    gl.uniformMatrix4fv(gl.getUniformLocation(this.pointProg, "u_viewProj"), false, vp);
-    gl.uniform1f(gl.getUniformLocation(this.pointProg, "u_scale"), rh * 0.55);
+    gl.uniformMatrix4fv(this.uLocs.ptVP, false, vp);
+    gl.uniform1f(this.uLocs.ptScale, rh * 0.55);
     gl.bindVertexArray(this.ptVao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.ptVbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.ptData.subarray(0, ptPtr));
@@ -838,7 +850,7 @@ export class CellMicroscope3D {
 
     // PASS 2: 3D Microtubule Asters, Whipping Flagella & Curved Bioelectric Colony Filaments
     gl.useProgram(this.lineProg);
-    gl.uniformMatrix4fv(gl.getUniformLocation(this.lineProg, "u_viewProj"), false, vp);
+    gl.uniformMatrix4fv(this.uLocs.lnVP, false, vp);
     gl.bindVertexArray(this.lineVao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.lineVbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.lineData.subarray(0, lnPtr));
@@ -847,9 +859,9 @@ export class CellMicroscope3D {
     // PASS 3: Translucent Organic Deformable 3D Lipid Bilayer Cells (Fresnel Bioluminescence!)
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(this.cellProg);
-    gl.uniformMatrix4fv(gl.getUniformLocation(this.cellProg, "u_viewProj"), false, vp);
-    gl.uniform3fv(gl.getUniformLocation(this.cellProg, "u_camPos"), eye);
-    gl.uniform1f(gl.getUniformLocation(this.cellProg, "u_time"), t);
+    gl.uniformMatrix4fv(this.uLocs.clVP, false, vp);
+    gl.uniform3fv(this.uLocs.clCam, eye);
+    gl.uniform1f(this.uLocs.clTime, t);
     gl.bindVertexArray(this.cellVao);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instVbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.instData.subarray(0, instCount * 20));

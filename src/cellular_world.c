@@ -561,8 +561,10 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
     const uint8_t r_box     = w->cfg.restraints[CELL_RESTRAINT_BOXING];
     const uint8_t r_sandbox = w->cfg.restraints[CELL_RESTRAINT_SANDBOXING];
 
-    uint32_t wave_x = (r_sandbox >= 80) ? 0u : (uint32_t)(w->epoch % W);
-    uint32_t wave_y = (r_sandbox >= 80) ? 0u : (uint32_t)((w->epoch / 2u) % H);
+    /* Continuous SANDBOXING attenuation (eliminates <80% dead-zone!) */
+    uint32_t sb_div = 1u + (uint32_t)(r_sandbox / 12u);
+    uint32_t wave_x = (r_sandbox >= 80) ? 0u : (uint32_t)((w->epoch / sb_div) % W);
+    uint32_t wave_y = (r_sandbox >= 80) ? 0u : (uint32_t)((w->epoch / (sb_div * 2u)) % H);
 
     for (uint32_t i = 0; i < N; ++i) {
         CellVoxel* vx = &w->voxels[i];
@@ -804,12 +806,16 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                     }
                 }
             } else if (ci->genome[112] > 120) {
-                uint32_t off = (cell_philox_u32(w->cfg.seed, RNG_DOMAIN_PHAGO_HGT, w->epoch, i) & 3u) * 16u;
-                memcpy(&ci->genome[off], vx->free_plasmid, 16);
-                cell_decode_genome_traits(ci);
-                vx->free_plasmid_valid = 0;
-                w->hgt_uptake_events++;
-                if (r_degress >= 30 && r_degress < 90) w->backlash_hgt_smuggles++;
+                /* Continuous r_degress attenuation (eliminates <60% dead-zone & false backlash!) */
+                uint32_t hgt_roll = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_PHAGO_HGT, w->epoch, i ^ 0x5555u) % 100u;
+                if (r_degress == 0 || hgt_roll >= (uint32_t)((r_degress * 3) / 4)) {
+                    uint32_t off = (cell_philox_u32(w->cfg.seed, RNG_DOMAIN_PHAGO_HGT, w->epoch, i) & 3u) * 16u;
+                    memcpy(&ci->genome[off], vx->free_plasmid, 16);
+                    cell_decode_genome_traits(ci);
+                    vx->free_plasmid_valid = 0;
+                    w->hgt_uptake_events++;
+                    if (r_degress >= 25 && r_degress < 95) w->backlash_hgt_smuggles++;
+                }
             }
         }
 
@@ -865,9 +871,10 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                                 try_form_bond(w, i, (uint32_t)j);
                             }
 
-                            /* C. Mid-Swim 3D Phagocytosis, Predation & Serial Endosymbiosis (suppressed inside clonal embryo!) */
+                            /* C. Mid-Swim 3D Phagocytosis, Predation & Serial Endosymbiosis (continuous SILOING scaling!) */
+                            uint32_t silo_roll = (r_silo > 0) ? (cell_philox_u32(w->cfg.seed, RNG_DOMAIN_PHAGO_HGT, w->epoch, i ^ (uint32_t)j) % 100u) : 100u;
                             if (w->cfg.regime != CELL_REGIME_EMBRYOGENESIS &&
-                                w->cfg.enable_endosymbiosis && r_silo < 80 && r_degress < 85 && r_min < 85 &&
+                                w->cfg.enable_endosymbiosis && r_silo < 100 && silo_roll >= r_silo && r_degress < 85 && r_min < 85 &&
                                 !are_bonded(ci, (int16_t)j) && dist < r_sum + 260) {
                                 int64_t vi = cell_internal_volume(ci);
                                 int64_t vj = cell_internal_volume(cj);
@@ -961,7 +968,7 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
 
         for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
             int16_t pj = ci->bond_partners[b];
-            if (pj < 0 || (uint32_t)pj <= i) continue;
+            if (pj < 0 || (uint32_t)pj >= N || (uint32_t)pj <= i) continue;
             uint32_t j = (uint32_t)pj;
             CellEntity* cj = &w->cells[j];
             if (cj->alive_state != 1) { sever_bond_pair(w, i, j); continue; }
@@ -1011,10 +1018,10 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                 cj->vel_nm[d] -= dv;
             }
 
-            /* Exact conservative Levin bioelectric gap-junction relaxation (Lean T31-T33!) */
-            if (r_lobot < 80 && r_muzzle < 85) {
+            /* Exact conservative Levin bioelectric gap-junction relaxation (continuous LOBOTOMIZING scaling!) */
+            if (r_lobot < 100 && r_muzzle < 85) {
                 int32_t diff = ci->v_mem_mv - cj->v_mem_mv;
-                int32_t g_cond = ((int32_t)ci->genome[98] + (int32_t)cj->genome[98]) / 64;
+                int32_t g_cond = (((int32_t)ci->genome[98] + (int32_t)cj->genome[98]) * (100 - (int32_t)r_lobot)) / 6400;
                 if (g_cond > 0) {
                     int32_t delta = (diff * g_cond) / 32;
                     vd[i] -= delta;
@@ -1290,8 +1297,12 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
         /* In clonal Embryogenesis, somatic cells retain identical DNA (zero random somatic drift!) */
         uint32_t mut_rate = (w->cfg.regime == CELL_REGIME_EMBRYOGENESIS) ? 0u : 18u;
         if (mut_rate > 0u) {
-            if (w->voxels[vidx].heat_local_uq > 220 && r_medicate < 70) mut_rate = 42u;
-            if (r_medicate >= 70) mut_rate = 4u;
+            if (w->voxels[vidx].heat_local_uq > 220) mut_rate = 42u;
+            /* Continuous MEDICATING suppression (eliminates <70% dead-zone!) */
+            if (r_medicate > 0u) {
+                mut_rate = (mut_rate * (100u - (uint32_t)r_medicate)) / 100u;
+                if (mut_rate < 2u && r_medicate < 100u) mut_rate = 2u;
+            }
             cell_mutate_genome(dcell, w->cfg.seed, w->epoch, (uint32_t)target_slot, mut_rate, r_delimit);
             cell_decode_genome_traits(dcell);
         }
@@ -1390,9 +1401,13 @@ static void step_developmental_morphogenesis(CellWorld* w) {
         CellEntity* c = &w->cells[i];
         if (c->alive_state != 1) continue;
         const CellVoxel* vx = &w->voxels[cell_voxel_idx(w, c)];
+        /* True 3D Z-stratified chemical GPS: pos_nm[2] modulates Dorsal (BMP) vs Ventral (Shh)! */
+        int32_t z_rel = c->pos_nm[2] - (span_z / 2);
+        int32_t z_dorsal_boost  = (z_rel > 0) ? ((z_rel * 24) / (span_z / 2 + 1)) : 0;
+        int32_t z_ventral_boost = (z_rel < 0) ? (((-z_rel) * 24) / (span_z / 2 + 1)) : 0;
         int32_t wnt = vx->morph[0];
-        int32_t bmp = vx->morph[1];
-        int32_t shh = vx->morph[2];
+        int32_t bmp = vx->morph[1] + z_dorsal_boost;
+        int32_t shh = vx->morph[2] + z_ventral_boost;
 
         /* Genome-encoded local French-Flag thresholds (Wolpert 1969, Lean T51!) */
         int32_t t_wnt_hi  = 28 + (int32_t)(c->genome[96] & 31u);
@@ -1524,7 +1539,7 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             int32_t couple = 0;
             for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
                 int16_t pj = ci->bond_partners[b];
-                if (pj >= 0 && w->cells[pj].alive_state == 1 && w->cells[pj].morph_fate == CELL_FATE_NEURAL) {
+                if (pj >= 0 && (uint32_t)pj < N && w->cells[pj].alive_state == 1 && w->cells[pj].morph_fate == CELL_FATE_NEURAL) {
                     int32_t pd = w->cells[pj].cpg_phase_mrad - ci->cpg_phase_mrad;
                     if (pd > -1200 && pd < 1200) couple += 140; /* Push apart into alternating rhythm */
                 }
@@ -1535,10 +1550,10 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             int fired = (ci->cpg_phase_mrad < 1950);
             if (fired) ci->cpg_firing = 1u;
 
-            /* C. Synaptic Transmission -> Muscle Contraction & Use-It-or-Lose-It Hebbian Pruning (Lean T56!) */
+            /* C. Synaptic Transmission -> ATP-Consuming Muscle Contraction (Lean T50!) & Hebbian Pruning (T56) */
             for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
                 int16_t tj = ci->axon_target[a];
-                if (tj < 0) continue;
+                if (tj < 0 || (uint32_t)tj >= N) continue;
                 CellEntity* ct = &w->cells[tj];
                 if (ct->alive_state != 1) {
                     ci->axon_target[a] = -1;
@@ -1553,13 +1568,13 @@ static void step_developmental_morphogenesis(CellWorld* w) {
                 int too_far = (d2 > 11500LL * 11500LL);
 
                 if (fired && !too_far) {
-                    /* Active firing strengthens synapse (Hebbian LTP) & drives Muscle undulation! */
+                    /* Active firing strengthens synapse (Hebbian LTP) & drives ATP-coupled Muscle undulation! */
                     uint32_t nw = (uint32_t)ci->axon_weight[a] + 12u;
                     ci->axon_weight[a] = (uint8_t)(nw > 255u ? 255u : nw);
                     int32_t nv = ct->v_mem_mv + 6;
                     ct->v_mem_mv = nv > 40 ? 40 : nv;
-                    if (ct->morph_fate == CELL_FATE_MUSCLE) {
-                        /* CPG-driven contractile muscle wave propels the 3D multicellular creature! */
+                    if (ct->morph_fate == CELL_FATE_MUSCLE && cell_hydrolyze_atp_exact(w, (uint32_t)tj, 1) > 0) {
+                        /* Strictly ATP-funded contractile muscle wave propels the 3D multicellular creature! */
                         int32_t wave_s = (ci->cpg_phase_mrad < 975) ? 1 : -1;
                         ct->elong_q10 = (wave_s > 0) ? 1480 : 860;
                         ct->vel_nm[0] += (ci->heading_q10[0] * 140 + (-ci->heading_q10[1]) * 75 * wave_s) / 1024;
@@ -1601,6 +1616,7 @@ static void step_developmental_morphogenesis(CellWorld* w) {
 
 void cell_step_one_epoch(CellWorld* w) {
     const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
+    const int64_t sink_before = w->e_heat_radiated_sink_uq;
 
     /* 1. Exogenous hydrothermal/photochemical flux, CMC abiogenesis & radiative cooling */
     step_exogenous_flux_and_abiogenesis(w);
@@ -1634,5 +1650,6 @@ void cell_step_one_epoch(CellWorld* w) {
     /* 6. Canham-Helfrich osmotic lysis, Spindle Cleavage Angles, Hippo/Eutely Size Control & Mitosis */
     step_membrane_mechanics_and_division(w);
 
+    (void)cell_verify_second_law(w, sink_before);
     w->epoch++;
 }
