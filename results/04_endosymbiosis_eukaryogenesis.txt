@@ -4,11 +4,11 @@
 t= 240 | alive= 152 (prok= 90 euk= 62 sec=41 spore= 0 tun=  0) | org=169 (mito= 18 chlo=151) | tis= 44 maxT=  7 | sym= 990 bud= 20 endo=537 | COVI=81.21 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
   Mean Prok Vol=66.94 | Mean Euk Vol=170.21 | Max Cell Vol=663.00
   Captures=537 (Secondary Chimeras=181) | EGT=72 | Mitophagy=2 | HeteroplasmyVar=0.0039
-  Ambient Oxidant X=161.59 | Assembly A=37.10 | SHA-256=85b15fc5858b9d0fade49b49d8efad13680a8f7dbadb9d8402a8d61afe0fdffa
+  Ambient Oxidant X=161.59 | Assembly A=33.21 | SHA-256=78f2c333b07af8e8a14a3ca096c34b24bb5fe873cb729f61dc1b4094be6f0ab3
 
 [ARM B: ENDOSYMBIOSIS ABLATED (Prokaryotes Only)]
-t= 240 | alive= 457 (prok=457 euk=  0 sec= 0 spore=18 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis= 53 maxT=  5 | sym= 546 bud= 45 endo=  0 | COVI=73.22 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
+t= 240 | alive= 457 (prok=457 euk=  0 sec= 0 spore=18 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis= 53 maxT=  5 | sym= 546 bud= 45 endo=  0 | COVI=71.08 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
   Mean Prok Vol=53.22 | Mean Euk Vol=0.00 | Max Cell Vol=197.00
   Captures=0 (Secondary Chimeras=0) | EGT=0 | Mitophagy=0 | HeteroplasmyVar=0.0000
-  Ambient Oxidant X=154.89 | Assembly A=20.90 | SHA-256=b2dcf7397db7bab006752b9827e011d92c3dd48acab637bd82e5fd0fc23f95fa
+  Ambient Oxidant X=154.89 | Assembly A=16.00 | SHA-256=4328cc996f0cb187cf480b56ae7e0ac9c185d7ffef5c239e6b04e2dadfa5fb0a
 

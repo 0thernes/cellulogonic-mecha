@@ -2,7 +2,7 @@
 
 [NATIVE TERRAN_H2O      ] alive= 402 | adapted= 395 (98.3%) | mean_cring=3.01 (min=3) | mean_Q=0.212 | COVI=84.62 | mRes=0 eRes=0
 [NATIVE TITAN_AZOTOSOME ] alive= 295 | adapted= 288 (97.6%) | mean_cring=3.95 (min=4) | mean_Q=0.568 | COVI=86.96 | mRes=0 eRes=0
-[NATIVE VENT_TETRAETHER ] alive= 351 | adapted= 349 (99.4%) | mean_cring=4.17 (min=3) | mean_Q=0.214 | COVI=78.48 | mRes=0 eRes=0
+[NATIVE VENT_TETRAETHER ] alive= 351 | adapted= 349 (99.4%) | mean_cring=4.17 (min=3) | mean_Q=0.214 | COVI=77.73 | mRes=0 eRes=0
 [NATIVE VENUS_H2SO4     ] alive= 138 | adapted= 134 (97.1%) | mean_cring=2.33 (min=2) | mean_Q=0.439 | COVI=79.01 | mRes=0 eRes=0
 
 --- Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (140 ep) ---

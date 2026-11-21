@@ -2,6 +2,14 @@
 
 All notable changes to **CELLULOGONIC MECHA** are documented in this file.
 
+## [1.2.1] — 2026-11-21
+
+### Hardened & Verified (Anti-Fraud, Security & Full 4-Way Cross-OS Parity)
+- **Cryptographic Snapshot & ABI Integrity (`src/abi_exports.c`)**: Added SHA-256 integrity trailer and strict cell/bond/axon bounds verification on `.cmbin` snapshots (verified by tampered-snapshot rejection in `G06`); strictly clamped all 112 `Asmodensius` projected traits into `[0.0f, 1.0f]`.
+- **Biophysical & Statistical Realism (`src/cellular_world.c`, `src/chemoton_physics.c`, `src/metrology_covi.c`)**: Upgraded `Wnt/BMP/Shh` morphogens to 3D Z-stratified chemical GPS, coupled CPG propulsion to exact `RXN_R8` ATP hydrolysis (`0 amu / 0 uq` drift), replaced static GHz coherence with a stateful Fröhlich relaxation ODE, upgraded active loci & Assembly Index to catalysis-gated LZ77 motif reuse, fixed lineage hash linear probing, and eliminated 5 restraint dead-zones (`SANDBOXING`, `SILOING`, `DEGRESSING`, `LOBOTOMIZING`, `MEDICATING`) — lifting `H1` (`Feral` vs `70% Castrated`) to `+34.574` COVI (`24/24` wins, `p_Holm = 0.00040`).
+- **Security, Hardware & Build Hardening (`src/crypto_rng.c`, `web/server.mjs`, `web/renderer3d.js`, `web/app.js`, `build.ps1`)**: Added CPUID guard on `rdseed`/`rdrand`, hardened `web/server.mjs` (FIFO queue deadlock fix, request timeouts, source-exposure block, loopback guard), cached WebGL2 uniforms (`maxCells = 4096`), replaced JS sine wave oscilloscope with real C11 telemetry history, and hardened `build.ps1` with `-LiteralPath` for bracketed Z-Drive paths.
+- **Full 4-Way Cross-OS Verification**: Rebuilt & verified Win64 PE64 (`clang 23.1.0`) + Linux ELF64 (`gcc 13.3.0`) to **0-bit SHA-256 diff** (`f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918`), **24/24 gates + 8/8 mutants** on both OSes, and **58/58 Lean 4.35.0 proofs (`0 sorryAx`, `0` warnings)** including inductive `T58` (`List MorphStep`).
+
 ## [1.2.0] — 2026-11-19
 
 ### Added

@@ -3,15 +3,15 @@
 [TRACK B (FERAL + BIOELECTRIC)]
 t= 240 | alive= 344 (prok=255 euk= 89 sec=42 spore=26 tun=  0) | org=152 (mito= 10 chlo=142) | tis= 43 maxT=  7 | sym=3729 bud= 47 endo=346 | COVI=79.70 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
   V_mem mean=-38.59 mV, std=8.04 mV | Roles: boundary=34 soma=3 germ=11 interior=9
-  Somatic Cancer Defections=127 | Constitutional Apoptotic Policings=0 | SHA=a520f8e876df137ad707699611a00ee6cd6969f9443de21ee4465572b1087b2e
+  Somatic Cancer Defections=127 | Constitutional Apoptotic Policings=0 | SHA=d37163c6e3cfe16398c7449365ccedb60306054cb2f47fd3b3d997af73fda99b
 
 [TRACK A (CONSTITUTIONAL + BIOELECTRIC)]
 t= 240 | alive= 228 (prok=154 euk= 74 sec=44 spore=29 tun=  0) | org=182 (mito=  3 chlo=179) | tis= 33 maxT= 11 | sym=2363 bud= 45 endo=398 | COVI=78.03 (S5, MET=7/7) | mRes=0 eRes=0 2nd=0
   V_mem mean=-42.23 mV, std=9.10 mV | Roles: boundary=30 soma=6 germ=23 interior=3
-  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=1 | SHA=a85d61cb4a8b4b5bab5c468874e25df6f80f120ac0fe871b66c83c81a340cb04
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=1 | SHA=c73b0123b4aeec73a4995f376ced0774cf7c12924218942e8ac0bb0ac5fb34bf
 
 [NEGATIVE CONTROL (BIOELECTRICITY ABLATED)]
 t= 240 | alive=  74 (prok= 47 euk= 27 sec= 8 spore= 0 tun=  0) | org= 46 (mito=  2 chlo=44) | tis=  0 maxT=  0 | sym= 926 bud=  7 endo=125 | COVI=70.07 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
   V_mem mean=-41.27 mV, std=7.33 mV | Roles: boundary=0 soma=0 germ=0 interior=0
-  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=14a1f7c2073927d8aa88fd8e6fd462cafcf8342005016d749f1a3a03bea2978c
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=026e45321b0b49582045754c714e742eb186cb658e75907350e79ff24ca41aab
 

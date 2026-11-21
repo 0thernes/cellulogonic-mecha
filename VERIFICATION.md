@@ -1,8 +1,8 @@
 # CELLULOGONIC MECHA v1.2.1 — Formal Verification & Empirical Proof Ledger (Anti-Fraud Hardened)
 
-Every theorem, gate, SHA-256 digest, runtime, and statistical test below was produced directly by compiling and executing **CELLULOGONIC MECHA v1.2.1** on live hardware (**Intel Core Ultra 9 275HX**, AVX2 + BMI1/2 + POPCNT + RDSEED + RDTSCP; **Windows 11 x64 PE64** via `clang 23.1.0 + lld`, and **Lean 4 `v4.35.0`**).
+Every theorem, gate, SHA-256 digest, runtime, and statistical test below was produced directly by compiling and executing **CELLULOGONIC MECHA v1.2.1** on live hardware (**Intel Core Ultra 9 275HX**, AVX2 + BMI1/2 + POPCNT + RDSEED + RDTSCP; **Windows 11 x64 PE64** via `clang 23.1.0 + lld`, **Ubuntu Linux ELF64** via `gcc 13.3.0`, and **Lean 4 `v4.35.0`**).
 
-> **v1.2.1 Anti-Fraud & Security Hardening Receipts (`2026-11-20`):** Added SHA-256 integrity trailer & strict cell/bond/axon bounds verification on `.cmbin` snapshots (`abi_exports.c`), fixed `web/server.mjs` FIFO queue deadlock + timeouts + `GET /server.mjs` source-exposure block + loopback guard, added `restraint_vec` (full 13-vector independent parity) & `autophage_dna` (real 128B evolved Tier-1 DNA ingestion, zero RDTSC), added CPUID guard on `rdseed`/`rdrand`, upgraded `Wnt/BMP/Shh` morphogens to 3D Z-stratified chemical GPS, coupled CPG propulsion to exact `RXN_R8` ATP hydrolysis (`0 amu / 0 uq` drift), replaced static GHz coherence with a stateful Fröhlich relaxation ODE, replaced static active loci & Assembly Index with catalysis-gated LZ77 motif reuse, fixed lineage hash linear probing, clamped all `traits112[0..111]` to `[0, 1]`, eliminated 5 restraint dead-zones (`SANDBOXING`, `SILOING`, `DEGRESSING`, `LOBOTOMIZING`, `MEDICATING`), upgraded Mutants `M2`/`M3` + Lean `T58` (`List MorphStep` induction), cached WebGL2 uniform locations (`maxCells = 4096`), and replaced JS sine oscilloscope with real C11 telemetry history. Current Win64 `v1.2.1` dual-kernel parity (`SIMD_AVX2 == SCALAR_REF`, `37.436 M rxns/s`, `1.63×`): SHA-256 `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` (`24/24` gates, `8/8` mutants, `58/58` Lean 4 proofs, `0` warnings).
+> **v1.2.1 Anti-Fraud & Security Hardening Receipts (`2026-11-20` / `2026-11-21`):** Added SHA-256 integrity trailer & strict cell/bond/axon bounds verification on `.cmbin` snapshots (`abi_exports.c`), fixed `web/server.mjs` FIFO queue deadlock + timeouts + `GET /server.mjs` source-exposure block + loopback guard, added `restraint_vec` (full 13-vector independent parity) & `autophage_dna` (real 128B evolved Tier-1 DNA ingestion, zero RDTSC), added CPUID guard on `rdseed`/`rdrand`, upgraded `Wnt/BMP/Shh` morphogens to 3D Z-stratified chemical GPS, coupled CPG propulsion to exact `RXN_R8` ATP hydrolysis (`0 amu / 0 uq` drift), replaced static GHz coherence with a stateful Fröhlich relaxation ODE, replaced static active loci & Assembly Index with catalysis-gated LZ77 motif reuse, fixed lineage hash linear probing, clamped all `traits112[0..111]` to `[0, 1]`, eliminated 5 restraint dead-zones (`SANDBOXING`, `SILOING`, `DEGRESSING`, `LOBOTOMIZING`, `MEDICATING`), upgraded Mutants `M2`/`M3` + Lean `T58` (`List MorphStep` induction), cached WebGL2 uniform locations (`maxCells = 4096`), and replaced JS sine oscilloscope with real C11 telemetry history. Verified **4-Way Cross-OS / Cross-Compiler / Cross-ISA 0-Bit SHA-256 Parity** (`Win64 Clang AVX2 == Win64 Clang Scalar == Linux GCC AVX2 == Linux GCC Scalar`): `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` (`24/24` gates, `8/8` mutants on BOTH Win64 & Linux, `58/58` Lean 4 proofs, `0` warnings).
 
 ---
 
@@ -28,44 +28,44 @@ Sources: [`test/test_falsification.c`](test/test_falsification.c), [`results/11_
 
 | Gate | Falsification Property & Planted Negative Mutant Tested | Win64 PE64 (`clang 23.1.0`) | Linux ELF64 (`gcc 13.3.0`) |
 |---|---|---|---|
-| `G01` | CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 `"abc"` exact vector | PASS (`0.0000s`) | PASS (`0.0000s`) |
-| `G02` | Exact Mass/First-Law Ledger + **Mutant M1 (phantom `+1 uq` energy)** | PASS (`0.0009s`) | PASS (`0.0007s`) |
-| `G03` | 4-Solvent Second-Law Sink + **Mutant M2 (heat-sink reversal)** | PASS (`0.0041s`) | PASS (`0.0027s`) |
+| `G01` | CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 `"abc"` exact vector | PASS (`0.0000s`) | PASS (`0.0002s`) |
+| `G02` | Exact Mass/First-Law Ledger + **Mutant M1 (phantom `+1 uq` energy)** | PASS (`0.0008s`) | PASS (`0.0008s`) |
+| `G03` | 4-Solvent Second-Law Sink + **Mutant M2 (heat-sink reversal verified by engine)** | PASS (`0.0034s`) | PASS (`0.0035s`) |
 | `G04` | Canham–Helfrich $Q \le 1/2$ & Constructive Exosome Escape (`T12`–`T16`) | PASS (`0.0000s`) | PASS (`0.0000s`) |
-| `G05` | Closed-Box (`BOXING=100`) & Open-Flux 120-Epoch `0`-Residual Closure | PASS (`0.0106s`) | PASS (`0.0086s`) |
-| `G06` | Domain-Isolated `Philox4x32-10` + **Mutant M3 (coupled cross-domain RNG)** | PASS (`0.0000s`) | PASS (`0.0000s`) |
-| `G07` | **Dual-Kernel 0-Bit SHA-256 Parity (`SIMD_AVX2 == SCALAR_REF`)** | PASS (`0.0123s`) | PASS (`0.0118s`) |
-| `G08` | Strict Observer Independence (`P9`) + **Mutant M4 (1-bit observer write)** | PASS (`0.0270s`) | PASS (`0.0205s`) |
-| `G09` | `.cmbin` Snapshot Save (`AVX2`) & Cross-Kernel Resume (`Scalar`) 0-Bit Parity | PASS (`0.0271s`) | PASS (`0.0200s`) |
-| `G10` | Zero Post-Warmup Heap Allocations (`HW02`/`P10`, `>10k` cell steps) | PASS (`0.0117s`) | PASS (`0.0085s`) |
-| `G11` | Zero-Seed Spontaneous Protocell Abiogenesis (`alive: 0 -> >20, COVI > 30`) | PASS (`0.0334s`) | PASS (`0.0273s`) |
-| `G12` | Anti-Gaming Gates + **Mutants M5 (Inert Crystal) & M6 (White Noise)** | PASS (`0.0003s`) | PASS (`0.0001s`) |
-| `G13` | Serial Endosymbiosis & Lane $1/R$ Bioenergetic Liberation (ON vs. OFF) | PASS (`0.0177s`) | PASS (`0.0150s`) |
-| `G14` | 4-Solvent Sequential Cross-World Xenocellular Transplant Closure | PASS (`0.0094s`) | PASS (`0.0061s`) |
-| `G15` | Levin Bioelectric Morphogenesis & Track A Constitutional Cancer Policing | PASS (`0.0172s`) | PASS (`0.0115s`) |
-| `G16` | Tardigrade TDP Bioglass Tun + **Mutant M7 (TDP Knockout Collapse)** | PASS (`0.0161s`) | PASS (`0.0120s`) |
-| `G17` | 13-Vector Constraint-Backlash Escape Paradox (`0% / 50% / 100%`) | PASS (`0.0112s`) | PASS (`0.0086s`) |
-| `G18` | Exact Atomic Mass Audit + **Mutant M8 (1-Lipid `8 amu` Mass Leak)** | PASS (`0.0008s`) | PASS (`0.0005s`) |
-| `G19` | 4-Build Bridges (`AUTOPHAGE` 256B DNA → `Asmodensius` 112-Trait Vector) | PASS (`0.0011s`) | PASS (`0.0007s`) |
-| `G20` | Locked Multi-Seed Paired Statistical Dominance (`N = 8`, Feral > Castrated) | PASS (`0.0559s`) | PASS (`0.0453s`) |
-| `G21` | **3D Off-Lattice Free-Swimming, Polymorphism & Actomyosin Breathing** | PASS (`0.0051s`) | PASS (`0.0035s`) |
-| `G22` | **Fröhlich–Pokorný GHz Microtubule Coherence Strictly Requires ATP (`T48`–`T49`)** | PASS (`0.0033s`) | PASS (`0.0040s`) |
-| `G23` | **3D Embryogenesis: Morphogen GPS, GRN Fates, Steinberg Sorting & Hippo/Eutely (`T51`–`T55`)** | PASS (`0.0112s`) | PASS (`0.0114s`) |
-| `G24` | **Axon Guidance (Netrin/Slit), Hebbian Pruning & CPG Motor Waves (`T56`–`T58`)** | PASS (`0.0071s`) | PASS (`0.0080s`) |
-| **TOTAL** | **24 / 24 GATES · 8 / 8 PLANTED MUTANTS CAUGHT** | **`0.252s`** | **`0.269s`** |
+| `G05` | Closed-Box (`BOXING=100`) & Open-Flux 120-Epoch `0`-Residual Closure | PASS (`0.0093s`) | PASS (`0.0109s`) |
+| `G06` | Domain-Isolated `Philox4x32-10` + **Mutant M3 + Clamped 112T + Tampered `.cmbin` Reject** | PASS (`0.0033s`) | PASS (`0.0237s`) |
+| `G07` | **Dual-Kernel 0-Bit SHA-256 Parity (`SIMD_AVX2 == SCALAR_REF`)** | PASS (`0.0152s`) | PASS (`0.0114s`) |
+| `G08` | Strict Observer Independence (`P9`) + **Mutant M4 (1-bit observer write)** | PASS (`0.0329s`) | PASS (`0.0246s`) |
+| `G09` | `.cmbin` Snapshot Save (`AVX2`) & Cross-Kernel Resume (`Scalar`) 0-Bit Parity | PASS (`0.0125s`) | PASS (`0.0409s`) |
+| `G10` | Zero Post-Warmup Heap Allocations (`HW02`/`P10`, `>10k` cell steps) | PASS (`0.0129s`) | PASS (`0.0100s`) |
+| `G11` | Zero-Seed Spontaneous Protocell Abiogenesis (`alive: 0 -> >20, COVI > 30`) | PASS (`0.0482s`) | PASS (`0.0369s`) |
+| `G12` | Anti-Gaming Gates + **Mutants M5 (Inert Crystal) & M6 (White Noise)** | PASS (`0.0006s`) | PASS (`0.0003s`) |
+| `G13` | Serial Endosymbiosis & Lane $1/R$ Bioenergetic Liberation (ON vs. OFF) | PASS (`0.0202s`) | PASS (`0.0188s`) |
+| `G14` | 4-Solvent Sequential Cross-World Xenocellular Transplant Closure | PASS (`0.0097s`) | PASS (`0.0078s`) |
+| `G15` | Levin Bioelectric Morphogenesis & Track A Constitutional Cancer Policing | PASS (`0.0176s`) | PASS (`0.0131s`) |
+| `G16` | Tardigrade TDP Bioglass Tun + **Mutant M7 (TDP Knockout Collapse)** | PASS (`0.0209s`) | PASS (`0.0162s`) |
+| `G17` | 13-Vector Constraint-Backlash Escape Paradox (`0% / 50% / 100%`) | PASS (`0.0176s`) | PASS (`0.0128s`) |
+| `G18` | Exact Atomic Mass Audit + **Mutant M8 (1-Lipid `8 amu` Mass Leak)** | PASS (`0.0009s`) | PASS (`0.0007s`) |
+| `G19` | 4-Build Bridges (`AUTOPHAGE` 256B DNA → `Asmodensius` 112-Trait Vector) | PASS (`0.0011s`) | PASS (`0.0011s`) |
+| `G20` | Locked Multi-Seed Paired Statistical Dominance (`N = 8`, Feral > Castrated) | PASS (`0.1086s`) | PASS (`0.0890s`) |
+| `G21` | **3D Off-Lattice Free-Swimming, Polymorphism & Actomyosin Breathing** | PASS (`0.0043s`) | PASS (`0.0053s`) |
+| `G22` | **Fröhlich–Pokorný GHz Microtubule Coherence Strictly Requires ATP (`T48`–`T49`)** | PASS (`0.0035s`) | PASS (`0.0042s`) |
+| `G23` | **3D Embryogenesis: Morphogen GPS, GRN Fates, Steinberg Sorting & Hippo/Eutely (`T51`–`T55`)** | PASS (`0.0130s`) | PASS (`0.0138s`) |
+| `G24` | **Axon Guidance (Netrin/Slit), Hebbian Pruning & CPG Motor Waves (`T56`–`T58`)** | PASS (`0.0088s`) | PASS (`0.0091s`) |
+| **TOTAL** | **24 / 24 GATES · 8 / 8 PLANTED MUTANTS CAUGHT** | **`0.366s`** | **`0.355s`** |
 
 ---
 
-## 3. Verifiable & Authenticated: 4-Way Cross-OS / Cross-Kernel Bit-Exact SHA-256 Proof
+## 3. Verifiable & Authenticated: 4-Way Cross-OS / Cross-Kernel Bit-Exact SHA-256 Proof (`v1.2.1`)
 
 Benchmark (`32×32×32 μm` continuous 3D off-lattice fluid chamber, `300` epochs, `35,792` cell steps, `667,512` exact conserved reactions, seed `5000`; artifacts [`02_bench_win64.txt`](results/02_bench_win64.txt) & [`02_bench_linux.txt`](results/02_bench_linux.txt)):
 
 | Platform / Compiler / ABI | Kernel | Throughput | Mass / Energy Residual | Canonical State SHA-256 |
 |---|---|---|---|---|
-| Windows 11 PE64 (`clang 23.1.0`, MS x64) | `SIMD_AVX2` | `33.440 M rxns/s` (`1.793 M steps/s`, `1.35×`) | `0 amu` / `0 uq` (`0.00e+00`) | `e46cd73ae1c8c7649fb8396b5fdc41f31ad5c4d8546bf589440f8374fd169089` |
-| Windows 11 PE64 (`clang 23.1.0`, MS x64) | `SCALAR_REF` | `1.325 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `e46cd73ae1c8c7649fb8396b5fdc41f31ad5c4d8546bf589440f8374fd169089` |
-| Ubuntu Linux ELF64 (`gcc 13.3.0`, SysV) | `SIMD_AVX2` | `34.820 M rxns/s` (`1.867 M steps/s`, `1.55×`) | `0 amu` / `0 uq` (`0.00e+00`) | `e46cd73ae1c8c7649fb8396b5fdc41f31ad5c4d8546bf589440f8374fd169089` |
-| Ubuntu Linux ELF64 (`gcc 13.3.0`, SysV) | `SCALAR_REF` | `1.201 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `e46cd73ae1c8c7649fb8396b5fdc41f31ad5c4d8546bf589440f8374fd169089` |
+| Windows 11 PE64 (`clang 23.1.0`, MS x64) | `SIMD_AVX2` | `30.281 M rxns/s` (`1.624 M steps/s`, `1.37×`) | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Windows 11 PE64 (`clang 23.1.0`, MS x64) | `SCALAR_REF` | `1.182 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Ubuntu Linux ELF64 (`gcc 13.3.0`, SysV) | `SIMD_AVX2` | `31.181 M rxns/s` (`1.672 M steps/s`, `1.51×`) | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
+| Ubuntu Linux ELF64 (`gcc 13.3.0`, SysV) | `SCALAR_REF` | `1.109 M steps/s` | `0 amu` / `0 uq` (`0.00e+00`) | `f20e16ece7f747b887aaf7643562cee485cf6216c3bb843edfba28004f26e918` |
 
 ---
 
@@ -75,7 +75,7 @@ Source: [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt) —
 
 | Pre-Registered Hypothesis (`N = 24` Locked Pairs) | Mean Arm A | Mean Arm B | Mean Diff | Pair Wins | $p_{\text{raw}}$ | $p_{\text{Holm}}$ |
 |---|---|---|---|---|---|---|
-| **H1: COVI (Feral vs. 70% Castrated)** | `81.819` | `71.625` | `+10.194` | **`24 / 24`** | `0.00010` | **`0.00040`** |
+| **H1: COVI (Feral vs. 70% Castrated)** | `81.768` | `47.194` | `+34.574` | **`24 / 24`** | `0.00010` | **`0.00040`** |
 | **H2: Max Cell Vol (Endosymbiosis ON vs. OFF)** | `530.292` | `207.708` | `+322.583` | **`23 / 24`** | `0.00020` | **`0.00080`** |
 | **H3: Bioelectric $V_m$ Std Dev (ON vs. OFF)** | `21.792` | `7.486` | `+14.306` | **`24 / 24`** | `0.00010` | **`0.00040`** |
 | **H4: Tardigrade TDP Survival (Intact vs. KO)** | `33.125` | `0.542` | `+32.583` | **`24 / 24`** | `0.00010` | **`0.00040`** |

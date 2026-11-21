@@ -10,5 +10,5 @@
   Pre-Desiccation : alive= 103 | mRes=0 eRes=0
   Desiccation 92% : vitrified_tun=   0 | surviving=   9
   90% Shock Lysis : lysed=   7 | surviving_post_shock=   2
-  Rehydration +40 : revived=   0 | rebounded_alive=  87 | COVI=62.52 | mRes=0 eRes=0
+  Rehydration +40 : revived=   0 | rebounded_alive=  87 | COVI=61.09 | mRes=0 eRes=0
 

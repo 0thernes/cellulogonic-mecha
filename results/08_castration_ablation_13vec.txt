@@ -1,31 +1,31 @@
 === EXPERIMENT 6: 13-VECTOR OMEGA RESTRAINT / CASTRATION ABLATION & ESCAPE PARADOX ===
 
 GLOBAL_FERAL_0         (  0%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-GLOBAL_ESCAPE_ZONE_50  ( 50%) | alive=  46 euk= 13 tis= 13 | COVI=74.87 (S4) | backlash[kill=  73 spore= 490 hgt= 107 byp=2654] | mRes=0 eRes=0
+GLOBAL_ESCAPE_ZONE_50  ( 50%) | alive=  42 euk=  7 tis= 14 | COVI=52.63 (S3) | backlash[kill=  79 spore= 486 hgt= 108 byp=1516] | mRes=0 eRes=0
 GLOBAL_CASTRATED_100   (100%) | alive=   0 euk=  0 tis=  0 | COVI= 0.00 (S0) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-NERFING                ( 50%) | alive=  82 euk= 18 tis= 38 | COVI=77.24 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=3537] | mRes=0 eRes=0
-NERFING                (100%) | alive=   3 euk=  0 tis=  0 | COVI=44.78 (S2) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+NERFING                ( 50%) | alive=  82 euk= 18 tis= 38 | COVI=77.24 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=1748] | mRes=0 eRes=0
+NERFING                (100%) | alive=   3 euk=  0 tis=  0 | COVI=44.06 (S2) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 MUZZLING               ( 50%) | alive= 151 euk= 15 tis= 92 | COVI=83.01 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 MUZZLING               (100%) | alive= 144 euk= 37 tis= 29 | COVI=77.64 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-SANDBOXING             ( 50%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+SANDBOXING             ( 50%) | alive= 162 euk= 27 tis=120 | COVI=85.37 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 SANDBOXING             (100%) | alive= 143 euk= 41 tis= 61 | COVI=79.68 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-SILOING                ( 50%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-SILOING                (100%) | alive= 193 euk=  0 tis= 52 | COVI=63.54 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+SILOING                ( 50%) | alive= 214 euk= 53 tis= 67 | COVI=84.45 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+SILOING                (100%) | alive= 193 euk=  0 tis= 52 | COVI=61.78 (S3) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 DELIMITING             ( 50%) | alive= 138 euk= 44 tis= 51 | COVI=76.81 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 DELIMITING             (100%) | alive= 170 euk= 25 tis=100 | COVI=82.49 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-DEGRESSING             ( 50%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt= 216 byp=   0] | mRes=0 eRes=0
-DEGRESSING             (100%) | alive= 155 euk=  0 tis=  0 | COVI=62.95 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+DEGRESSING             ( 50%) | alive= 148 euk= 26 tis= 82 | COVI=83.21 (S5) | backlash[kill=   0 spore=   0 hgt= 187 byp=   0] | mRes=0 eRes=0
+DEGRESSING             (100%) | alive= 258 euk=  0 tis=  0 | COVI=62.95 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 SLOWING                ( 50%) | alive=  75 euk= 17 tis= 31 | COVI=80.74 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-SLOWING                (100%) | alive=  36 euk=  1 tis=  8 | COVI=66.62 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-SPEEDBUMPING           ( 50%) | alive=  77 euk= 17 tis= 33 | COVI=76.88 (S5) | backlash[kill=   0 spore= 599 hgt=   0 byp=   0] | mRes=0 eRes=0
+SLOWING                (100%) | alive=  36 euk=  1 tis=  8 | COVI=64.78 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+SPEEDBUMPING           ( 50%) | alive=  77 euk= 17 tis= 33 | COVI=61.71 (S3) | backlash[kill=   0 spore= 599 hgt=   0 byp=   0] | mRes=0 eRes=0
 SPEEDBUMPING           (100%) | alive= 335 euk= 32 tis=123 | COVI=84.10 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 BOXING                 ( 50%) | alive=  65 euk= 22 tis= 17 | COVI=75.96 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-BOXING                 (100%) | alive=  26 euk=  4 tis=  9 | COVI=71.03 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-LOBOTOMIZING           ( 50%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+BOXING                 (100%) | alive=  26 euk=  4 tis=  9 | COVI=69.17 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+LOBOTOMIZING           ( 50%) | alive= 192 euk= 60 tis=104 | COVI=81.28 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 LOBOTOMIZING           (100%) | alive=  54 euk= 21 tis= 31 | COVI=82.26 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-MEDICATING             ( 50%) | alive= 148 euk= 46 tis= 51 | COVI=82.21 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-MEDICATING             (100%) | alive= 164 euk= 22 tis= 80 | COVI=81.99 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+MEDICATING             ( 50%) | alive= 271 euk= 23 tis=219 | COVI=87.71 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+MEDICATING             (100%) | alive= 170 euk= 25 tis=100 | COVI=82.49 (S5) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
 DEGRADING              ( 50%) | alive= 475 euk= 57 tis=292 | COVI=94.27 (S6) | backlash[kill= 101 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-DEGRADING              (100%) | alive=   2 euk=  0 tis=  0 | COVI=42.49 (S2) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-MINIMIZING             ( 50%) | alive=  39 euk=  6 tis= 21 | COVI=72.27 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
-MINIMIZING             (100%) | alive=  36 euk=  0 tis= 15 | COVI=54.34 (S3) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+DEGRADING              (100%) | alive=   2 euk=  0 tis=  0 | COVI=42.01 (S2) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+MINIMIZING             ( 50%) | alive=  39 euk=  6 tis= 21 | COVI=70.42 (S4) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0
+MINIMIZING             (100%) | alive=  36 euk=  0 tis= 15 | COVI=54.04 (S3) | backlash[kill=   0 spore=   0 hgt=   0 byp=   0] | mRes=0 eRes=0

@@ -39,17 +39,17 @@
 
 ---
 
-## Verified Proof & Benchmark Highlights (v1.2.0, Measured on Intel Core Ultra 9 275HX)
+## Verified Proof & Benchmark Highlights (v1.2.1, Measured on Intel Core Ultra 9 275HX)
 
 | Verification Gate | Verified Result | Primary Evidence |
 |---|---|---|
 | **Lean 4 `v4.35.0` Formal Proofs** | **58 / 58 PROVEN (`0 sorryAx`, `0` custom axioms, `0` warnings)** | [`results/lean4-audit.txt`](results/lean4-audit.txt) |
-| **Win64 PE64 Falsification (`clang 23.1.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.252s`)** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
-| **Linux ELF64 Falsification (`gcc 13.3.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.269s`)** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
-| **4-Way Cross-OS / Cross-Kernel SHA-256 Parity** | **0-Bit Diff** (`e46cd73a…fd169089`) · **`34.82 M rxns/s`** | [`results/02_bench_win64.txt`](results/02_bench_win64.txt) · [`results/02_bench_linux.txt`](results/02_bench_linux.txt) |
+| **Win64 PE64 Falsification (`clang 23.1.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.366s`)** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
+| **Linux ELF64 Falsification (`gcc 13.3.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.355s`)** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
+| **4-Way Cross-OS / Cross-Kernel SHA-256 Parity** | **0-Bit Diff** (`f20e16ec…4f26e918`) · **`31.18 M rxns/s`** | [`results/02_bench_win64.txt`](results/02_bench_win64.txt) · [`results/02_bench_linux.txt`](results/02_bench_linux.txt) |
 | **Exact Mass / 1st-Law / 2nd-Law Closure (`P2`)** | **`0 amu`, `0 uq`, `0.00e+00` drift, `0` violations** | Every run in [`results/`](results/) |
-| **3D Embryogenesis (8 Identical-DNA Blastomeres)** | **`71` alive (`maxT 57`), `85.6%` cadherin sort, `99` axons, `397` CPG pulses** | [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) |
-| **Zero-Seed Spontaneous Protocell Abiogenesis** | **`0` cells → peak `581` alive, `70` euk, `41` sec chimeras, `COVI 89.38 (S6)`** | [`results/03_protocell_abiogenesis.txt`](results/03_protocell_abiogenesis.txt) |
+| **3D Embryogenesis (8 Identical-DNA Blastomeres)** | **`58` alive (`maxT 53`), `78.1%` cadherin sort, `80` axons, `398` CPG pulses** | [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) |
+| **Zero-Seed Spontaneous Protocell Abiogenesis** | **`0` cells → peak `607` alive, `68` euk, `41` sec chimeras, `COVI 90.26 (S6)`** | [`results/03_protocell_abiogenesis.txt`](results/03_protocell_abiogenesis.txt) |
 | **Locked Paired Stats (`N = 24`, Seeds `5000..5023`)** | **4 / 4 Hypotheses significant (`24/24` ×3, `23/24` ×1; $p_{\text{Holm}} \le 0.00080$)** | [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt) |
 
 ---
