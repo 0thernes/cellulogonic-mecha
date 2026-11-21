@@ -1,5 +1,5 @@
 /* ============================================================================
- * CELLULOGONIC MECHA v1.1 — Zero-Dependency Bare-Metal WebGL2 3D Organic
+ * CELLULOGONIC MECHA v1.3.0 — Zero-Dependency Bare-Metal WebGL2 3D Organic
  * Deformable Cellular Microscopy Engine (GLSL ES 3.00)
  *
  * Features:
@@ -121,18 +121,26 @@ function compileShader(gl, type, src) {
   gl.shaderSource(sh, src);
   gl.compileShader(sh);
   if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
-    throw new Error("GLSL compile error: " + gl.getShaderInfoLog(sh));
+    const log = gl.getShaderInfoLog(sh);
+    gl.deleteShader(sh);
+    throw new Error("GLSL compile error: " + log);
   }
   return sh;
 }
 
 function linkProgram(gl, vsSrc, fsSrc) {
+  const vs = compileShader(gl, gl.VERTEX_SHADER, vsSrc);
+  const fs = compileShader(gl, gl.FRAGMENT_SHADER, fsSrc);
   const p = gl.createProgram();
-  gl.attachShader(p, compileShader(gl, gl.VERTEX_SHADER, vsSrc));
-  gl.attachShader(p, compileShader(gl, gl.FRAGMENT_SHADER, fsSrc));
+  gl.attachShader(p, vs);
+  gl.attachShader(p, fs);
   gl.linkProgram(p);
+  gl.deleteShader(vs);
+  gl.deleteShader(fs);
   if (!gl.getProgramParameter(p, gl.LINK_STATUS)) {
-    throw new Error("GLSL link error: " + gl.getProgramInfoLog(p));
+    const log = gl.getProgramInfoLog(p);
+    gl.deleteProgram(p);
+    throw new Error("GLSL link error: " + log);
   }
   return p;
 }
@@ -186,17 +194,26 @@ void main() {
   float breathWave = sin(u_time * breathTempo + bPhase) * bAmp;
 
   // 2. Continuous Polymorphic 3D Shape Morphospace (Canham-Helfrich + Superharmonics!)
+  //    Track exact anisotropic inverse-transpose scale & twist for accurate lighting normals!
   vec3 q = p;
+  vec3 nLocal = p;
   if (stateFlag > 2.5) {
     // Tardigrade TDP/CAHS faceted crystalline amorphous bioglass tun
     float facet = 0.14 * abs(sin(p.x * 5.0 + mSeed * 6.0) * cos(p.y * 5.0) * sin(p.z * 5.0));
     q *= (0.86 + facet);
+    nLocal = normalize(p + vec3(0.18 * cos(p.x * 5.0 + mSeed * 6.0), -0.18 * sin(p.y * 5.0), 0.18 * cos(p.z * 5.0)));
+    v_mtRipple = 0.0;
   } else {
+    float sx = 1.0, sy = 1.0, sz = 1.0;
+    vec2 nxy = p.xy;
     if (elong < 0.88) {
       // Biconcave Canham-Helfrich discocyte / flattened epithelial lens
       float r2 = q.x * q.x + q.y * q.y;
-      q.z *= (elong * (0.48 + 0.55 * r2));
-      q.xy *= (1.16 + (0.88 - elong) * 0.4);
+      sz = max(0.22, elong * (0.48 + 0.55 * r2));
+      sx = 1.16 + (0.88 - elong) * 0.4;
+      sy = sx;
+      q.z *= sz;
+      q.xy *= sx;
     } else if (elong > 1.28) {
       // Elongated rod / bacillus / helical spirillum / pinching cytokinesis dumbbell!
       float stretch = elong;
@@ -204,8 +221,12 @@ void main() {
       float twist = (mSeed > 0.55 ? 1.8 : 0.0) * q.z;
       float ct = cos(twist + u_time * 1.4), st = sin(twist + u_time * 1.4);
       vec2 tw = vec2(q.x * ct - q.y * st, q.x * st + q.y * ct);
-      q.xy = tw * pinch / sqrt(stretch * 0.85);
-      q.z *= stretch * 0.88;
+      sx = max(0.25, pinch / sqrt(stretch * 0.85));
+      sy = sx;
+      sz = stretch * 0.88;
+      q.xy = tw * sx;
+      q.z *= sz;
+      nxy = vec2(p.x * ct - p.y * st, p.x * st + p.y * ct);
     }
 
     // Multi-lobed 3D spherical-harmonic amoeboid pseudopod undulations
@@ -221,6 +242,8 @@ void main() {
                    cos((p.x + p.y) * 5.0 + u_time * 3.0);
     disp += coh * 0.045 * mtWave;
     q *= disp;
+    // Exact inverse-transpose normal for anisotropic ellipsoid/discocyte/rod deformation
+    nLocal = normalize(vec3(nxy.x / sx, nxy.y / sy, p.z / sz) + 0.0001);
     v_mtRipple = 0.5 + 0.5 * mtWave;
   }
 
@@ -228,7 +251,6 @@ void main() {
   vec3 worldOffset = (right * q.x + up * q.y + fwd * q.z) * a_posRad.w;
   vec3 worldPos = a_posRad.xyz + worldOffset;
 
-  vec3 nLocal = normalize(q + 0.0001);
   v_normal = normalize(right * nLocal.x + up * nLocal.y + fwd * nLocal.z);
   v_viewDir = normalize(u_camPos - worldPos);
   v_coreCol = a_colorCore.rgb;
@@ -354,68 +376,24 @@ export class CellMicroscope3D {
     const gl = glCanvas.getContext("webgl2", { antialias: true, alpha: false, preserveDrawingBuffer: false });
     if (!gl) throw new Error("WebGL2 required for 3D Cellular Microscopy Observatory");
     this.gl = gl;
-
-    this.cellProg  = linkProgram(gl, CELL_VS, CELL_FS);
-    this.lineProg  = linkProgram(gl, LINE_VS, LINE_FS);
-    this.pointProg = linkProgram(gl, POINT_VS, POINT_FS);
-    /* Cache all GL uniform locations once (zero per-frame getUniformLocation overhead!) */
-    this.uLocs = {
-      ptVP:    gl.getUniformLocation(this.pointProg, "u_viewProj"),
-      ptScale: gl.getUniformLocation(this.pointProg, "u_scale"),
-      lnVP:    gl.getUniformLocation(this.lineProg, "u_viewProj"),
-      clVP:    gl.getUniformLocation(this.cellProg, "u_viewProj"),
-      clCam:   gl.getUniformLocation(this.cellProg, "u_camPos"),
-      clTime:  gl.getUniformLocation(this.cellProg, "u_time")
-    };
+    this.contextLost = false;
 
     this.sphere = buildIcosphere(2);
     this.maxCells = 4096;
-
-    // Cell instanced VAO
-    this.cellVao = gl.createVertexArray();
-    gl.bindVertexArray(this.cellVao);
-    this.meshVbo = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.meshVbo);
-    gl.bufferData(gl.ARRAY_BUFFER, this.sphere.pos, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
-
-    // Interleaved per-instance buffer: 5 * vec4 = 20 floats = 80 bytes per cell
     this.instData = new Float32Array(this.maxCells * 20);
-    this.instVbo = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.instVbo);
-    gl.bufferData(gl.ARRAY_BUFFER, this.instData.byteLength, gl.DYNAMIC_DRAW);
-    for (let loc = 1; loc <= 5; loc++) {
-      gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, 80, (loc - 1) * 16);
-      gl.vertexAttribDivisor(loc, 1);
-    }
+    this.lineData = new Float32Array(260000);
+    this.ptData = new Float32Array(80000);
 
-    // Dynamic line buffer (microtubules, flagella, curved 3D colony bonds, chamber wireframe)
-    this.lineVao = gl.createVertexArray();
-    gl.bindVertexArray(this.lineVao);
-    this.lineVbo = gl.createBuffer();
-    this.lineData = new Float32Array(260000); // ~37k vertices x 7 floats
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.lineVbo);
-    gl.bufferData(gl.ARRAY_BUFFER, this.lineData.byteLength, gl.DYNAMIC_DRAW);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 28, 0);
-    gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 28, 12);
+    this._initGlResources();
 
-    // Dynamic point buffer (internalized 3D organelles, nutrient plumes, floating motes)
-    this.ptVao = gl.createVertexArray();
-    gl.bindVertexArray(this.ptVao);
-    this.ptVbo = gl.createBuffer();
-    this.ptData = new Float32Array(80000); // ~10k points x 8 floats
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.ptVbo);
-    gl.bufferData(gl.ARRAY_BUFFER, this.ptData.byteLength, gl.DYNAMIC_DRAW);
-    gl.enableVertexAttribArray(0);
-    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 32, 0);
-    gl.enableVertexAttribArray(1);
-    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 32, 16);
-
-    gl.bindVertexArray(null);
+    glCanvas.addEventListener("webglcontextlost", (e) => {
+      e.preventDefault();
+      this.contextLost = true;
+    });
+    glCanvas.addEventListener("webglcontextrestored", () => {
+      this.contextLost = false;
+      this._initGlResources();
+    });
 
     // Orbital 3D Camera State (fluid chamber centered at [0,0,0], range [-16, +16])
     this.yaw = 0.65;
@@ -441,12 +419,69 @@ export class CellMicroscope3D {
       ]);
     }
 
-    // Smooth interpolated cell state map (by slot ID) for silky 60 FPS swimming!
+    // Smooth interpolated cell state map (by slot ID -> { pos, lineage }) preventing slot-reuse ghosts!
     this.smoothPos = new Map();
     this.grid = null;
     this.lastViewProj = null;
 
     this._initMouseControls();
+  }
+
+  _initGlResources() {
+    const gl = this.gl;
+    this.cellProg  = linkProgram(gl, CELL_VS, CELL_FS);
+    this.lineProg  = linkProgram(gl, LINE_VS, LINE_FS);
+    this.pointProg = linkProgram(gl, POINT_VS, POINT_FS);
+    this.uLocs = {
+      ptVP:    gl.getUniformLocation(this.pointProg, "u_viewProj"),
+      ptScale: gl.getUniformLocation(this.pointProg, "u_scale"),
+      lnVP:    gl.getUniformLocation(this.lineProg, "u_viewProj"),
+      clVP:    gl.getUniformLocation(this.cellProg, "u_viewProj"),
+      clCam:   gl.getUniformLocation(this.cellProg, "u_camPos"),
+      clTime:  gl.getUniformLocation(this.cellProg, "u_time")
+    };
+
+    // Cell instanced VAO
+    this.cellVao = gl.createVertexArray();
+    gl.bindVertexArray(this.cellVao);
+    this.meshVbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.meshVbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.sphere.pos, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+
+    this.instVbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.instVbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.instData.byteLength, gl.DYNAMIC_DRAW);
+    for (let loc = 1; loc <= 5; loc++) {
+      gl.enableVertexAttribArray(loc);
+      gl.vertexAttribPointer(loc, 4, gl.FLOAT, false, 80, (loc - 1) * 16);
+      gl.vertexAttribDivisor(loc, 1);
+    }
+
+    // Dynamic line buffer
+    this.lineVao = gl.createVertexArray();
+    gl.bindVertexArray(this.lineVao);
+    this.lineVbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.lineVbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.lineData.byteLength, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 28, 0);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 28, 12);
+
+    // Dynamic point buffer
+    this.ptVao = gl.createVertexArray();
+    gl.bindVertexArray(this.ptVao);
+    this.ptVbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.ptVbo);
+    gl.bufferData(gl.ARRAY_BUFFER, this.ptData.byteLength, gl.DYNAMIC_DRAW);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 32, 0);
+    gl.enableVertexAttribArray(1);
+    gl.vertexAttribPointer(1, 4, gl.FLOAT, false, 32, 16);
+
+    gl.bindVertexArray(null);
   }
 
   _initMouseControls() {
@@ -480,17 +515,25 @@ export class CellMicroscope3D {
 
   setGrid(grid) {
     this.grid = grid;
-    const span = grid.span || 32000;
-    const scale = 32.0 / span;
+    if (!grid || !Array.isArray(grid.cells)) return;
+    const spanX = grid.span_x || grid.span || 32000;
+    const spanY = grid.span_y || grid.span || 32000;
+    const spanZ = grid.span_z || grid.span || 32000;
+    const scaleX = 32.0 / spanX;
+    const scaleY = 32.0 / spanY;
+    const scaleZ = 32.0 / spanZ;
     const aliveSet = new Set();
     for (const c of grid.cells) {
       const id = c[0];
+      const lineage = c[20] || 0;
       aliveSet.add(id);
-      const tx = c[2] * scale - 16.0;
-      const ty = c[4] * scale - 16.0; // Z_nm -> Y vertical depth in 3D chamber!
-      const tz = c[3] * scale - 16.0;
-      if (!this.smoothPos.has(id)) {
-        this.smoothPos.set(id, [tx, ty, tz]);
+      const tx = c[2] * scaleX - 16.0;
+      const ty = c[4] * scaleZ - 16.0; // Z_nm -> Y vertical depth in 3D chamber!
+      const tz = c[3] * scaleY - 16.0;
+      const cur = this.smoothPos.get(id);
+      if (!cur || cur.lineage !== lineage) {
+        /* Immediate snap on first birth OR slot reuse by a different lineage (zero ghost slide!) */
+        this.smoothPos.set(id, { pos: [tx, ty, tz], lineage });
       }
     }
     for (const k of this.smoothPos.keys()) {
@@ -499,7 +542,7 @@ export class CellMicroscope3D {
   }
 
   focusApex() {
-    if (!this.grid || !this.grid.cells.length) return;
+    if (!this.grid || !this.grid.cells || !this.grid.cells.length) return;
     let best = this.grid.cells[0], bestScore = -1;
     for (const c of this.grid.cells) {
       const pack = c[15];
@@ -507,9 +550,9 @@ export class CellMicroscope3D {
       const score = c[8] + orgs * 400 + ((pack >> 8) & 1) * 900;
       if (score > bestScore) { bestScore = score; best = c; }
     }
-    const p = this.smoothPos.get(best[0]);
-    if (p) {
-      this.target = [p[0], p[1], p[2]];
+    const entry = this.smoothPos.get(best[0]);
+    if (entry) {
+      this.target = [entry.pos[0], entry.pos[1], entry.pos[2]];
       this.dist = 9.5;
     }
   }
@@ -519,6 +562,7 @@ export class CellMicroscope3D {
   }
 
   render(nowMs) {
+    if (this.contextLost) return;
     const gl = this.gl;
     const t = nowMs * 0.001;
     const rect = this.glCanvas.getBoundingClientRect();
@@ -547,29 +591,40 @@ export class CellMicroscope3D {
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
 
-    if (!this.grid) return;
+    if (!this.grid || !Array.isArray(this.grid.cells)) return;
 
-    const span = this.grid.span || 32000;
-    const scale = 32.0 / span;
+    const spanX = this.grid.span_x || this.grid.span || 32000;
+    const spanY = this.grid.span_y || this.grid.span || 32000;
+    const spanZ = this.grid.span_z || this.grid.span || 32000;
+    const scaleX = 32.0 / spanX;
+    const scaleY = 32.0 / spanY;
+    const scaleZ = 32.0 / spanZ;
 
-    // 1. Update smooth 3D swimming positions (torus-aware interpolation)
+    // 1. Update smooth 3D swimming positions (torus & slot-reuse ghost-snap aware!)
     const idMap = new Map();
     for (const c of this.grid.cells) {
       const id = c[0];
-      const tx = c[2] * scale - 16.0;
-      const ty = c[4] * scale - 16.0;
-      const tz = c[3] * scale - 16.0;
-      let sp = this.smoothPos.get(id);
-      if (!sp) { sp = [tx, ty, tz]; this.smoothPos.set(id, sp); }
-      else {
-        for (let k = 0; k < 3; k++) {
-          const targetV = k === 0 ? tx : (k === 1 ? ty : tz);
-          let d = targetV - sp[k];
-          if (Math.abs(d) > 16.0) sp[k] = targetV; // Torus wrap jump
-          else sp[k] += d * 0.16;
+      const lineage = c[20] || 0;
+      const tx = c[2] * scaleX - 16.0;
+      const ty = c[4] * scaleZ - 16.0;
+      const tz = c[3] * scaleY - 16.0;
+      let entry = this.smoothPos.get(id);
+      if (!entry || entry.lineage !== lineage) {
+        entry = { pos: [tx, ty, tz], lineage };
+        this.smoothPos.set(id, entry);
+      } else {
+        const sp = entry.pos;
+        const dx = tx - sp[0], dy = ty - sp[1], dz = tz - sp[2];
+        if (dx * dx + dy * dy + dz * dz > 64.0) {
+          /* Snap immediately on torus boundary crossing or large slot-reuse teleport */
+          sp[0] = tx; sp[1] = ty; sp[2] = tz;
+        } else {
+          sp[0] += dx * 0.16;
+          sp[1] += dy * 0.16;
+          sp[2] += dz * 0.16;
         }
       }
-      idMap.set(id, { c, pos: sp });
+      idMap.set(id, { c, pos: entry.pos });
     }
 
     // 2. Build dynamic point sprites (3D translucent nutrient plumes + floating motes + internalized organelles!)
@@ -856,7 +911,9 @@ export class CellMicroscope3D {
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.lineData.subarray(0, lnPtr));
     gl.drawArrays(gl.LINES, 0, lnPtr / 7);
 
-    // PASS 3: Translucent Organic Deformable 3D Lipid Bilayer Cells (Fresnel Bioluminescence!)
+    // PASS 3: Translucent Organic Deformable 3D Lipid Bilayer Cells (Back-face culled Fresnel Bioluminescence!)
+    gl.enable(gl.CULL_FACE);
+    gl.cullFace(gl.BACK);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(this.cellProg);
     gl.uniformMatrix4fv(this.uLocs.clVP, false, vp);
@@ -866,6 +923,7 @@ export class CellMicroscope3D {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.instVbo);
     gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.instData.subarray(0, instCount * 20));
     gl.drawArraysInstanced(gl.TRIANGLES, 0, this.sphere.count, instCount);
+    gl.disable(gl.CULL_FACE);
 
     gl.depthMask(true);
     gl.bindVertexArray(null);

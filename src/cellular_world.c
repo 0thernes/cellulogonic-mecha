@@ -23,6 +23,16 @@ static inline int32_t delta_torus_nm(int32_t a, int32_t b, int32_t span) {
     return d;
 }
 
+/* Pure-integer C^0 periodic triangle wave on [0, span) -> [-1024, +1024].
+ * Guarantees exact torus periodicity (zero shear cliff across boundaries!) and 0-bit FP drift. */
+static inline int32_t tri_wave_q10(int32_t p, int32_t span) {
+    int32_t w = wrap_nm(p, span);
+    int32_t q = (int32_t)(((int64_t)w * 4096LL) / (int64_t)(span > 0 ? span : 1));
+    if (q < 1024) return q;
+    if (q < 3072) return 2048 - q;
+    return q - 4096;
+}
+
 static inline int32_t isqrt32(int64_t x) {
     if (x <= 0) return 0;
     int64_t r = (int64_t)sqrt((double)x);
@@ -190,15 +200,15 @@ static void seed_primordial_genome(CellEntity* c, uint64_t seed, uint32_t idx, u
     }
     c->genome[0]   = (uint8_t)(160u + (c->genome[0] & 63u));  /* R1 catabolism */
     c->genome[8]   = (uint8_t)(160u + (c->genome[8] & 63u));  /* R2 proton pump */
-    c->genome[16]  = (uint8_t)((SOLVENT_TABLE[solvent].min_cring - 2u) & 3u); /* valid c-ring */
     c->genome[17]  = (uint8_t)(170u + (c->genome[17] & 63u)); /* R3 ATP synthase */
     c->genome[24]  = (uint8_t)(110u + (c->genome[24] & 63u)); /* R4 fermentation */
     c->genome[32]  = (uint8_t)(180u + (c->genome[32] & 63u)); /* R5 lipid synthesis */
     c->genome[40]  = (uint8_t)(150u + (c->genome[40] & 63u)); /* R6 translation */
     c->genome[48]  = (uint8_t)(150u + (c->genome[48] & 63u)); /* R7 template replication */
-    c->genome[64]  = (uint8_t)(SOLVENT_TABLE[solvent].optimal_lipid & 3u); /* adapted lipid class */
     c->genome[72]  = (uint8_t)(170u + (c->genome[72] & 63u)); /* S permease */
     c->genome[73]  = (uint8_t)(160u + (c->genome[73] & 63u)); /* X permease */
+    cell_encode_cring_nH(c, SOLVENT_TABLE[solvent].min_cring);
+    cell_encode_lipid_class(c, SOLVENT_TABLE[solvent].optimal_lipid);
     if (regime == CELL_REGIME_ENDOSYMBIOSIS_LAB) {
         if ((idx % 3u) == 0u) {
             c->genome[56] = 200u; /* Autotroph photo-S */
@@ -279,15 +289,20 @@ void cell_init_world_state(CellWorld* w) {
         tmp.genome[32]  = 245u; /* Rapid R5 embryonic membrane lipid synthesis */
         tmp.genome[40]  = 225u; /* High R6 enzyme translation */
         tmp.genome[48]  = 235u; /* Rapid R7 DNA replication */
+        tmp.genome[56]  = 180u; /* Consistent embryonic autotrophic/yolk carbon recycling across seeds */
+        tmp.genome[57]  = 170u; /* Consistent oxygenic oxidant recycling */
         tmp.genome[72]  = 240u; /* High S permease uptake */
         tmp.genome[73]  = 230u; /* High X permease uptake */
         tmp.genome[74]  = 205u; /* Motile cilia / muscle contractile vigor */
-        tmp.genome[96]  = 16u;  /* Wnt high threshold offset */
-        tmp.genome[97]  = 6u;   /* Wnt low threshold offset */
+        tmp.genome[96]  = 108u; /* Bioelectric resting potential (~-43 mV; de-collided from Wnt!) */
+        tmp.genome[97]  = 180u; /* Quorum hyperpolarization gate (posterior niche -> <= -61 mV!) */
         tmp.genome[98]  = 210u; /* Strong bioelectric gap junctions */
         tmp.genome[99]  = 10u;  /* BMP threshold offset */
         tmp.genome[100] = 10u;  /* Shh threshold offset */
         tmp.genome[101] = 2u;   /* Hippo contact-inhibition limit (6 crowded neighbors) */
+        tmp.genome[102] = 16u;  /* Dedicated Wnt high threshold offset (de-collided from [96]!) */
+        tmp.genome[103] = 6u;   /* Dedicated Wnt low threshold offset (de-collided from [97]!) */
+        tmp.genome[104] = 195u; /* Embryonic quorum autoinducer secretion */
         tmp.genome[105] = 230u; /* Strong cadherin adhesion expression */
         tmp.genome[106] = 220u; /* Cooperative embryonic tissue */
         memcpy(founder_dna, tmp.genome, CELL_GENOME_BYTES);
@@ -299,7 +314,9 @@ void cell_init_world_state(CellWorld* w) {
             c->lineage_id         = base_lid;
             c->generation         = 1;
             c->kill_switch_intact = 1;
-            c->v_mem_mv           = (k <= 1u) ? -22 : ((k >= 6u) ? -58 : -38);
+            c->v_mem_mv           = w->cfg.enable_bioelectricity
+                                    ? ((k <= 1u) ? -22 : ((k >= 6u) ? -58 : -38))
+                                    : -45;
             c->pos_nm[0]          = span_x / 2 + BLASTULA_OFF[k][0];
             c->pos_nm[1]          = span_y / 2 + BLASTULA_OFF[k][1];
             c->pos_nm[2]          = span_z / 2 + BLASTULA_OFF[k][2];
@@ -346,7 +363,9 @@ void cell_init_world_state(CellWorld* w) {
             c->lineage_id         = w->next_lineage_id++;
             c->generation         = 1;
             c->kill_switch_intact = 1;
-            c->v_mem_mv           = -45 + (int32_t)((i * 7u) % 30u);
+            c->v_mem_mv           = w->cfg.enable_bioelectricity
+                                    ? (-45 + (int32_t)((i * 7u) % 30u))
+                                    : -45;
 
             /* True continuous off-lattice 3D organic placement (ZERO grid locking!) */
             uint64_t rp = cell_philox_u64(seed, RNG_DOMAIN_ABIOGENESIS, 77ULL, i);
@@ -451,6 +470,8 @@ static void diffuse_fields_scalar(CellWorld* w, int shift) {
 
 #if defined(__AVX2__)
 static inline v4i64 avx2_sdiv_pow2_v4i64(v4i64 v, int shift) {
+    if (shift <= 0) return v;
+    if (shift >= 63) shift = 63;
     const v4i64 zero   = { 0, 0, 0, 0 };
     const v4i64 mask_b = { (1LL << shift) - 1LL, (1LL << shift) - 1LL,
                            (1LL << shift) - 1LL, (1LL << shift) - 1LL };
@@ -625,7 +646,7 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
                     c->lineage_id         = w->next_lineage_id++;
                     c->generation         = 1;
                     c->kill_switch_intact = 1;
-                    c->v_mem_mv           = -40;
+                    c->v_mem_mv           = w->cfg.enable_bioelectricity ? -40 : -45;
 
                     /* Place organically inside this fluid column at a continuous 3D z-depth! */
                     c->pos_nm[0] = (int32_t)x * CELL_VOXEL_NM + (int32_t)((r0 >> 8) % (uint64_t)CELL_VOXEL_NM);
@@ -719,10 +740,15 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
         c->vel_nm[1] = (c->vel_nm[1] * 60) / 100;
         c->vel_nm[2] = (c->vel_nm[2] * 60) / 100;
 
-        /* Gentle ambient microscopic fluid / aerosol swirl (affects even passive spores & tuns!) */
-        int32_t swirl_x = ((c->pos_nm[1] - span_y / 2) / 360) + (int32_t)((w->epoch & 31u) < 16u ? 18 : -18);
-        int32_t swirl_y = -((c->pos_nm[0] - span_x / 2) / 360);
-        int32_t swirl_z = ((c->pos_nm[0] - c->pos_nm[1]) / 520);
+        /* Gentle periodic Taylor-Green 3D fluid swirl across torus boundaries (ZERO shear cliff & Z-invariant!) */
+        int32_t sx = tri_wave_q10(c->pos_nm[0], span_x);
+        int32_t sy = tri_wave_q10(c->pos_nm[1], span_y);
+        int32_t cx = tri_wave_q10(c->pos_nm[0] + span_x / 4, span_x);
+        int32_t cy = tri_wave_q10(c->pos_nm[1] + span_y / 4, span_y);
+        int32_t tide = tri_wave_q10((int32_t)(w->epoch & 63u), 64) / 56;
+        int32_t swirl_x = ((sy * cx) / 32768) + tide;
+        int32_t swirl_y = -((sx * cy) / 32768);
+        int32_t swirl_z = (sx * cy - sy * cx) / 65536;
         c->vel_nm[0] += swirl_x / 3;
         c->vel_nm[1] += swirl_y / 3;
         c->vel_nm[2] += swirl_z / 3;
@@ -900,8 +926,15 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                                     if (free_org >= 0 && prey->genome[83] >= host->genome[81] && prey->genome[82] >= 110) {
                                         CellOrganelle* o = &host->org[free_org];
                                         memset(o, 0, sizeof(*o));
+                                        uint8_t prey_has_chlo = 0u;
+                                        for (uint32_t pk = 0; pk < CELL_MAX_ORGANELLES; ++pk) {
+                                            if (prey->org[pk].active && prey->org[pk].org_type == 1u) {
+                                                prey_has_chlo = 1u;
+                                                break;
+                                            }
+                                        }
                                         o->active           = 1;
-                                        o->org_type         = (prey->genome[56] > 140) ? 1u : 0u;
+                                        o->org_type         = (prey->genome[56] > 140 || prey_has_chlo) ? 1u : 0u;
                                         o->nesting_depth    = (prey->num_organelles > 0) ? 2u : 1u;
                                         o->c_ring_nH        = prey->c_ring_nH;
                                         o->antiporter_share = (uint8_t)(40u + (prey->genome[82] % 55u));
@@ -1018,10 +1051,11 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                 cj->vel_nm[d] -= dv;
             }
 
-            /* Exact conservative Levin bioelectric gap-junction relaxation (continuous LOBOTOMIZING scaling!) */
+            /* Exact conservative Levin bioelectric gap-junction relaxation (continuous LOBOTOMIZING + MUZZLING scaling!) */
             if (r_lobot < 100 && r_muzzle < 85) {
                 int32_t diff = ci->v_mem_mv - cj->v_mem_mv;
-                int32_t g_cond = (((int32_t)ci->genome[98] + (int32_t)cj->genome[98]) * (100 - (int32_t)r_lobot)) / 6400;
+                int32_t g_cond = (((int32_t)ci->genome[98] + (int32_t)cj->genome[98]) *
+                                  (100 - (int32_t)r_lobot) * (100 - (int32_t)r_muzzle)) / 640000;
                 if (g_cond > 0) {
                     int32_t delta = (diff * g_cond) / 32;
                     vd[i] -= delta;
@@ -1100,7 +1134,9 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
     const uint8_t r_medicate = w->cfg.restraints[CELL_RESTRAINT_MEDICATING];
     const uint8_t r_speed    = w->cfg.restraints[CELL_RESTRAINT_SPEEDBUMPING];
     const uint8_t r_degress  = w->cfg.restraints[CELL_RESTRAINT_DEGRESSING];
+    const uint8_t r_muzzle   = w->cfg.restraints[CELL_RESTRAINT_MUZZLING];
     const uint8_t r_min      = w->cfg.restraints[CELL_RESTRAINT_MINIMIZING];
+    const SolventParams* sp  = &SOLVENT_TABLE[w->cfg.solvent];
 
     for (uint32_t i = 0; i < N; ++i) {
         CellEntity* c = &w->cells[i];
@@ -1273,18 +1309,21 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
             w->asymmetric_buddings++;
         }
 
-        /* Colonial Staying-Together at Mitosis (always coherent in Embryogenesis!) */
-        if (w->cfg.enable_bioelectricity && r_degress < 60 &&
+        /* Colonial Staying-Together at Mitosis (gated by MUZZLING & DEGRESSING!) */
+        if (w->cfg.enable_bioelectricity && r_degress < 60 && r_muzzle < 85 &&
             (c->genome[105] > 145 || w->cfg.regime == CELL_REGIME_EMBRYOGENESIS)) {
             try_form_bond(w, i, (uint32_t)target_slot);
         }
 
-        /* Stochastic Mitotic Organelle Partitioning (Heteroplasmy Bottleneck, Lean T25-T26) */
+        /* Stochastic Mitotic Organelle Partitioning (Heteroplasmy Bottleneck, Lean T25-T26)
+         * Cap asymmetric bud organelle transfer so tiny 18%-vol buds never inherit half of parent organelles! */
         uint8_t keep_cnt = 0, give_cnt = 0;
+        uint8_t max_give = can_sym ? (uint8_t)CELL_MAX_ORGANELLES : (c->num_organelles >= 2u ? 1u : 0u);
         for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
             if (!c->org[k].active) continue;
             uint32_t coin = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_MITOSIS_PART, w->epoch, i * 31u + k);
-            if ((coin & 1u) != 0u && give_cnt < CELL_MAX_ORGANELLES && r_min < 85) {
+            int do_give = can_sym ? ((coin & 1u) != 0u) : ((coin & 3u) == 0u);
+            if (do_give && give_cnt < max_give && r_min < 85) {
                 dcell->org[give_cnt++] = c->org[k];
                 memset(&c->org[k], 0, sizeof(CellOrganelle));
             } else {
@@ -1298,6 +1337,10 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
         uint32_t mut_rate = (w->cfg.regime == CELL_REGIME_EMBRYOGENESIS) ? 0u : 18u;
         if (mut_rate > 0u) {
             if (w->voxels[vidx].heat_local_uq > 220) mut_rate = 42u;
+            /* SOS Stress Mutagenesis under solvent/c-ring mismatch (suppressed by MEDICATING/DELIMITING!) */
+            if (c->lipid_class != sp->optimal_lipid || c->c_ring_nH < sp->min_cring) {
+                mut_rate = 58u;
+            }
             /* Continuous MEDICATING suppression (eliminates <70% dead-zone!) */
             if (r_medicate > 0u) {
                 mut_rate = (mut_rate * (100u - (uint32_t)r_medicate)) / 100u;
@@ -1396,22 +1439,64 @@ static void step_developmental_morphogenesis(CellWorld* w) {
 
     if (r_lobot >= 85u) return;
 
+    /* Rebuild O(N) spatial hash for translation-invariant 3D paracrine morphogen signaling */
+    rebuild_spatial_hash(w);
+
     /* 2. Conditional Gene Regulatory Network ("IF-THEN" DNA Code -> Transcription Factor Cascade!) */
     for (uint32_t i = 0; i < N; ++i) {
         CellEntity* c = &w->cells[i];
         if (c->alive_state != 1) continue;
-        const CellVoxel* vx = &w->voxels[cell_voxel_idx(w, c)];
-        /* True 3D Z-stratified chemical GPS: pos_nm[2] modulates Dorsal (BMP) vs Ventral (Shh)! */
-        int32_t z_rel = c->pos_nm[2] - (span_z / 2);
-        int32_t z_dorsal_boost  = (z_rel > 0) ? ((z_rel * 24) / (span_z / 2 + 1)) : 0;
-        int32_t z_ventral_boost = (z_rel < 0) ? (((-z_rel) * 24) / (span_z / 2 + 1)) : 0;
-        int32_t wnt = vx->morph[0];
-        int32_t bmp = vx->morph[1] + z_dorsal_boost;
-        int32_t shh = vx->morph[2] + z_ventral_boost;
+        uint32_t v0 = cell_voxel_idx(w, c);
+        uint32_t vx0 = v0 % W, vy0 = v0 / W;
+        const CellVoxel* vx = &w->voxels[v0];
 
-        /* Genome-encoded local French-Flag thresholds (Wolpert 1969, Lean T51!) */
-        int32_t t_wnt_hi  = 28 + (int32_t)(c->genome[96] & 31u);
-        int32_t t_wnt_lo  = 10 + (int32_t)(c->genome[97] & 15u);
+        /* True translation-invariant 3D paracrine Z-stratification over local 5x5 cell neighborhood
+         * (ZERO global coordinates! Exact delta_torus_nm in X, Y, Z; 0 heap allocs; AVX2 == Scalar!) */
+        int32_t wnt_3d = 0, bmp_3d = 0, shh_3d = 0;
+        for (int dy = -2; dy <= 2; ++dy) {
+            uint32_t ny = (uint32_t)((int)vy0 + dy + (int)H) % H;
+            for (int dx = -2; dx <= 2; ++dx) {
+                uint32_t nx = (uint32_t)((int)vx0 + dx + (int)W) % W;
+                int32_t j = w->hash_head[ny * W + nx];
+                while (j >= 0) {
+                    if ((uint32_t)j != i && w->cells[j].alive_state == 1) {
+                        const CellEntity* cj = &w->cells[j];
+                        int32_t rx = delta_torus_nm(c->pos_nm[0], cj->pos_nm[0], span_x);
+                        int32_t ry = delta_torus_nm(c->pos_nm[1], cj->pos_nm[1], span_y);
+                        int32_t rz = delta_torus_nm(c->pos_nm[2], cj->pos_nm[2], span_z);
+                        int64_t d2 = (int64_t)rx * rx + (int64_t)ry * ry + (int64_t)rz * rz;
+                        if (d2 < 4500LL * 4500LL) {
+                            int32_t dist = isqrt32(d2);
+                            int32_t atten = (4500 - dist) / 180;
+                            if (atten > 0) {
+                                if (cj->morph_fate == CELL_FATE_PLURI || cj->morph_fate == CELL_FATE_NEURAL || cj->tf[0] >= 110u) {
+                                    wnt_3d += atten;
+                                }
+                                if (cj->morph_fate == CELL_FATE_ECTO || cj->tf[1] >= 110u) {
+                                    bmp_3d += atten + (rz >= 0 ? (atten / 2) : 0);
+                                }
+                                if (cj->morph_fate == CELL_FATE_MUSCLE || cj->morph_fate == CELL_FATE_GUT || cj->tf[3] >= 110u) {
+                                    shh_3d += atten + (rz <= 0 ? (atten / 2) : 0);
+                                }
+                            }
+                        }
+                    }
+                    j = w->hash_next[j];
+                }
+            }
+        }
+        if (wnt_3d > 160) wnt_3d = 160;
+        if (bmp_3d > 160) bmp_3d = 160;
+        if (shh_3d > 160) shh_3d = 160;
+
+        int32_t wnt = vx->morph[0] + wnt_3d;
+        int32_t bmp = vx->morph[1] + bmp_3d;
+        int32_t shh = vx->morph[2] + shh_3d;
+
+        /* Genome-encoded local French-Flag thresholds (Wolpert 1969, Lean T51!)
+         * Dedicated bytes genome[102..103] for Wnt (de-collided from bioelectric V_m genome[96..97]!) */
+        int32_t t_wnt_hi  = 28 + (int32_t)(c->genome[102] & 31u);
+        int32_t t_wnt_lo  = 10 + (int32_t)(c->genome[103] & 15u);
         int32_t t_bmp_hi  = 18 + (int32_t)(c->genome[99] & 31u);
         int32_t t_shh_hi  = 18 + (int32_t)(c->genome[100] & 31u);
         uint8_t hippo_lim = (uint8_t)(4u + (c->genome[101] & 3u));
@@ -1442,9 +1527,17 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             c->tf[4] = (uint8_t)(c->tf[4] + 32u > 255u ? 255u : c->tf[4] + 32u);
             c->tf[6] = (uint8_t)(c->tf[6] + 38u > 255u ? 255u : c->tf[6] + 38u); /* Apical actin-myosin ring! */
         }
-        /* IF-THEN Clause F: Hyperpolarized low-crowding cell -> Germline stem */
-        if (c->v_mem_mv <= -60 && c->contact_pressure <= 1u && c->num_bonds > 0u) {
-            c->tf[5] = (uint8_t)(c->tf[5] + 24u > 255u ? 255u : c->tf[5] + 24u);
+        /* IF-THEN Clause F: Scale-invariant posterior-ventral BMP+Shh > Wnt gonadal boundary niche -> Germline (PGC) */
+        if ((c->v_mem_mv <= -40 && bmp >= t_bmp_hi && shh >= t_shh_hi && (bmp + shh) > (wnt + 10) &&
+             c->generation >= 2u && c->contact_pressure >= 1u && c->contact_pressure <= 2u &&
+             c->num_bonds > 0u) || c->tf[5] >= 155u) {
+            c->tf[5] = (uint8_t)(c->tf[5] + 48u > 255u ? 255u : c->tf[5] + 48u);
+            /* Blimp1/Prdm1-like germline repression of somatic TFs in the gonadal niche */
+            if (c->tf[5] >= 60u) {
+                for (int sf = 1; sf <= 4; ++sf) {
+                    c->tf[sf] = (c->tf[sf] > 24u) ? (uint8_t)(c->tf[sf] - 24u) : 0u;
+                }
+            }
         }
         /* IF-THEN Clause G: Hippo Mechanical Contact Inhibition (Lean T55!) */
         if (c->contact_pressure >= hippo_lim) {
@@ -1469,7 +1562,8 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             case CELL_FATE_NEURAL: c->cad_type = 1u; c->cleavage_mode = 2u; break; /* N-Cadherin, 3D Ganglion */
             case CELL_FATE_MUSCLE: c->cad_type = 2u; c->cleavage_mode = 0u; break; /* M-Cadherin, Segmented Rod */
             case CELL_FATE_GUT:    c->cad_type = 3u; c->cleavage_mode = 0u; break; /* G-Cadherin, Hollow Tube */
-            default:               c->cad_type = (uint8_t)(c->genome[64] & 3u); c->cleavage_mode = 1u; break;
+            case CELL_FATE_GERM:   c->cad_type = 3u; c->cleavage_mode = 1u; break; /* Gonadal Niche Adhesion */
+            default:               c->cad_type = c->lipid_class; c->cleavage_mode = 1u; break;
         }
 
         /* Apical Actomyosin Ring Constriction (Gut & Neural Tube Invagination, Lean T53!) */
@@ -1547,7 +1641,8 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             ci->cpg_phase_mrad = (ci->cpg_phase_mrad + 540 + bias + couple) % 6283;
             if (ci->cpg_phase_mrad < 0) ci->cpg_phase_mrad += 6283;
 
-            int fired = (ci->cpg_phase_mrad < 1950);
+            /* Firing a CPG action potential bills 1 ATP cleanly to the firing neuron (Lean T58)! */
+            int fired = (ci->cpg_phase_mrad < 1950) && (cell_hydrolyze_atp_exact(w, i, 1) > 0);
             if (fired) ci->cpg_firing = 1u;
 
             /* C. Synaptic Transmission -> ATP-Consuming Muscle Contraction (Lean T50!) & Hebbian Pruning (T56) */

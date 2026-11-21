@@ -1,7 +1,7 @@
 /-
-  CELLULOGONIC MECHA v1.1 — Theorem VI: 3D Off-Lattice Cytoskeletal Nanomechanics,
+  CELLULOGONIC MECHA v1.3.0 — Theorem VI: 3D Off-Lattice Cytoskeletal Nanomechanics,
   Overdamped Stokes Hydrodynamics, Soft-Body Momentum Conservation, Actomyosin
-  Expansion-Contraction Work Bounds, & Fröhlich–Pokorný Gigahertz Microtubule Coherence.
+  Expansion-Contraction Work Bounds, & Stateful Fröhlich–Pokorný GHz Microtubule Coherence.
 
   Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).
   Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
@@ -69,24 +69,53 @@ theorem T47_cytokinetic_prolate_elongation_area_excess (a b : Int)
   omega
 
 /-- Discrete Fröhlich–Pokorný coherent microtubule excitation surplus above thermal equilibrium.
-    Coherent GHz mode energy is positive iff metabolic GTP/ATP pumping s > s_crit. -/
+    Coherent GHz mode target is positive iff metabolic GTP/ATP pumping s > s_crit. -/
 def frohlichCoherentExcess (sPump sCrit : Nat) : Nat :=
   if sPump > sCrit then sPump - sCrit else 0
 
-/-- T48: Fröhlich–Pokorný Microtubule GHz Condensation Threshold Theorem.
-    (a) Zero metabolic pumping (sPump = 0, dead/starved cell) produces identically 0 coherent
-        GHz excitation;
-    (b) Sustained coherent GHz condensation (> 0) occurs iff metabolic pumping strictly
-        exceeds the thermal damping threshold sCrit. -/
-theorem T48_frohlich_mt_coherence_pumping_threshold (sPump sCrit : Nat) :
-    frohlichCoherentExcess 0 sCrit = 0 ∧
-    (frohlichCoherentExcess sPump sCrit > 0 ↔ sPump > sCrit) := by
-  unfold frohlichCoherentExcess
-  constructor
-  · simp
-  · by_cases h : sPump > sCrit
+/-- Exact stateful C11 Fröhlich–Pokorný relaxation ODE step (`chemoton_physics.c`):
+    - Above threshold (`sPump > sCrit`): 3/4 persistence + 1/4 active pump drive capped at 1000.
+    - At/below threshold (`sPump ≤ sCrit`): thermal decoherence decay `coh / 4`. -/
+def frohlichStep (coh sPump sCrit : Nat) : Nat :=
+  if sPump > sCrit then
+    let target := Nat.min 1000 (sPump - sCrit)
+    Nat.min 1000 ((coh * 3 + target + 2) / 4)
+  else
+    coh / 4
+
+/-- T48: Stateful Fröhlich–Pokorný Microtubule GHz Condensation & Thermal Decoherence Theorem.
+    Matches the exact C11 relaxation ODE:
+    (a) Zero coherence (`coh = 0`) is a fixed point under zero pumping (`sPump = 0`);
+    (b) Whenever pumping falls at or below threshold (`sPump ≤ sCrit`), coherence monotonically
+        decays (`coh' ≤ coh`, and strictly `coh' < coh` whenever `coh > 0`);
+    (c) Coherent condensation target is strictly positive iff `sPump > sCrit`;
+    (d) State stays strictly bounded in `[0, 1000]` whenever `coh ≤ 1000`. -/
+theorem T48_frohlich_mt_coherence_pumping_threshold (coh sPump sCrit : Nat) (hBound : coh ≤ 1000) :
+    frohlichStep 0 0 sCrit = 0 ∧
+    (sPump ≤ sCrit → frohlichStep coh sPump sCrit ≤ coh ∧ (coh > 0 → frohlichStep coh sPump sCrit < coh)) ∧
+    (frohlichCoherentExcess sPump sCrit > 0 ↔ sPump > sCrit) ∧
+    frohlichStep coh sPump sCrit ≤ 1000 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · unfold frohlichStep
+    simp
+  · intro hLe
+    unfold frohlichStep
+    have hNotGt : ¬ (sPump > sCrit) := Nat.not_lt.mpr hLe
+    simp [hNotGt]
+    constructor
+    · omega
+    · intro hPos
+      omega
+  · unfold frohlichCoherentExcess
+    by_cases h : sPump > sCrit
     · simp [h]; omega
     · simp [h]
+  · unfold frohlichStep
+    by_cases h : sPump > sCrit
+    · simp [h]
+      exact Nat.min_le_left 1000 _
+    · simp [h]
+      omega
 
 /-- T49: Gigahertz Microtubule Standing-Wave Eigenfrequency Length Scaling.
     For acoustic/dipolar wave speed c_MT > 0 and harmonic mode n ≥ 1 along a cylindrical
@@ -94,7 +123,7 @@ theorem T48_frohlich_mt_coherence_pumping_threshold (sPump sCrit : Nat) :
     as microtubule length shortens: cleared-denominator form for 0 < L_short < L_long. -/
 theorem T49_mt_gigahertz_standing_wave_frequency_scaling
     (n cMT Lshort Llong : Nat)
-    (hn : n > 0) (hc : cMT > 0) (_hShort : Lshort > 0) (hLt : Lshort < Llong) :
+    (hn : n > 0) (hc : cMT > 0) (hLt : Lshort < Llong) :
     (n * cMT) * (2 * Lshort) < (n * cMT) * (2 * Llong) := by
   have hnc : 0 < n * cMT := Nat.mul_pos hn hc
   have h2lt : 2 * Lshort < 2 * Llong := by omega

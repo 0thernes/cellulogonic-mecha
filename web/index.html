@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CELLULOGONIC MECHA v1.2 — 3D Developmental Embryogenesis &amp; Cellular Observatory</title>
+  <title>CELLULOGONIC MECHA v1.3.0 — 3D Developmental Embryogenesis &amp; Cellular Observatory</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,13 +11,14 @@
     <div class="brand">
       <div class="dot"></div>
       <div>
-        <h1>CELLULOGONIC MECHA <span>v1.2 · 3D EMBRYOGENESIS, GRN MORPHOGENESIS &amp; FLUID CHAMBER</span></h1>
-        <p>Morphogen GPS (Wnt/BMP/Shh) · Conditional GRN Fates · Cadherin Sorting · Apical Folding · Netrin/Slit Axons · CPG Waves · GHz Microtubules</p>
+        <h1>CELLULOGONIC MECHA <span>v1.3.0 · 3D EMBRYOGENESIS, GRN MORPHOGENESIS &amp; FLUID CHAMBER</span></h1>
+        <p>Translation-Invariant 3D Morphogens · 5 Germ Fates (incl. Germline) · Cadherin Sorting · Netrin/Slit Axons · ATP-Billed CPGs · Strict 4-Solvent 2nd Law</p>
       </div>
     </div>
     <div class="badges">
       <span class="badge ok" id="badge-mass">MASS Δ: 0 amu</span>
       <span class="badge ok" id="badge-energy">1ST LAW Δ: 0 uq</span>
+      <span class="badge ok" id="badge-drift">DRIFT: 0.00e+0</span>
       <span class="badge ok" id="badge-2nd">2ND LAW VIOL: 0</span>
       <span class="badge sha" id="badge-sha">SHA-256: —</span>
     </div>
@@ -41,7 +42,7 @@
         <label>Planetary / Xenocellular Solvent</label>
         <select id="sel-solvent">
           <option value="0" selected>0 · Terran Aqueous H2O (e_pmf=10, c-ring≥3)</option>
-          <option value="1">1 · Titan Cryogenic Azotosome CH4/N2 (e_pmf=7, c-ring≥4)</option>
+          <option value="1">1 · Titan Cryogenic Azotosome CH4/N2 (e_pmf=8, c-ring≥4)</option>
           <option value="2">2 · Hydrothermal Vent Tetraether GDGT (e_pmf=10, c-ring≥3)</option>
           <option value="3">3 · Venusian Sulfuric Acid H2SO4 (e_pmf=15, c-ring≥2)</option>
         </select>
@@ -49,7 +50,7 @@
       <div class="field">
         <label>3D Microscopy Optical Mode</label>
         <select id="sel-layer">
-          <option value="fates" selected>Developmental GRN Germ Layers (Ecto · Neural · Muscle · Gut)</option>
+          <option value="fates" selected>Developmental GRN Germ Layers (Ecto · Neural · Muscle · Gut · Germ)</option>
           <option value="morphogens">3D Chemical GPS Morphogens (Wnt Red · BMP Green · Shh Blue)</option>
           <option value="composite">Spectral Chromophore 3D (Infinite Genome Colors &amp; Organelles)</option>
           <option value="glyphs">Bio-Glyph &amp; Genetic Operon Syntax 3D HUD</option>
@@ -82,6 +83,13 @@
         <button id="btn-feral" class="feral">⚡ Feral RDSEED</button>
         <button id="btn-autophage" class="dna">🧬 AUTOPHAGE DNA</button>
       </div>
+      <div class="field hex-field">
+        <label>128B AUTOPHAGE DNA Hex (64–256 hex chars · Lipschitz Decoder)</label>
+        <div class="btn-row">
+          <input id="inp-ap-hex" type="text" maxlength="256" placeholder="Paste 64–256 hex chars..." spellcheck="false" />
+          <button id="btn-ap-hex" class="dna hex-btn">Transfect</button>
+        </div>
+      </div>
       <div class="btn-row">
         <button id="btn-plume">💧 Nutrient Plume</button>
         <button id="btn-focus">🔬 Zoom Apex</button>
@@ -110,6 +118,12 @@
         <button id="btn-r100">100% Castrate</button>
       </div>
       <input id="rng-rest" type="range" min="0" max="100" value="0" />
+
+      <details class="rest13-box" id="det-rest13">
+        <summary>Independent 13-Vector Restraint Matrix</summary>
+        <div id="rest13-grid" class="rest13-grid"></div>
+      </details>
+
       <p class="hint">Drag to 3D orbit · Wheel to fly inside a cell · Right-drag to pan. GHz microtubule waves are time-dilated 10⁹× for visual observation.</p>
     </section>
 
@@ -146,9 +160,9 @@
       <div class="kpi-grid">
         <div class="kpi"><label>COVI Score</label><strong id="k-covi">—</strong><small id="k-stage">Stage —</small></div>
         <div class="kpi"><label>MT Resonance</label><strong id="k-mt">—</strong><small id="k-coh">Fröhlich Coh</small></div>
-        <div class="kpi"><label>Free Swimmers</label><strong id="k-alive">—</strong><small id="k-split">Prok / Euk / Sec</small></div>
+        <div class="kpi"><label>Free Swimmers</label><strong id="k-alive">—</strong><small id="k-split">P / E / S2 / Sp / Tun</small></div>
         <div class="kpi"><label>Colonies (3D)</label><strong id="k-col">—</strong><small id="k-maxt">Few / Multi / Max</small></div>
-        <div class="kpi"><label>Swim Speed</label><strong id="k-spd">—</strong><small>Orthokinetic μm/s</small></div>
+        <div class="kpi"><label>Swim Speed</label><strong id="k-spd">—</strong><small id="k-lin">Lineages · Adapted</small></div>
         <div class="kpi"><label>Lane 1/R Scale</label><strong id="k-lane">—</strong><small>Euk / Prok Vol</small></div>
         <div class="kpi"><label>Bioelectric V_m</label><strong id="k-vmem">—</strong><small id="k-vstd">σ (mV)</small></div>
         <div class="kpi"><label>Assembly A / L_eff</label><strong id="k-assm">—</strong><small id="k-anew">Bedau A_new</small></div>

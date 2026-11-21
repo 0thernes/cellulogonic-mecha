@@ -1,11 +1,12 @@
-=== EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS & TRANSPLANT ===
+=== EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS (DE-NOVO EVOLUTION & TRANSPLANT) ===
 
-[NATIVE TERRAN_H2O      ] alive= 402 | adapted= 395 (98.3%) | mean_cring=3.01 (min=3) | mean_Q=0.212 | COVI=84.62 | mRes=0 eRes=0
-[NATIVE TITAN_AZOTOSOME ] alive= 295 | adapted= 288 (97.6%) | mean_cring=3.95 (min=4) | mean_Q=0.568 | COVI=86.96 | mRes=0 eRes=0
-[NATIVE VENT_TETRAETHER ] alive= 351 | adapted= 349 (99.4%) | mean_cring=4.17 (min=3) | mean_Q=0.214 | COVI=77.73 | mRes=0 eRes=0
-[NATIVE VENUS_H2SO4     ] alive= 138 | adapted= 134 (97.1%) | mean_cring=2.33 (min=2) | mean_Q=0.439 | COVI=79.01 | mRes=0 eRes=0
+--- Part A: De-Novo Solvent Evolution from Neutral Uniform Initial Genomes (~25% adapted) ---
+[DE-NOVO TERRAN_H2O      ] init=25.0% -> adapted= 285/ 317 ( 89.9%) | mean_cring=3.08 (min=3) | mean_Q=0.571 | COVI=93.18 | mRes=0 eRes=0
+[DE-NOVO TITAN_AZOTOSOME ] init=25.0% -> adapted=  88/ 120 ( 73.3%) | mean_cring=4.38 (min=4) | mean_Q=0.264 | COVI=82.50 | mRes=0 eRes=0
+[DE-NOVO VENT_TETRAETHER ] init=25.0% -> adapted= 286/ 313 ( 91.4%) | mean_cring=3.57 (min=3) | mean_Q=0.565 | COVI=92.69 | mRes=0 eRes=0
+[DE-NOVO VENUS_H2SO4     ] init=25.0% -> adapted= 349/ 358 ( 97.5%) | mean_cring=3.09 (min=2) | mean_Q=0.415 | COVI=90.01 | mRes=0 eRes=0
 
---- Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (140 ep) ---
-Pre-Transplant (Terran)     : alive=  73 | adapted_to_H2O=  68 | mean_cring=2.97 | mRes=0 eRes=0
-Post-Shock (+20 ep Venus)   : alive=  81 | adapted_to_H2SO4=   5 | lyses=257 | mRes=0 eRes=0
-Adapted (+140 ep Venus)     : alive= 532 | adapted_to_H2SO4=   2 | mean_cring=2.90 | COVI=77.35 | mRes=0 eRes=0
+--- Part B: Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (220 ep) ---
+Pre-Transplant (Terran)     : alive= 271 | adapted_to_H2O= 258 (95.2%) | mean_cring=3.08 | mRes=0 eRes=0
+Post-Shock (+20 ep Venus)   : alive= 198 | adapted_to_H2SO4=  53 (26.8%) | lyses=565 | mRes=0 eRes=0
+Adapted (+220 ep Venus)     : alive= 111 | adapted_to_H2SO4=  63 (56.8%) | mean_cring=2.99 | COVI=80.36 | mRes=0 eRes=0

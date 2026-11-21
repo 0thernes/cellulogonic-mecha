@@ -45,9 +45,9 @@ static void compute_colony_stats(const CellWorld* w, uint32_t* out_max_sz,
 }
 
 /* Estimate functional operon active length L_eff (0..16 loci gated on active living catalysis,
- * excluding dead vesicles and metabolically arrested spores/tuns) */
+ * excluding dead vesicles, template-free micelles, and metabolically arrested spores/tuns) */
 static uint32_t cell_active_loci_count(const CellEntity* c) {
-    if (c->alive_state != 1 || (c->mol[CELL_SP_P] == 0 && c->mol[CELL_SP_T] == 0)) return 0u;
+    if (c->alive_state != 1 || c->mol[CELL_SP_P] == 0 || c->mol[CELL_SP_T] == 0) return 0u;
     int64_t met_flux = c->mol[CELL_SP_S] + c->mol[CELL_SP_M] + c->mol[CELL_SP_E];
     uint32_t active = 0;
     if (c->genome[0]  > 80  && met_flux > 0) active++; /* R1 catabolism */
@@ -69,7 +69,8 @@ static uint32_t cell_active_loci_count(const CellEntity* c) {
     return active;
 }
 
-/* Genuine non-overlapping LZ77 motif reuse + nested organelle compositional Assembly Index A */
+/* Genuine non-overlapping LZ77 motif reuse (rejecting trivial constant homopolymers!)
+ * + nested organelle compositional Assembly Index A */
 static double cell_assembly_index(const CellEntity* c) {
     uint32_t reuse_hits = 0u, covered = 0u;
     size_t i = 0u;
@@ -81,7 +82,15 @@ static double cell_assembly_index(const CellEntity* c) {
                    c->genome[prev + m] == c->genome[i + m]) {
                 m++;
             }
-            if (m > best_len) best_len = m;
+            if (m >= 2u) {
+                /* Reject trivial homopolymer repeats (e.g., 0x00, 0x00, ...): require >= 2 distinct bytes */
+                int diverse = 0;
+                uint8_t b0 = c->genome[i];
+                for (size_t u = 1u; u < m; ++u) {
+                    if (c->genome[i + u] != b0) { diverse = 1; break; }
+                }
+                if (diverse && m > best_len) best_len = m;
+            }
         }
         if (best_len >= 2u) {
             reuse_hits++;
@@ -169,6 +178,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
     double sum_coop_frac = 0.0, sum_coop_frac2 = 0.0;
     uint32_t euk_with_org = 0;
     uint32_t active_catalysts = 0;
+    uint32_t template_carriers = 0;
 
     for (uint32_t i = 0; i < N; ++i) {
         sum_amb_x += (double)w->voxels[i].env[CELL_SP_X];
@@ -200,6 +210,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
 
         uint32_t leff = cell_active_loci_count(c);
         sum_leff += (double)leff;
+        if (c->alive_state == 1 && c->mol[CELL_SP_T] > 0) template_carriers++;
         if (c->mol[CELL_SP_P] > 0 && leff >= 4) active_catalysts++;
 
         if (c->lipid_class == sp->optimal_lipid) out->solvent_adapted_cells++;
@@ -323,7 +334,7 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
 
     /* --- 8-Pillar Cellular Omega Vitality Index (COVI) with Anti-Gaming Gates (Lean T34-T35) --- */
     uint32_t alive = out->alive_cells;
-    uint32_t total_divs = (uint32_t)(out->symmetric_fissions + out->asymmetric_buddings);
+    uint64_t total_divs = out->symmetric_fissions + out->asymmetric_buddings;
 
     /* Pillar 0: Autopoietic Survival & Membrane Homeostasis */
     out->pillar[0] = clamp100(((double)alive / (double)(N / 2u)) * 75.0 +
@@ -357,9 +368,9 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
                      ? clamp100(80.0 + ((out->spore_cells + out->vitrified_tun_cells > 0) ? 20.0 : 10.0))
                      : 0.0;
 
-    /* Anti-Gaming Gate (Lean T34 & T35): Zero if inert crystal / no catalysis / no division */
+    /* Anti-Gaming Gate (Lean T34 & T35): Zero if inert crystal / no catalysis / no template / no reactions */
     double gamma = 1.0;
-    if (alive == 0 || active_catalysts == 0 || w->total_reactions == 0) gamma = 0.0;
+    if (alive == 0 || active_catalysts == 0 || template_carriers == 0 || w->total_reactions == 0) gamma = 0.0;
     else if (out->mean_active_loci_leff < 3.0) gamma = 0.25;
     out->gamma_anti_gaming = gamma;
 
@@ -397,35 +408,62 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
 }
 
 /* ============================================================================
- * Ecosystem Bridge 1: AUTOPHAGE 256-Byte DNA Ingestion
- * Maps an AUTOPHAGE bare-metal dual-strand organism deterministically into a
- * Cellulogonic Mecha cell's 128-byte catalytic operon!
+ * Ecosystem Bridge 1: Locality-Preserving AUTOPHAGE 128B / 256B DNA Ingestion
+ * Decodes AUTOPHAGE dual-strand DNA smoothly & Lipschitz-continuously into the
+ * 16 cellular operons (ZERO cryptographic XOR avalanche on operon bytes!), using
+ * SHA-256 strictly for `autophage_dna_sig` provenance while preserving baseline
+ * metabolic & solvent viability so transfected AUTOPHAGE lineages can compete & win!
  * ============================================================================ */
 
-int cellulogonic_ingest_autophage_128b(
-    CellWorld* w, uint32_t slot, const uint8_t genome_128b[128])
+static void apply_smooth_autophage_operons(CellWorld* w, CellEntity* c, const uint8_t dna128[128]) {
+    const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
+
+    /* 1-Lipschitz direct operon mapping (zero avalanche scrambling!) */
+    for (uint32_t i = 0; i < CELL_GENOME_BYTES; ++i) {
+        c->genome[i] = dna128[i];
+    }
+
+    /* Smooth 0.5-Lipschitz affine viability envelopes for essential housekeeping loci
+     * so transfected AUTOPHAGE DNA preserves catalytic viability without destroying variation */
+    c->genome[0]  = (uint8_t)(128u + (dna128[0]  >> 1)); /* R1 catabolism      [128..255] */
+    c->genome[8]  = (uint8_t)(128u + (dna128[8]  >> 1)); /* R2 proton pump     [128..255] */
+    c->genome[17] = (uint8_t)(128u + (dna128[17] >> 1)); /* R3 ATP synthase    [128..255] */
+    c->genome[32] = (uint8_t)(144u + (dna128[32] >> 2) + (dna128[32] >> 3)); /* R5 lipid [144..239] */
+    c->genome[40] = (uint8_t)(120u + (dna128[40] >> 1)); /* R6 translation     [120..247] */
+    c->genome[48] = (uint8_t)(120u + (dna128[48] >> 1)); /* R7 replication     [120..247] */
+    c->genome[72] = (uint8_t)(128u + (dna128[72] >> 1)); /* S permease         [128..255] */
+    c->genome[73] = (uint8_t)(128u + (dna128[73] >> 1)); /* X permease         [128..255] */
+
+    /* Ensure host-solvent baseline viability while retaining full operon individuality */
+    cell_decode_genome_traits(c);
+    if (c->c_ring_nH < sp->min_cring) {
+        cell_encode_cring_nH(c, sp->min_cring);
+    }
+    if (c->lipid_class != sp->optimal_lipid) {
+        cell_encode_lipid_class(c, sp->optimal_lipid);
+    }
+    cell_decode_genome_traits(c);
+}
+
+CELL_API int cellulogonic_ingest_autophage_128b(
+    CellWorld* w, const uint8_t dna128[128], uint32_t target_slot)
 {
-    if (!w || !genome_128b || slot >= w->num_slots) return -1;
-    CellEntity* c = &w->cells[slot];
+    if (!w || !dna128 || target_slot >= w->num_slots) return -1;
+    CellEntity* c = &w->cells[target_slot];
     if (c->alive_state == 0) return -2;
 
+    /* SHA-256 used strictly for cryptographic provenance signature (NEVER XORed into operons!) */
     uint8_t digest[32];
     CellSha256Ctx sha;
     cell_sha256_init(&sha);
-    cell_sha256_update(&sha, genome_128b, 128);
+    cell_sha256_update(&sha, dna128, 128);
     cell_sha256_final(&sha, digest);
 
     uint64_t sig = 0;
     memcpy(&sig, digest, 8);
     c->autophage_dna_sig = sig;
 
-    for (uint32_t i = 0; i < CELL_GENOME_BYTES; ++i) {
-        c->genome[i] = (uint8_t)(genome_128b[i] ^ digest[i & 31u]);
-    }
-    /* Ensure minimal catalytic viability after cross-layer genomic integration */
-    c->genome[0]  |= 0x80u;
-    c->genome[32] |= 0x80u;
-    cell_decode_genome_traits(c);
+    apply_smooth_autophage_operons(w, c, dna128);
     return 0;
 }
 
@@ -441,6 +479,7 @@ CELL_API int cellulogonic_ingest_autophage_genome(
     memcpy(clean_256b, autophage_256b, 256u);
     memset(&clean_256b[0xE0], 0, 8u);
 
+    /* SHA-256 strictly for provenance signature */
     uint8_t digest[32];
     CellSha256Ctx sha;
     cell_sha256_init(&sha);
@@ -451,12 +490,12 @@ CELL_API int cellulogonic_ingest_autophage_genome(
     memcpy(&sig, digest, 8);
     c->autophage_dna_sig = sig;
 
+    /* Smooth 0.5-Lipschitz dual-strand arithmetic fold (ZERO XOR avalanche!) */
+    uint8_t folded_128b[128];
     for (uint32_t i = 0; i < CELL_GENOME_BYTES; ++i) {
-        c->genome[i] = (uint8_t)(clean_256b[i] ^ clean_256b[128u + i] ^ digest[i & 31u]);
+        folded_128b[i] = (uint8_t)(((uint32_t)clean_256b[i] + (uint32_t)clean_256b[128u + i]) >> 1);
     }
-    c->genome[0]  |= 0x80u;
-    c->genome[32] |= 0x80u;
-    cell_decode_genome_traits(c);
+    apply_smooth_autophage_operons(w, c, folded_128b);
     return 0;
 }
 
@@ -469,7 +508,11 @@ static inline float cell_clamp01f(double v) {
 
 /* ============================================================================
  * Ecosystem Bridge 2: Asmodensius 112-Trait Deterministic Physiological Bridge
- * Projects a Cellulogonic Mecha specimen strictly into [0.0, 1.0]^112!
+ * Projects a Cellulogonic Mecha v1.3.0 specimen strictly into [0.0, 1.0]^112!
+ *   0..7   : Core bioenergetics, reduced Q, endosymbionts, V_mem, solvent/c-ring, role
+ *   8..15  : Conserved molecular pools mol[0..7]
+ *   16..23 : v1.1–v1.3 cytoskeleton, GHz microtubules, 3D swim speed, GRN fate/cadherin/axons
+ *   24..111: Exact smooth operon projection normalized cleanly by / 1020.0
  * ============================================================================ */
 
 CELL_API void cellulogonic_project_asmodensius_112(
@@ -488,10 +531,25 @@ CELL_API void cellulogonic_project_asmodensius_112(
     for (int s = 0; s < 8; ++s) {
         out_traits_112[8 + s] = cell_clamp01f((double)spec->mol[s] / 80.0);
     }
-    /* Traits 16..111: Exact deterministic projection from the 128-byte catalytic operon */
-    for (int i = 0; i < 96; ++i) {
+
+    /* Traits 16..23: v1.1–v1.3 cytoskeletal, GHz microtubule, 3D motility & morphogenetic observables */
+    double speed_nm = sqrt((double)spec->vel_nm[0] * (double)spec->vel_nm[0] +
+                           (double)spec->vel_nm[1] * (double)spec->vel_nm[1] +
+                           (double)spec->vel_nm[2] * (double)spec->vel_nm[2]);
+    out_traits_112[16] = cell_clamp01f((double)(spec->radius_nm - 220) / 1260.0);
+    out_traits_112[17] = cell_clamp01f((double)(spec->elong_q10 - 650) / 1500.0);
+    out_traits_112[18] = cell_clamp01f((double)((int32_t)spec->mt_freq_mhz - 1200) / 13600.0);
+    out_traits_112[19] = cell_clamp01f((double)spec->mt_coherence_q10 / 1000.0);
+    out_traits_112[20] = cell_clamp01f(speed_nm / 800.0);
+    out_traits_112[21] = cell_clamp01f((double)spec->morph_fate / 5.0);
+    out_traits_112[22] = cell_clamp01f((double)spec->cad_type / 3.0);
+    out_traits_112[23] = cell_clamp01f(((double)spec->active_axons / (double)CELL_MAX_AXONS) * 0.5 +
+                                       ((double)spec->apical_wedge_q10 / 1000.0) * 0.5);
+
+    /* Traits 24..111: Exact deterministic projection from the 128-byte catalytic operon (max 255*3+255 = 1020) */
+    for (int i = 0; i < 88; ++i) {
         uint8_t b0 = spec->genome[i];
         uint8_t b1 = spec->genome[(i + 32) & 127];
-        out_traits_112[16 + i] = cell_clamp01f((double)(((uint32_t)b0 * 3u + (uint32_t)b1) & 0x3FFu) / 1023.0);
+        out_traits_112[24 + i] = cell_clamp01f((double)((uint32_t)b0 * 3u + (uint32_t)b1) / 1020.0);
     }
 }

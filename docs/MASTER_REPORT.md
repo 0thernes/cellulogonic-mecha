@@ -1,11 +1,11 @@
-# CELLULOGONIC MECHA v1.1 — Master Deep-Dive Treatise & Operational Report
+# CELLULOGONIC MECHA v1.3.0 — Master Deep-Dive Treatise & Operational Report
 
-**Comprehensive Technical, Mathematical, Scientific, Computational, Functional & Operational Analysis of 3D Cellular Life, Engineering Microbiology, GHz Cytoskeletal Nanomechanics, the ≤1,000-Cell Eutelic Tardigrade Frontier, Xenocellular Biology, and the Cellular A-Life Singularity / Super A-Life / SUPER LIFE Trajectory**
+**Comprehensive Technical, Mathematical, Scientific, Computational, Functional & Operational Analysis of 3D Cellular Life, Engineering Microbiology, GHz Cytoskeletal Nanomechanics, Translation-Invariant 5-Fate 3D Embryogenesis, the ≤1,000-Cell Eutelic Tardigrade Frontier, Xenocellular Biology, and the Cellular A-Life Singularity / Super A-Life / SUPER LIFE Trajectory**
 
 **Author:** Alexander S. Donahue (0thernes LLC, ORCID: `0009-0006-8168-9648`)  
-**Version:** `1.1.0` | **Date:** November 19, 2026 | **License:** 0thernes COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY  
-**Formal Proof Suite:** 50 / 50 Pure Lean 4 (`v4.35.0`) Theorems (`0 sorryAx`, `0` custom axioms)  
-**Empirical Suite:** 22 / 22 Falsification Gates · 8 / 8 Planted Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
+**Version:** `1.3.0` | **Date:** November 21, 2026 | **License:** 0thernes COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY  
+**Formal Proof Suite:** 58 / 58 Pure Lean 4 (`v4.35.0`) Theorems (`1,651` lines, `0 sorryAx`, `0` custom axioms, strictly `{propext, Classical.choice, Quot.sound}`, `0` warnings)  
+**Empirical Suite:** 24 / 24 Falsification Gates · 8 / 8 Planted Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
 
 ---
 
@@ -15,7 +15,7 @@
 - [Part II — The Complete Cellular & Multicellular Scale Ladder: From 1 Cell to the ≤1,000-Cell Eutelic Tardigrade Frontier](#part-ii--the-complete-cellular--multicellular-scale-ladder-from-1-cell-to-the-1000-cell-eutelic-tardigrade-frontier)
 - [Part III — Alien & Xenocellular Architectures: Non-Water Solvents, Alternative Membranes & XNA](#part-iii--alien--xenocellular-architectures-non-water-solvents-alternative-membranes--xna)
 - [Part IV — The Cellular A-Life Singularity, Super A-Life & Post-Beyond SUPER LIFE](#part-iv--the-cellular-a-life-singularity-super-a-life--post-beyond-super-life)
-- [Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.0](#part-v--technical-mathematical-scientific-computational-functional--operational-architecture-of-cellulogonic-mecha-v10)
+- [Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.3.0](#part-v--technical-mathematical-scientific-computational-functional--operational-architecture-of-cellulogonic-mecha-v130)
 - [Part VI — Four-Build Ecosystem Coordination & Honest Scientific Novelty Audit](#part-vi--four-build-ecosystem-coordination--honest-scientific-novelty-audit)
 
 ---
@@ -114,19 +114,19 @@ No team on Earth has yet built an atomistic end-to-end simulation of a tardigrad
 2. **The Connectome & Morphogenesis Gap**: **OpenWorm** (Szigeti et al., 2014) maps *C. elegans*'s 302 neurons onto soft-body physics (`Sibernetic`), and **DevoWorm** separately models embryonic cleavage, yet neither couples live DNA transcription/chemiosmosis to 3D organogenesis. Tardigrades still lack a complete synaptic connectome.
 3. **Cryptobiosis Bioglass Physics**: Modeling tardigrade **anhydrobiosis** requires phase-transition physics where >98% cellular water loss triggers intrinsically disordered proteins (`CAHS/SAHS/MAHS`, Boothby et al., 2017) to vitrify cytoplasm into protective amorphous bioglass while `Dsup` (Hashimoto et al., 2016) shields DNA from radiation.
 
-**CELLULOGONIC MECHA's Breakthrough Strategy**: Rather than faking organisms with non-physical game loops OR stalling at 1 bacterium/day in molecular dynamics, we coarse-grain to **exact integer-quantum stoichiometries, exact Canham–Helfrich geometry, exact nested organelle bioenergetics, exact bioelectric gap junctions, and exact TDP bioglass vitrification** — running **1,024 interacting spatial cellular compartments at 50 million conserved reactions/second** on one desktop CPU, while linking cleanly to `AUTOPHAGE` (DNA) and `Asmodensius` (embodied creatures + world)!
+**CELLULOGONIC MECHA's Breakthrough Strategy**: Rather than faking organisms with non-physical game loops OR stalling at 1 bacterium/day in molecular dynamics, we coarse-grain to **exact integer-quantum stoichiometries, exact Canham–Helfrich geometry, exact nested organelle bioenergetics, exact bioelectric gap junctions, translation-invariant 5-fate developmental GRNs, and exact TDP bioglass vitrification** — running **1,024 interacting spatial 3D cellular compartments at 33.5 million conserved reactions/second** on one desktop CPU, while linking cleanly to `AUTOPHAGE` (DNA) and `Asmodensius` (embodied creatures + world)!
 
 ---
 
 # Part III — Alien & Xenocellular Architectures: Non-Water Solvents, Alternative Membranes & XNA
 
-Life-as-it-could-be need not copy LUCA's frozen terrestrial accidents (water at 300 K, ester phospholipids, 4-letter DNA/RNA, L-amino acids). CELLULOGONIC MECHA natively models and verifies **four physically distinct planetary/xenocellular solvent regimes** grounded in peer-reviewed astrobiology:
+Life-as-it-could-be need not copy LUCA's frozen terrestrial accidents (water at 300 K, ester phospholipids, 4-letter DNA/RNA, L-amino acids). CELLULOGONIC MECHA natively models and verifies **four physically distinct planetary/xenocellular solvent regimes** grounded in peer-reviewed astrobiology, all strictly obeying the Second Law ($q_r > 0$) and evolving de novo from `25.0%` neutral uniform initial genomes:
 
-1. **Terran Aqueous Phospholipid (`SOLVENT_TERRAN_H2O`, `300 K`)**: Polar liquid water driving hydrophobic bilayer self-assembly, proton-motive force (`e_pmf = 10`, $n_H \ge 3$ c-ring, Lean `T28`), ATP energy currency.
-2. **Cryogenic Titan Azotosome (`SOLVENT_TITAN_AZOTOSOME`, `94 K` liquid $\text{CH}_4/\text{N}_2$)**: Based on Stevenson, Lunine & Clancy (2015, *Science Advances*), non-polar cryogenic methane/ethane solvents invert membrane polarity — polar nitrogen-bearing acrylonitrile-like amphiphiles form flexible **azotosomes** with extraordinarily high elasticity (`burst_num = 135%`), ultra-low thermal decay (`decay_div = 192`), slow diffusion, and lower driving quantum (`e_pmf = 7`), mathematically forcing evolution of higher-geared **$n_H \ge 4$ ATP-synthase c-rings** (Lean `T30`; empirically verified at `mean_cring = 3.93`, `COVI = 88.21`!).
-3. **Hyperthermophilic Archaeal Tetraether Monolayer (`SOLVENT_VENT_TETRAETHER`, `370 K` Alkaline/Acidic Vents)**: Based on Caforio & Driessen (2017), boiling hydrothermal gradients tear ordinary phospholipid bilayers apart via proton leak and thermal hydrolysis (`decay_div = 28`) unless cells evolve covalent membrane-spanning **GDGT tetraether monolayers** (`lipid_class == 2`; empirically `100.0%` of surviving cells evolved tetraether monolayers!).
-4. **Venusian Sulfuric-Acid Xenocell (`SOLVENT_VENUS_H2SO4`, Concentrated $\text{H}_2\text{SO}_4$ Cloud Aerosols)**: Based on Seager, Petkowski & Bains (2023 *PNAS*; 2024 *Life*) demonstrating year-long stability of nucleic-acid bases in concentrated sulfuric acid, extreme external acidity creates a huge ambient proton-motive driving force (`e_pmf = 15`), lowering the minimum c-ring floor to **$n_H \ge 2$** (Lean `T29`; empirically converged to `mean_cring = 2.29`!) while rapidly depurinating unadapted Terran templates.
-5. **Alternative Genetic Alphabets (Hachimoji 8-Letter XNA)**: Hoshika et al. (2019, *Science*) proved 8-letter synthetic DNA/RNA obeys Watson–Crick thermodynamics with higher information density — motivating our decoupled 128-byte evolvable operon + `AUTOPHAGE` $\mathbb{F}_2$-ribosome genetic bridge.
+1. **Terran Aqueous Phospholipid (`SOLVENT_TERRAN_H2O`, `300 K`)**: Polar liquid water driving hydrophobic bilayer self-assembly, proton-motive force (`e_pmf = 10`, $n_H \ge 3$ c-ring, Lean `T28`), ATP energy currency (`25.0% → 89.9%` adapted, `mean_cring = 3.08`, `COVI = 93.18`).
+2. **Cryogenic Titan Azotosome (`SOLVENT_TITAN_AZOTOSOME`, `94 K` liquid $\text{CH}_4/\text{N}_2$)**: Based on Stevenson, Lunine & Clancy (2015, *Science Advances*), non-polar cryogenic methane/ethane solvents invert membrane polarity — polar nitrogen-bearing acrylonitrile-like amphiphiles form flexible **azotosomes** with extraordinarily high elasticity (`burst_num = 135%`), ultra-low thermal decay (`decay_div = 192`), slow diffusion, and lower driving quantum (`e_pmf = 8`, `R2` yield `7`, `q_2 = +6 uq`), mathematically forcing strict-Second-Law evolution of higher-geared **$n_H \ge 4$ ATP-synthase c-rings** ($4 \times 8 - 28 = +4 > 0$, Lean `T30`; empirically verified de novo at `73.3%` adapted, `mean_cring = 4.38`, `COVI = 82.50`!).
+3. **Hyperthermophilic Archaeal Tetraether Monolayer (`SOLVENT_VENT_TETRAETHER`, `370 K` Alkaline/Acidic Vents)**: Based on Caforio & Driessen (2017), boiling hydrothermal gradients tear ordinary phospholipid bilayers apart via proton leak and thermal hydrolysis (`decay_div = 38`) unless cells evolve covalent membrane-spanning **GDGT tetraether monolayers** (`lipid_class == 2`; empirically evolved de novo from `25.0%` to `91.4%`, `mean_cring = 3.57`, `COVI = 92.69`!).
+4. **Venusian Sulfuric-Acid Xenocell (`SOLVENT_VENUS_H2SO4`, Concentrated $\text{H}_2\text{SO}_4$ Cloud Aerosols)**: Based on Seager, Petkowski & Bains (2023 *PNAS*; 2024 *Life*) demonstrating year-long stability of nucleic-acid bases in concentrated sulfuric acid, extreme external acidity creates a huge ambient proton-motive driving force (`e_pmf = 15`), lowering the minimum c-ring floor to **$n_H \ge 2$** (Lean `T29`; empirically converged de novo to `97.5%` adapted, `COVI = 90.01`, while Terran→Venus transplants survive `565` acid lyses and genuinely sweep to **`56.8%` Venusian adaptation (`63/111`, `COVI = 80.36`, `0` drift)**!).
+5. **Alternative Genetic Alphabets (Hachimoji 8-Letter XNA)**: Hoshika et al. (2019, *Science*) proved 8-letter synthetic DNA/RNA obeys Watson–Crick thermodynamics with higher information density — motivating our decoupled 128-byte Gray-coded evolvable operon + smooth Lipschitz `AUTOPHAGE` 128B/256B genetic bridge.
 
 ---
 
@@ -152,46 +152,47 @@ If **Artificial Intelligence (AI)** is the trajectory toward transcendent *cogni
 
 ---
 
-# Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.0
+# Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.3.0
 
 ## 5.1 Technical & Computational Summary
-- **Language & Dependencies**: Pure clean-room C11 (`include/`, `src/`), zero third-party runtime libraries, zero npm packages in `web/`, pure core Lean 4 (`v4.35.0`, zero Mathlib).
+- **Language & Dependencies**: Pure clean-room C11 (`include/`, `src/`, `ABI 0x00010300`), zero third-party runtime libraries, zero npm packages in `web/`, pure core Lean 4 (`v4.35.0`, zero Mathlib).
 - **Binary Artifacts**: Native Win64 PE64 (`cellulogonic.exe`, `cellulogonic.dll`, `libcellulogonic.dll.a`, `libcellulogonic.a`, `test_falsification.exe`) built via Clang 23.1.0 + LLD; Native Linux ELF64 (`cellulogonic_linux`, `libcellulogonic.so`, `libcellulogonic_linux.a`, `test_falsification_linux`) built via GCC 13.3.0.
-- **Measured Performance**: **`50.009 million conserved chemical reactions/second`** (`2.914 million cell-steps/sec`, `1.44×` AVX2 speedup over scalar reference on Intel Core Ultra 9 275HX) with **`0` post-warmup heap allocations** (`HW02`/`P10`).
-- **4-Way Bit-Exact Determinism**: Identical canonical SHA-256 `5d515453972d9aeade24fa893488cb0b4cb4af6b1fd7e99f948d5e25e515174a` across Win64 AVX2, Win64 Scalar, Linux AVX2, and Linux Scalar (`0-bit diff`).
+- **Measured Performance**: **`33.499 million conserved chemical reactions/second`** on Win64 (`1.765 M cell-steps/sec`, `1.37×` AVX2 speedup) and **`28.560 million reactions/second`** on Linux (`1.505 M cell-steps/sec`, `1.65×` AVX2 speedup) in continuous 3D off-lattice mode on Intel Core Ultra 9 275HX, with **`0` post-warmup heap allocations** (`HW02`/`P10`).
+- **4-Way Bit-Exact Determinism**: Identical complete-state canonical SHA-256 `be46eceb5dcbfe1f401934e62b2b6816829c38f3d3c6ababf18803608f7422a1` across Win64 AVX2, Win64 Scalar, Linux AVX2, and Linux Scalar (`0-bit diff`, `51,208` steps, `971,811` reactions, `0 amu`, `0 uq`, `0` Second-Law violations).
 
 ## 5.2 Mathematical & Scientific Verification Summary
-- **44 Machine-Checked Lean 4 Theorems (`T01`–`T44`, `0 sorryAx`)** spanning 5 modules (`StoichiometryThermo`, `MembraneGeometry`, `BioenergeticsEndosymbiosis`, `ChemiosmosisAutopoiesis`, `EutelicOrganogenesis`).
-- **20-Gate Falsification Suite + 8 Planted Negative Mutants (`M1`–`M8`)**: 20/20 PASSED on both Win64 (`0.145s`) and Linux (`0.137s`).
-- **Locked Paired Statistics (`N = 24`, Seeds `5000..5023`, Holm–Bonferroni FWER)**:
-  - `H1` COVI (Feral vs. 70% Castrated): `78.742` vs. `70.384` (`24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H2` Max Cell Volume (Endosymbiosis ON vs. OFF): `441.042` vs. `193.750` (`24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H3` Bioelectric $\sigma(V_m)$ (ON vs. OFF): `24.640` vs. `8.221 mV` (`24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H4` Tardigrade TDP Survival (Intact vs. KO): `33.333` vs. `0.917` survivors (`24/24` wins, $p_{\text{Holm}} = 0.00040$).
+- **58 Machine-Checked Pure Lean 4 Theorems (`T01`–`T58`, `1,651` lines, `0 sorryAx`, `0` warnings, strictly `{propext, Classical.choice, Quot.sound}`)** spanning 7 theorem modules (`StoichiometryThermo` 4-solvent 19-rxn strict 2nd Law, `MembraneGeometry`, `BioenergeticsEndosymbiosis`, `ChemiosmosisAutopoiesis`, `EutelicOrganogenesis`, `CytoskeletonNanomechanics` stateful Fröhlich ODE, `MorphogeneticGRN` tree-invariant/Hippo hysteresis/coupled CPG/`StoichiometryThermo` 0-drift).
+- **24-Gate Falsification Suite + 8 Planted Negative Mutants (`M1`–`M8`)**: 24/24 PASSED on both Win64 (`0.444s`) and Linux (`0.512s`).
+- **Locked Paired Statistics (`N = 24`, Seeds `5000..5023`, 180 ep, True Step-Down Holm–Bonferroni FWER — Unanimous `96/96` Wins!)**:
+  - `H1` COVI (Feral vs. 70% Castrated): `86.341` vs. `38.353` (`+47.987`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H2` Max Cell Volume (Endosymbiosis ON vs. OFF): `1164.542` vs. `161.125` (`+1003.417`, `7.23×`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H3` Bioelectric $\sigma(V_m)$ (ON vs. OFF): `23.091` vs. `0.000 mV` (`+23.091`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H4` Tardigrade TDP Survival (Intact vs. KO): `181.458` vs. `2.542` survivors (`71.4×`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
 
 ## 5.3 Functional & Operational Runbook
 
 | Operation | Exact Command | Expected Verified Output |
 |---|---|---|
-| Full Win64 build + 20-gate test + 44 Lean proofs | `.\build.ps1` | `20/20 PASSED`, `8/8 MUTANTS`, `44 theorems, 0 sorryAx` |
-| Full Linux ELF64 build + 20-gate test | `./build_linux.sh` | `20/20 PASSED`, `8/8 MUTANTS` |
-| Dual-kernel parity benchmark | `.\bin\cellulogonic.exe bench --epochs 200 --size 32 --seed 5055` | `EXACT 0-BIT DIFF MATCH`, `SHA-256=5d515453…`, `mass_res=0`, `energy_res=0` |
-| Zero-seed spontaneous abiogenesis | `.\bin\cellulogonic.exe abiogenesis --epochs 240 --size 32 --seed 5000` | `0 -> 543` peak alive, `58` eukaryotes, `COVI 91.30 (S6)`, `MET 7/7` |
-| Serial endosymbiosis vs. prokaryotic ceiling | `.\bin\cellulogonic.exe endosymbiosis --epochs 200 --size 32 --seed 5100` | `maxVol 565` vs `210`, `107` captures, `26` secondary chimeras |
-| 4-Solvent xenocellular & cross-world transplant | `.\bin\cellulogonic.exe xenocell --epochs 180 --size 32 --seed 5110` | c-rings `3.02 / 3.93 / 2.99 / 2.29`; `0` conservation error across transplant |
-| Tardigrade TDP bioglass anhydrobiosis | `.\bin\cellulogonic.exe anhydrobiosis --epochs 140 --size 32 --seed 5130` | `82` vs `1` post-shock survivors (`82×`), `0` conservation error |
-| 13-Vector castration ablation sweep | `.\bin\cellulogonic.exe ablation --epochs 140 --size 32 --seed 5140` | `50%` Escape-Breeding Paradox across all 4 channels; `100%` `COVI=0.00` |
-| Live Cellular Microscopy Observatory UI | `node web\server.mjs` → `http://127.0.0.1:8788` | Live interactive 4-channel microscope + COVI radar + restraint sliders |
+| Full Win64 build + 24-gate test + 58 Lean proofs & strict axiom allowlist | `.\build.ps1` | `24/24 PASSED`, `8/8 MUTANTS`, `58 theorems`, strictly `{propext, Classical.choice, Quot.sound}` |
+| Full Linux ELF64 build + 24-gate test | `./build_linux.sh` | `24/24 PASSED`, `8/8 MUTANTS` |
+| Dual-kernel parity benchmark | `.\bin\cellulogonic.exe bench --epochs 300 --size 32 --seed 5000` | `EXACT 0-BIT DIFF MATCH`, `SHA-256=be46eceb…`, `mass_res=0`, `energy_res=0` |
+| Zero-seed spontaneous abiogenesis | `.\bin\cellulogonic.exe abiogenesis --epochs 240 --size 32 --seed 5000` | `0 -> 610` peak alive, `123` peak orgs, `COVI 89.93 (S6)` peak, `MET 7/7` |
+| Serial endosymbiosis vs. prokaryotic ceiling | `.\bin\cellulogonic.exe endosymbiosis --epochs 240 --size 32 --seed 5000` | `maxVol 1046` vs `157` (`6.66×`), `926` captures, `259` secondary chimeras, `178` EGT |
+| De-novo 4-solvent evolution & Terran→Venus transplant | `.\bin\cellulogonic.exe xenocell --epochs 240 --size 32 --seed 5000` | De novo `89.9% / 73.3% / 91.4% / 97.5%` (Titan `c-ring 4.38 ≥ 4`); Terran→Venus **`56.8%`** |
+| Translation-invariant 5-fate 3D embryogenesis | `.\bin\cellulogonic.exe embryo --epochs 200 --size 32 --seed 5000` | `70` alive, **ALL 5 fates (`Gm=5`)**, `85.3%` peak sort, `347` wired axons, `636` CPG pulses |
+| Tardigrade TDP bioglass anhydrobiosis | `.\bin\cellulogonic.exe anhydrobiosis --epochs 120 --size 32 --seed 5000` | `109` vs `3` post-shock survivors (`36.3×`), `108` revived, `0` conservation error |
+| 13-Vector castration ablation sweep | `.\bin\cellulogonic.exe ablation --epochs 180 --size 32 --seed 5000` | `50%` Escape-Breeding Paradox (`93/427/178/2084`); `100%` `COVI=0.00` |
+| CSRF-Hardened 60 FPS WebGL2 Observatory UI | `node web\server.mjs` → `http://127.0.0.1:8788` | Live 3D WebGL2 microscope, 13-vector restraint matrix, 128B AUTOPHAGE hex injector (`POST /api/cmd`) |
 
 ---
 
 # Part VI — Four-Build Ecosystem Coordination & Honest Scientific Novelty Audit
 
 1. **Coordinating All 4 Builds**:
-   - **Build 1 (`AUTOPHAGE` DNA)** feeds 256-byte evolved bare-metal genomes into Build 2 via `cellulogonic_ingest_autophage_genome()`.
-   - **Build 2 (`CELLULOGONIC MECHA` Cellular)** executes exact non-equilibrium cellular chemistry, Canham–Helfrich membranes, nested organelles, bioelectric tissues, xenocellular solvents, and TDP anhydrobiosis.
-   - **Build 3 (`Asmodensius` Creatures/Beings/Entities)** receives the deterministic `[0, 1]^112` physiological phenotype vector via `cellulogonic_project_asmodensius_112()` (`mean=0.4995`, `std=0.2820`, `results/10_ecosystem_4build_bridge.txt`).
+   - **Build 1 (`AUTOPHAGE` DNA)** feeds 128B/256B evolved bare-metal genomes into Build 2 via exported `cellulogonic_ingest_autophage_128b()` and `cellulogonic_ingest_autophage_genome()` with smooth Lipschitz-continuous operon decoding (SHA-256 reserved strictly for `autophage_dna_sig`).
+   - **Build 2 (`CELLULOGONIC MECHA` Cellular)** executes exact non-equilibrium 19-reaction cellular chemistry, Canham–Helfrich membranes, nested organelles, bioelectric tissues, xenocellular solvents, TDP anhydrobiosis, and translation-invariant 5-fate 3D developmental embryogenesis.
+   - **Build 3 (`Asmodensius` Creatures/Beings/Entities)** receives the deterministic `[0, 1]^112` physiological, cytoskeletal, GHz microtubule, and morphogenetic phenotype vector via `cellulogonic_project_asmodensius_112()` (`mean=0.5326`, `std=0.2764`, `results/10_ecosystem_4build_bridge.txt`).
    - **Build 4 (`Asmodensius-Native` World Model)** shares the exact Clean-Slate `P2`/`P4`/`P9`/`P10` verification contract and locked test seed bands (`5000+`).
 2. **Brutally Honest Novelty Verdict**:
-   - **Established Science (NOT claimed as ours)**: Non-equilibrium thermodynamics, Chemoton, Autopoiesis, chemiosmosis, Canham–Helfrich elasticity, Lane's $1/R$ ceiling, Margulis endosymbiosis, Levin bioelectricity, Boothby TDP bioglass, Stevenson azotosomes, Seager sulfuric-acid chemistry, and Assembly Theory (30 primary DOIs cited in [`../paper/WHITE_PAPER.md`](../paper/WHITE_PAPER.md)). **Zero claim of new physical laws of nature or wet-lab abiogenesis.**
-   - **Genuinely Original Contributions**: (i) Elementary exact algebraic proof of the **Global Minimax Theorem of Vesicle Division** via the sextic factorization $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4 + 2x^3y + 2xy^3 + y^4)$ (`T16`); (ii) unified 44-theorem pure Lean 4 formalization bridging cellular thermodynamics, membrane geometry, endosymbiosis, chemiosmotic c-rings, bioelectric Laplacians, and ≤1,000-cell eutelic organogenesis (`0 sorryAx`); (iii) zero-dependency 4-way bit-exact C11+AVX2 engine executing 50M conserved reactions/sec with `0` residual; and (iv) lab-grade falsifiable empirical proof (`20/20` gates, `8/8` mutants caught, `24/24` locked seed wins at $p_{\text{Holm}} = 0.00040$) of spontaneous multi-transition cellular emergence on a single computer.
+   - **Established Science (NOT claimed as ours)**: Non-equilibrium thermodynamics, Chemoton, Autopoiesis, chemiosmosis, Canham–Helfrich elasticity, Lane's $1/R$ ceiling, Margulis endosymbiosis, Levin bioelectricity, Boothby TDP bioglass, Stevenson azotosomes, Seager sulfuric-acid chemistry, Fröhlich–Pokorný cytoskeletal modes, Wolpert positional information, Steinberg differential adhesion, Marder CPG networks, and Assembly Theory (**36 cited peer-reviewed sources, 35 verified DOIs** in [`../paper/WHITE_PAPER.md`](../paper/WHITE_PAPER.md)). **Zero claim of new physical laws of nature or wet-lab abiogenesis.**
+   - **Genuinely Original Contributions**: (i) Elementary exact algebraic proof of the **Global Minimax Theorem of Vesicle Division** via the sextic factorization $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4 + 2x^3y + 2xy^3 + y^4)$ (`T16`); (ii) unified 58-theorem (`1,651`-line) pure Lean 4 formalization bridging 4-solvent strict Second-Law cellular thermodynamics, membrane geometry, endosymbiosis, chemiosmotic c-rings, bioelectric Laplacians, ≤1,000-cell eutelic organogenesis, stateful 3D cytoskeletal nanomechanics, and developmental GRN embryogenesis (`0 sorryAx`, strictly `{propext, Classical.choice, Quot.sound}`); (iii) zero-dependency 4-way bit-exact C11+AVX2 engine executing 33.5M conserved reactions/sec with `0` residual and complete `"CMB4"` `.cmbin` validation; and (iv) lab-grade falsifiable empirical proof (`24/24` gates, `8/8` mutants caught, unanimous `96/96` locked seed wins at $p_{\text{Holm}} = 0.00040$) of spontaneous multi-transition cellular emergence, de-novo xenobiology, and 5-fate 3D embryogenesis on a single computer.

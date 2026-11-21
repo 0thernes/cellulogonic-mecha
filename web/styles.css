@@ -48,10 +48,31 @@ h2 { margin: 0 0 10px; font-size: 13.5px; color: var(--accent); text-transform: 
 h3 { margin: 12px 0 6px; font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 .field { margin-bottom: 9px; }
 .field label { display: block; color: var(--muted); margin-bottom: 3px; font-size: 11px; }
-select, input[type="number"], input[type="range"] {
+select, input[type="number"], input[type="range"], input[type="text"] {
   width: 100%; background: #070d17; color: var(--text);
   border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; font-size: 12px;
 }
+.hex-field input[type="text"] {
+  flex: 2.2; font-family: ui-monospace, Consolas, monospace; font-size: 10.5px;
+}
+.hex-btn { flex: 0.9; }
+.rest13-box {
+  margin-top: 8px; background: #080f1b; border: 1px solid #18253b;
+  border-radius: 7px; padding: 6px 8px;
+}
+.rest13-box summary {
+  cursor: pointer; font-size: 11px; color: var(--ice); font-weight: 600;
+  user-select: none;
+}
+.rest13-grid {
+  margin-top: 7px; display: flex; flex-direction: column; gap: 4px;
+}
+.r13-row {
+  display: grid; grid-template-columns: 92px 1fr 30px; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--muted); font-family: ui-monospace, Consolas, monospace;
+}
+.r13-row input[type="range"] { padding: 0; height: 14px; }
+.r13-row span:last-child { text-align: right; color: var(--accent); }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .btn-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 7px; }
 button {

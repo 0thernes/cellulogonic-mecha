@@ -1,7 +1,8 @@
 /-
-  CELLULOGONIC MECHA v1.2 — Root Formal Verification & Axiom Audit Module
+  CELLULOGONIC MECHA v1.3.0 — Root Formal Verification & Strict Axiom Audit Module
   Machine-checks all 58 theorems across Theorems I–VII under Lean 4 v4.35.0
-  with zero Mathlib dependencies, zero `sorryAx`, and zero custom axioms.
+  with zero Mathlib dependencies, zero `sorryAx`, zero custom axioms, and zero
+  external compiler/SAT axioms (strictly subset of {propext, Classical.choice, Quot.sound}).
 
   Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
 -/

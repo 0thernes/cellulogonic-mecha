@@ -12,7 +12,7 @@
 #define CELL_MT_GENOME_BYTES  32u
 #define CELL_VESICLE_C0       100LL
 #define CELL_VOXEL_NM         1000
-#define CELL_SNAPSHOT_MAGIC   0x434D4233u /* "CMB3" (v1.2 3D Embryogenesis & GRN) */
+#define CELL_SNAPSHOT_MAGIC   0x434D4234u /* "CMB4" (v1.3.0 zero-padding validated snapshot) */
 
 /* Domain-Isolated Philox4x32-10 Stream IDs (Clean-Slate P4) */
 #define RNG_DOMAIN_WORLD_EXOG   0x1001u
@@ -29,11 +29,11 @@ static const int64_t CELL_MU_POT[CELL_SPECIES_COUNT] = {
     48, 36, 80, 40, 104, 156, 212, 6
 };
 
-/* Solvent Physical Constants Matching Lean 4 T28-T30 */
+/* Solvent Physical Constants Matching Lean 4 T01-T03 & T28-T30 (Strict 2nd Law q > 0 on ALL 4!) */
 typedef struct SolventParams {
-    int64_t  e_pmf;            /* Free energy per PMF quantum: {10, 7, 10, 15} */
-    int64_t  r2_pmf_yield;     /* PMF pumped by R2 (M->3W+k PMF): {6, 8, 6, 4} */
-    int64_t  r2_heat;          /* Heat of R2: {2, 6, 2, 2} */
+    int64_t  e_pmf;            /* Free energy per PMF quantum: {10, 8, 10, 15} */
+    int64_t  r2_pmf_yield;     /* PMF pumped by R2 (M->3W+k PMF): {6, 7, 6, 4} */
+    int64_t  r2_heat;          /* Heat of R2: {2, 6, 2, 2} — strictly > 0 across all 4 solvents! */
     uint8_t  min_cring;        /* Minimum thermodynamically valid c-ring nH: {3, 4, 3, 2} */
     uint8_t  optimal_lipid;    /* Matching lipid_class: {0, 1, 2, 3} */
     int64_t  burst_num;        /* Lysis threshold: C0*V^2 * 100 > burst_num * L^3 */
@@ -43,13 +43,13 @@ typedef struct SolventParams {
 } SolventParams;
 
 static const SolventParams SOLVENT_TABLE[CELL_SOLVENT_COUNT] = {
-    /* 0: TERRAN_H2O       */ { 10, 6, 2, 3, 0, 115, 2, 64, 4 },
-    /* 1: TITAN_AZOTOSOME  */ {  7, 8, 6, 4, 1, 135, 2, 192, 5 },
-    /* 2: VENT_TETRAETHER  */ { 10, 6, 2, 3, 2, 110, 5, 28, 3 },
-    /* 3: VENUS_H2SO4      */ { 15, 4, 2, 2, 3, 110, 4, 36, 4 }
+    /* 0: TERRAN_H2O       */ { 10, 6, 2, 3, 0, 115, 3,  64, 4 },
+    /* 1: TITAN_AZOTOSOME  */ {  8, 7, 6, 4, 1, 135, 5, 192, 5 },
+    /* 2: VENT_TETRAETHER  */ { 10, 6, 2, 3, 2, 110, 6,  38, 3 },
+    /* 3: VENUS_H2SO4      */ { 15, 4, 2, 2, 3, 110, 8,  36, 4 }
 };
 
-/* Internalized Nested Endosymbiont Organelle (Real Conserved Compartment!) */
+/* Internalized Nested Endosymbiont Organelle (Real Conserved Compartment, Zero Implicit Padding!) */
 typedef struct CellOrganelle {
     uint8_t  active;           /* 0=empty, 1=living endosymbiont */
     uint8_t  org_type;         /* 0=proto-mitochondrion, 1=proto-chloroplast */
@@ -60,18 +60,19 @@ typedef struct CellOrganelle {
     uint8_t  egt_transferred;  /* Number of loci migrated to host nucleus */
     uint8_t  pad;
     uint32_t lineage_id;
+    uint32_t pad2;             /* Explicit zeroed alignment padding before int64_t mol[8] */
     int64_t  mol[CELL_SPECIES_COUNT];
     int64_t  pmf;
     uint8_t  mt_genome[CELL_MT_GENOME_BYTES];
 } CellOrganelle;
 
-/* Living Cellular Compartment on the Spatial Torus */
+/* Living Cellular Compartment on the Spatial Torus (Zero Implicit Padding!) */
 typedef struct CellEntity {
-    uint8_t  alive_state;          /* 0=empty, 1=alive, 2=endospore */
-    uint8_t  lipid_class;          /* 0..3 */
-    uint8_t  c_ring_nH;            /* 2..5 */
+    uint8_t  alive_state;          /* 0=empty, 1=alive, 2=endospore, 3=vitrified tun */
+    uint8_t  lipid_class;          /* 0..3 (Gray-coded from Locus 8 bytes 64..71) */
+    uint8_t  c_ring_nH;            /* 2..5 (Gray-coded from Locus 2 bytes 16, 18..23) */
     uint8_t  num_organelles;       /* 0..CELL_MAX_ORGANELLES */
-    uint8_t  bond_mask;            /* Bit 0=N, 1=S, 2=E, 3=W gap-junction/adhesion bonds */
+    uint8_t  bond_mask;            /* Bit 0..3 adhesion/gap-junction mask */
     uint8_t  diff_role;            /* 0=undiff, 1=soma, 2=germ, 3=stroma */
     uint8_t  phage_load;           /* Intracellular selfish phage/plasmid count */
     uint8_t  kill_switch_intact;   /* 1=intact (under DEGRADING), 0=deleted by backlash */
@@ -95,6 +96,7 @@ typedef struct CellEntity {
     uint8_t  mt_filaments;         /* Active radial microtubule/FtsZ filament bundle count */
     uint8_t  flagella_q10;         /* Flagellar/ciliary motility vigor (0..255) */
     uint8_t  num_bonds;            /* Active organic 3D cadherin/gap-junction bonds (0..4) */
+    uint8_t  pad_bonds;            /* Explicit zeroed padding before int16_t bond_partners[4] */
     int16_t  bond_partners[CELL_MAX_BONDS]; /* Off-lattice 3D bonded cell indices (-1 = none) */
     /* 3D Developmental Embryogenesis: Conditional GRN, Cadherins, Apical Wedge, Axons, Eutely & CPG */
     uint8_t  tf[8];                /* 8-channel epigenetic Transcription Factors (inherited on mitosis!) */
@@ -105,15 +107,21 @@ typedef struct CellEntity {
     uint8_t  contact_pressure;     /* Live 3D crowding overlap count (drives Hippo pathway!) */
     uint8_t  cpg_firing;           /* 1 if CPG neuron fired action potential this epoch (for 3D glow!) */
     uint16_t apical_wedge_q10;     /* Apical actomyosin constriction ring (0..1000 -> tube folding!) */
+    uint16_t pad_cpg;              /* Explicit zeroed padding before int32_t cpg_phase_mrad */
     int32_t  cpg_phase_mrad;       /* Central Pattern Generator pacemaker phase (0..6283) */
     int16_t  axon_target[CELL_MAX_AXONS]; /* Wired 3D long-range axon partner indices (-1 = none) */
     uint8_t  axon_weight[CELL_MAX_AXONS]; /* Synaptic weight (Hebbian LTP + use-it-or-lose-it pruning) */
+    uint16_t pad_mol;              /* Explicit zeroed padding before int64_t mol[8] */
     int64_t  mol[CELL_SPECIES_COUNT];
     int64_t  pmf;
     uint64_t autophage_dna_sig;
     uint8_t  genome[CELL_GENOME_BYTES];
     CellOrganelle org[CELL_MAX_ORGANELLES];
 } CellEntity;
+
+_Static_assert(sizeof(CellWorldConfig) == 48,   "CellWorldConfig must have zero implicit padding");
+_Static_assert(sizeof(CellOrganelle)   == 120,  "CellOrganelle must have zero implicit padding");
+_Static_assert(sizeof(CellEntity)      == 1304, "CellEntity must have zero implicit padding");
 
 /* Kahan-Neumaier Compensated Accumulator */
 typedef struct KahanSum {
@@ -132,6 +140,8 @@ typedef struct CellVoxel {
     uint8_t free_plasmid_is_phage;
     uint8_t pad[2];
 } CellVoxel;
+
+_Static_assert(sizeof(CellVoxel) == 128, "CellVoxel must have zero implicit padding");
 
 /* Full Deterministic Cellular World */
 struct CellWorld {
@@ -200,15 +210,20 @@ struct CellWorld {
     int32_t*    hash_next;         /* num_slots 3D off-lattice spatial hash linked list */
 };
 
+/* Helper: mathematical floor division by CELL_VOXEL_NM (handles negative coords properly!) */
+static inline int32_t cell_floor_div_voxel(int32_t p) {
+    return (p >= 0) ? (p / CELL_VOXEL_NM) : -(((-p) + CELL_VOXEL_NM - 1) / CELL_VOXEL_NM);
+}
+
 /* Helper: map a cell's continuous 3D off-lattice position to its local spatial fluid voxel */
 static inline uint32_t cell_voxel_idx(const CellWorld* w, const CellEntity* c) {
-    uint32_t W = w->cfg.width;
-    uint32_t H = w->cfg.height;
-    int32_t vx = (c->pos_nm[0] / CELL_VOXEL_NM) % (int32_t)W;
-    int32_t vy = (c->pos_nm[1] / CELL_VOXEL_NM) % (int32_t)H;
-    if (vx < 0) vx += (int32_t)W;
-    if (vy < 0) vy += (int32_t)H;
-    return (uint32_t)vy * W + (uint32_t)vx;
+    int32_t W = (int32_t)w->cfg.width;
+    int32_t H = (int32_t)w->cfg.height;
+    int32_t vx = cell_floor_div_voxel(c->pos_nm[0]) % W;
+    int32_t vy = cell_floor_div_voxel(c->pos_nm[1]) % H;
+    if (vx < 0) vx += W;
+    if (vy < 0) vy += H;
+    return (uint32_t)vy * (uint32_t)W + (uint32_t)vx;
 }
 
 /* Internal Function Declarations */
@@ -230,7 +245,6 @@ void cell_sha256_final(CellSha256Ctx* ctx, uint8_t out_hash[32]);
 void cell_sha256_to_hex(const uint8_t hash[32], char hex[65]);
 int  cell_verify_second_law(CellWorld* w, int64_t prev_sink_uq);
 int64_t cell_hydrolyze_atp_exact(CellWorld* w, uint32_t idx, int64_t k_req);
-int  cellulogonic_ingest_autophage_128b(CellWorld* w, uint32_t slot, const uint8_t genome_128b[128]);
 
 /* Exact Stoichiometry & Chemoton Physics (src/chemoton_physics.c) */
 int64_t cell_species_mass(const int64_t mol[CELL_SPECIES_COUNT]);
@@ -241,6 +255,8 @@ double  cell_reduced_Q(int64_t vol, int64_t lipid);
 int     cell_can_symmetric_fission(int64_t vol, int64_t lipid);
 int     cell_is_osmotic_burst(int64_t vol, int64_t lipid, uint32_t solvent, uint8_t lipid_class);
 void    cell_decode_genome_traits(CellEntity* c);
+void    cell_encode_lipid_class(CellEntity* c, uint8_t target_class);
+void    cell_encode_cring_nH(CellEntity* c, uint8_t target_nH);
 void    cell_mutate_genome(CellEntity* c, uint64_t seed, uint64_t epoch, uint32_t slot, uint32_t rate_pct, uint8_t delimit_pct);
 void    cell_step_chemoton(CellWorld* w, uint32_t idx);
 void    cell_compute_ledger(const CellWorld* w, CellLedgerSnapshot* out);

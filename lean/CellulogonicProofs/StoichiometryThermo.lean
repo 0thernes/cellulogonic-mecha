@@ -1,6 +1,7 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Theorem I: Exact Stoichiometric Mass Conservation,
-  First-Law Energy Closure & Second-Law Impossibility of Perpetual-Motion Cellular Cycles.
+  CELLULOGONIC MECHA v1.3.0 — Theorem I: Exact Multi-Solvent Stoichiometric Mass
+  Conservation, First-Law Energy Closure & Strict Second-Law Impossibility of
+  Perpetual-Motion Cellular Cycles across ALL 4 Planetary Solvents.
 
   Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).
   Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
@@ -19,6 +20,15 @@ namespace Cellulogonic.StoichiometryThermo
     7: W (Low-Free-Energy Exhaust / Waste) -/
 inductive Species : Type where
   | S | X | M | E | L | P | T | W
+  deriving DecidableEq, Repr
+
+/-- All 4 Planetary & Xenocellular Solvent Regimes matching C11 `SOLVENT_TABLE`:
+    - Terran       : Aqueous phospholipid, e_pmf = 10, R2 yield = 6, min c-ring = 3
+    - Titan        : Cryogenic CH4/N2 azotosome, e_pmf = 8, R2 yield = 7, min c-ring = 4
+    - Hydrothermal : Hyperthermophilic archaeal tetraether, e_pmf = 10, R2 yield = 6, min c-ring = 3
+    - Venus        : Acidophilic H2SO4 xenocell, e_pmf = 15, R2 yield = 4, min c-ring = 2 -/
+inductive Solvent : Type where
+  | Terran | Titan | Hydrothermal | Venus
   deriving DecidableEq, Repr
 
 /-- Exact integer atomic mass weight w_i (in conserved amu quanta). -/
@@ -43,14 +53,38 @@ def muPot : Species → Int
   | .T => 212
   | .W => 6
 
-/-- Exact Terran proton-motive force quantum (uq per transmembrane H+ equivalent). -/
-def pmfPot : Int := 10
+/-- Solvent-specific proton-motive force quantum e_pmf (uq per H+ equivalent).
+    Matches C11 `SOLVENT_TABLE[sv].e_pmf = {10, 8, 10, 15}`. -/
+def pmfPotS : Solvent → Int
+  | .Terran       => 10
+  | .Titan        => 8
+  | .Hydrothermal => 10
+  | .Venus        => 15
 
-/-- All 16 elementary cellular reactions in the Cellulogonic Mecha chemoton. -/
+/-- Solvent-specific R2 proton pumping yield (matches C11 `SOLVENT_TABLE[sv].r2_pmf_yield`). -/
+def r2PmfYield : Solvent → Int
+  | .Terran       => 6
+  | .Titan        => 7
+  | .Hydrothermal => 6
+  | .Venus        => 4
+
+/-- Minimum thermodynamically valid ATP-synthase c-ring stoichiometry enforcing STRICT
+    Second-Law dissipation (`nH * e_pmf > 28`) in each planetary solvent. -/
+def minCRing : Solvent → Int
+  | .Terran       => 3
+  | .Titan        => 4
+  | .Hydrothermal => 3
+  | .Venus        => 2
+
+/-- Terran baseline PMF quantum (retained for convenience). -/
+def pmfPot : Int := pmfPotS .Terran
+
+/-- All 19 elementary chemoton, salvage, photochemical & abiotic synthesis reactions
+    implemented in C11 `chemoton_physics.c` & `cellular_world.c`. -/
 inductive RxnId : Type where
   | R1_catab       -- S + X -> M
-  | R2_pump        -- M -> 3 W + 6 PMF
-  | R3_atp_synth   -- 2 W + 3 PMF -> E
+  | R2_pump        -- M -> 3 W + r2PmfYield(sv) PMF
+  | R3_atp_synth   -- 2 W + nH PMF -> E
   | R4_ferment     -- 2 S -> E + 2 W
   | R5_lipid_syn   -- 2 S + E -> L + 2 W
   | R6_prot_syn    -- 3 S + E -> P + 2 W
@@ -62,9 +96,11 @@ inductive RxnId : Type where
   | R12_pmf_leak   -- 1 PMF -> Heat
   | R13a_salv_L    -- L -> S + 2 W
   | R13b_salv_P    -- P -> 2 S + 2 W
-  | R13c_salv_T    -- T -> 3 S + 2 W
   | R14a_photo_S   -- 2 W + 46 uq_ext -> S
   | R14b_photo_X   -- W + 34 uq_ext -> X
+  | R15a_abio_L    -- 2 S + 12 uq_ext -> L
+  | R15b_abio_P    -- 3 S + 16 uq_ext -> P
+  | R15c_abio_T    -- 4 S + 24 uq_ext -> T
   deriving DecidableEq, Repr
 
 /-- Exact integer stoichiometric matrix ν_{r,i} (products positive, reactants negative). -/
@@ -83,15 +119,17 @@ def stoich (r : RxnId) (s : Species) : Int :=
   | .R11_tmpl_dec, .T => -1 | .R11_tmpl_dec, .W => 8
   | .R13a_salv_L, .L => -1 | .R13a_salv_L, .S => 1 | .R13a_salv_L, .W => 2
   | .R13b_salv_P, .P => -1 | .R13b_salv_P, .S => 2 | .R13b_salv_P, .W => 2
-  | .R13c_salv_T, .T => -1 | .R13c_salv_T, .S => 3 | .R13c_salv_T, .W => 2
   | .R14a_photo_S, .W => -2 | .R14a_photo_S, .S => 1
   | .R14b_photo_X, .W => -1 | .R14b_photo_X, .X => 1
+  | .R15a_abio_L, .S => -2 | .R15a_abio_L, .L => 1
+  | .R15b_abio_P, .S => -3 | .R15b_abio_P, .P => 1
+  | .R15c_abio_T, .S => -4 | .R15c_abio_T, .T => 1
   | _, _ => 0
 
-/-- Net change in transmembrane proton-motive quanta Δp_r per reaction event. -/
-def dPmf : RxnId → Int
-  | .R2_pump      => 6
-  | .R3_atp_synth => -3
+/-- Net change in transmembrane proton-motive quanta Δp_r(sv, nH) per reaction event. -/
+def dPmf (sv : Solvent) (nH : Int) : RxnId → Int
+  | .R2_pump      => r2PmfYield sv
+  | .R3_atp_synth => -nH
   | .R12_pmf_leak => -1
   | _             => 0
 
@@ -99,13 +137,16 @@ def dPmf : RxnId → Int
 def eInflow : RxnId → Int
   | .R14a_photo_S => 46
   | .R14b_photo_X => 34
+  | .R15a_abio_L  => 12
+  | .R15b_abio_P  => 16
+  | .R15c_abio_T  => 24
   | _             => 0
 
-/-- Exact irreversible heat / entropy dissipation q_r (uq) per reaction event. -/
-def qHeat : RxnId → Int
+/-- Exact irreversible heat / entropy dissipation q_r(sv, nH) (uq) per reaction event. -/
+def qHeat (sv : Solvent) (nH : Int) : RxnId → Int
   | .R1_catab     => 4
-  | .R2_pump      => 2
-  | .R3_atp_synth => 2
+  | .R2_pump      => 62 - r2PmfYield sv * pmfPotS sv
+  | .R3_atp_synth => nH * pmfPotS sv - 28
   | .R4_ferment   => 44
   | .R5_lipid_syn => 20
   | .R6_prot_syn  => 16
@@ -114,12 +155,14 @@ def qHeat : RxnId → Int
   | .R9_lipid_dec => 80
   | .R10_prot_dec => 120
   | .R11_tmpl_dec => 164
-  | .R12_pmf_leak => 10
+  | .R12_pmf_leak => pmfPotS sv
   | .R13a_salv_L  => 44
   | .R13b_salv_P  => 48
-  | .R13c_salv_T  => 56
   | .R14a_photo_S => 10
   | .R14b_photo_X => 4
+  | .R15a_abio_L  => 4
+  | .R15b_abio_P  => 4
+  | .R15c_abio_T  => 4
 
 /-- Sum over all 8 molecular species. -/
 def sumSpecies (f : Species → Int) : Int :=
@@ -133,18 +176,27 @@ def rxnMassDelta (r : RxnId) : Int :=
 def rxnChemDelta (r : RxnId) : Int :=
   sumSpecies (fun s => muPot s * stoich r s)
 
-/-- T01: Every elementary reaction in the chemoton strictly conserves atomic mass. -/
+/-- T01: Every elementary reaction in the chemoton (including salvage & abiotic synthesis)
+    strictly conserves atomic mass (0 amu residual). -/
 theorem T01_all_reactions_conserve_mass (r : RxnId) : rxnMassDelta r = 0 := by
   cases r <;> rfl
 
-/-- T02: Every elementary reaction obeys exact First-Law energy closure (0 uq residual). -/
-theorem T02_all_reactions_first_law_exact (r : RxnId) :
-    rxnChemDelta r + dPmf r * pmfPot + qHeat r = eInflow r := by
-  cases r <;> rfl
+/-- T02: Every elementary reaction obeys exact First-Law energy closure (0 uq residual)
+    across ALL 4 planetary solvents and ANY rotor stoichiometry nH. -/
+theorem T02_all_reactions_first_law_exact (sv : Solvent) (nH : Int) (r : RxnId) :
+    rxnChemDelta r + dPmf sv nH r * pmfPotS sv + qHeat sv nH r = eInflow r := by
+  cases sv <;> cases r <;>
+    simp only [rxnChemDelta, sumSpecies, stoich, muPot, dPmf, r2PmfYield, pmfPotS, qHeat, eInflow] <;>
+    omega
 
-/-- T03: Every elementary reaction dissipates strictly positive irreversible heat (Second Law). -/
-theorem T03_all_reactions_strict_second_law (r : RxnId) : qHeat r > 0 := by
-  cases r <;> decide
+/-- T03: STRICT Second-Law dissipation (`qHeat > 0`) across ALL 4 planetary solvents
+    (including Titan azotosome `e_pmf = 8, nH ≥ 4 -> q ≥ +4 > 0`) whenever the rotor meets
+    the solvent's minimal gearing `nH ≥ minCRing sv`. -/
+theorem T03_all_reactions_strict_second_law (sv : Solvent) (nH : Int)
+    (hGear : nH ≥ minCRing sv) (r : RxnId) : qHeat sv nH r > 0 := by
+  cases sv <;> cases r <;>
+    simp only [qHeat, r2PmfYield, pmfPotS, minCRing] at hGear ⊢ <;>
+    omega
 
 /-- T04: Uncoupled macromolecule synthesis from substrate S alone is strictly endergonic
     (ΔG > 0), proving ATP/PMF free-energy coupling is thermodynamically mandatory. -/
@@ -154,63 +206,63 @@ theorem T04_endergonic_biosynthesis_requires_atp :
     (muPot .T - 4 * muPot .S > 0) := by
   decide
 
-/-- T05: Chemiosmotic oxidative respiration (R1 + R2 + 2·R3) nets 2 ATP per 1 S,
-    whereas anaerobic fermentation (R4) yields 1 ATP per 2 S — an exact 4× yield ratio. -/
+/-- T05: Chemiosmotic oxidative respiration (R1 + R2 + 2·R3 in Terran/Vent/Venus with balanced PMF)
+    nets 2 ATP per 1 S, whereas anaerobic fermentation (R4) yields 1 ATP per 2 S — an exact 4× yield ratio. -/
 theorem T05_respiration_quadruples_fermentation_yield :
     (stoich .R1_catab .S + stoich .R2_pump .S + 2 * stoich .R3_atp_synth .S = -1) ∧
     (stoich .R1_catab .E + stoich .R2_pump .E + 2 * stoich .R3_atp_synth .E = 2) ∧
-    (dPmf .R1_catab + dPmf .R2_pump + 2 * dPmf .R3_atp_synth = 0) ∧
+    (dPmf .Terran 3 .R1_catab + dPmf .Terran 3 .R2_pump + 2 * dPmf .Terran 3 .R3_atp_synth = 0) ∧
     (stoich .R4_ferment .S = -2) ∧
     (stoich .R4_ferment .E = 1) := by
   decide
 
-/-- Total heat dissipated along a finite reaction trajectory. -/
-def trajHeat : List RxnId → Int
+/-- Total heat dissipated along a finite reaction trajectory in solvent `sv` with c-ring `nH`. -/
+def trajHeat (sv : Solvent) (nH : Int) : List RxnId → Int
   | []      => 0
-  | r :: rs => qHeat r + trajHeat rs
+  | r :: rs => qHeat sv nH r + trajHeat sv nH rs
 
 /-- Total external free-energy inflow along a reaction trajectory. -/
 def trajInflow : List RxnId → Int
   | []      => 0
   | r :: rs => eInflow r + trajInflow rs
 
-/-- Total chemical + PMF free-energy change along a reaction trajectory. -/
-def trajFreeEnergyDelta : List RxnId → Int
+/-- Total chemical + PMF free-energy change along a reaction trajectory in solvent `sv`. -/
+def trajFreeEnergyDelta (sv : Solvent) (nH : Int) : List RxnId → Int
   | []      => 0
-  | r :: rs => (rxnChemDelta r + dPmf r * pmfPot) + trajFreeEnergyDelta rs
+  | r :: rs => (rxnChemDelta r + dPmf sv nH r * pmfPotS sv) + trajFreeEnergyDelta sv nH rs
 
-/-- Exact trajectory First-Law balance lemma. -/
-theorem traj_first_law (rs : List RxnId) :
-    trajFreeEnergyDelta rs + trajHeat rs = trajInflow rs := by
+/-- Exact trajectory First-Law balance lemma across all 4 planetary solvents. -/
+theorem traj_first_law (sv : Solvent) (nH : Int) (rs : List RxnId) :
+    trajFreeEnergyDelta sv nH rs + trajHeat sv nH rs = trajInflow rs := by
   induction rs with
   | nil => rfl
   | cons r rest ih =>
     simp only [trajFreeEnergyDelta, trajHeat, trajInflow]
-    have h := T02_all_reactions_first_law_exact r
+    have h := T02_all_reactions_first_law_exact sv nH r
     omega
 
-/-- Non-negativity of trajectory heat dissipation. -/
-theorem traj_heat_nonneg (rs : List RxnId) : trajHeat rs ≥ 0 := by
+/-- Non-negativity of trajectory heat dissipation across all 4 planetary solvents. -/
+theorem traj_heat_nonneg (sv : Solvent) (nH : Int) (hGear : nH ≥ minCRing sv) (rs : List RxnId) :
+    trajHeat sv nH rs ≥ 0 := by
   induction rs with
-  | nil => decide
+  | nil => simp [trajHeat]
   | cons r rest ih =>
     simp only [trajHeat]
-    have h := T03_all_reactions_strict_second_law r
+    have h := T03_all_reactions_strict_second_law sv nH hGear r
     omega
 
-/-- T06: Impossibility of Perpetual-Motion Cellular Cycles (Second Law).
+/-- T06: Impossibility of Perpetual-Motion Cellular Cycles (Second Law across ALL 4 Solvents).
     Any non-empty closed thermodynamic cycle (zero net free-energy change) strictly
     requires positive external free-energy inflow equal to its strictly positive heat dissipation. -/
-theorem T06_closed_box_cycle_dissipation_strict (r : RxnId) (rs : List RxnId)
-    (hCycle : trajFreeEnergyDelta (r :: rs) = 0) :
-    trajHeat (r :: rs) > 0 ∧ trajInflow (r :: rs) = trajHeat (r :: rs) := by
-  have h1 := traj_first_law (r :: rs)
-  have h2 := T03_all_reactions_strict_second_law r
-  have h3 := traj_heat_nonneg rs
+theorem T06_closed_box_cycle_dissipation_strict (sv : Solvent) (nH : Int)
+    (hGear : nH ≥ minCRing sv) (r : RxnId) (rs : List RxnId)
+    (hCycle : trajFreeEnergyDelta sv nH (r :: rs) = 0) :
+    trajHeat sv nH (r :: rs) > 0 ∧ trajInflow (r :: rs) = trajHeat sv nH (r :: rs) := by
+  have h1 := traj_first_law sv nH (r :: rs)
+  have h2 := T03_all_reactions_strict_second_law sv nH hGear r
+  have h3 := traj_heat_nonneg sv nH hGear rs
   simp only [trajHeat] at *
-  constructor
-  · omega
-  · omega
+  constructor <;> omega
 
 /-- Cellular + spatial thermodynamic state for exact ledger verification. -/
 structure WorldState where
@@ -222,14 +274,14 @@ structure WorldState where
 def stateMass (st : WorldState) : Int :=
   sumSpecies (fun s => massW s * st.conc s)
 
-def stateEnergy (st : WorldState) : Int :=
-  sumSpecies (fun s => muPot s * st.conc s) + st.pmf * pmfPot + st.heatSink
+def stateEnergy (sv : Solvent) (st : WorldState) : Int :=
+  sumSpecies (fun s => muPot s * st.conc s) + st.pmf * pmfPotS sv + st.heatSink
 
-/-- Apply k ≥ 0 firings of reaction r to a WorldState. -/
-def applyRxn (st : WorldState) (r : RxnId) (k : Int) : WorldState :=
+/-- Apply k ≥ 0 firings of reaction r to a WorldState in solvent `sv` with c-ring `nH`. -/
+def applyRxn (sv : Solvent) (nH : Int) (st : WorldState) (r : RxnId) (k : Int) : WorldState :=
   { conc     := fun s => st.conc s + k * stoich r s
-  , pmf      := st.pmf + k * dPmf r
-  , heatSink := st.heatSink + k * qHeat r
+  , pmf      := st.pmf + k * dPmf sv nH r
+  , heatSink := st.heatSink + k * qHeat sv nH r
   , inflow   := st.inflow + k * eInflow r }
 
 /-- Helper: sumSpecies distributes over linear combinations. -/
@@ -245,8 +297,8 @@ theorem sumSpecies_scale (c : Int) (f : Species → Int) :
   simp only [Int.mul_add]
 
 /-- T07: Applying any reaction k times preserves exact total atomic mass (0 residual). -/
-theorem T07_step_preserves_total_mass (st : WorldState) (r : RxnId) (k : Int) :
-    stateMass (applyRxn st r k) = stateMass st := by
+theorem T07_step_preserves_total_mass (sv : Solvent) (nH : Int) (st : WorldState) (r : RxnId) (k : Int) :
+    stateMass (applyRxn sv nH st r k) = stateMass st := by
   unfold stateMass applyRxn
   have hdist :
       sumSpecies (fun s => massW s * (st.conc s + k * stoich r s)) =
@@ -261,10 +313,10 @@ theorem T07_step_preserves_total_mass (st : WorldState) (r : RxnId) (k : Int) :
   omega
 
 /-- T08: Applying any reaction k times preserves exact First-Law ledger closure
-    (E_total' - E_inflow' = E_total - E_inflow, exact 0 uq residual). -/
-theorem T08_step_preserves_first_law_ledger (st : WorldState) (r : RxnId) (k : Int) :
-    stateEnergy (applyRxn st r k) - (applyRxn st r k).inflow =
-    stateEnergy st - st.inflow := by
+    (E_total' - E_inflow' = E_total - E_inflow, exact 0 uq residual) across ALL 4 solvents. -/
+theorem T08_step_preserves_first_law_ledger (sv : Solvent) (nH : Int) (st : WorldState) (r : RxnId) (k : Int) :
+    stateEnergy sv (applyRxn sv nH st r k) - (applyRxn sv nH st r k).inflow =
+    stateEnergy sv st - st.inflow := by
   unfold stateEnergy applyRxn
   have hdist :
       sumSpecies (fun s => muPot s * (st.conc s + k * stoich r s)) =
@@ -275,20 +327,21 @@ theorem T08_step_preserves_first_law_ledger (st : WorldState) (r : RxnId) (k : I
     unfold sumSpecies
     simp only [Int.mul_add, Int.mul_left_comm]
   rw [hdist]
-  have hfl := T02_all_reactions_first_law_exact r
-  have hmul : k * (rxnChemDelta r + dPmf r * pmfPot + qHeat r) = k * eInflow r :=
+  have hfl := T02_all_reactions_first_law_exact sv nH r
+  have hmul : k * (rxnChemDelta r + dPmf sv nH r * pmfPotS sv + qHeat sv nH r) = k * eInflow r :=
     congrArg (k * ·) hfl
   simp only [Int.mul_add, Int.add_mul, Int.mul_assoc] at hmul ⊢
   omega
 
-/-- T09: For any non-negative reaction firing k ≥ 0, the radiated heat sink is strictly
-    monotone non-decreasing (one-way Second-Law arrow). -/
-theorem T09_heat_sink_monotone (st : WorldState) (r : RxnId) (k : Int) (hk : k ≥ 0) :
-    (applyRxn st r k).heatSink ≥ st.heatSink := by
+/-- T09: For any non-negative reaction firing k ≥ 0 and valid c-ring `nH ≥ minCRing sv`,
+    the radiated heat sink is strictly monotone non-decreasing across ALL 4 solvents. -/
+theorem T09_heat_sink_monotone (sv : Solvent) (nH : Int)
+    (hGear : nH ≥ minCRing sv) (st : WorldState) (r : RxnId) (k : Int) (hk : k ≥ 0) :
+    (applyRxn sv nH st r k).heatSink ≥ st.heatSink := by
   unfold applyRxn
   dsimp only
-  have hq := T03_all_reactions_strict_second_law r
-  have hprod : k * qHeat r ≥ 0 := Int.mul_nonneg hk (Int.le_of_lt hq)
+  have hq := T03_all_reactions_strict_second_law sv nH hGear r
+  have hprod : k * qHeat sv nH r ≥ 0 := Int.mul_nonneg hk (Int.le_of_lt hq)
   omega
 
 /-- T10: Binary fission / phagocytic engulfment partitioning (c1 + c2 = c_tot) strictly

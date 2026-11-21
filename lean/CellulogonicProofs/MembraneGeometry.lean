@@ -1,5 +1,5 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Theorem II: Discrete Canham-Helfrich Isoperimetric Fission
+  CELLULOGONIC MECHA v1.3.0 — Theorem II: Discrete Canham-Helfrich Isoperimetric Fission
   Trichotomy, Symmetric Binary Fission Threshold (Q ≤ 1/2), & Exact Algebraic Proof of
   Asymmetric Budding Minimax Optimality.
 

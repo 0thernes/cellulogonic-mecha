@@ -35,5 +35,26 @@ echo "[4/4] Building & running Linux ELF64 24-gate falsification suite ..."
 
 cd "$PROJ/bin"
 ./test_falsification_linux
-rm -f test_tmp_cell.cmbin
+rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin
+
+if command -v lake >/dev/null 2>&1; then
+  echo "Verifying 58 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
+  cd "$PROJ/lean"
+  lake build
+  AUDIT_OUT="$(lake env lean CellulogonicProofs.lean)"
+  python3 - "$AUDIT_OUT" <<'PY'
+import re, sys
+text = sys.argv[1]
+allowed = {"propext", "Classical.choice", "Quot.sound"}
+matches = re.findall(r"'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])", text)
+if len(matches) < 58:
+    sys.exit(f"ERROR: expected >= 58 audited theorems, found {len(matches)}")
+for name, _, axs in matches:
+    for ax in [a.strip() for a in axs.split(",") if a.strip()]:
+        if ax not in allowed:
+            sys.exit(f"ERROR: forbidden axiom '{ax}' in {name}")
+print(f"Lean 4 Strict Axiom Audit PASSED ({len(matches)} theorems, strictly subset of {{propext, Classical.choice, Quot.sound}})")
+PY
+fi
+
 echo "LINUX ELF64 BUILD & 24-GATE VERIFICATION PASSED!"

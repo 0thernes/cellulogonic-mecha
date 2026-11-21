@@ -3,7 +3,7 @@
 
 /*
  * ============================================================================
- * CELLULOGONIC MECHA v1.0
+ * CELLULOGONIC MECHA v1.3.0
  * Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic
  * Cellular Artificial Life Engine — Flat C11 Public ABI
  * ============================================================================
@@ -39,7 +39,7 @@ extern "C" {
   #define CELL_API __attribute__((visibility("default")))
 #endif
 
-#define CELLULOGONIC_ABI_VERSION 0x00010200u
+#define CELLULOGONIC_ABI_VERSION 0x00010300u
 
 /* 8 Conserved Molecular Species */
 typedef enum CellSpecies {
@@ -57,7 +57,7 @@ typedef enum CellSpecies {
 /* 4 Planetary & Xenocellular Solvent Regimes */
 typedef enum CellSolventRegime {
     CELL_SOLVENT_TERRAN_H2O       = 0, /* Aqueous Phospholipid, e_pmf=10, c-ring nH>=3 */
-    CELL_SOLVENT_TITAN_AZOTOSOME  = 1, /* Cryogenic CH4/N2 Azotosome, e_pmf=7, c-ring nH>=4 */
+    CELL_SOLVENT_TITAN_AZOTOSOME  = 1, /* Cryogenic CH4/N2 Azotosome, e_pmf=8, c-ring nH>=4 (strict 2nd Law) */
     CELL_SOLVENT_VENT_TETRAETHER  = 2, /* Hyperthermophilic Archaeal GDGT Monolayer, e_pmf=10 */
     CELL_SOLVENT_VENUS_H2SO4      = 3, /* Acidophilic Polyphosphate Xenocell, e_pmf=15, nH>=2 */
     CELL_SOLVENT_COUNT            = 4
@@ -267,7 +267,8 @@ typedef struct CellSpecimen {
     uint8_t  max_nesting_depth;        /* 0=prok, 1=euk, 2=secondary chimera */
     uint8_t  bond_mask;                /* 4-bit cardinal adhesion/gap-junction mask */
     uint8_t  differentiation_role;     /* Emergent bioelectric role: 0=undiff,1=soma,2=germ,3=stroma */
-    uint8_t  pad[2];
+    uint8_t  morph_fate;               /* Committed CellMorphFate (0..5) */
+    uint8_t  cad_type;                 /* Differential Cadherin class (0=E,1=N,2=M,3=G) */
     int32_t  v_mem_mv;                 /* Transmembrane voltage (-90..+40 mV) */
     int32_t  pos_nm[3];                /* Continuous 3D off-lattice position (nm) */
     int32_t  vel_nm[3];                /* Continuous 3D overdamped Stokes velocity */
@@ -283,6 +284,11 @@ typedef struct CellSpecimen {
     uint32_t age_epochs;
     uint64_t autophage_dna_sig;        /* Interop signature from AUTOPHAGE genetic engine */
     uint8_t  genome[128];
+    /* v1.3.0 extended morphogenetic & cytoskeletal observables */
+    uint8_t  active_axons;             /* Live wired 3D axons originating from this cell (0..2) */
+    uint8_t  flagella_q10;             /* Flagellar/ciliary motility vigor (0..255) */
+    uint16_t apical_wedge_q10;         /* Apical actomyosin ring constriction (0..1000) */
+    int32_t  ruffle_q10;               /* Amoeboid pseudopod ruffling (0..1000) */
 } CellSpecimen;
 
 /* Opaque World Handle */
@@ -311,6 +317,8 @@ CELL_API int        cellulogonic_save_snapshot(const CellWorld* world, const cha
 CELL_API CellWorld* cellulogonic_load_snapshot(const char* path);
 
 /* Ecosystem Bridges: AUTOPHAGE (DNA) & Asmodensius (Creatures) */
+CELL_API int        cellulogonic_ingest_autophage_128b(
+                        CellWorld* w, const uint8_t dna128[128], uint32_t target_slot);
 CELL_API int        cellulogonic_ingest_autophage_genome(
                         CellWorld* world, uint32_t slot,
                         const uint8_t autophage_256b[256]);

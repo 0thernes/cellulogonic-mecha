@@ -1,7 +1,7 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Theorem IV: Chemiosmotic c-Ring Stoichiometry Shifts Across
-  Planetary Solvents, Levin Bioelectric Gap-Junction Laplacian Dissipation, Markov-Blanket
-  Flux Positivity, & Anti-Gaming Cellular Vitality Zero-Bounds.
+  CELLULOGONIC MECHA v1.3.0 — Theorem IV: Strict Second-Law Chemiosmotic c-Ring
+  Stoichiometry Shifts Across Planetary Solvents, Levin Bioelectric Gap-Junction
+  Laplacian Dissipation, Markov-Blanket Flux Positivity, & Anti-Gaming Vitality Zero-Bounds.
 
   Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).
   Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
@@ -12,24 +12,24 @@ namespace Cellulogonic.ChemiosmosisAutopoiesis
 /-- Standard ATP phosphorylation free-energy barrier ΔG_ATP = μ_E - 2 μ_W = 40 - 12 = 28 uq. -/
 def dG_ATP : Nat := 28
 
-/-- T28: Terran aqueous chemiosmotic c-ring threshold (e_pmf = 10 uq).
-    ATP synthesis is thermodynamically feasible iff c-ring stoichiometry nH ≥ 3. -/
+/-- T28: Terran aqueous chemiosmotic c-ring threshold (e_pmf = 10 uq, strict Second Law q > 0).
+    ATP synthesis is strictly exergonic (`nH * 10 > 28`, heat ≥ +2 uq) iff nH ≥ 3. -/
 theorem T28_cring_terran_threshold (nH : Nat) :
-    nH * 10 ≥ dG_ATP ↔ nH ≥ 3 := by
+    nH * 10 > dG_ATP ↔ nH ≥ 3 := by
   unfold dG_ATP
   omega
 
-/-- T29: Venusian sulfuric-acid xenocellular c-ring shift (high ΔpH, e_pmf = 15 uq).
-    Acidic external proton bath lowers the minimal rotor stoichiometry to nH ≥ 2. -/
+/-- T29: Venusian sulfuric-acid xenocellular c-ring shift (high ΔpH, e_pmf = 15 uq, strict q > 0).
+    Acidic external proton bath lowers the minimal rotor stoichiometry to nH ≥ 2 (`2*15 = 30 > 28`). -/
 theorem T29_cring_acidophile_shift (nH : Nat) :
-    nH * 15 ≥ dG_ATP ↔ nH ≥ 2 := by
+    nH * 15 > dG_ATP ↔ nH ≥ 2 := by
   unfold dG_ATP
   omega
 
-/-- T30: Titan cryogenic azotosome c-ring shift (low thermal driving force, e_pmf = 7 uq).
-    Cryogenic regime forces higher rotor gearing nH ≥ 4 (nH = 3 is thermodynamically blocked). -/
+/-- T30: Titan cryogenic azotosome c-ring shift (low thermal driving force, e_pmf = 8 uq, strict q > 0).
+    Cryogenic regime forces higher rotor gearing nH ≥ 4 (`3*8 = 24 < 28` blocked; `4*8 = 32 > 28`, q = +4 > 0). -/
 theorem T30_cring_cryogenic_shift (nH : Nat) :
-    nH * 7 ≥ dG_ATP ↔ nH ≥ 4 := by
+    nH * 8 > dG_ATP ↔ nH ≥ 4 := by
   unfold dG_ATP
   omega
 

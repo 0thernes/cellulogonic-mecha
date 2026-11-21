@@ -63,46 +63,81 @@ int cell_is_osmotic_burst(int64_t vol, int64_t lipid, uint32_t solvent, uint8_t 
     if (lipid <= 12) return 1;
     const SolventParams* sp = &SOLVENT_TABLE[solvent < CELL_SOLVENT_COUNT ? solvent : 0];
     int64_t burst = sp->burst_num;
-    /* Solvent-lipid mismatch weakens osmotic burst resilience by 18% */
+    /* Solvent-lipid mismatch weakens osmotic burst resilience (sharper in extreme solvents) */
     if (lipid_class != sp->optimal_lipid) {
-        burst = (burst * 82) / 100;
+        int64_t pen = (solvent == CELL_SOLVENT_TERRAN_H2O) ? 82 : 74;
+        burst = (burst * pen) / 100;
     }
     __int128 lhs = (__int128)CELL_VESICLE_C0 * (__int128)vol * (__int128)vol * (__int128)100;
     __int128 rhs = (__int128)burst * (__int128)lipid * (__int128)lipid * (__int128)lipid;
     return lhs > rhs;
 }
 
-/* Decode physical phenotype parameters from the cell's 128-byte operon genome */
+/* Decode physical phenotype parameters from the cell's 128-byte operon genome
+ * using 2-bit Gray coding over 4-byte structural operons so single point mutations
+ * smoothly traverse adjacent solvent chemistries & c-ring stoichiometries. */
 void cell_decode_genome_traits(CellEntity* c) {
-    /* Locus 8 (bytes 64..71): membrane lipid chemistry class (0..3) */
-    c->lipid_class = (uint8_t)(c->genome[64] & 3u);
-    /* Locus 2 (bytes 16..23): evolved F1F0 ATP-synthase c-ring stoichiometry (2..5) */
-    c->c_ring_nH   = (uint8_t)(2u + (c->genome[16] & 3u));
+    /* Locus 8 (bytes 64..67): Gray-coded membrane lipid chemistry class (0..3)
+     * 00->0(H2O), 01->1(Titan), 11->2(Vent), 10->3(Venus): H2O<->Venus is 1 bit flip! */
+    uint8_t l_fold = (uint8_t)(c->genome[64] ^ c->genome[65] ^ c->genome[66] ^ c->genome[67]);
+    uint8_t l_raw = (uint8_t)((l_fold ^ (l_fold >> 2) ^ (l_fold >> 4) ^ (l_fold >> 6)) & 3u);
+    c->lipid_class = (uint8_t)(l_raw ^ (l_raw >> 1));
+
+    /* Locus 2 (bytes 16, 18..20): Gray-coded F1F0 ATP-synthase c-ring stoichiometry (2..5)
+     * 00->2(Venus), 01->3(Terran/Vent), 11->4(Titan), 10->5: 3<->2 and 3<->4 are 1 bit flip! */
+    uint8_t c_fold = (uint8_t)(c->genome[16] ^ c->genome[18] ^ c->genome[19] ^ c->genome[20]);
+    uint8_t c_raw = (uint8_t)((c_fold ^ (c_fold >> 2) ^ (c_fold >> 4) ^ (c_fold >> 6)) & 3u);
+    c->c_ring_nH = (uint8_t)(2u + (c_raw ^ (c_raw >> 1)));
 }
 
-/* Domain-isolated stochastic genome mutation (respecting DELIMITING restraint) */
+void cell_encode_lipid_class(CellEntity* c, uint8_t target_class) {
+    target_class &= 3u;
+    uint8_t l_fold = (uint8_t)(c->genome[64] ^ c->genome[65] ^ c->genome[66] ^ c->genome[67]);
+    uint8_t cur_raw = (uint8_t)((l_fold ^ (l_fold >> 2) ^ (l_fold >> 4) ^ (l_fold >> 6)) & 3u);
+    uint8_t tgt_raw = (uint8_t)(target_class ^ (target_class >> 1));
+    c->genome[64] ^= (uint8_t)(cur_raw ^ tgt_raw);
+    c->lipid_class = target_class;
+}
+
+void cell_encode_cring_nH(CellEntity* c, uint8_t target_nH) {
+    if (target_nH < 2u) target_nH = 2u;
+    if (target_nH > 5u) target_nH = 5u;
+    uint8_t code = (uint8_t)(target_nH - 2u);
+    uint8_t c_fold = (uint8_t)(c->genome[16] ^ c->genome[18] ^ c->genome[19] ^ c->genome[20]);
+    uint8_t cur_raw = (uint8_t)((c_fold ^ (c_fold >> 2) ^ (c_fold >> 4) ^ (c_fold >> 6)) & 3u);
+    uint8_t tgt_raw = (uint8_t)(code ^ (code >> 1));
+    c->genome[16] ^= (uint8_t)(cur_raw ^ tgt_raw);
+    c->c_ring_nH = target_nH;
+}
+
+/* Domain-isolated stochastic genome mutation (respecting DELIMITING restraint smoothly up to 100%) */
 void cell_mutate_genome(CellEntity* c, uint64_t seed, uint64_t epoch, uint32_t slot,
                         uint32_t rate_pct, uint8_t delimit_pct) {
-    if (rate_pct == 0) return;
+    if (rate_pct == 0u || delimit_pct >= 100u) return;
     /* Locus 15 byte 120: proofreading fidelity lowers mutation error rate */
     uint32_t proof = c->genome[120];
     uint32_t eff_rate = rate_pct;
-    if (proof > 160 && eff_rate > 2) eff_rate = (eff_rate * 60) / 100;
-    if (delimit_pct >= 90) {
-        eff_rate = eff_rate / 10;
-        if (eff_rate == 0) return;
+    if (proof > 160u && eff_rate > 2u) eff_rate = (eff_rate * 60u) / 100u;
+    if (delimit_pct > 0u) {
+        eff_rate = (eff_rate * (100u - (uint32_t)delimit_pct)) / 100u;
+        if (eff_rate == 0u && delimit_pct < 95u) eff_rate = 1u;
+        if (eff_rate == 0u) return;
     }
     uint64_t r0 = cell_philox_u64(seed, RNG_DOMAIN_CELL_MUT, epoch, (uint64_t)slot * 7ULL + 1ULL);
     if ((r0 % 100u) >= eff_rate) return;
 
-    uint32_t n_flips = 1u + (uint32_t)((r0 >> 16) % 3u);
-    if (delimit_pct >= 50) n_flips = 1u;
+    uint32_t n_flips = (rate_pct >= 50u && delimit_pct < 50u)
+                       ? (2u + (uint32_t)((r0 >> 16) % 3u))
+                       : (1u + (uint32_t)((r0 >> 16) % 3u));
+    if (delimit_pct >= 50u) n_flips = 1u;
 
     for (uint32_t f = 0; f < n_flips; ++f) {
         uint64_t rf = cell_philox_u64(seed, RNG_DOMAIN_CELL_MUT, epoch, (uint64_t)slot * 7ULL + 2ULL + f);
         uint32_t byte_idx = (uint32_t)(rf & 127u);
-        /* DELIMITING clamps structural transitions (lipid_class byte 64 & c-ring byte 16) */
-        if (delimit_pct >= 50 && (byte_idx == 64 || byte_idx == 16 || byte_idx == 80)) {
+        /* DELIMITING clamps structural transitions (lipid_class operon 64..71, c-ring 16/18..23, phago 80) */
+        if (delimit_pct >= 50u &&
+            ((byte_idx >= 64u && byte_idx < 72u) || byte_idx == 16u ||
+             (byte_idx >= 18u && byte_idx < 24u) || byte_idx == 80u)) {
             continue;
         }
         uint8_t bit = (uint8_t)(1u << ((rf >> 8) & 7u));
@@ -151,8 +186,8 @@ static inline int64_t apply_exact_rxn(
     int64_t pmf_delta_e = dpmf * sp->e_pmf;
     int64_t heat_per_rxn = e_inflow_per_rxn - chem_delta - pmf_delta_e;
 
-    /* STRICT SECOND-LAW GATE: reject any endergonic uncoupled reaction! */
-    if (heat_per_rxn < 0) {
+    /* STRICT SECOND-LAW GATE (Lean T03): reject any endergonic OR zero-dissipation reaction! */
+    if (heat_per_rxn <= 0) {
         return 0;
     }
 
@@ -448,8 +483,13 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
             c->mol[CELL_SP_W] -= feed_w; o->mol[CELL_SP_W] += feed_w;
             if (r_box < 95 && w->cfg.photon_flux_uq > 0) {
                 int64_t p_cap = 2 + (o->nesting_depth >= 2 ? 1 : 0);
-                apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14A_PHOTS, 0, 46, p_cap);
-                apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14B_PHOTX, 0, 34, p_cap);
+                int64_t flux_cap = (int64_t)w->cfg.photon_flux_uq / 46;
+                if (p_cap > flux_cap) p_cap = flux_cap;
+                if (r_box > 0) p_cap = (p_cap * (100 - r_box)) / 100;
+                if (p_cap > 0) {
+                    apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14A_PHOTS, 0, 46, p_cap);
+                    apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14B_PHOTX, 0, 34, p_cap);
+                }
                 /* Export fixed S & X back to host (exact mass conservation) */
                 if (o->mol[CELL_SP_S] > 2) {
                     int64_t ex_s = o->mol[CELL_SP_S] - 2;
@@ -560,25 +600,31 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     }
 
     /* --- 7. Anabolic Macromolecule Synthesis (Strictly ATP-Coupled, Lean T04!) --- */
-    int64_t slow_scale = 100 - (r_slow * 80) / 100;
-    int64_t ana_boost  = (slow_scale * v_mod_anabolic) / 10000;
+    int64_t slow_scale = 100 - (r_slow * 85) / 100;
 
     /* R5: Lipid bilayer synthesis (2S + E -> L + 2W) — drives reduced volume Q down toward fission! */
-    int64_t r5_req = 1 + ((int64_t)c->genome[32] * enzyme_cap) / 128;
-    if (cur_Q > 0.55) r5_req += 2; /* Osmotic stretch accelerates bilayer lipid repair */
-    if (r5_req > 6) r5_req = 6;
-    if (r_slow < 90 && (ana_boost > 0 || cur_Q > 0.65)) {
+    int64_t r5_base = 1 + ((int64_t)c->genome[32] * enzyme_cap) / 128;
+    if (cur_Q > 0.55) r5_base += 2; /* Osmotic stretch accelerates bilayer lipid repair */
+    if (r5_base > 6) r5_base = 6;
+    int64_t r5_req = (r5_base * slow_scale * v_mod_anabolic + 5000) / 10000;
+    if (r5_req < 1 && r_slow < 90 && (cur_Q > 0.65 || r_slow < 75)) r5_req = 1;
+    /* Excitable CPG neurons reserve minimal ATP for action potentials once membrane L >= 76 */
+    if (c->morph_fate == CELL_FATE_NEURAL && c->mol[CELL_SP_L] >= 76 && c->mol[CELL_SP_E] <= 3) {
+        r5_req = 0;
+    }
+    if (r_slow < 95 && r5_req > 0) {
         apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R5_LIPID, 0, 0, r5_req);
     }
 
     /* R6: Enzyme / Polypeptide translation (3S + E -> P + 2W) */
-    if (c->mol[CELL_SP_P] < 14 + (int64_t)c->num_organelles * 8 && c->mol[CELL_SP_E] >= 2 && r_slow < 85) {
+    int slow_pass = (r_slow == 0) || (((w->epoch + idx) % 100u) >= (uint32_t)r_slow);
+    if (c->mol[CELL_SP_P] < 14 + (int64_t)c->num_organelles * 8 && c->mol[CELL_SP_E] >= 2 && r_slow < 85 && slow_pass) {
         int64_t r6_req = (c->genome[40] > 80 || c->mol[CELL_SP_P] < 3) ? 1 : 0;
         apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R6_PROT, 0, 0, r6_req);
     }
 
     /* R7: Template Polymer Replication (4S + E -> T + 2W) — required before mitosis! */
-    if (c->mol[CELL_SP_T] < 4 + (int64_t)c->num_organelles * 3 && c->mol[CELL_SP_E] >= 2 && r_slow < 85) {
+    if (c->mol[CELL_SP_T] < 4 + (int64_t)c->num_organelles * 3 && c->mol[CELL_SP_E] >= 2 && r_slow < 85 && slow_pass) {
         int64_t r7_req = (c->genome[48] > 70 || c->diff_role == 2 || c->mol[CELL_SP_T] < 2) ? 1 : 0;
         apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R7_TMPL, 0, 0, r7_req);
     }
@@ -620,47 +666,76 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R12_LEAK, -1, 0, leak);
     }
 
-    /* Thermal / Acidic Macromolecule Hydrolysis (R9/R10/R11) */
+    /* Thermal / Acidic / Cryogenic Macromolecule Hydrolysis (R9/R10/R11) */
     uint32_t dec_roll = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_WORLD_EXOG, w->epoch, idx * 19u + 3u);
     int64_t eff_div = sp->decay_div;
-    if (c->lipid_class != sp->optimal_lipid) eff_div = eff_div / 3;
-    if (eff_div < 4) eff_div = 4;
+    if (c->lipid_class != sp->optimal_lipid) eff_div = eff_div / 4;
+    if (eff_div < 3) eff_div = 3;
     if ((int64_t)(dec_roll % (uint32_t)eff_div) == 0) {
         if (c->mol[CELL_SP_L] > 16) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R9_LDEC, 0, 0, 1);
         if (c->mol[CELL_SP_P] > 2)  apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R10_PDEC, 0, 0, 1);
     }
-    if (c->lipid_class != sp->optimal_lipid && w->cfg.solvent == CELL_SOLVENT_VENUS_H2SO4) {
-        /* Unadapted Terran nucleic acids suffer accelerated acid depurination */
-        if ((dec_roll % 12u) == 0 && c->mol[CELL_SP_T] > 1) {
-            apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R11_TDEC, 0, 0, 1);
+    /* Solvent-lipid mismatch chemical degradation (drives genuine xenocellular Darwinian selection!) */
+    if (c->lipid_class != sp->optimal_lipid) {
+        if (w->cfg.solvent == CELL_SOLVENT_VENUS_H2SO4) {
+            /* Concentrated H2SO4 aggressively hydrolyzes unadapted bilayers & depurinates nucleic acids */
+            int64_t acid_l = ((dec_roll % 3u) == 0u) ? 3 : 2;
+            if (c->mol[CELL_SP_L] > 14) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R9_LDEC, 0, 0, acid_l);
+            if ((dec_roll % 6u) == 0u && c->mol[CELL_SP_P] > 1) {
+                apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R10_PDEC, 0, 0, 1);
+            }
+            if ((dec_roll % 8u) == 0u && c->mol[CELL_SP_T] > 1) {
+                apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R11_TDEC, 0, 0, 1);
+            }
+        } else if (w->cfg.solvent == CELL_SOLVENT_TITAN_AZOTOSOME ||
+                   w->cfg.solvent == CELL_SOLVENT_VENT_TETRAETHER) {
+            /* Cryogenic CH4/N2 fracturing or 380 K hyperthermal bilayer melting */
+            if ((dec_roll % 2u) == 0u && c->mol[CELL_SP_L] > 14) {
+                apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R9_LDEC, 0, 0, 2);
+            }
+        } else {
+            /* Non-aqueous xenolipids destabilize in liquid Terran H2O */
+            if ((dec_roll % 4u) == 0u && c->mol[CELL_SP_L] > 14) {
+                apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R9_LDEC, 0, 0, 1);
+            }
         }
     }
 
-    /* --- 9. Active Bioelectric Ion Pump (Maintains V_mem at real ATP cost!) --- */
+    /* --- 9. Active Bioelectric Ion Pump (Maintains V_mem at real ATP cost, attenuated by LOBOTOMIZING!) --- */
+    uint8_t r_muzzle = w->cfg.restraints[CELL_RESTRAINT_MUZZLING];
     if (w->cfg.enable_bioelectricity) {
-        /* Target resting potential encoded by Locus 12 byte 96 (-85..+15 mV) */
-        int32_t target_v = -85 + (int32_t)((c->genome[96] * 100) / 255);
-        /* Quorum sensing shifts target polarization for emergent tissue patterning */
-        if (vx->quorum > 24 && c->genome[97] > 128) target_v -= 18;
-        if (c->mol[CELL_SP_E] >= 1) {
-            if (c->v_mem_mv < target_v - 4) {
-                c->v_mem_mv += 6;
-                if ((w->epoch & 3u) == 0) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R8_HYD, 0, 0, 1);
-            } else if (c->v_mem_mv > target_v + 4) {
-                c->v_mem_mv -= 6;
-                if ((w->epoch & 3u) == 0) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R8_HYD, 0, 0, 1);
+        if (r_lobot < 100u) {
+            /* Target resting potential encoded by Locus 12 byte 96 (-85..+15 mV) */
+            int32_t target_v = -85 + (int32_t)((c->genome[96] * 100) / 255);
+            /* Quorum sensing shifts target polarization for emergent tissue patterning */
+            if (vx->quorum > 24 && c->genome[97] > 128 && r_muzzle < 100u) {
+                target_v -= (18 * (100 - (int32_t)r_muzzle)) / 100;
+            }
+            int32_t pump_step = (6 * (100 - (int32_t)r_lobot) + 50) / 100;
+            if (pump_step < 1) pump_step = 1;
+            if (c->mol[CELL_SP_E] >= 1) {
+                if (c->v_mem_mv < target_v - 4) {
+                    c->v_mem_mv += pump_step;
+                    if ((w->epoch & 3u) == 0) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R8_HYD, 0, 0, 1);
+                } else if (c->v_mem_mv > target_v + 4) {
+                    c->v_mem_mv -= pump_step;
+                    if ((w->epoch & 3u) == 0) apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R8_HYD, 0, 0, 1);
+                }
+            } else {
+                /* Starving cells passively depolarize toward 0 mV */
+                if (c->v_mem_mv < -5) c->v_mem_mv += 5;
+                else if (c->v_mem_mv > 5) c->v_mem_mv -= 5;
             }
         } else {
-            /* Starving cells passively depolarize toward 0 mV */
-            if (c->v_mem_mv < -5) c->v_mem_mv += 5;
-            else if (c->v_mem_mv > 5) c->v_mem_mv -= 5;
+            /* At 100% LOBOTOMIZING, ion pumps are silenced -> passive collapse toward uniform -45 mV */
+            if (c->v_mem_mv < -45) c->v_mem_mv += 2;
+            else if (c->v_mem_mv > -45) c->v_mem_mv -= 2;
         }
         if (c->v_mem_mv < -90) c->v_mem_mv = -90;
         if (c->v_mem_mv >  40) c->v_mem_mv =  40;
     }
 
     /* --- 10. Quorum Autoinducer Secretion (Locus 13, attenuated by MUZZLING) --- */
-    uint8_t r_muzzle = w->cfg.restraints[CELL_RESTRAINT_MUZZLING];
     if (c->genome[104] > 100 && r_muzzle < 90) {
         int64_t q_add = (int64_t)(c->genome[104] - 100) / 20;
         q_add = (q_add * (100 - r_muzzle)) / 100;

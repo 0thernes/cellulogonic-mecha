@@ -1,5 +1,5 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Theorem V: 3D Hollow-Tube Geometry Bottleneck, Minimum Viable
+  CELLULOGONIC MECHA v1.3.0 — Theorem V: 3D Hollow-Tube Geometry Bottleneck, Minimum Viable
   7-Organ Eutelic Metazoan Budget (≤1,000 Cells — Tardigrade / C. elegans / Rotifer Scale),
   Syncytial & Myoepithelial Compression, Hydrostatic Skeleton Incompressibility,
   Eutely Hypertrophy, & Tardigrade TDP/CAHS Bioglass Anhydrobiosis.

@@ -3,7 +3,7 @@ Multiple-testing correction: Holm-Bonferroni FWER across 4 pre-registered hypoth
 
 Hypothesis                                   | Mean A   | Mean B   | Diff     | Wins   | p_raw   | p_Holm
 -----------------------------------------------------------------------------------------------------
-H1: COVI (Feral vs 70% Castrated)            |   81.768 |   47.194 |  +34.574 | 24/24  | 0.00010 | 0.00040
-H2: Max Cell Vol (Endosymbiosis ON vs OFF)   |  530.292 |  207.708 | +322.583 | 23/24  | 0.00020 | 0.00080
-H3: Bioelectric V_mem Std (ON vs OFF)        |   21.792 |    7.486 |  +14.306 | 24/24  | 0.00010 | 0.00040
-H4: Tardigrade TDP Survival (Intact vs KO)   |   33.125 |    0.542 |  +32.583 | 24/24  | 0.00010 | 0.00040
+H1: COVI (Feral vs 70% Castrated)            |   86.341 |   38.353 |  +47.987 | 24/24  | 0.00010 | 0.00040
+H2: Max Cell Vol (Endosymbiosis ON vs OFF)   | 1164.542 |  161.125 | +1003.417 | 24/24  | 0.00010 | 0.00040
+H3: Bioelectric V_mem Std (ON vs OFF)        |   23.091 |    0.000 |  +23.091 | 24/24  | 0.00010 | 0.00040
+H4: Tardigrade TDP Survival (Intact vs KO)   |  181.458 |    2.542 | +178.917 | 24/24  | 0.00010 | 0.00040

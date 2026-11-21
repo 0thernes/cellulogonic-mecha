@@ -1,30 +1,30 @@
 ==================================================================================
- CELLULOGONIC MECHA v1.2 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE
+ CELLULOGONIC MECHA v1.3.0 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE
 ==================================================================================
-  [PASS] G01  | CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 Vector           | 0.0004s
+  [PASS] G01  | CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 Vector           | 0.0002s
   [PASS] G02  | Exact Mass/First-Law Ledger + Mutant M1 (Phantom Energy)       | 0.0010s
-  [PASS] G03  | 4-Solvent Second-Law Sink + Mutant M2 (Sink Reversal)          | 0.0036s
+  [PASS] G03  | 4-Solvent Second-Law Sink + Mutant M2 (Sink Reversal)          | 0.0040s
   [PASS] G04  | Canham-Helfrich Q<=1/2 & Exosome Escape (Lean T12-T16)         | 0.0000s
-  [PASS] G05  | Closed-Box & Open-Flux 120-Epoch Zero-Residual Closure         | 0.0116s
-  [PASS] G06  | Domain-Isolated Philox4x32-10 + Mutant M3 (Coupled RNG)        | 0.0403s
-  [PASS] G07  | Dual-Kernel 0-Bit SHA-256 Parity (SIMD_AVX2 == SCALAR_REF)     | 0.0215s
-  [PASS] G08  | Strict Observer Independence (P9) + Mutant M4 (1-Bit Write)    | 0.0379s
-  [PASS] G09  | .cmbin Snapshot Save (AVX2) & Resume (Scalar) 0-Bit Parity     | 0.0380s
-  [PASS] G10  | Zero Post-Warmup Heap Allocations (Clean-Slate HW02/P10)       | 0.0146s
-  [PASS] G11  | Zero-Seed Spontaneous Protocell Abiogenesis (0 -> Living)      | 0.0498s
+  [PASS] G05  | Closed-Box & Open-Flux 120-Epoch Zero-Residual Closure         | 0.0115s
+  [PASS] G06  | Domain-Isolated Philox4x32-10 + Mutant M3 (Coupled RNG)        | 0.0394s
+  [PASS] G07  | Dual-Kernel 0-Bit SHA-256 Parity (SIMD_AVX2 == SCALAR_REF)     | 0.0195s
+  [PASS] G08  | Strict Observer Independence (P9) + Mutant M4 (1-Bit Write)    | 0.0312s
+  [PASS] G09  | .cmbin Snapshot Save (AVX2) & Resume (Scalar) 0-Bit Parity     | 0.0267s
+  [PASS] G10  | Zero Post-Warmup Heap Allocations (Clean-Slate HW02/P10)       | 0.0235s
+  [PASS] G11  | Zero-Seed Spontaneous Protocell Abiogenesis (0 -> Living)      | 0.0445s
   [PASS] G12  | Anti-Gaming Gates + Mutants M5 (Crystal) & M6 (White Noise)    | 0.0002s
-  [PASS] G13  | Serial Endosymbiosis & Lane 1/R Bioenergetic Liberation        | 0.0254s
-  [PASS] G14  | 4-Solvent Xenocellular Transplant Conservation Closure         | 0.0093s
-  [PASS] G15  | Levin Bioelectric Morphogenesis & Track A Cancer Policing      | 0.0146s
-  [PASS] G16  | Tardigrade TDP Bioglass Tun + Mutant M7 (TDP Knockout)         | 0.0235s
-  [PASS] G17  | 13-Vector Constraint-Backlash Escape Paradox (0/50/100%)       | 0.0119s
-  [PASS] G18  | Exact Atomic Mass Audit + Mutant M8 (1-Lipid Mass Leak)        | 0.0007s
-  [PASS] G19  | 4-Build Bridges (AUTOPHAGE 256B DNA -> Asmodensius 112-Vec)    | 0.0010s
-  [PASS] G20  | Locked Multi-Seed Paired Statistical Dominance (N=8)           | 0.1029s
-  [PASS] G21  | 3D Off-Lattice Free-Swimming, Polymorphism & Breathing         | 0.0043s
-  [PASS] G22  | Frohlich-Pokorny GHz Microtubule Coherence (Lean T48-T49)      | 0.0034s
-  [PASS] G23  | 3D Embryogenesis: Morphogen GPS, GRN, Sorting & Hippo/Eutely   | 0.0137s
-  [PASS] G24  | Axon Guidance (Netrin/Slit), Pruning & CPG Waves (T56-T58)     | 0.0118s
+  [PASS] G13  | Serial Endosymbiosis & Lane 1/R Bioenergetic Liberation        | 0.0505s
+  [PASS] G14  | 4-Solvent Xenocellular Transplant Conservation Closure         | 0.0415s
+  [PASS] G15  | Levin Bioelectric Morphogenesis & Track A Cancer Policing      | 0.0193s
+  [PASS] G16  | Tardigrade TDP Bioglass Tun + Mutant M7 (TDP Knockout)         | 0.0347s
+  [PASS] G17  | 13-Vector Constraint-Backlash Escape Paradox (0/50/100%)       | 0.0121s
+  [PASS] G18  | Exact Atomic Mass Audit + Mutant M8 (1-Lipid Mass Leak)        | 0.0006s
+  [PASS] G19  | 4-Build Bridges (AUTOPHAGE 256B DNA -> Asmodensius 112-Vec)    | 0.0011s
+  [PASS] G20  | Locked Multi-Seed Paired Statistical Dominance (N=8)           | 0.1084s
+  [PASS] G21  | 3D Off-Lattice Free-Swimming, Polymorphism & Breathing         | 0.0102s
+  [PASS] G22  | Frohlich-Pokorny GHz Microtubule Coherence (Lean T48-T49)      | 0.0036s
+  [PASS] G23  | 3D Embryogenesis: Morphogen GPS, GRN, Sorting & Hippo/Eutely   | 0.0184s
+  [PASS] G24  | Axon Guidance (Netrin/Slit), Pruning & CPG Waves (T56-T58)     | 0.0078s
 ==================================================================================
- SUMMARY: 24 / 24 GATES PASSED | 8 / 8 PLANTED MUTANTS CAUGHT | 0.443s
+ SUMMARY: 24 / 24 GATES PASSED | 8 / 8 PLANTED MUTANTS CAUGHT | 0.512s
 ==================================================================================

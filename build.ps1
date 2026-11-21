@@ -10,7 +10,7 @@ $clang = "$root\bin\clang.exe"
 $lake  = "$root\bin\lake.exe"
 $ar    = "$root\bin\llvm-ar.exe"
 
-if (-not (Test-Path $clang)) {
+if (-not (Test-Path -LiteralPath $clang)) {
     throw "Bundled Clang toolchain not found at $clang"
 }
 
@@ -48,7 +48,7 @@ Write-Host "[3/4] Building bin\test_falsification.exe ..."
 & $clang @cflags @core "$proj\test\test_falsification.c" -o "$proj\bin\test_falsification.exe" @ldflags @libs
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-if (Test-Path $ar) {
+if (Test-Path -LiteralPath $ar) {
     Write-Host "[4/4] Building static archive bin\libcellulogonic.a ..."
     $objs = @()
     foreach ($src in $core) {
@@ -72,13 +72,37 @@ if (-not $SkipTests) {
 }
 
 if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
-    Write-Host "`nVerifying 58 Pure Lean 4 Mathematical Proofs..."
+    Write-Host "`nVerifying 58 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
     Push-Location -LiteralPath "$proj\lean"
     & $lake build
     $lrc = $LASTEXITCODE
+    if ($lrc -ne 0) { Pop-Location; exit $lrc }
+
+    $auditLines = & $lake env lean CellulogonicProofs.lean 2>&1
+    $arc = $LASTEXITCODE
     Pop-Location
-    if ($lrc -ne 0) { exit $lrc }
-    Write-Host "Lean 4 Formal Verification PASSED (58 theorems, 0 sorryAx)!"
+    if ($arc -ne 0) {
+        $auditLines | ForEach-Object { Write-Host $_ }
+        throw "Lean 4 axiom audit failed with exit code $arc"
+    }
+
+    $auditText = ($auditLines | Out-String)
+    $allowed = @("propext", "Classical.choice", "Quot.sound")
+    $theoremMatches = [regex]::Matches($auditText, "'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])")
+    if ($theoremMatches.Count -lt 58) {
+        throw "Expected >= 58 audited Lean 4 theorems, found $($theoremMatches.Count)"
+    }
+    foreach ($m in $theoremMatches) {
+        if ($m.Groups[3].Success) {
+            $axList = $m.Groups[3].Value -split "," | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne "" }
+            foreach ($ax in $axList) {
+                if ($allowed -notcontains $ax) {
+                    throw "FORBIDDEN LEAN AXIOM '$ax' detected in $($m.Groups[1].Value)!"
+                }
+            }
+        }
+    }
+    Write-Host "Lean 4 Formal Verification PASSED ($($theoremMatches.Count) theorems, 0 sorryAx, strictly within {propext, Classical.choice, Quot.sound})!"
 }
 
-Write-Host "`nCELLULOGONIC MECHA BUILD & VERIFICATION COMPLETE."
+Write-Host "`nCELLULOGONIC MECHA v1.3.0 BUILD & VERIFICATION COMPLETE."

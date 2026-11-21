@@ -1,9 +1,11 @@
 'Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass' depends on axioms: [propext]
-'Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact' depends on axioms: [propext]
-'Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law' does not depend on any axioms
+'Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.StoichiometryThermo.T04_endergonic_biosynthesis_requires_atp' does not depend on any axioms
 'Cellulogonic.StoichiometryThermo.T05_respiration_quadruples_fermentation_yield' depends on axioms: [propext]
-'Cellulogonic.StoichiometryThermo.T06_closed_box_cycle_dissipation_strict' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T06_closed_box_cycle_dissipation_strict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 'Cellulogonic.StoichiometryThermo.T07_step_preserves_total_mass' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.StoichiometryThermo.T08_step_preserves_first_law_ledger' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.StoichiometryThermo.T09_heat_sink_monotone' depends on axioms: [propext, Quot.sound]
@@ -92,8 +94,8 @@
 'Cellulogonic.MorphogeneticGRN.T51_wolpert_french_flag_partition' depends on axioms: [propext]
 'Cellulogonic.MorphogeneticGRN.T52_steinberg_differential_adhesion_sorting' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T53_apical_constriction_wedge_curvature' depends on axioms: [propext]
-'Cellulogonic.MorphogeneticGRN.T54_eutelic_lineage_countdown_bound' does not depend on any axioms
-'Cellulogonic.MorphogeneticGRN.T55_hippo_contact_inhibition_growth_stop' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T54_eutelic_lineage_countdown_bound' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T55_hippo_contact_inhibition_growth_stop' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift' depends on axioms: [propext, Quot.sound]

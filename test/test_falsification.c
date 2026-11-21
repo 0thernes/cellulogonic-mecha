@@ -1,7 +1,7 @@
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
- * CELLULOGONIC MECHA v1.0 — 20-Gate Lab-Grade Falsification Suite
+ * CELLULOGONIC MECHA v1.3.0 — 24-Gate Lab-Grade Falsification Suite
  * Includes 8 Planted Negative Mutants (M1..M8) Proven Caught!
  * ============================================================================ */
 
@@ -54,9 +54,16 @@ static int test_g02(void) {
     return clean_ok && mutant_caught;
 }
 
-/* G03: Strict Second-Law across all 4 solvents + Planted Mutant M2 (heat-sink reversal caught!) */
+/* G03: Strict Second-Law across all 4 solvents (incl. Titan e_pmf=8) + Mutant M2 */
 static int test_g03(void) {
     int ok = 1;
+    /* Verify strict Second Law q > 0 on all 4 planetary solvents (no q = 0 loophole!) */
+    for (uint32_t s = 0; s < CELL_SOLVENT_COUNT; ++s) {
+        const SolventParams* sp = &SOLVENT_TABLE[s];
+        if ((int64_t)sp->min_cring * sp->e_pmf <= 28) ok = 0;
+        if (((int64_t)sp->min_cring - 1) * sp->e_pmf > 28) ok = 0;
+        if (62 - sp->r2_pmf_yield * sp->e_pmf <= 0) ok = 0;
+    }
     for (uint32_t s = 0; s < CELL_SOLVENT_COUNT; ++s) {
         CellWorldConfig cfg;
         cellulogonic_default_config(&cfg);
@@ -147,18 +154,27 @@ static int test_g06(void) {
     for (int k = 0; k < 112; ++k) {
         if (!(t112[k] >= 0.0f && t112[k] <= 1.0f)) caught = 0;
     }
-    /* Verify corrupted .cmbin snapshot with tampered byte is rejected by SHA-256 verifier */
+    /* Verify corrupted .cmbin snapshot (tampered byte OR trailing EOF byte) is rejected + restraint clamping */
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
     cfg.width = 16; cfg.height = 16; cfg.seed = 5026ULL;
+    cfg.restraints[0] = 250u; /* Out-of-range restraint MUST be clamped to 100 inside create() */
+    cfg.regime = 99u;         /* Out-of-range regime MUST be clamped */
     CellWorld* wt = cellulogonic_create(&cfg);
-    if (cellulogonic_save_snapshot(wt, "test_tamper_tmp.cmbin") == 0) {
+    if (!wt || wt->cfg.restraints[0] != 100u || wt->cfg.regime > CELL_REGIME_EMBRYOGENESIS) caught = 0;
+    if (wt && cellulogonic_save_snapshot(wt, "test_tamper_tmp.cmbin") == 0) {
         FILE* fp = fopen("test_tamper_tmp.cmbin", "rb");
         if (fp) {
-            uint8_t* raw = (uint8_t*)malloc(262144);
-            size_t nr = raw ? fread(raw, 1, 262144, fp) : 0;
+            uint8_t* raw = (uint8_t*)malloc(524288);
+            size_t nr = raw ? fread(raw, 1, 524288, fp) : 0;
             fclose(fp);
             if (raw && nr > 256) {
+                /* Sub-check A: trailing garbage byte appended after SHA-256 trailer must be rejected */
+                FILE* fa = fopen("test_tamper_tmp.cmbin", "wb");
+                if (fa) { (void)fwrite(raw, 1, nr, fa); uint8_t junk = 0xAAu; (void)fwrite(&junk, 1, 1, fa); fclose(fa); }
+                CellWorld* bad_eof = cellulogonic_load_snapshot("test_tamper_tmp.cmbin");
+                if (bad_eof != NULL) { cellulogonic_destroy(bad_eof); caught = 0; }
+                /* Sub-check B: 1-byte payload tamper must be rejected */
                 raw[200] ^= 0xFFu;
                 FILE* fw = fopen("test_tamper_tmp.cmbin", "wb");
                 if (fw) { (void)fwrite(raw, 1, nr, fw); fclose(fw); }
@@ -167,6 +183,7 @@ static int test_g06(void) {
             }
             free(raw);
         }
+        (void)remove("test_tamper_tmp.cmbin");
     }
     cellulogonic_destroy(wt);
     if (caught) g_mutants_caught++;
@@ -245,6 +262,7 @@ static int test_g09(void) {
     cellulogonic_state_sha256(w_ref, NULL, h_ref);
 
     CellWorld* w_res = cellulogonic_load_snapshot("test_tmp_cell.cmbin");
+    (void)remove("test_tmp_cell.cmbin");
     if (!w_res || sv != 0) { cellulogonic_destroy(w_ref); return 0; }
     cellulogonic_set_kernel_mode(w_res, CELL_KERNEL_SCALAR_REF);
     cellulogonic_step_epochs(w_res, 30);
@@ -306,11 +324,14 @@ static int test_g12(void) {
     int m5_caught = (tm5.gamma_anti_gaming == 0.0 && tm5.covi_score == 0.0);
     if (m5_caught) g_mutants_caught++;
 
-    /* Planted Mutant M6: Pure random byte noise with 0 functional enzymes (P=0) */
+    /* Planted Mutant M6: Pure random byte noise with 0 functional enzymes (P=0) OR 0 templates (T=0, Lean T34) */
     for (int i = 0; i < 128; ++i) w->cells[0].genome[i] = (uint8_t)(i * 37u + 13u);
+    w->cells[0].mol[CELL_SP_P] = 4;
+    w->cells[0].mol[CELL_SP_T] = 0;
+    w->total_reactions = 100;
     CellTelemetry tm6;
     cellulogonic_get_telemetry(w, &tm6);
-    int m6_caught = (tm6.covi_score == 0.0);
+    int m6_caught = (tm6.gamma_anti_gaming == 0.0 && tm6.covi_score == 0.0);
     if (m6_caught) g_mutants_caught++;
 
     cellulogonic_destroy(w);
@@ -344,7 +365,7 @@ static int test_g13(void) {
             tA.ledger.mass_residual_amu == 0 && tA.ledger.int_ledger_residual_uq == 0);
 }
 
-/* G14: Cross-World Xenocellular Solvent Transplant Conservation & c-Ring Adaptation */
+/* G14: Cross-World Xenocellular Solvent Transplant Conservation & De-Novo Venus Evolution */
 static int test_g14(void) {
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
@@ -357,14 +378,32 @@ static int test_g14(void) {
     cellulogonic_set_solvent(w, CELL_SOLVENT_VENT_TETRAETHER);
     cellulogonic_step_epochs(w, 40);
     cellulogonic_set_solvent(w, CELL_SOLVENT_VENUS_H2SO4);
-    cellulogonic_step_epochs(w, 40);
+    cellulogonic_step_epochs(w, 120);
     CellTelemetry t;
     cellulogonic_get_telemetry(w, &t);
     cellulogonic_destroy(w);
+
+    /* Sub-test B: Genuine Terran -> Venus adaptation sweep (must evolve >40% Venus-adapted!) */
+    cellulogonic_default_config(&cfg);
+    cfg.width = 32; cfg.height = 32; cfg.seed = 5000ULL;
+    cfg.solvent = CELL_SOLVENT_TERRAN_H2O;
+    CellWorld* wv = cellulogonic_create(&cfg);
+    cellulogonic_step_epochs(wv, 80);
+    cellulogonic_set_solvent(wv, CELL_SOLVENT_VENUS_H2SO4);
+    cellulogonic_step_epochs(wv, 200);
+    CellTelemetry tv;
+    cellulogonic_get_telemetry(wv, &tv);
+    cellulogonic_destroy(wv);
+    double v_adapt = tv.alive_cells > 0 ? (double)tv.solvent_adapted_cells / (double)tv.alive_cells : 0.0;
+
     return (t.ledger.mass_residual_amu == 0 &&
             t.ledger.int_ledger_residual_uq == 0 &&
             t.ledger.second_law_violations == 0 &&
-            t.alive_cells > 0);
+            t.alive_cells > 0 &&
+            tv.ledger.mass_residual_amu == 0 &&
+            tv.ledger.int_ledger_residual_uq == 0 &&
+            tv.alive_cells > 20 &&
+            v_adapt >= 0.40);
 }
 
 /* G15: Bioelectric Levin Morphogenesis & Track A Constitutional Anti-Cancer Policing */
@@ -475,7 +514,7 @@ static int test_g18(void) {
     return caught;
 }
 
-/* G19: 4-Build Ecosystem Bridges (AUTOPHAGE 256B DNA -> Cell -> Asmodensius 112-Trait) */
+/* G19: 4-Build Ecosystem Bridges (Locality-Preserving AUTOPHAGE 128B/256B -> Asmodensius 112-Trait) */
 static int test_g19(void) {
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
@@ -484,6 +523,19 @@ static int test_g19(void) {
     uint8_t dna[256];
     for (int i = 0; i < 256; ++i) dna[i] = (uint8_t)((i * 73u + 19u) & 0xFFu);
     int rc = cellulogonic_ingest_autophage_genome(w, 0, dna);
+
+    /* Verify exported 128B API + Lipschitz locality (1-bit input flip -> <= 2 changed operon bytes!) */
+    uint8_t dna128_a[128], dna128_b[128];
+    for (int i = 0; i < 128; ++i) dna128_a[i] = dna128_b[i] = (uint8_t)((i * 53u + 7u) & 0xFFu);
+    dna128_b[45] ^= 0x04u; /* Flip 1 single bit in non-structural byte 45 */
+    int rc128a = cellulogonic_ingest_autophage_128b(w, dna128_a, 4);
+    uint8_t g_a[128];
+    memcpy(g_a, w->cells[4].genome, 128);
+    int rc128b = cellulogonic_ingest_autophage_128b(w, dna128_b, 4);
+    int diff_bytes = 0;
+    for (int i = 0; i < 128; ++i) if (g_a[i] != w->cells[4].genome[i]) diff_bytes++;
+    int lipschitz_ok = (rc128a == 0 && rc128b == 0 && diff_bytes == 1);
+
     cellulogonic_step_epochs(w, 40);
     CellSpecimen apex;
     int irc = cellulogonic_inspect_apex(w, &apex);
@@ -498,7 +550,7 @@ static int test_g19(void) {
     mean /= 112.0;
     for (int i = 0; i < 112; ++i) var += (t112[i] - mean) * (t112[i] - mean);
     cellulogonic_destroy(w);
-    return (rc == 0 && irc == 0 && bounds_ok && var > 0.5);
+    return (rc == 0 && lipschitz_ok && irc == 0 && bounds_ok && var > 0.5);
 }
 
 /* G20: Multi-Seed Paired Statistical Dominance (8 Locked Seeds: Feral > Castrated) */
@@ -582,7 +634,7 @@ static int test_g22(void) {
             t_live.mean_mt_coherence > 0.15 && all_tun_zero_coh);
 }
 
-/* G23: 3D Embryogenesis — Morphogen GPS, GRN Fate Cascade, Steinberg Cadherin Sorting, Apical Folding & Hippo/Eutely Size Control (T51-T55) */
+/* G23: 3D Embryogenesis — Translation-Invariant 3D Morphogen GPS, ALL 5 GRN Fates (incl. Germline), Sorting & Hippo/Eutely */
 static int test_g23(void) {
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
@@ -594,10 +646,31 @@ static int test_g23(void) {
     cellulogonic_get_telemetry(w, &t);
     cellulogonic_destroy(w);
 
+    /* Sub-test B: Exact Z-translation invariance of 3D paracrine morphogens (shift all cells by +11370 nm in Z!) */
+    CellWorld* wA = cellulogonic_create(&cfg);
+    CellWorld* wB = cellulogonic_create(&cfg);
+    int32_t span_z = (int32_t)cfg.width * CELL_VOXEL_NM;
+    for (uint32_t i = 0; i < wB->num_slots; ++i) {
+        if (wB->cells[i].alive_state != 0) {
+            wB->cells[i].pos_nm[2] = (wB->cells[i].pos_nm[2] + 11370) % span_z;
+        }
+    }
+    cellulogonic_step_epochs(wA, 35);
+    cellulogonic_step_epochs(wB, 35);
+    CellTelemetry tA, tB;
+    cellulogonic_get_telemetry(wA, &tA);
+    cellulogonic_get_telemetry(wB, &tB);
+    cellulogonic_destroy(wA);
+    cellulogonic_destroy(wB);
+    int z_invariant = (tA.alive_cells == tB.alive_cells && tA.fate_counts[1] == tB.fate_counts[1] &&
+                       tA.fate_counts[2] == tB.fate_counts[2] && tA.fate_counts[3] == tB.fate_counts[3] &&
+                       tA.fate_counts[4] == tB.fate_counts[4] && tA.fate_counts[5] == tB.fate_counts[5]);
+
     int distinct_fates = 0;
     for (int f = 1; f < 6; ++f) if (t.fate_counts[f] > 0) distinct_fates++;
     return (t.alive_cells >= 20 && t.alive_cells <= 512 &&
-            distinct_fates >= 3 &&
+            distinct_fates == 5 && t.fate_counts[CELL_FATE_GERM] > 0 &&
+            z_invariant &&
             t.mean_morph_wnt > 0.0 && t.mean_morph_bmp > 0.0 && t.mean_morph_shh > 0.0 &&
             t.homophilic_bond_pct >= 50.0 &&
             t.mean_apical_wedge > 0.05 &&
@@ -630,7 +703,7 @@ typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.2 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.3.0 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
     struct { const char* id; const char* name; GateFn fn; } gates[24] = {

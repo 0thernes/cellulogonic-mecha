@@ -31,7 +31,7 @@ static void print_telemetry_line(const CellTelemetry* t) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.2.1 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.3.0 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -49,7 +49,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.2.1 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.3.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -175,7 +175,8 @@ static int cmd_endosymbiosis(uint32_t epochs, uint32_t size, uint64_t seed) {
 }
 
 static int cmd_xenocell(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS & TRANSPLANT ===\n\n");
+    printf("=== EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS (DE-NOVO EVOLUTION & TRANSPLANT) ===\n\n");
+    printf("--- Part A: De-Novo Solvent Evolution from Neutral Uniform Initial Genomes (~25%% adapted) ---\n");
     for (uint32_t s = 0; s < CELL_SOLVENT_COUNT; ++s) {
         CellWorldConfig cfg;
         cellulogonic_default_config(&cfg);
@@ -185,19 +186,33 @@ static int cmd_xenocell(uint32_t epochs, uint32_t size, uint64_t seed) {
         cfg.solvent = s;
         cfg.regime  = CELL_REGIME_FERAL_ECOSYSTEM;
         CellWorld* w = cellulogonic_create(&cfg);
+        /* Neutralize ALL seeded cells to uniform random lipid_class (0..3) & c_ring_nH (2..5)
+         * so solvent adaptation MUST emerge purely via Darwinian mutation & selection! */
+        uint32_t k_idx = 0;
+        for (uint32_t i = 0; i < w->num_slots; ++i) {
+            if (w->cells[i].alive_state != 1) continue;
+            uint32_t r = cell_philox_u32(seed + s, RNG_DOMAIN_ABIOGENESIS, 9001ULL, k_idx);
+            cell_encode_lipid_class(&w->cells[i], (uint8_t)(k_idx & 3u));
+            cell_encode_cring_nH(&w->cells[i], (uint8_t)(2u + ((r >> 4) & 3u)));
+            cell_decode_genome_traits(&w->cells[i]);
+            k_idx++;
+        }
+        CellTelemetry t0, t;
+        cellulogonic_get_telemetry(w, &t0);
+        double pct0 = t0.alive_cells > 0 ? 100.0 * (double)t0.solvent_adapted_cells / (double)t0.alive_cells : 0.0;
+
         cellulogonic_step_epochs(w, epochs);
-        CellTelemetry t;
         cellulogonic_get_telemetry(w, &t);
-        printf("[NATIVE %-16s] alive=%4u | adapted=%4u (%.1f%%) | mean_cring=%.2f (min=%u) | "
+        double pct1 = t.alive_cells > 0 ? 100.0 * (double)t.solvent_adapted_cells / (double)t.alive_cells : 0.0;
+        printf("[DE-NOVO %-16s] init=%.1f%% -> adapted=%4u/%4u (%5.1f%%) | mean_cring=%.2f (min=%u) | "
                "mean_Q=%.3f | COVI=%5.2f | mRes=%lld eRes=%lld\n",
-               SOLVENT_NAMES[s], t.alive_cells, t.solvent_adapted_cells,
-               t.alive_cells > 0 ? 100.0 * (double)t.solvent_adapted_cells / (double)t.alive_cells : 0.0,
+               SOLVENT_NAMES[s], pct0, t.solvent_adapted_cells, t.alive_cells, pct1,
                t.mean_cring_nH, SOLVENT_TABLE[s].min_cring, t.mean_reduced_Q, t.covi_score,
                (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq);
         cellulogonic_destroy(w);
     }
 
-    printf("\n--- Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (140 ep) ---\n");
+    printf("\n--- Part B: Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (220 ep) ---\n");
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
     cfg.width   = size;
@@ -208,21 +223,27 @@ static int cmd_xenocell(uint32_t epochs, uint32_t size, uint64_t seed) {
     cellulogonic_step_epochs(w, 100);
     CellTelemetry t0, t1, t2;
     cellulogonic_get_telemetry(w, &t0);
-    printf("Pre-Transplant (Terran)     : alive=%4u | adapted_to_H2O=%4u | mean_cring=%.2f | mRes=%lld eRes=%lld\n",
-           t0.alive_cells, t0.solvent_adapted_cells, t0.mean_cring_nH,
+    printf("Pre-Transplant (Terran)     : alive=%4u | adapted_to_H2O=%4u (%.1f%%) | mean_cring=%.2f | mRes=%lld eRes=%lld\n",
+           t0.alive_cells, t0.solvent_adapted_cells,
+           t0.alive_cells > 0 ? 100.0 * (double)t0.solvent_adapted_cells / (double)t0.alive_cells : 0.0,
+           t0.mean_cring_nH,
            (long long)t0.ledger.mass_residual_amu, (long long)t0.ledger.int_ledger_residual_uq);
 
     cellulogonic_set_solvent(w, CELL_SOLVENT_VENUS_H2SO4);
     cellulogonic_step_epochs(w, 20);
     cellulogonic_get_telemetry(w, &t1);
-    printf("Post-Shock (+20 ep Venus)   : alive=%4u | adapted_to_H2SO4=%4u | lyses=%llu | mRes=%lld eRes=%lld\n",
-           t1.alive_cells, t1.solvent_adapted_cells, (unsigned long long)t1.osmotic_lyses,
+    printf("Post-Shock (+20 ep Venus)   : alive=%4u | adapted_to_H2SO4=%4u (%.1f%%) | lyses=%llu | mRes=%lld eRes=%lld\n",
+           t1.alive_cells, t1.solvent_adapted_cells,
+           t1.alive_cells > 0 ? 100.0 * (double)t1.solvent_adapted_cells / (double)t1.alive_cells : 0.0,
+           (unsigned long long)t1.osmotic_lyses,
            (long long)t1.ledger.mass_residual_amu, (long long)t1.ledger.int_ledger_residual_uq);
 
-    cellulogonic_step_epochs(w, 120);
+    cellulogonic_step_epochs(w, 200);
     cellulogonic_get_telemetry(w, &t2);
-    printf("Adapted (+140 ep Venus)     : alive=%4u | adapted_to_H2SO4=%4u | mean_cring=%.2f | COVI=%.2f | mRes=%lld eRes=%lld\n",
-           t2.alive_cells, t2.solvent_adapted_cells, t2.mean_cring_nH, t2.covi_score,
+    printf("Adapted (+220 ep Venus)     : alive=%4u | adapted_to_H2SO4=%4u (%.1f%%) | mean_cring=%.2f | COVI=%.2f | mRes=%lld eRes=%lld\n",
+           t2.alive_cells, t2.solvent_adapted_cells,
+           t2.alive_cells > 0 ? 100.0 * (double)t2.solvent_adapted_cells / (double)t2.alive_cells : 0.0,
+           t2.mean_cring_nH, t2.covi_score,
            (long long)t2.ledger.mass_residual_amu, (long long)t2.ledger.int_ledger_residual_uq);
     cellulogonic_destroy(w);
     return 0;
@@ -521,20 +542,35 @@ static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
         "H3: Bioelectric V_mem Std (ON vs OFF)",
         "H4: Tardigrade TDP Survival (Intact vs KO)"
     };
-    double p_raw[4];
+    double p_raw[4], p_holm[4];
+    int order[4] = { 0, 1, 2, 3 };
     for (int h = 0; h < 4; ++h) p_raw[h] = paired_signflip_p(h_d[h], n_pairs);
 
-    /* Holm-Bonferroni conservative step-down adjusted p-values (multiply by 4 worst-case rank) */
+    /* Exact step-down Holm-Bonferroni FWER adjustment across m = 4 pre-registered hypotheses */
+    for (int a = 0; a < 4; ++a) {
+        for (int b = a + 1; b < 4; ++b) {
+            if (p_raw[order[b]] < p_raw[order[a]]) {
+                int tmp = order[a]; order[a] = order[b]; order[b] = tmp;
+            }
+        }
+    }
+    double run_max = 0.0;
+    for (int k = 0; k < 4; ++k) {
+        double adj = p_raw[order[k]] * (double)(4 - k);
+        if (adj > 1.0) adj = 1.0;
+        if (adj < run_max) adj = run_max;
+        run_max = adj;
+        p_holm[order[k]] = adj;
+    }
+
     printf("%-44s | Mean A   | Mean B   | Diff     | Wins   | p_raw   | p_Holm\n", "Hypothesis");
     printf("-----------------------------------------------------------------------------------------------------\n");
     for (int h = 0; h < 4; ++h) {
         double ma = 0.0, mb = 0.0, md = 0.0;
         for (int p = 0; p < n_pairs; ++p) { ma += h_a[h][p]; mb += h_b[h][p]; md += h_d[h][p]; }
         ma /= n_pairs; mb /= n_pairs; md /= n_pairs;
-        double ph = p_raw[h] * 4.0;
-        if (ph > 1.0) ph = 1.0;
         printf("%-44s | %8.3f | %8.3f | %+8.3f | %2d/%-2d  | %.5f | %.5f\n",
-               hnames[h], ma, mb, md, wins[h], n_pairs, p_raw[h], ph);
+               hnames[h], ma, mb, md, wins[h], n_pairs, p_raw[h], p_holm[h]);
     }
     return 0;
 }
@@ -629,13 +665,26 @@ static int cmd_embryo(uint32_t epochs, uint32_t size, uint64_t seed) {
     return 0;
 }
 
+static uint32_t parse_u32_clamped(const char* s, uint32_t def_v, uint32_t min_v, uint32_t max_v) {
+    if (!s || *s == '\0') return def_v;
+    char* ep = NULL;
+    long v = strtol(s, &ep, 10);
+    if (ep == s) return def_v;
+    if (v < (long)min_v) return min_v;
+    if (v > (long)max_v) return max_v;
+    return (uint32_t)v;
+}
+
 static void emit_world_json(const CellWorld* w) {
     CellTelemetry t;
     cellulogonic_get_telemetry(w, &t);
     size_t gcap = (size_t)w->num_slots * 220 + 65536;
     char* gbuf = (char*)malloc(gcap);
     if (!gbuf) return;
-    cellulogonic_export_grid_json(w, gbuf, gcap);
+    uint32_t gn = cellulogonic_export_grid_json(w, gbuf, gcap);
+    if (gn == 0u) {
+        memcpy(gbuf, "{}", 3);
+    }
 
     /* Live 4-Build Ecosystem Bridge: AUTOPHAGE 256B DNA -> Cell Engine -> Asmodensius 112-Trait Vector */
     CellSpecimen apex;
@@ -787,6 +836,12 @@ static int cmd_stream(void) {
     char line[1024];
     setvbuf(stdout, NULL, _IONBF, 0);
     while (fgets(line, sizeof(line), stdin)) {
+        size_t llen = strlen(line);
+        if (llen > 0 && line[llen - 1] != '\n') {
+            /* Drain remainder of overlong input line so FIFO command/response queue NEVER desyncs! */
+            int ch;
+            while ((ch = fgetc(stdin)) != '\n' && ch != EOF) {}
+        }
         if (strncmp(line, "quit", 4) == 0) break;
         if (strncmp(line, "init ", 5) == 0) {
             /* init <regime> <solvent> <seed> <restraint_pct> <warmup_epochs> */
@@ -820,14 +875,15 @@ static int cmd_stream(void) {
             cfg.width = 32; cfg.height = 32; cfg.regime = 5; cfg.seed = 5000ULL;
             w = cellulogonic_create(&cfg);
         }
-        if (strncmp(line, "step ", 5) == 0) {
-            uint32_t n = (uint32_t)atoi(line + 5);
-            if (n < 1u) n = 1u;
-            if (n > 50u) n = 50u;
+        if (strncmp(line, "state", 5) == 0) {
+            /* Strictly read-only P9 observer snapshot (for GET /api/state!) */
+            emit_world_json(w);
+        } else if (strncmp(line, "step ", 5) == 0) {
+            uint32_t n = parse_u32_clamped(line + 5, 1u, 1u, 50u);
             cellulogonic_step_epochs(w, n);
             emit_world_json(w);
         } else if (strncmp(line, "solvent ", 8) == 0) {
-            uint32_t s = (uint32_t)atoi(line + 8);
+            uint32_t s = parse_u32_clamped(line + 8, 0u, 0u, CELL_SOLVENT_COUNT - 1u);
             cellulogonic_set_solvent(w, s);
             emit_world_json(w);
         } else if (strncmp(line, "restraint_vec ", 14) == 0) {
@@ -845,8 +901,7 @@ static int cmd_stream(void) {
             }
             emit_world_json(w);
         } else if (strncmp(line, "restraint ", 10) == 0) {
-            uint32_t pct = (uint32_t)atoi(line + 10);
-            if (pct > 100u) pct = 100u;
+            uint32_t pct = parse_u32_clamped(line + 10, 0u, 0u, 100u);
             for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cellulogonic_set_restraint(w, (uint32_t)r, (uint8_t)pct);
             emit_world_json(w);
         } else if (strncmp(line, "tun", 3) == 0) {
@@ -906,7 +961,7 @@ static int cmd_stream(void) {
             if (parsed >= 32) {
                 CellSpecimen apex;
                 if (cellulogonic_inspect_apex(w, &apex) == 0) {
-                    cellulogonic_ingest_autophage_128b(w, apex.slot_index, dna128);
+                    cellulogonic_ingest_autophage_128b(w, dna128, apex.slot_index);
                 }
                 uint32_t injected = 0;
                 uint32_t start = ((uint32_t)dna128[0] * 17u + (uint32_t)dna128[1]) % w->num_slots;
@@ -914,7 +969,7 @@ static int cmd_stream(void) {
                 for (uint32_t step = 0; step < w->num_slots && injected < 16u; ++step) {
                     uint32_t idx = (start + step * stride) % w->num_slots;
                     if (w->cells[idx].alive_state == 1) {
-                        cellulogonic_ingest_autophage_128b(w, idx, dna128);
+                        cellulogonic_ingest_autophage_128b(w, dna128, idx);
                         injected++;
                     }
                 }
@@ -955,7 +1010,7 @@ static int cmd_stream(void) {
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        printf("CELLULOGONIC MECHA v1.2 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
+        printf("CELLULOGONIC MECHA v1.3.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
         printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");
@@ -969,15 +1024,15 @@ int main(int argc, char** argv) {
     const char* restraints_csv = NULL;
 
     for (int i = 2; i < argc; ++i) {
-        if (strcmp(argv[i], "--epochs") == 0 && i + 1 < argc)     epochs = (uint32_t)atoi(argv[++i]);
-        else if (strcmp(argv[i], "--size") == 0 && i + 1 < argc)  size = (uint32_t)atoi(argv[++i]);
+        if (strcmp(argv[i], "--epochs") == 0 && i + 1 < argc)     epochs = parse_u32_clamped(argv[++i], 200u, 1u, 100000u);
+        else if (strcmp(argv[i], "--size") == 0 && i + 1 < argc)  size = parse_u32_clamped(argv[++i], 32u, 8u, 64u);
         else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc)  seed = strtoull(argv[++i], NULL, 10);
-        else if (strcmp(argv[i], "--pairs") == 0 && i + 1 < argc) pairs = atoi(argv[++i]);
-        else if (strcmp(argv[i], "--regime") == 0 && i + 1 < argc) regime = (uint32_t)atoi(argv[++i]);
-        else if (strcmp(argv[i], "--solvent") == 0 && i + 1 < argc) solvent = (uint32_t)atoi(argv[++i]);
+        else if (strcmp(argv[i], "--pairs") == 0 && i + 1 < argc) pairs = (int)parse_u32_clamped(argv[++i], 24u, 4u, 48u);
+        else if (strcmp(argv[i], "--regime") == 0 && i + 1 < argc) regime = parse_u32_clamped(argv[++i], 3u, 0u, 5u);
+        else if (strcmp(argv[i], "--solvent") == 0 && i + 1 < argc) solvent = parse_u32_clamped(argv[++i], 0u, 0u, 3u);
         else if (strcmp(argv[i], "--out") == 0 && i + 1 < argc)   out_path = argv[++i];
         else if (strcmp(argv[i], "--restraints") == 0 && i + 1 < argc) restraints_csv = argv[++i];
-        else if (strcmp(argv[i], "--tun") == 0 && i + 1 < argc)   do_tun = atoi(argv[++i]);
+        else if (strcmp(argv[i], "--tun") == 0 && i + 1 < argc)   do_tun = (int)parse_u32_clamped(argv[++i], 0u, 0u, 2u);
     }
 
     if (strcmp(argv[1], "probe") == 0)         return cmd_probe();

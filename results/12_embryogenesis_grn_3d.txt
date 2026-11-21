@@ -2,15 +2,15 @@
 Initial Zygote: 8 clonal blastomeres (IDENTICAL DNA!), maternal Wnt/BMP/Shh pole cues, eutelic_rem=5
 
 t=  0 | alive=  8 (maxT=  8) | Fates[P= 1 Ec= 2 N= 1 M= 2 G= 2 Gm= 0] | HomoCad= 44.4% | Axons= 0(w=0/p=0) | CPG=   0 | Hippo=  0 Eut=  0 | mRes=0 eRes=0
-t= 25 | alive= 21 (maxT= 21) | Fates[P= 2 Ec= 6 N= 2 M= 5 G= 6 Gm= 0] | HomoCad= 74.3% | Axons= 4(w=8/p=2) | CPG=  26 | Hippo=  0 Eut=  0 | mRes=0 eRes=0
-t= 50 | alive= 30 (maxT= 28) | Fates[P= 2 Ec=10 N= 2 M= 8 G= 8 Gm= 0] | HomoCad= 77.3% | Axons= 4(w=12/p=4) | CPG=  54 | Hippo=  0 Eut=  0 | mRes=0 eRes=0
-t= 75 | alive= 35 (maxT= 32) | Fates[P= 3 Ec=12 N= 3 M= 8 G= 9 Gm= 0] | HomoCad= 78.2% | Axons= 4(w=14/p=6) | CPG=  84 | Hippo=  0 Eut=  0 | mRes=0 eRes=0
-t=100 | alive= 35 (maxT= 32) | Fates[P= 3 Ec=15 N= 3 M= 7 G= 7 Gm= 0] | HomoCad= 79.6% | Axons= 2(w=16/p=8) | CPG= 106 | Hippo=  0 Eut= 16 | mRes=0 eRes=0
-t=125 | alive= 60 (maxT= 57) | Fates[P= 3 Ec=25 N=10 M=15 G= 7 Gm= 0] | HomoCad= 80.2% | Axons=15(w=53/p=11) | CPG= 204 | Hippo=  7 Eut= 22 | mRes=0 eRes=0
-t=150 | alive= 54 (maxT= 48) | Fates[P= 3 Ec=24 N= 6 M=12 G= 9 Gm= 0] | HomoCad= 80.0% | Axons= 8(w=68/p=24) | CPG= 298 | Hippo=  7 Eut= 71 | mRes=0 eRes=0
-t=175 | alive= 59 (maxT= 53) | Fates[P= 3 Ec=26 N= 6 M=12 G=12 Gm= 0] | HomoCad= 78.7% | Axons= 8(w=76/p=32) | CPG= 340 | Hippo=  7 Eut=221 | mRes=0 eRes=0
-t=200 | alive= 58 (maxT= 53) | Fates[P= 3 Ec=26 N= 6 M=13 G=10 Gm= 0] | HomoCad= 78.1% | Axons= 5(w=80/p=39) | CPG= 398 | Hippo=  7 Eut=525 | mRes=0 eRes=0
+t= 25 | alive= 34 (maxT= 32) | Fates[P= 3 Ec= 8 N= 9 M= 8 G= 6 Gm= 0] | HomoCad= 83.0% | Axons= 0(w=6/p=4) | CPG=  10 | Hippo=  0 Eut=  0 | mRes=0 eRes=0
+t= 50 | alive= 48 (maxT= 44) | Fates[P= 6 Ec= 8 N=15 M=13 G= 6 Gm= 0] | HomoCad= 85.3% | Axons= 2(w=8/p=4) | CPG=  14 | Hippo= 43 Eut= 10 | mRes=0 eRes=0
+t= 75 | alive= 65 (maxT= 63) | Fates[P= 7 Ec=13 N=20 M=15 G=10 Gm= 0] | HomoCad= 83.5% | Axons= 6(w=20/p=12) | CPG=  18 | Hippo= 85 Eut=100 | mRes=0 eRes=0
+t=100 | alive= 70 (maxT= 66) | Fates[P= 7 Ec=13 N=24 M=15 G=11 Gm= 0] | HomoCad= 83.8% | Axons=22(w=70/p=46) | CPG=  80 | Hippo=105 Eut=433 | mRes=0 eRes=0
+t=125 | alive= 70 (maxT= 65) | Fates[P= 7 Ec=15 N=22 M=15 G=11 Gm= 0] | HomoCad= 82.5% | Axons=24(w=134/p=108) | CPG= 200 | Hippo=105 Eut=934 | mRes=0 eRes=0
+t=150 | alive= 70 (maxT= 65) | Fates[P= 8 Ec=14 N=21 M=15 G=11 Gm= 1] | HomoCad= 80.0% | Axons=38(w=210/p=170) | CPG= 356 | Hippo=105 Eut=1519 | mRes=0 eRes=0
+t=175 | alive= 71 (maxT= 61) | Fates[P= 8 Ec=15 N=19 M=15 G=11 Gm= 3] | HomoCad= 78.2% | Axons=30(w=276/p=244) | CPG= 520 | Hippo=105 Eut=2105 | mRes=0 eRes=0
+t=200 | alive= 70 (maxT= 40) | Fates[P= 8 Ec=15 N=16 M=15 G=11 Gm= 5] | HomoCad= 77.4% | Axons=35(w=347/p=310) | CPG= 636 | Hippo=105 Eut=2697 | mRes=0 eRes=0
 
 Final 3D Morphogenetic Summary:
-  Chemical GPS Means : Wnt=53.71 | BMP/Slit=97.85 | Shh/Netrin=81.89 | ApicalWedge=0.494
-  Ledger Closure     : mass_res=0 amu | energy_res=0 uq | 2nd_law_viol=0 | SHA=7b7bfe2d8757842654afcd3cb50f168ece10b57c3ce4d823a7aa95333b6cd966
+  Chemical GPS Means : Wnt=110.25 | BMP/Slit=109.12 | Shh/Netrin=48.15 | ApicalWedge=0.310
+  Ledger Closure     : mass_res=0 amu | energy_res=0 uq | 2nd_law_viol=0 | SHA=c64979bf5f5da1ceccb7dbb78bf8dffe1430e92eb0e6ca9c8394f7b89c1803e3

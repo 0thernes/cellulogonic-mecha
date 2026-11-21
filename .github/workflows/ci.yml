@@ -27,15 +27,24 @@ jobs:
         run: |
           curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
           echo "$HOME/.elan/bin" >> $GITHUB_PATH
-      - name: Build Lean 4 Proof Suite & Audit Axioms
+      - name: Build Lean 4 Proof Suite & Strict Axiom Allowlist Audit
         working-directory: lean
         run: |
           lake build
           lake env lean CellulogonicProofs.lean | tee ../lean4-ci-audit.txt
-          if grep -q "sorryAx" ../lean4-ci-audit.txt; then
-            echo "ERROR: sorryAx detected in Lean 4 audit!"
-            exit 1
-          fi
+          python3 - ../lean4-ci-audit.txt <<'PY'
+          import re, sys
+          text = open(sys.argv[1], encoding="utf-8").read()
+          allowed = {"propext", "Classical.choice", "Quot.sound"}
+          matches = re.findall(r"'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])", text)
+          if len(matches) < 58:
+              sys.exit(f"ERROR: expected >= 58 audited theorems, found {len(matches)}")
+          for name, _, axs in matches:
+              for ax in [a.strip() for a in axs.split(",") if a.strip()]:
+                  if ax not in allowed:
+                      sys.exit(f"ERROR: forbidden Lean axiom '{ax}' detected in {name}!")
+          print(f"Strict Lean 4 Axiom Audit PASSED ({len(matches)} theorems strictly within {{propext, Classical.choice, Quot.sound}})")
+          PY
 
   verify-paper:
     name: AMS-LaTeX White Paper & arXiv Bundle Build (Tectonic)

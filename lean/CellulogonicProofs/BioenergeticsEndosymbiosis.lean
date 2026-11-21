@@ -1,5 +1,5 @@
 /-
-  CELLULOGONIC MECHA v1.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
+  CELLULOGONIC MECHA v1.3.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
   Endosymbiotic O(1) Power-Density Liberation, & Mitotic Heteroplasmy Purifying Selection.
 
   Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).

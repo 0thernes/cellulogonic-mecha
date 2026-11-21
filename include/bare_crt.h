@@ -35,8 +35,13 @@ extern FILE*  __cdecl fopen(const char* filename, const char* mode);
 extern size_t __cdecl fwrite(const void* ptr, size_t size, size_t count, FILE* stream);
 extern size_t __cdecl fread(void* ptr, size_t size, size_t count, FILE* stream);
 extern char*  __cdecl fgets(char* str, int num, FILE* stream);
+extern int    __cdecl fgetc(FILE* stream);
 extern int    __cdecl fclose(FILE* stream);
+extern int    __cdecl remove(const char* path);
 extern int    __cdecl setvbuf(FILE* stream, char* buf, int mode, size_t size);
+#ifndef EOF
+#define EOF (-1)
+#endif
 #define _IONBF 0x0004
 #define _IOLBF 0x0040
 
