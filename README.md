@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.2
+# CELLULOGONIC MECHA v1.2.1
 
 **Clean-Room 3D Off-Lattice Developmental Embryogenesis, Morphogenetic GRN, Chemiosmotic, Cytoskeletal, Endosymbiotic & Xenocellular Artificial Life Engine**
 *(Standalone Zero-Dependency Native C11 + Dual AVX2/Scalar Bit-Exact Kernels + 58 Pure Lean 4 Formal Proofs + Live 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory)*

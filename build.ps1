@@ -66,7 +66,7 @@ if (-not $SkipTests) {
     Push-Location -LiteralPath "$proj\bin"
     & ".\test_falsification.exe"
     $rc = $LASTEXITCODE
-    Remove-Item -Force -ErrorAction SilentlyContinue "test_tmp_cell.cmbin"
+    Remove-Item -Force -LiteralPath "test_tmp_cell.cmbin","test_tamper_tmp.cmbin" -ErrorAction SilentlyContinue
     Pop-Location
     if ($rc -ne 0) { exit $rc }
 }
