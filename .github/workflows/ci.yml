@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build Linux ELF64 & Run 20-Gate Falsification Suite
+      - name: Build Linux ELF64 & Run 24-Gate Falsification Suite
         run: |
           chmod +x build_linux.sh
           ./build_linux.sh
       - name: Run Deterministic Cross-Kernel Parity Benchmark
         run: |
-          ./bin/cellulogonic_linux bench --epochs 120 --size 32 --seed 5055
+          ./bin/cellulogonic_linux bench --epochs 300 --size 32 --seed 5000
 
   lean4-formal-verify:
     runs-on: ubuntu-latest
@@ -36,3 +36,22 @@ jobs:
             echo "ERROR: sorryAx detected in Lean 4 audit!"
             exit 1
           fi
+
+  verify-paper:
+    name: AMS-LaTeX White Paper & arXiv Bundle Build (Tectonic)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tectonic TeX engine
+        run: |
+          curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
+          sudo mv tectonic /usr/local/bin/tectonic
+          tectonic --version
+      - name: Compile paper/main.tex and verify dist/arxiv_submission.tar.gz standalone
+        run: |
+          mkdir -p /tmp/pdf-out /tmp/arxiv-check/out
+          tectonic -X compile paper/main.tex --outdir /tmp/pdf-out --keep-logs
+          test -s /tmp/pdf-out/main.pdf
+          tar -xzf dist/arxiv_submission.tar.gz -C /tmp/arxiv-check
+          tectonic -X compile /tmp/arxiv-check/main.tex --outdir /tmp/arxiv-check/out
+          test -s /tmp/arxiv-check/out/main.pdf

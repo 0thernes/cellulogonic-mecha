@@ -18,6 +18,9 @@ test_tmp_*.cmbin
 lean/.lake/build/
 lean/.lake/packages/
 
+# LaTeX build intermediates (dist/ release PDFs & arXiv tarballs remain tracked)
+paper/build/
+
 # OS & editor clutter
 .DS_Store
 Thumbs.db

@@ -120,7 +120,8 @@ cellulogonic_destroy(world);
 
 - **Master Index & TOC**: [`INDEX.md`](INDEX.md)
 - **Executive Summary Paper & Novelty Verdict**: [`SUMMARY.md`](SUMMARY.md)
-- **Professional Research White Paper (33 Verified DOIs)**: [`paper/WHITE_PAPER.md`](paper/WHITE_PAPER.md)
+- **Compiled AMS-LaTeX Research Preprint PDF (11 pp., Zero-Warning Tectonic + 3 Vector Figures)**: [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`paper/main.tex`](paper/main.tex) · [`dist/arxiv_submission.tar.gz`](dist/arxiv_submission.tar.gz)
+- **Markdown Research White Paper (36 Verified DOIs)**: [`paper/WHITE_PAPER.md`](paper/WHITE_PAPER.md)
 - **Master Deep-Dive Report (Cells, Organelles, ≤1,000-Cell Tardigrade Eutelic Organogenesis, Xenobiology & Cellular A-Life Singularity)**: [`docs/MASTER_REPORT.md`](docs/MASTER_REPORT.md)
 - **Verification & Audit Ledger**: [`VERIFICATION.md`](VERIFICATION.md)
 - **Technical Architecture & ABI Specification**: [`ARCHITECTURE.md`](ARCHITECTURE.md)
