@@ -3,7 +3,7 @@
 **Author:** Alexander S. Donahue¹ (ORCID: [0009-0006-8168-9648](https://orcid.org/0009-0006-8168-9648))  
 **Affiliation:** ¹0thernes LLC (`0_0@0thernes.art`)  
 **Date:** November 21, 2026 | **Version:** `1.2.1` (Anti-Fraud Hardened Research Preprint & Reproducible Laboratory Artifact)  
-**Repository:** `https://github.com/0thernes/cellulogonic-mecha` (`PRIVATE`)  
+**Repository:** `https://github.com/0thernes/cellulogonic-mecha`  
 **Formal Verification:** 58 / 58 Pure Lean 4 (`v4.35.0`) Theorems (`0 sorryAx`, `0` custom axioms, `[propext, Classical.choice, Quot.sound]` only, `0` warnings)  
 **Empirical Verification:** 24 / 24 Falsification Gates · 8 / 8 Planted Negative Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
 
