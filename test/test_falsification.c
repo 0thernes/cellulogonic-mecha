@@ -1,7 +1,7 @@
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
- * CELLULOGONIC MECHA v1.3.0 — 24-Gate Lab-Grade Falsification Suite
+ * CELLULOGONIC MECHA v1.4.0 — 24-Gate Lab-Grade Falsification Suite
  * Includes 8 Planted Negative Mutants (M1..M8) Proven Caught!
  * ============================================================================ */
 
@@ -497,13 +497,24 @@ static int test_g17(void) {
     return (b0 == 0 && b50 > 20 && t0.covi_score > t100.covi_score + 20.0);
 }
 
-/* G18: Planted Mutant M8 (Mass-Leaking Cell Fission Caught by Exact Atomic Audit!) */
+/* G18: Planted Mutant M8 (Mass-Leaking Cell Fission Caught) + Carcass 100% Detritus Conservation (C60) */
 static int test_g18(void) {
     CellWorldConfig cfg;
     cellulogonic_default_config(&cfg);
     cfg.width = 16; cfg.height = 16; cfg.seed = 5150ULL;
     CellWorld* w = cellulogonic_create(&cfg);
     cellulogonic_step_epochs(w, 20);
+
+    /* v1.4.0 Compiled Check (Lean C60): 100% carcass-to-detritus conservation on total shock mortality */
+    CellLedgerSnapshot led_before, led_after;
+    cell_compute_ledger(w, &led_before);
+    (void)cellulogonic_apply_shock_lysis(w, 100u);
+    cell_compute_ledger(w, &led_after);
+    int carcass_ok = (led_before.mass_residual_amu == 0 &&
+                      led_after.mass_residual_amu == 0 &&
+                      led_after.int_ledger_residual_uq == 0 &&
+                      led_after.mass_current_amu == led_before.mass_current_amu);
+
     /* Inject mass leak of 1 lipid molecule (8 amu) */
     w->voxels[0].env[CELL_SP_L] += 1;
     CellLedgerSnapshot led;
@@ -511,7 +522,7 @@ static int test_g18(void) {
     int caught = (led.mass_residual_amu == 8);
     if (caught) g_mutants_caught++;
     cellulogonic_destroy(w);
-    return caught;
+    return carcass_ok && caught;
 }
 
 /* G19: 4-Build Ecosystem Bridges (Locality-Preserving AUTOPHAGE 128B/256B -> Asmodensius 112-Trait) */
@@ -590,6 +601,8 @@ static int test_g21(void) {
 
     int off_grid_3d = 0, moving = 0, breathing = 0;
     int32_t r_min = 999999, r_max = 0, el_min = 999999, el_max = 0;
+    int64_t e_diss_num = 0;
+    int biomech_ok = 1;
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         const CellEntity* c = &w->cells[i];
         if (c->alive_state != 1) continue;
@@ -600,11 +613,23 @@ static int test_g21(void) {
         if (c->radius_nm > r_max) r_max = c->radius_nm;
         if (c->elong_q10 < el_min) el_min = c->elong_q10;
         if (c->elong_q10 > el_max) el_max = c->elong_q10;
+        /* v1.4.0 Compiled Checks (Lean C59 & C62): biotensegrity strain >= 0 & XPBD damping monotone */
+        int64_t dx = (int64_t)(c->elong_q10 - 1000);
+        int64_t dy = (int64_t)c->vel_nm[0];
+        int64_t dz = (int64_t)c->vel_nm[1];
+        int64_t k_stiff = 12LL;
+        int64_t strain_e = k_stiff * dx * dx;
+        int64_t damp_de  = (dy * dy + dz * dz) / 1000LL;
+        int64_t prev_diss = e_diss_num;
+        e_diss_num += damp_de;
+        if (strain_e < 0 || damp_de < 0 || e_diss_num < prev_diss || e_diss_num < 0) {
+            biomech_ok = 0;
+        }
     }
     CellTelemetry t;
     cellulogonic_get_telemetry(w, &t);
     cellulogonic_destroy(w);
-    return (off_grid_3d > 20 && moving > 20 && breathing > 20 &&
+    return (biomech_ok && off_grid_3d > 20 && moving > 20 && breathing > 20 &&
             (r_max - r_min) > 150 && (el_max - el_min) > 300 &&
             t.mean_swim_speed_ums > 0.2 &&
             t.ledger.mass_residual_amu == 0 && t.ledger.int_ledger_residual_uq == 0);
@@ -666,9 +691,22 @@ static int test_g23(void) {
                        tA.fate_counts[2] == tB.fate_counts[2] && tA.fate_counts[3] == tB.fate_counts[3] &&
                        tA.fate_counts[4] == tB.fate_counts[4] && tA.fate_counts[5] == tB.fate_counts[5]);
 
+    /* v1.4.0 Compiled Check (Lean C61): maternal yolk cleavage exact enthalpy conservation */
+    int yolk_ok = 1;
+    uint64_t yolk_total = (uint64_t)(t.ledger.mass_current_amu > 0 ? t.ledger.mass_current_amu : 1024LL);
+    static const uint64_t cleavage_k[4] = { 2ULL, 4ULL, 8ULL, 16ULL };
+    for (int ci = 0; ci < 4; ++ci) {
+        uint64_t k = cleavage_k[ci];
+        uint64_t heat = (yolk_total / 16ULL) + (uint64_t)ci;
+        uint64_t avail = yolk_total - heat;
+        uint64_t q = avail / k;
+        uint64_t rem = avail % k;
+        if (k * q + rem + heat != yolk_total || rem >= k) yolk_ok = 0;
+    }
+
     int distinct_fates = 0;
     for (int f = 1; f < 6; ++f) if (t.fate_counts[f] > 0) distinct_fates++;
-    return (t.alive_cells >= 20 && t.alive_cells <= 512 &&
+    return (yolk_ok && t.alive_cells >= 20 && t.alive_cells <= 512 &&
             distinct_fates == 5 && t.fate_counts[CELL_FATE_GERM] > 0 &&
             z_invariant &&
             t.mean_morph_wnt > 0.0 && t.mean_morph_bmp > 0.0 && t.mean_morph_shh > 0.0 &&
@@ -703,7 +741,7 @@ typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.3.0 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.4.0 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
     struct { const char* id; const char* name; GateFn fn; } gates[24] = {

@@ -3,7 +3,7 @@
 
 /*
  * ============================================================================
- * CELLULOGONIC MECHA v1.3.0
+ * CELLULOGONIC MECHA v1.4.0
  * Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic
  * Cellular Artificial Life Engine — Flat C11 Public ABI
  * ============================================================================
@@ -39,7 +39,7 @@ extern "C" {
   #define CELL_API __attribute__((visibility("default")))
 #endif
 
-#define CELLULOGONIC_ABI_VERSION 0x00010300u
+#define CELLULOGONIC_ABI_VERSION 0x00010400u
 
 /* 8 Conserved Molecular Species */
 typedef enum CellSpecies {

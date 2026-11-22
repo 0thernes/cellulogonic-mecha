@@ -31,7 +31,7 @@ static void print_telemetry_line(const CellTelemetry* t) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.3.0 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.4.0 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -49,7 +49,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.3.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.4.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -1010,7 +1010,7 @@ static int cmd_stream(void) {
 
 int main(int argc, char** argv) {
     if (argc < 2) {
-        printf("CELLULOGONIC MECHA v1.3.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
+        printf("CELLULOGONIC MECHA v1.4.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
         printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");

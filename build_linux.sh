@@ -38,7 +38,7 @@ cd "$PROJ/bin"
 rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin
 
 if command -v lake >/dev/null 2>&1; then
-  echo "Verifying 58 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
+  echo "Verifying 62 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
   cd "$PROJ/lean"
   lake build
   AUDIT_OUT="$(lake env lean CellulogonicProofs.lean)"
@@ -46,9 +46,12 @@ if command -v lake >/dev/null 2>&1; then
 import re, sys
 text = sys.argv[1]
 allowed = {"propext", "Classical.choice", "Quot.sound"}
+forbidden = re.compile(r"(warning|error|sorryAx|declaration uses 'sorry'|bv_decide|native_decide|ofReduceBool|trustCompiler)", re.I)
+if forbidden.search(text):
+    sys.exit("ERROR: Lean kernel integrity violation detected in audit output!")
 matches = re.findall(r"'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])", text)
-if len(matches) < 58:
-    sys.exit(f"ERROR: expected >= 58 audited theorems, found {len(matches)}")
+if len(matches) < 62:
+    sys.exit(f"ERROR: expected >= 62 audited theorems, found {len(matches)}")
 for name, _, axs in matches:
     for ax in [a.strip() for a in axs.split(",") if a.strip()]:
         if ax not in allowed:

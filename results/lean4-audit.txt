@@ -99,3 +99,7 @@
 'Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound' depends on axioms: [propext, Quot.sound]
 'Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C59_xpbd_dissipation_monotone_nonneg' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C60_carcass_detritus_100pct_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C61_yolk_cleavage_mass_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C62_biotensegrity_elastic_nonneg' depends on axioms: [propext, Quot.sound]

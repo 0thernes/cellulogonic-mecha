@@ -1,6 +1,6 @@
 /-
-  CELLULOGONIC MECHA v1.3.0 — Root Formal Verification & Strict Axiom Audit Module
-  Machine-checks all 58 theorems across Theorems I–VII under Lean 4 v4.35.0
+  CELLULOGONIC MECHA v1.4.0 — Root Formal Verification & Strict Axiom Audit Module
+  Machine-checks all 62 theorems across Theorems I–VIII under Lean 4 v4.35.0
   with zero Mathlib dependencies, zero `sorryAx`, zero custom axioms, and zero
   external compiler/SAT axioms (strictly subset of {propext, Classical.choice, Quot.sound}).
 
@@ -14,6 +14,7 @@ import CellulogonicProofs.ChemiosmosisAutopoiesis
 import CellulogonicProofs.EutelicOrganogenesis
 import CellulogonicProofs.CytoskeletonNanomechanics
 import CellulogonicProofs.MorphogeneticGRN
+import CellulogonicProofs.ContinuumBiomechanics
 
 -- Theorem I: Exact Stoichiometric Mass Conservation, First-Law & Second-Law Closure (T01–T10)
 #print axioms Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass
@@ -86,3 +87,9 @@ import CellulogonicProofs.MorphogeneticGRN
 #print axioms Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation
 #print axioms Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound
 #print axioms Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift
+
+-- Theorem VIII: Continuum Biomechanics, XPBD Dissipation, Carcass Detritus, Yolk Cleavage & Biotensegrity (C59–C62)
+#print axioms Cellulogonic.ContinuumBiomechanics.C59_xpbd_dissipation_monotone_nonneg
+#print axioms Cellulogonic.ContinuumBiomechanics.C60_carcass_detritus_100pct_conservation
+#print axioms Cellulogonic.ContinuumBiomechanics.C61_yolk_cleavage_mass_conservation
+#print axioms Cellulogonic.ContinuumBiomechanics.C62_biotensegrity_elastic_nonneg

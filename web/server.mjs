@@ -329,7 +329,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, "127.0.0.1", () => {
-  console.log(`CELLULOGONIC MECHA v1.3.0 3D Embryogenesis & Cellular Observatory running at http://127.0.0.1:${PORT}`);
+  console.log(`CELLULOGONIC MECHA v1.4.0 3D Embryogenesis & Cellular Observatory running at http://127.0.0.1:${PORT}`);
   console.log(`Native 3D off-lattice engine binary: ${BIN}`);
 });
 

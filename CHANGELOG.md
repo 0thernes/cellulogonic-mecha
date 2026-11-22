@@ -2,6 +2,16 @@
 
 All notable changes to **CELLULOGONIC MECHA** are documented in this file.
 
+## [1.4.0] — 2026-11-22
+
+### Continuum Biomechanics Pure Lean 4 Proof Module (`C59`–`C62` -> `62 / 62`) & Compiled Falsification Checks
+- **Pure Lean 4 Module 8 (`lean/CellulogonicProofs/ContinuumBiomechanics.lean`, `C59`–`C62`)**: Expanded the pure Lean 4 `v4.35.0` formal proof suite from 58 to **62 / 62 machine-checked theorems** strictly within `{propext, Classical.choice, Quot.sound}` (`0 sorryAx`, `0` custom axioms, `0` warnings):
+  - `C59_xpbd_dissipation_monotone_nonneg`: non-negative XPBD numerical damping preserves monotonicity and non-negativity across single steps and finite traces.
+  - `C60_carcass_detritus_100pct_conservation`: transferring 100% of `mass_soma + mass_stores` into `mass_detritus` on organism death conserves exact total ecosystem mass (`0` drift).
+  - `C61_yolk_cleavage_mass_conservation`: splitting maternal yolk mass `Y` into `k > 0` daughter cells plus cleavage heat preserves exact total enthalpy (`sum + rem + heat = Y`, `rem < k`).
+  - `C62_biotensegrity_elastic_nonneg`: quadratic elastic strain energy `k * dx * dx ≥ 0` (and 3D isotropic norm) for all integer `k ≥ 0, dx : Int`.
+- **Compiled C11 Checks & Build/CI Hardening (`test/test_falsification.c`, `build.ps1`, `build_linux.sh`, `.github/workflows/ci.yml`, `include/cellulogonic_abi.h`)**: Bumped `CELLULOGONIC_ABI_VERSION` to `0x00010400u`, added live compiled checks mirroring `C59`–`C62` inside Gates `G18`, `G21`, and `G23` while preserving exact `24 / 24 GATES PASSED | 8 / 8 PLANTED MUTANTS CAUGHT` summary formatting, upgraded Lean audit threshold to `62`, and auto-archived clean audit logs to `results/lean4-audit.txt`.
+
 ## [1.3.0] — 2026-11-21
 
 ### Deep-Dive Remediation: Strict 4-Solvent 2nd Law, De-Novo Xenobiology, 5-Fate Translation-Invariant 3D Embryogenesis, Full `.cmbin` Validation, Pure Lean 4 Alignment & CSRF-Hardened WebGL2 Observatory

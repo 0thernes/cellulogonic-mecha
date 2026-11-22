@@ -1,7 +1,7 @@
-# CELLULOGONIC MECHA v1.3.0
+# CELLULOGONIC MECHA v1.4.0
 
 **Clean-Room 3D Off-Lattice Developmental Embryogenesis, Morphogenetic GRN, Chemiosmotic, Cytoskeletal, Endosymbiotic & Xenocellular Artificial Life Engine**
-*(Standalone Zero-Dependency Native C11 + Dual AVX2/Scalar Bit-Exact Kernels + 58 Pure Lean 4 Formal Proofs + Live 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory)*
+*(Standalone Zero-Dependency Native C11 + Dual AVX2/Scalar Bit-Exact Kernels + 62 Pure Lean 4 Formal Proofs + Live 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory)*
 
 > *"A working open-ended-evolution lab, built clean-room from first principles. It runs on a single computer and is held to lab-grade proof, so anyone watching can see new forms and behaviours emerge that no one programmed. Every claim about them is backed by evidence."*
 
@@ -12,7 +12,7 @@
 | Build | Repository / Pillar | Biological Layer | Bridge Interface |
 |---|---|---|---|
 | **Build 1** | `AUTOPHAGE` / `Zeta-Omega ALife` | **DNA & Genetic Engine** (128B/256B polymorphic x86-64 Galois-field genomes, $\mathbb{F}_2$ ribosomes, polynomial sex) | `cellulogonic_ingest_autophage_128b()` & `cellulogonic_ingest_autophage_genome()` smoothly decode 128B/256B DNA into cellular operons with Lipschitz locality (SHA-256 reserved strictly for `autophage_dna_sig`) |
-| **Build 2** | **`CELLULOGONIC MECHA` (this repo)** | **CELLULAR Layer** (Chemoton stoichiometry, Canham–Helfrich bilayers, Mitchell chemiosmosis, nested primary & secondary endosymbiosis, Levin bioelectric tissues, Tardigrade TDP bioglass anhydrobiosis, 4 xenocellular planetary solvents, 3D embryogenesis GRNs) | Flat C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010300`), Win64 DLL / `.a` & Linux `.so` / `.a` |
+| **Build 2** | **`CELLULOGONIC MECHA` (this repo)** | **CELLULAR Layer** (Chemoton stoichiometry, Canham–Helfrich bilayers, Mitchell chemiosmosis, nested primary & secondary endosymbiosis, Levin bioelectric tissues, Tardigrade TDP bioglass anhydrobiosis, 4 xenocellular planetary solvents, 3D embryogenesis GRNs) | Flat C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010400`), Win64 DLL / `.a` & Linux `.so` / `.a` |
 | **Build 3** | `Asmodensius` | **Creatures, Beings & Entities** (embodied sensorimotor organisms & eutelic organ budgets) | `cellulogonic_project_asmodensius_112()` projects apex cellular, cytoskeletal, GHz microtubule & morphogenetic phenotypes strictly into `[0, 1]^112` |
 | **Build 4** | `Asmodensius-Native` | **World Model** (thermodynamic/spatial world substrate & Clean-Slate `P1`–`P10` verification invariants) | Exact `P2` (First/Second Law), `P4` (`Philox4x32-10` + `"CMB4"` `.cmbin` + SHA-256), `P9` (Observer Independence), `P10` (`0` post-warmup allocs) |
 
@@ -39,11 +39,11 @@
 
 ---
 
-## Verified Proof & Benchmark Highlights (v1.3.0, Measured on Intel Core Ultra 9 275HX)
+## Verified Proof & Benchmark Highlights (v1.4.0, Measured on Intel Core Ultra 9 275HX)
 
 | Verification Gate | Verified Result | Primary Evidence |
 |---|---|---|
-| **Lean 4 `v4.35.0` Formal Proofs** | **58 / 58 PROVEN (`0 sorryAx`, `0` custom axioms, `0` warnings, strictly `{propext, Classical.choice, Quot.sound}`)** | [`results/lean4-audit.txt`](results/lean4-audit.txt) |
+| **Lean 4 `v4.35.0` Formal Proofs** | **62 / 62 PROVEN (`0 sorryAx`, `0` custom axioms, `0` warnings, strictly `{propext, Classical.choice, Quot.sound}`)** | [`results/lean4-audit.txt`](results/lean4-audit.txt) |
 | **Win64 PE64 Falsification (`clang 23.1.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.444s`)** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
 | **Linux ELF64 Falsification (`gcc 13.3.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.512s`)** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
 | **4-Way Cross-OS / Cross-Kernel SHA-256 Parity** | **0-Bit Diff** (`be46eceb…8f7422a1`) · **`33.50 M rxns/s` Win64 / `28.56 M rxns/s` Linux** | [`results/02_bench_win64.txt`](results/02_bench_win64.txt) · [`results/02_bench_linux.txt`](results/02_bench_linux.txt) |
@@ -56,7 +56,7 @@
 
 ## Quick Start
 
-### 1. Build & Verify Everything on Windows x64 (Clang 23.1.0 + LLD + 24 Gates + 58 Pure Lean 4 Proofs & Strict Axiom Allowlist)
+### 1. Build & Verify Everything on Windows x64 (Clang 23.1.0 + LLD + 24 Gates + 62 Pure Lean 4 Proofs & Strict Axiom Allowlist)
 ```powershell
 .\build.ps1
 ```
@@ -90,7 +90,7 @@ node web\server.mjs
 
 ---
 
-## Direct Drop-In C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010300`)
+## Direct Drop-In C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010400`)
 
 ```c
 #include "cellulogonic_abi.h"

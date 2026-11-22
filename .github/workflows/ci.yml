@@ -37,8 +37,8 @@ jobs:
           text = open(sys.argv[1], encoding="utf-8").read()
           allowed = {"propext", "Classical.choice", "Quot.sound"}
           matches = re.findall(r"'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])", text)
-          if len(matches) < 58:
-              sys.exit(f"ERROR: expected >= 58 audited theorems, found {len(matches)}")
+          if len(matches) < 62:
+              sys.exit(f"ERROR: expected >= 62 audited theorems, found {len(matches)}")
           for name, _, axs in matches:
               for ax in [a.strip() for a in axs.split(",") if a.strip()]:
                   if ax not in allowed:

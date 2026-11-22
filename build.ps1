@@ -72,7 +72,7 @@ if (-not $SkipTests) {
 }
 
 if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
-    Write-Host "`nVerifying 58 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
+    Write-Host "`nVerifying 62 Pure Lean 4 Mathematical Proofs & Strict Axiom Allowlist..."
     Push-Location -LiteralPath "$proj\lean"
     & $lake build
     $lrc = $LASTEXITCODE
@@ -87,10 +87,13 @@ if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
     }
 
     $auditText = ($auditLines | Out-String)
+    if ($auditText -match "(?i)\b(warning|error)\b|sorryAx|declaration uses 'sorry'|bv_decide|native_decide|ofReduceBool|trustCompiler") {
+        throw "Lean 4 kernel integrity violation detected in CellulogonicProofs.lean output!"
+    }
     $allowed = @("propext", "Classical.choice", "Quot.sound")
     $theoremMatches = [regex]::Matches($auditText, "'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])")
-    if ($theoremMatches.Count -lt 58) {
-        throw "Expected >= 58 audited Lean 4 theorems, found $($theoremMatches.Count)"
+    if ($theoremMatches.Count -lt 62) {
+        throw "Expected >= 62 audited Lean 4 theorems, found $($theoremMatches.Count)"
     }
     foreach ($m in $theoremMatches) {
         if ($m.Groups[3].Success) {
@@ -102,7 +105,9 @@ if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
             }
         }
     }
-    Write-Host "Lean 4 Formal Verification PASSED ($($theoremMatches.Count) theorems, 0 sorryAx, strictly within {propext, Classical.choice, Quot.sound})!"
+    $auditPath = "$proj\results\lean4-audit.txt"
+    [System.IO.File]::WriteAllText($auditPath, ($auditLines -join "`r`n") + "`r`n", [System.Text.UTF8Encoding]::new($false))
+    Write-Host "Lean 4 Formal Verification PASSED ($($theoremMatches.Count) theorems, 0 sorryAx, strictly within {propext, Classical.choice, Quot.sound}, 0 warnings)!"
 }
 
-Write-Host "`nCELLULOGONIC MECHA v1.3.0 BUILD & VERIFICATION COMPLETE."
+Write-Host "`nCELLULOGONIC MECHA v1.4.0 BUILD & VERIFICATION COMPLETE."
