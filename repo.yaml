@@ -32,8 +32,8 @@ items:
   A05: {status: done}  # Demo media (docs/media/social-preview.svg in README.md) [recommended]
   A06: {status: done}  # Dual open LICENSE (Apache-2.0) + LICENSE-DOCS (CC-BY-4.0) [core]
   A07: {status: done}  # CHANGELOG.md (Keep a Changelog with 1.5.0) [core]
-  A08: {status: done}  # Semantic version 1.5.0 consistent across VERSION, CHANGELOG, CITATION.cff [core]
-  A09: {status: done}  # Automated tests that pass (test/test_falsification.c + scripts/prop_check.py) [core]
+  A08: {status: done}  # Semantic version 1.5.0 consistent across VERSION, CHANGELOG, CITATION.cff, ABI, Web & Lean [core]
+  A09: {status: done}  # Automated tests that pass (26-gate C11, 1000-case fuzz, Python oracle, 2700 prop_check, 12 Web tests) [core]
   A10: {status: done}  # Informational CI (.github/workflows/ci.yml on push to main) [core]
   A11: {status: done}  # Releases (tags: v* in .github/workflows/ci.yml) [recommended]
   A12: {status: done}  # .gitignore [core]
@@ -58,43 +58,43 @@ items:
   A31: {status: done}  # justfile with one-word commands (build, test, lean, paper, audit, reproduce) [core]
   A32: {status: done}  # Agent entry points: AGENTS.md (<32 KiB), CLAUDE.md, GEMINI.md, Cursor rules, llms.txt, llms-full.txt [core]
   A33: {status: done}  # .env.example and docs/configuration.md [core]
-  A34: {status: done, note: "Local Observatory server (web/server.mjs) exposes read-only GET /api/state health/status probe, strict HTTP 400/405/413/429 error logging, and native C11 stderr/ledger diagnostics."}
+  A34: {status: done, note: "Local Observatory server (web/server.mjs) exposes GET /healthz readiness probe, read-only GET /api/state observer, strict HTTP 400/403/405/413/429 error logging, stdin EPIPE protection, and native C11 stderr/ledger diagnostics verified by test/test_web_server.mjs."}
   A35: {status: done}  # docs/operations.md documenting git bundle backup, archive pin, and offsite Software Heritage mirror [recommended]
   A36: {status: n/a, note: "Local desktop/HPC research engine with no hosted production deployment (deployed: false)."}
   A37: {status: done, note: "docs/benchmarks.md establishes throughput, 0-alloc, and 60 FPS frame budgets verified across Win64 & Linux."}
-  A38: {status: done, note: "WebGL2 Observatory UI (web/index.html, web/styles.css) uses semantic HTML controls, clear high-contrast labels, keyboard-accessible buttons/tabs, and explicit numeric telemetry readouts."}
+  A38: {status: done, note: "WebGL2 Observatory UI (web/index.html, web/styles.css, web/app.js, web/renderer3d.js) meets WCAG 2.2 AA with skip-link, <label for>, native <progress>, semantic tables, aria-live status, keyboard 3D camera controls, prefers-reduced-motion, strict zero-unsafe-inline CSP, and WebGL2 fallback."}
   A39: {status: done}  # NOTICE + THIRD_PARTY_NOTICES.md [recommended]
   A40: {status: n/a, note: "Zero runtime AI SDKs or model APIs shipped (ai: false; development AI assistance transparently disclosed in docs/AI_DISCLOSURE.md)."}
   A41: {status: n/a, note: "No external package registry distribution (package: false); ABI stability & migration notes documented in CHANGELOG.md and DEVIATIONS.md."}
   A42: {status: done}  # Maintenance status: active declared in README.md and ROADMAP.md [recommended]
-  A43: {status: done}  # examples/ directory with runnable 01_embryogenesis_demo.py [recommended]
+  A43: {status: done}  # examples/ directory with runnable quickstart_c_abi.c & 01_embryogenesis_demo.py [recommended]
   A44: {status: done}  # docs/faq.md and docs/glossary.md [recommended]
   A45: {status: n/a, note: "Zero personal data collected, stored, or transmitted (personal_data: false)."}
   B01: {status: done}  # justfile reproduce target for clean-clone rebuild [core]
   B02: {status: done}  # Pinned lean/lean-toolchain (v4.35.0) & lean/lake-manifest.json; zero runtime package dependencies [core]
   B03: {status: done, note: "4-way cross-OS/cross-compiler/cross-ISA 0-bit SHA-256 parity (681a9747...519eceff) verified in G07 & results/02_bench_*.txt."}
   B04: {status: done}  # CLAIMS.md numbered ledger [core]
-  B05: {status: done, note: "Every claim C1-C8 in CLAIMS.md maps to executable gates G01-G24, 70 Lean theorems, or scripts/prop_check.py."}
-  B06: {status: done, note: "Negative tests cover tampered/trailing-EOF .cmbin (G06), inert crystal & white-noise COVI=0 (G12/M5/M6), TDP KO (G16/M7), Titan nH=3 boundary (NV01/NV04), and mutating GET 405 rejections."}
-  B07: {status: done, note: "Regression checks in G03/G06/G12/G14/G19/G23 lock every fixed v1.2.1-v1.5.0 defect (Titan strict 2nd Law, GRN Wnt de-collision, Z-translation invariance, Lipschitz 128B decode, CMB4 validation)."}
+  B05: {status: done, note: "Every claim C1-C8 in CLAIMS.md maps to executable gates G01-G26, 70 Lean theorems, reference/chemoton_oracle.py, scripts/prop_check.py, or test/test_web_server.mjs."}
+  B06: {status: done, note: "Negative tests cover tampered/re-signed/trailing-EOF CMB5 .cmbin (G06/G25), NULL/extreme ABI bounds (G25), inert crystal & white-noise COVI=0 (G12/M5/M6), TDP KO (G16/M7), Titan nH=3 boundary (NV01/NV04), and Web CSRF/405/403/400/413 rejections (test/test_web_server.mjs)."}
+  B07: {status: done, note: "Regression checks in G03/G06/G12/G14/G19/G23/G25/G26 lock every fixed v1.2.1-v1.5.0 defect (Titan strict 2nd Law, GRN Wnt de-collision, Z-translation invariance, Lipschitz 128B decode, CMB5 zero-padding validation, photon budget, tun bond detach)."}
   B08: {status: done, note: "Golden SHA-256 digests pinned in test_falsification.c (G01 NIST SHA-256, G07/G09 dual-kernel parity) and archived in CHECKSUMS.sha256 & results/."}
-  B09: {status: done, note: "Flat C11 ABI contract (cellulogonic_abi.h 0x00010500, _Static_assert padding, G01/G19/G25 bridges) and HTTP POST /api/cmd JSON API contract."}
-  B10: {status: done}  # Property-based tests (scripts/prop_check.py — 2,700 randomized seeded trials) [core]
-  B11: {status: done, note: "Differential testing between 256-bit SIMD_AVX2 diffusion kernel and scalar C11 reference oracle (G07, 0-bit diff) plus Win64 clang vs Linux gcc parity."}
-  B12: {status: done, note: "SCALAR_REF kernel in src/cellular_world.c serves as exact reference oracle for SIMD_AVX2; scripts/prop_check.py checks Python exact integer arithmetic against C11/Lean tables."}
+  B09: {status: done, note: "Flat C11 ABI contract (cellulogonic_abi.h 0x00010500, _Static_assert padding, G01/G19/G25 bridges) and HTTP GET /healthz + GET /api/state + POST /api/cmd JSON API contract (12/12 tests in test/test_web_server.mjs)."}
+  B10: {status: done}  # Property-based tests (scripts/prop_check.py — 2,700 trials + reference/chemoton_oracle.py — 6,270 rational checks) [core]
+  B11: {status: done, note: "Differential testing between 256-bit SIMD_AVX2 diffusion kernel and scalar C11 reference oracle (G07, 0-bit diff), Win64 clang vs Linux gcc parity, and Python exact oracle (scripts/verify_oracle_and_stats.py)."}
+  B12: {status: done, note: "SCALAR_REF kernel in src/cellular_world.c and clean-room arbitrary-precision reference/chemoton_oracle.py serve as independent exact reference oracles."}
   B13: {status: done}  # Mutation testing (8/8 planted negative mutants M1-M8 caught in test/test_falsification.c) [recommended]
   B14: {status: done, note: "Metamorphic checks: exact Z-translation invariance in 3D embryogenesis (G23), strict observer independence (G08/P9), and cross-kernel save/resume invariance (G09)."}
-  B15: {status: done}  # Fuzzing harness test/fuzz_cmbin.c (libFuzzer for binary CMB4 .cmbin snapshot parser) [recommended]
-  B16: {status: done}  # Sanitizers (-fsanitize=address,undefined in justfile sanitize and .github/workflows/ci.yml) [core]
+  B15: {status: done}  # Fuzzing harness test/fuzz_cmbin_abi.c (dual-mode 1000-case standalone + libFuzzer for binary CMB5 .cmbin snapshot parser & ABI) [recommended]
+  B16: {status: done}  # Sanitizers (-fsanitize=address,undefined + -march=x86-64-v3 in justfile sanitize and .github/workflows/ci.yml) [core]
   B17: {status: done}  # Static analysis & linters report-only (cppcheck, clang-tidy, ruff in justfile and CI) [recommended]
-  B18: {status: done}  # Strict compiler flags (-Wall -Wextra) & Lean 4.35.0 dependent type checker (autoImplicit=false) [recommended]
+  B18: {status: done}  # Strict compiler flags (-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror) & Lean 4.35.0 dependent type checker (autoImplicit=false) [recommended]
   B19: {status: n/a, note: "Deterministic single-threaded C11 simulation core with serialized FIFO worker queue in web/server.mjs (concurrent: false)."}
-  B20: {status: done, note: "All conserved mass/energy/stoichiometry uses exact int64_t integer arithmetic (0 rounding drift); floating-point 3D positions & [0,1]^112 projections are clamped and checked in G19/G21/G23."}
-  B21: {status: done, note: "Failure injection verified in G06 (tampered/truncated/trailing-EOF .cmbin), M1-M8 planted fault injections, and HTTP 400/405/413/429 handling in web/server.mjs."}
+  B20: {status: done, note: "All conserved mass/energy/stoichiometry and Canham-Helfrich predicates use exact int64_t/__int128 integer arithmetic (0 FP64 stepping drift); floating-point 3D positions & [0,1]^112 projections are clamped and checked in G19/G21/G23/G25."}
+  B21: {status: done, note: "Failure injection verified in G06/G25 (tampered/re-signed/truncated/trailing-EOF CMB5 .cmbin), M1-M8 planted fault injections, and HTTP 400/403/405/413/429 handling in test/test_web_server.mjs."}
   B22: {status: done}  # Formal specification & proof (lean/ — 70 audited theorems, Palomar Challenge/Solution, 6-kernel ready) [advanced]
   B23: {status: n/a, note: "All finite-state and trace invariants (EutelicTrace, MorphStep, Hippo hysteresis, Chemoton cycles) are proved directly in 6-kernel Lean 4.35.0 (B22) rather than TLA+/Alloy."}
   B24: {status: n/a, note: "Runtime targets zero-dependency portable C11 + AVX2; mathematical core is formalized and machine-checked in Lean 4.35.0 (B22) with full fidelity matrix in docs/statement-fidelity.md."}
-  B25: {status: n/a, note: "C11 memory/UB safety is verified via ASan/UBSan (B16), 1000-case fuzz_cmbin_abi + libFuzzer (B15), -Werror, zero-heap symbol audit, and 26-gate / 8-mutant harness rather than Kani/CBMC."}
+  B25: {status: n/a, note: "C11 memory/UB safety is verified via ASan/UBSan+AVX2 (B16), 1000-case fuzz_cmbin_abi + libFuzzer (B15), -Werror, zero-heap symbol audit, and 26-gate / 8-mutant harness rather than Kani/CBMC."}
   B26: {status: done}  # Honest benchmarks (docs/benchmarks.md reporting both unloaded and loaded workstation timings) [core]
   B27: {status: done, note: "Benchmarks run on every push in .github/workflows/ci.yml and historical v1.0.0-v1.5.0 numbers tracked in docs/benchmarks.md & docs/run-log.md."}
   B28: {status: done, note: "24 locked paired seeds (5000..5023) with matched ablation controls (endosymbiosis OFF, bioelectricity OFF, TDP knockout, 70% castration) in results/09_paired_stats_n24.txt."}

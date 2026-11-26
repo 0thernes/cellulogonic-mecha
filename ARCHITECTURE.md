@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.3.0 — Technical Architecture & ABI Specification
+# CELLULOGONIC MECHA v1.5.0 — Technical Architecture & ABI Specification
 
 ## 1. Four-Build Ecosystem Architecture
 
@@ -16,7 +16,7 @@
 └───────────────────────────────▲────────────────────────────────────────────┘
                                 │ cellulogonic_project_asmodensius_112()
 ┌───────────────────────────────┴────────────────────────────────────────────┐
-│ Build 2 · 3D CELLULAR ENGINE (CELLULOGONIC MECHA v1.3.0 — THIS REPOSITORY) │
+│ Build 2 · 3D CELLULAR ENGINE (CELLULOGONIC MECHA v1.5.0 — THIS REPOSITORY) │
 │ Continuous 3D Off-Lattice Fluid · Polymorphic Breathing · GHz Microtubules │
 │ 8-Species 19-Rxn Chemoton · Canham-Helfrich Bilayers · Mitchell Chemiosm.  │
 │ Nested Primary/Secondary Endosymbiosis · Levin Bioelectric 3D Colonies     │
@@ -34,7 +34,7 @@
 
 ## 2. Zero-Allocation 3D Off-Lattice Memory Layout (Clean-Slate `HW02` / `P10`)
 
-Every heap buffer is allocated once inside `cellulogonic_create()` via `calloc()`. During `cellulogonic_step_epochs()`, **zero dynamic allocations occur** (`post_warmup_allocs == 0`). Explicit zeroed alignment padding fields are enforced at compile time via `_Static_assert` (`sizeof(CellWorldConfig) == 48`, `sizeof(CellOrganelle) == 120`, `sizeof(CellEntity) == 1304`, `sizeof(CellVoxel) == 128`).
+Every heap buffer is allocated once inside `cellulogonic_create()` via `calloc()`. During `cellulogonic_step_epochs()`, **zero dynamic allocations occur** (`post_warmup_allocs == 0`, further audited at the link-symbol level via `llvm-nm`/`nm` verifying zero `malloc`/`calloc`/`realloc`/`free` imports in `chemoton_physics` and `cellular_world`). Explicit zeroed alignment padding fields are enforced at compile time via `_Static_assert` (`sizeof(CellWorldConfig) == 48`, `sizeof(CellOrganelle) == 120`, `sizeof(CellEntity) == 1304`, `sizeof(CellVoxel) == 128`, `sizeof(SnapshotHeader) == 320`). The fluid chemistry grid is a 2.5D column-averaged $W \times H$ voxel array coupled to continuous 3D $(x, y, z)$ off-lattice cells in $[0, W\cdot 1000)\times[0, H\cdot 1000)\times[0, W\cdot 1000)\,\text{nm}$.
 
 | Buffer | Type | Count | Purpose |
 |---|---|---|---|
@@ -45,7 +45,6 @@ Every heap buffer is allocated once inside `cellulogonic_create()` via `calloc()
 | `heat_delta` | `int64_t` | $W H$ | Exact conservative thermal diffusion accumulator |
 | `quorum_delta` | `int64_t` | $W H$ | Autoinducer & morphogen diffusion accumulator |
 | `vmem_delta` | `int32_t` | $W H$ | Exact conservative gap-junction voltage Laplacian buffer (`T32`) |
-| `bfs_queue` / `bfs_vis` | `uint32_t` / `uint8_t` | $W H$ | Preallocated scratch (read-only telemetry uses stack arrays so `P9` never mutates world!) |
 
 ---
 
@@ -120,9 +119,9 @@ Spatial finite-volume diffusion updates all 8 conserved species across toroidal 
 
 ---
 
-## 7. Observer Independence (`P9`), Complete `state_sha256`, `"CMB4"` `.cmbin` Snapshots (`P4`) & CSRF-Hardened Web API
+## 7. Observer Independence (`P9`), Complete `state_sha256`, `"CMB5"` `.cmbin` Snapshots (`P4`) & CSRF-Hardened Web API
 
-- **Strict Observer Independence (`P9`) & Complete State Hashing**: `cellulogonic_get_telemetry()`, `cellulogonic_state_sha256()`, `cellulogonic_inspect_slot()`, `cellulogonic_inspect_apex()`, and `cellulogonic_export_grid_json()` take strictly `const CellWorld*` and allocate zero heap memory (`G08` + Mutant `M4`). `cellulogonic_state_sha256()` hashes ALL mutable state across world config (`restraints[13]`, `photon_flux_uq`, feature flags, `next_lineage_id`), voxels (`free_plasmid`, `morph[3]`, `env[8]`, `heat_local_uq`, `quorum`), cells (`heading_q10`, `bond_partners`, `bond_mask`, `tf[8]`, axons, etc.), and organelles (`c_ring_nH`, `lipid_class`, `mt_genome`, `mol[8]`, `pmf`) while excluding `kernel_mode`.
-- **`"CMB4"` Binary Snapshot Validation**: `.cmbin` snapshots serialize `SnapshotHeader` (`magic = 0x434D4234 "CMB4"`, `abi_version = 0x00010300`), exact `voxels[]` and `cells[]`, and a 32-byte NIST FIPS 180-4 SHA-256 trailer. `cellulogonic_load_snapshot()` rejects any SHA mismatch, trailing EOF bytes, out-of-range fields (`regime > 5`, `restraints > 100`, molecules `< 0` or `> 10^12`, `pos_nm` outside `[0, span)`, invalid `lipid_class`/`c_ring_nH`/`cad_type`/`cleavage_mode`/`diff_role`/`num_bonds`/`radius_nm`), self-bonds, duplicate bonds, asymmetric bond graphs, self-axons, organelle count mismatch, or non-zero `cell_compute_ledger` mass/energy residual (`G06`, `G09`).
-- **4-Build Public ABI (`0x00010300`)**: Exports `CELL_API int cellulogonic_ingest_autophage_128b(CellWorld* w, const uint8_t dna128[128], uint32_t target_slot)` alongside `cellulogonic_ingest_autophage_genome()` using smooth Lipschitz-continuous operon decoding (SHA-256 strictly for `autophage_dna_sig`), and `cellulogonic_project_asmodensius_112()` encoding physiological, cytoskeletal, GHz microtubule, swim, and morphogenetic observables cleanly in `[0, 1]`.
-- **CSRF-Hardened Web Observatory (`web/server.mjs`)**: Binds strictly to `127.0.0.1`, accepts read-only `GET /api/state` and static assets, routes ALL mutations exclusively through `POST /api/cmd` (`Content-Type: application/json`, strict `Sec-Fetch-Site`, `X-Content-Type-Options: nosniff`, strict `CSP`, 64 KiB body cap with immediate socket destroy, 16-request queue cap `429`), and rejects legacy mutating `GET /api/init|step|action` with `405 Method Not Allowed`.
+- **Strict Observer Independence (`P9`) & Complete State Hashing**: `cellulogonic_get_telemetry()`, `cellulogonic_state_sha256()`, `cellulogonic_inspect_slot()`, `cellulogonic_inspect_apex()`, and `cellulogonic_export_grid_json()` take strictly `const CellWorld*` and allocate zero heap memory (`G08` + Mutant `M4`). `cellulogonic_state_sha256()` hashes ALL mutable state across world config (`restraints[13]`, `photon_flux_uq`, feature flags, `next_lineage_id`, all cumulative counters), voxels (`free_plasmid`, `morph[3]`, `env[8]`, `heat_local_uq`, `quorum`), cells (`heading_q10`, `bond_partners`, `bond_mask`, `tf[8]`, axons, etc.), and organelles (`c_ring_nH`, `lipid_class`, `mt_genome`, `mol[8]`, `pmf`) while excluding `kernel_mode` and `cpu_has_avx2`.
+- **`"CMB5"` Binary Snapshot Validation**: `.cmbin` snapshots serialize `SnapshotHeader` (`magic = 0x434D4235 "CMB5"`, `abi_version = 0x00010500`, `_Static_assert(sizeof(SnapshotHeader) == 320)`), exact `voxels[]` and `cells[]`, and a 32-byte NIST FIPS 180-4 SHA-256 trailer. `cellulogonic_load_snapshot()` rejects any SHA mismatch, trailing EOF bytes, non-zero explicit padding fields, out-of-range fields (`regime > 5`, `restraints > 100`, molecules `< 0` or `> 10^9`, `pos_nm` outside `[0, span)`, invalid `lipid_class`/`c_ring_nH`/`cad_type`/`cleavage_mode`/`diff_role`/`num_bonds`/`radius_nm`), self-bonds, duplicate bonds, asymmetric bond graphs, self-axons, organelle count mismatch, or non-zero `cell_compute_ledger` mass/energy residual (`G06`, `G09`, `G25`).
+- **4-Build Public ABI (`0x00010500`)**: Exports `CELL_API int cellulogonic_ingest_autophage_128b(CellWorld* w, const uint8_t dna128[128], uint32_t target_slot)` alongside `cellulogonic_ingest_autophage_genome()` using smooth Lipschitz-continuous operon decoding (SHA-256 strictly for `autophage_dna_sig`), and `cellulogonic_project_asmodensius_112()` encoding physiological, cytoskeletal, GHz microtubule, swim, and morphogenetic observables cleanly in `[0, 1]` (safe against extreme `INT32_MIN`/`INT32_MAX` inputs, `G25`).
+- **WCAG 2.2 AA & CSRF/DNS-Rebinding Hardened Web Observatory (`web/server.mjs`)**: Binds strictly to `127.0.0.1`, validates exact-port loopback `Host` and `Origin` across ALL static and API routes, exposes `GET /healthz` and read-only `GET /api/state`, routes ALL mutations exclusively through `POST /api/cmd` (`Content-Type: application/json`, strict `Sec-Fetch-Site`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cross-Origin-Resource-Policy: same-origin`, strict `CSP` with **zero `'unsafe-inline'`**, 64 KiB body cap with immediate socket destroy, Slowloris timeouts, 16-request queue cap `429`), rejects legacy mutating `GET /api/init|step|action` with `405 Method Not Allowed`, and is verified by `test/test_web_server.mjs` (`12/12` PASS).

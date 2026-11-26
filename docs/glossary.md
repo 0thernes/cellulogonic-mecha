@@ -28,4 +28,4 @@ Every audit, review, or issue finding in this repository is classified into **ex
 - **COVI (Cellular Omega Vitality Index):** Model-internal 8-pillar composite indicator gated multiplicatively on active metabolism, heritable templates, and active catalysts (`T34`–`T35`).
 - **Eutely:** Fixed adult somatic cell count enforced by lineage countdown budgets $\sum 2^{\mathrm{rem}(c)} \le N_0 2^{d_0}$ (`T54`) and Hippo TF7 contact inhibition (`T55`).
 - **Palomar Comparator Contract:** Isolated `Spec.lean` (pure defs) + `Challenge.lean` (statement-only `sorry`) + `Solution.lean` (sorry-free proofs) checked across 6 independent Lean 4.35.0 kernels.
-- **`"CMB4"` `.cmbin` Snapshot:** Authenticated binary world-state serialization appending a NIST FIPS 180-4 SHA-256 integrity trailer verified alongside bounds, bond-symmetry, no-trailing-EOF, and zero-residual ledger checks.
+- **`"CMB5"` `.cmbin` Snapshot:** Authenticated binary world-state serialization appending a NIST FIPS 180-4 SHA-256 integrity trailer verified alongside zero-padding (`_Static_assert`), bounds, bond-symmetry, no-trailing-EOF, and zero-residual ledger checks.

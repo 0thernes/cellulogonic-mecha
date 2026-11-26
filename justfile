@@ -18,38 +18,45 @@ build:
 build:
     .\build.ps1
 
-# Run native 26-gate falsification suite + 1,000-case ABI fuzz + 2,700 randomized property checks
+# Run native 26-gate falsification suite + 1,000-case ABI fuzz + Python oracle + 2,700 property checks + 12 Web tests
 [unix]
 test:
     ./bin/test_falsification_linux
     ./bin/fuzz_cmbin_abi_linux 1000
-    python3 scripts/prop_check.py
+    PYTHONDONTWRITEBYTECODE=1 python3 scripts/verify_oracle_and_stats.py
+    PYTHONDONTWRITEBYTECODE=1 python3 scripts/prop_check.py
+    PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_versions.py
+    node test/test_web_server.mjs
 
 [windows]
 test:
     .\bin\test_falsification.exe
     .\bin\fuzz_cmbin_abi.exe 1000
-    python3 scripts/prop_check.py
+    python scripts/prop_check.py
+    python scripts/check_versions.py
+    node test/test_web_server.mjs
 
-# Compile and run C11 falsification suite with ASan + UBSan sanitizers (Linux/macOS, B16)
+# Compile and run C11 falsification & fuzzer under ASan + UBSan + AVX2 (Linux/macOS, B16)
 [unix]
 sanitize:
-    gcc -O1 -g -std=c11 -Wall -Wextra -Wno-unused-parameter -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+    gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+    gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
     ./bin/test_falsification_asan
-    rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan
+    ./bin/fuzz_cmbin_abi_asan 500
+    rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan bin/fuzz_cmbin_abi_asan
 
-# Build libFuzzer harness for binary "CMB4" .cmbin snapshot parser (Clang Linux, B15)
+# Build dual-mode libFuzzer harness for binary "CMB5" .cmbin snapshot parser & ABI (Clang Linux, B15)
 [unix]
 fuzz:
-    clang -O1 -g -std=c11 -fsanitize=fuzzer,address,undefined -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin.c -o bin/fuzz_cmbin -lm
-    ./bin/fuzz_cmbin -max_total_time=15
+    clang -O1 -g -std=c11 -DCELLULOGONIC_LIBFUZZER -fsanitize=fuzzer,address,undefined -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_libfuzzer -lm
+    ./bin/fuzz_cmbin_abi_libfuzzer -max_total_time=15
 
 # Report-only static analysis and linter pass (B17)
 [unix]
 lint:
     command -v cppcheck >/dev/null && cppcheck --enable=warning,style --quiet -Iinclude src/ test/ || true
     command -v clang-tidy >/dev/null && clang-tidy src/*.c -- -std=c11 -Iinclude || true
-    command -v ruff >/dev/null && ruff check scripts/ examples/ || true
+    command -v ruff >/dev/null && ruff check scripts/ examples/ reference/ || true
 
 # Build Pure Lean 4.35.0 suite (Solution + Challenge) and audit verbatim axioms
 lean:

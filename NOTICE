@@ -13,7 +13,7 @@ Dual Open License:
 Third-Party Runtime Dependencies:
   NONE. The CELLULOGONIC MECHA C11 cellular engine, AVX2/SIMD and scalar kernels,
   Philox4x32-10 PRNG, NIST FIPS 180-4 SHA-256 hasher, exact integer thermodynamic
-  ledger, 24-gate falsification suite, WebGL2 3D Cellular Observatory, and local
+  ledger, 26-gate falsification suite, WebGL2 3D Cellular Observatory, and local
   Node.js HTTP server contain ZERO third-party npm packages or vendored libraries.
 
 External Toolchains Used for Compilation, Formal Checking & Typesetting (not vendored):

@@ -1,4 +1,4 @@
-name: CELLULOGONIC MECHA CI — Cross-OS C11, 6-Kernel Lean 4.35, Paper & Security
+name: CELLULOGONIC MECHA CI — Cross-OS C11, 6-Kernel Lean 4.35, Web, Paper & Security
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   native-c11-matrix:
-    name: C11 Build, 26 Gates, 8 Mutants, Fuzz & Property Checks (${{ matrix.os }})
+    name: C11 Build, 26 Gates, 8 Mutants, Fuzz, Oracle & Web Tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -22,31 +22,54 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
-      - name: Build Linux ELF64, 26-Gate Falsification, 1000-Case Fuzz, Parity & ASan/UBSan
+      - name: Build Linux ELF64, 26-Gate Falsification, 1000-Case Fuzz, Oracle, Web Bridge & ASan/UBSan+AVX2
         if: matrix.os == 'ubuntu-latest'
         run: |
           chmod +x build_linux.sh
           SKIP_LEAN=1 ./build_linux.sh
           ./bin/cellulogonic_linux bench --epochs 300 --size 32 --seed 5000
           ./bin/cellulogonic_linux embryo --epochs 200 --size 32 --seed 5000
-          python3 scripts/prop_check.py
-          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/verify_oracle_and_stats.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/prop_check.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_versions.py
+          node --check web/server.mjs && node --check web/app.js && node --check web/renderer3d.js
+          node test/test_web_server.mjs
+          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
           ./bin/test_falsification_asan
-          rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan
-      - name: Build Win64 PE64 & Run 26-Gate Falsification + 1000-Case ABI Fuzz Suite
+          ./bin/fuzz_cmbin_abi_asan 500
+          rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan bin/fuzz_cmbin_abi_asan
+      - name: Build Win64 PE64 & Run 26-Gate Falsification + 1000-Case ABI Fuzz + Web Bridge + Oracle
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          $flags = @('-O3','-std=c11','-Wall','-Wextra','-Wshadow','-Wstrict-prototypes','-Wconversion','-Wno-unused-parameter','-Werror','-ffp-contract=off','-Iinclude')
+          New-Item -ItemType Directory -Force -Path bin | Out-Null
+          $flags = @('-O3','-std=c11','-Wall','-Wextra','-Wshadow','-Wstrict-prototypes','-Wconversion','-Wno-unused-parameter','-Werror','-ffp-contract=off','-march=x86-64-v3','-Iinclude')
           $core = @('src/crypto_rng.c','src/chemoton_physics.c','src/cellular_world.c','src/metrology_covi.c','src/abi_exports.c')
+          gcc @flags @core src/main_cli.c -o bin/cellulogonic.exe -lm
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           gcc @flags @core test/test_falsification.c -o bin/test_falsification_ci.exe -lm
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           gcc @flags @core test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_ci.exe -lm
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           gcc @flags @core examples/quickstart_c_abi.c -o bin/quickstart_c_abi_ci.exe -lm
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           .\bin\test_falsification_ci.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           .\bin\fuzz_cmbin_abi_ci.exe 1000
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           .\bin\quickstart_c_abi_ci.exe
-          Remove-Item -Force -ErrorAction SilentlyContinue test_tmp_cell.cmbin, test_tamper_tmp.cmbin, bin\test_falsification_ci.exe, bin\fuzz_cmbin_abi_ci.exe, bin\quickstart_c_abi_ci.exe
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $env:PYTHONDONTWRITEBYTECODE = "1"
+          python scripts/verify_oracle_and_stats.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/prop_check.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python scripts/check_versions.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node test/test_web_server.mjs
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Remove-Item -Force -ErrorAction SilentlyContinue test_tmp_cell.cmbin, test_tamper_tmp.cmbin, bin\test_falsification_ci.exe, bin\fuzz_cmbin_abi_ci.exe, bin\quickstart_c_abi_ci.exe
 
   lean4-six-kernel:
     name: Pure Lean 4.35.0 — 70 Theorems & 6-Kernel Palomar Comparator
@@ -62,15 +85,15 @@ jobs:
       - name: Build Solution + Challenge, Verify Axioms & README Verbatim Parity
         working-directory: lean
         run: |
+          set -o pipefail
           lake build
           lake build Challenge
-          lake env lean VerifyAxioms.lean > /tmp/lean4-audit.txt
-          cat /tmp/lean4-audit.txt
+          lake env lean VerifyAxioms.lean 2>&1 | tee /tmp/lean4-audit.txt
           COUNT=$(grep -cE "depends on axioms:|does not depend on any axioms" /tmp/lean4-audit.txt)
           echo "Audited theorem count: $COUNT"
           test "$COUNT" -eq 70
-          if grep -E "sorryAx|ofReduceBool|trustCompiler|_native" /tmp/lean4-audit.txt; then
-            echo "FORBIDDEN AXIOM DETECTED" >&2
+          if grep -iE "\bwarning\b|\berror\b|sorryAx|ofReduceBool|trustCompiler|_native" /tmp/lean4-audit.txt; then
+            echo "FORBIDDEN AXIOM OR WARNING DETECTED" >&2
             exit 1
           fi
           cd ..

@@ -101,11 +101,18 @@ uint64_t cell_hw_rdseed_u64(void) {
  * ============================================================================ */
 
 double cell_wall_seconds(void) {
-#if defined(_WIN32)
+#if defined(_WIN32) && defined(CELLULOGONIC_BARE_WIN64)
     int64_t cnt = 0, freq = 1;
     QueryPerformanceCounter(&cnt);
     QueryPerformanceFrequency(&freq);
     return (double)cnt / (double)(freq > 0 ? freq : 1);
+#elif defined(_WIN32)
+    LARGE_INTEGER cnt, freq;
+    cnt.QuadPart = 0;
+    freq.QuadPart = 1;
+    QueryPerformanceCounter(&cnt);
+    QueryPerformanceFrequency(&freq);
+    return (double)cnt.QuadPart / (double)(freq.QuadPart > 0 ? freq.QuadPart : 1);
 #else
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
