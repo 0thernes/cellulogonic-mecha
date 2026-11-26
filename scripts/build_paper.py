@@ -59,7 +59,10 @@ def main() -> None:
     log_txt = (build_dir / "main.log").read_text(encoding="utf-8", errors="replace")
     bad_lines = [
         ln for ln in log_txt.splitlines()
-        if re.search(r"Overfull \\hbox|LaTeX Warning: Reference|LaTeX Warning: Citation|Missing character", ln)
+        if re.search(
+            r"Overfull \\hbox|Overfull \\vbox|LaTeX Warning: Reference|LaTeX Warning: Citation|LaTeX Warning: Label|Missing character",
+            ln,
+        )
     ]
     if bad_lines:
         print(f"WARNING: Found {len(bad_lines)} TeX log issues:", file=sys.stderr)
@@ -107,7 +110,10 @@ def main() -> None:
     tmp = Path(tempfile.mkdtemp(prefix="arxiv_clean_"))
     try:
         with tarfile.open(arxiv_gz, "r:gz") as tf:
-            tf.extractall(tmp, filter="data")
+            if sys.version_info >= (3, 12):
+                tf.extractall(tmp, filter="data")
+            else:
+                tf.extractall(tmp)
         cres = subprocess.run([tectonic, "-X", "compile", "main.tex"], cwd=tmp, capture_output=True, text=True, check=False)
         if cres.returncode != 0:
             print("FAIL: Clean-room arXiv compilation failed:\n" + cres.stderr, file=sys.stderr)

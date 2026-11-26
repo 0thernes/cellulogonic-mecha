@@ -30,9 +30,9 @@ $core = @(
 )
 
 $archFlags = if ($Native) {
-    @("-march=native", "-mavx2", "-mbmi", "-mbmi2", "-mpopcnt")
+    @("-march=native")
 } else {
-    @("-march=x86-64-v3")
+    @("-march=x86-64")
 }
 
 $cflags = @(
@@ -50,7 +50,7 @@ $lto = @("-flto=thin")
 $ldflags = @("-L$root\lib", "-fuse-ld=lld")
 $libs    = @("-lkernel32", "-lucrtbase", "-lm", "-lmingw32", "-lmingwex")
 
-Write-Host "[1/6] Building bin\cellulogonic.exe (Win64 x86-64-v3 + ThinLTO, -Werror) ..."
+Write-Host "[1/6] Building bin\cellulogonic.exe (Win64 portable x86-64 + runtime AVX2 dispatch + ThinLTO, -Werror) ..."
 & $clang @cflags @lto @core "$proj\src\main_cli.c" -o "$proj\bin\cellulogonic.exe" @ldflags @libs
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -78,13 +78,13 @@ if (Test-Path -LiteralPath $ar) {
         $objs += $obj
     }
     if (Test-Path -LiteralPath $nm) {
-        foreach ($hot in @("$proj\bin\chemoton_physics.o", "$proj\bin\cellular_world.o")) {
+        foreach ($hot in @("$proj\bin\chemoton_physics.o", "$proj\bin\cellular_world.o", "$proj\bin\metrology_covi.o")) {
             $syms = (& $nm -u $hot | Out-String)
             if ($syms -match "\b(malloc|calloc|realloc|free)\b") {
                 throw "HOT-LOOP HEAP ALLOCATION VIOLATION: $(Split-Path -Leaf $hot) references dynamic allocator symbols!"
             }
         }
-        Write-Host "  [PASS] Hot-loop symbol audit: chemoton_physics.o & cellular_world.o have ZERO malloc/calloc/realloc/free imports."
+        Write-Host "  [PASS] Hot-loop symbol audit: chemoton_physics.o, cellular_world.o & metrology_covi.o have ZERO malloc/calloc/realloc/free imports."
     }
     & $ar rcs "$proj\bin\libcellulogonic.a" @objs
     Remove-Item -Force -LiteralPath $objs
@@ -129,8 +129,8 @@ if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
     }
     $allowed = @("propext", "Classical.choice", "Quot.sound")
     $theoremMatches = [regex]::Matches($auditText, "'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])")
-    if ($theoremMatches.Count -lt 70) {
-        throw "Expected >= 70 audited Lean 4 theorems, found $($theoremMatches.Count)"
+    if ($theoremMatches.Count -lt 78) {
+        throw "Expected >= 78 audited Lean 4 theorems, found $($theoremMatches.Count)"
     }
     foreach ($m in $theoremMatches) {
         if ($m.Groups[3].Success) {
@@ -147,4 +147,4 @@ if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
     Write-Host "Lean 4.35.0 Formal Verification PASSED ($($theoremMatches.Count) audited theorems, 0 sorryAx, strictly within {propext, Classical.choice, Quot.sound}, 0 warnings)!"
 }
 
-Write-Host "`nCELLULOGONIC MECHA v1.5.0 BUILD & VERIFICATION COMPLETE."
+Write-Host "`nCELLULOGONIC MECHA v1.6.0 BUILD & VERIFICATION COMPLETE."

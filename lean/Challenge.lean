@@ -3,10 +3,10 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-# CELLULOGONIC MECHA v1.5.0 — Isolated Statement-Only Challenge Specification (`Challenge.lean`)
+# CELLULOGONIC MECHA v1.6.0 — Isolated Statement-Only Challenge Specification (`Challenge.lean`)
 
 Imports ONLY `CellulogonicProofs.Spec` (pure mathematical definitions, ZERO proofs, ZERO `sorry`)
-and NONE of the nine proof modules.
+and NONE of the ten proof modules.
 
 Every `sorry` in this file is intentional — matched strictly against sorry-free `Solution.lean`
 across all 6 independent Lean 4.35.0 kernels via:
@@ -35,6 +35,8 @@ public theorem T05_respiration_quadruples_fermentation_yield :
     (stoich .R1_catab .S + stoich .R2_pump .S + 2 * stoich .R3_atp_synth .S = -1) ∧
     (stoich .R1_catab .E + stoich .R2_pump .E + 2 * stoich .R3_atp_synth .E = 2) ∧
     (dPmf .Terran 3 .R1_catab + dPmf .Terran 3 .R2_pump + 2 * dPmf .Terran 3 .R3_atp_synth = 0) ∧
+    (dPmf .Hydrothermal 3 .R1_catab + dPmf .Hydrothermal 3 .R2_pump + 2 * dPmf .Hydrothermal 3 .R3_atp_synth = 0) ∧
+    (dPmf .Venus 2 .R1_catab + dPmf .Venus 2 .R2_pump + 2 * dPmf .Venus 2 .R3_atp_synth = 0) ∧
     (stoich .R4_ferment .S = -2) ∧
     (stoich .R4_ferment .E = 1) := by sorry
 
@@ -444,3 +446,44 @@ public theorem NV08_continuum_biomechanics_nonvacuous_witness :
     (5 : Int) * (-3) * (-3) = 45 := by sorry
 
 end Cellulogonic.NonVacuity
+
+-- ============================================================================
+-- MODULE 10: ADVERSARIAL FALSE-VARIANT REFUTATIONS (AT01–AT08)
+-- ============================================================================
+namespace Cellulogonic.AdversarialTests
+open Cellulogonic.StoichiometryThermo
+open Cellulogonic.MembraneGeometry
+open Cellulogonic.BioenergeticsEndosymbiosis
+open Cellulogonic.ChemiosmosisAutopoiesis
+open Cellulogonic.EutelicOrganogenesis
+open Cellulogonic.CytoskeletonNanomechanics
+open Cellulogonic.MorphogeneticGRN
+open Cellulogonic.ContinuumBiomechanics
+
+public theorem AT01_refute_titan_cring3_second_law :
+    ¬ (∀ (sv : Solvent) (nH : Int), nH ≥ 3 → ∀ r : RxnId, qHeat sv nH r > 0) := by sorry
+
+public theorem AT02_refute_universal_symmetric_fission :
+    ¬ (∀ V L : Nat, IsIntact V L → CanSymmetricFission V L) := by sorry
+
+public theorem AT03_refute_unbounded_prokaryotic_radius :
+    ¬ (∀ R : Nat, R > 0 → prokPower 1 R > maintCost 1 R) := by sorry
+
+public theorem AT04_refute_passive_gap_junction_energy_increase :
+    ¬ (∃ Vi Vj d : Int, 0 ≤ d ∧ 2 * d ≤ Vi - Vj ∧
+        (Vi - d) * (Vi - d) + (Vj + d) * (Vj + d) > Vi * Vi + Vj * Vj) := by sorry
+
+public theorem AT05_refute_sub3_lumen_and_unvitrified_decay_drop :
+    ¬ (EnclosesLumen 2) ∧ ¬ (effectiveDecay 100 10 false < 100) := by sorry
+
+public theorem AT06_refute_starved_frohlich_coherence_growth :
+    ¬ (∃ coh sPump sCrit : Nat, coh ≤ 1000 ∧ sPump ≤ sCrit ∧ frohlichStep coh sPump sCrit > coh) := by sorry
+
+public theorem AT07_refute_overbudget_eutelic_population :
+    ¬ (∃ pop : List Nat, EutelicTrace [3] pop ∧ pop.length > 8) := by sorry
+
+public theorem AT08_refute_negative_biotensegrity_or_carcass_mass_loss :
+    ¬ (∃ k dx : Int, k ≥ 0 ∧ k * dx * dx < 0) ∧
+    ¬ (∃ L : EcoMassLedger, (carcassDeathTransfer L).totalMass ≠ L.totalMass) := by sorry
+
+end Cellulogonic.AdversarialTests

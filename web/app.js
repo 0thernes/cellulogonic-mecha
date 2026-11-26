@@ -1,10 +1,17 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
- * CELLULOGONIC MECHA v1.5.0 — Observatory Controller (Serialized Queue, Zero Unsafe-Inline, WebGL2 Fallback)
+ * CELLULOGONIC MECHA v1.6.0 — Observatory Controller (Serialized Queue, Zero Unsafe-Inline, WebGL2 Fallback)
  */
 import { CellMicroscope3D } from "./renderer3d.js";
 
 const $ = (id) => document.getElementById(id);
+
+function announce(msg) {
+  const sr = $("sr-announcements");
+  if (!sr) return;
+  sr.textContent = "";
+  queueMicrotask(() => { sr.textContent = msg; });
+}
 
 const PILLAR_NAMES = [
   "P0 Autopoiesis & Survival",
@@ -32,6 +39,7 @@ try {
   scope = new CellMicroscope3D($("gl-canvas"), $("hud-canvas"), $("stage-wrap"));
   if (prefersReducedMotion) {
     scope.autoOrbit = false;
+    scope.reducedMotion = true;
     $("chk-orbit").checked = false;
   }
 } catch (err) {
@@ -47,19 +55,22 @@ const asmoCtx = asmoCanvas.getContext("2d");
 
 /* Cached canvas CSS sizes updated via ResizeObserver (zero 60 FPS layout thrashing) */
 const canvasSizes = new WeakMap();
+let panelRo = null;
 if (typeof ResizeObserver === "function") {
-  const ro = new ResizeObserver((entries) => {
+  panelRo = new ResizeObserver((entries) => {
     for (const entry of entries) {
       const cr = entry.contentRect;
       canvasSizes.set(entry.target, { width: cr.width, height: cr.height });
     }
   });
-  ro.observe(scopeCanvas);
-  ro.observe(asmoCanvas);
+  panelRo.observe(scopeCanvas);
+  panelRo.observe(asmoCanvas);
 }
 
 let playing = true;
 let latestData = null;
+let lastDetSeed = "5000";
+let lastScopeEpoch = -1;
 const scopeHist = [];
 const restVec = new Array(13).fill(0);
 
@@ -241,7 +252,9 @@ function enqueueCmd(payload, { isStep = false, onSuccess = null, errPrefix = "Co
         if (onSuccess) onSuccess(data);
       }
     } catch (e) {
-      $("vp-status").textContent = `${errPrefix} error: ${e.message}`;
+      const errMsg = `${errPrefix} error: ${e.message}`;
+      $("vp-status").textContent = errMsg;
+      announce(errMsg);
     } finally {
       if (isStep) stepPending = false;
     }
@@ -279,21 +292,32 @@ function applyData(data) {
 }
 
 function initWorld(forceFeral = false) {
-  if (forceFeral) $("inp-seed").value = "0";
+  if (forceFeral) {
+    const curVal = Number($("inp-seed").value);
+    if (curVal > 0) lastDetSeed = String(curVal);
+    $("inp-seed").value = "0";
+  } else {
+    const curVal = Number($("inp-seed").value);
+    if (curVal > 0) lastDetSeed = String(curVal);
+  }
   const regime = Number($("sel-regime").value);
   const solvent = Number($("sel-solvent").value);
   const seed = Number($("inp-seed").value);
   const rest = Number($("rng-rest").value);
   const warm = regime === 5 ? 28 : (regime === 0 ? 48 : 80);
   scopeHist.length = 0;
+  lastScopeEpoch = -1;
   syncRest13Sliders(rest);
-  $("vp-status").textContent = seed === 0 ? "Seeding from hardware RDSEED/entropy..." : "Initializing 3D specimen...";
+  const initMsg = seed === 0 ? "Seeding from hardware RDSEED/entropy..." : "Initializing 3D specimen...";
+  $("vp-status").textContent = initMsg;
+  announce(initMsg);
   return enqueueCmd(
     { op: "init", regime, solvent, seed, restraint: rest, warmup: warm },
     {
       errPrefix: "Init",
-      onSuccess: () => {
+      onSuccess: (data) => {
         if (scope && regime === 5) scope.dist = 18.5;
+        announce(`Specimen ready at epoch ${data.telemetry.epoch} with ${data.telemetry.alive} living cells.`);
       }
     }
   );
@@ -494,6 +518,7 @@ $("btn-play").addEventListener("click", () => {
 $("btn-embryo").addEventListener("click", () => {
   $("sel-regime").value = "5";
   $("sel-layer").value = "fates";
+  if (Number($("inp-seed").value) === 0) $("inp-seed").value = lastDetSeed || "5000";
   if (scope) scope.layer = "fates";
   initWorld(false);
 });
@@ -514,10 +539,13 @@ $("btn-autophage").addEventListener("click", () => {
 $("btn-ap-hex").addEventListener("click", () => {
   const hex = String($("inp-ap-hex").value || "").trim();
   if (hex.length % 2 !== 0 || !/^[0-9a-fA-F]{64,256}$/.test(hex)) {
-    $("vp-status").textContent = "Invalid DNA hex: enter an even number (64–256) of hexadecimal characters";
+    const errMsg = "Invalid DNA hex: enter an even number (64–256) of hexadecimal characters";
+    $("vp-status").textContent = errMsg;
+    announce(errMsg);
     return;
   }
   doCmd({ op: "autophage_dna", hex });
+  announce("AUTOPHAGE DNA transfected.");
 });
 $("btn-focus").addEventListener("click", () => { if (scope) scope.focusApex(); });
 $("btn-cam").addEventListener("click", () => { if (scope) scope.resetCamera(); });
@@ -528,9 +556,9 @@ $("chk-mt").addEventListener("change", (e) => { if (scope) scope.showMicrotubule
 $("chk-flag").addEventListener("change", (e) => { if (scope) scope.showFlagella = e.target.checked; });
 $("chk-glyph").addEventListener("change", (e) => { if (scope) scope.showGlyphs = e.target.checked; });
 
-$("btn-tun").addEventListener("click", () => doCmd({ op: "tun" }));
-$("btn-shock").addEventListener("click", () => doCmd({ op: "shock" }));
-$("btn-rehyd").addEventListener("click", () => doCmd({ op: "rehydrate" }));
+$("btn-tun").addEventListener("click", () => { doCmd({ op: "tun" }); announce("92% desiccation tun triggered."); });
+$("btn-shock").addEventListener("click", () => { doCmd({ op: "shock" }); announce("90% shock lysis triggered."); });
+$("btn-rehyd").addEventListener("click", () => { doCmd({ op: "rehydrate" }); announce("Tun rehydration triggered."); });
 
 const setRest = (v) => {
   $("rng-rest").value = String(v);
@@ -552,15 +580,29 @@ $("btn-r0").addEventListener("click", () => setRest(0));
 $("btn-r50").addEventListener("click", () => setRest(50));
 $("btn-r100").addEventListener("click", () => setRest(100));
 
+let rafId = 0;
+let stepTimerId = 0;
+
 function rafLoop(now) {
   if (!document.hidden) {
     if (scope) scope.render(now);
-    drawGHzOscilloscope();
+    const ep = latestData?.telemetry?.epoch ?? -1;
+    if (ep !== lastScopeEpoch) {
+      lastScopeEpoch = ep;
+      drawGHzOscilloscope();
+    }
   }
-  requestAnimationFrame(rafLoop);
+  rafId = requestAnimationFrame(rafLoop);
 }
-requestAnimationFrame(rafLoop);
+rafId = requestAnimationFrame(rafLoop);
 
 initWorld(false).then(() => {
-  setInterval(stepWorld, 110);
+  stepTimerId = setInterval(stepWorld, 110);
+});
+
+window.addEventListener("pagehide", () => {
+  if (rafId) cancelAnimationFrame(rafId);
+  if (stepTimerId) clearInterval(stepTimerId);
+  if (panelRo) panelRo.disconnect();
+  if (scope) scope.dispose();
 });

@@ -1,4 +1,11 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #include "cellulogonic_internal.h"
+
+#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
+#  error "CMB5 binary snapshot format requires little-endian byte order (compile-time guard F-04)"
+#endif
 
 /* ============================================================================
  * Flat C11 Exported Public ABI, Canonical Observer-Independent SHA-256 (P9),
@@ -17,7 +24,7 @@ CELL_API void cellulogonic_default_config(CellWorldConfig* out_cfg) {
     out_cfg->regime                = CELL_REGIME_FERAL_ECOSYSTEM;
     out_cfg->solvent               = CELL_SOLVENT_TERRAN_H2O;
     out_cfg->kernel_mode           = CELL_KERNEL_SIMD_AVX2;
-    out_cfg->photon_flux_uq        = 572u;
+    out_cfg->photon_flux_uq        = 800u;
     out_cfg->seed                  = 5000ULL;
     out_cfg->enable_endosymbiosis  = 1u;
     out_cfg->enable_bioelectricity = 1u;
@@ -59,12 +66,13 @@ CELL_API CellWorld* cellulogonic_create(const CellWorldConfig* cfg) {
     w->quorum_delta = (int64_t*)calloc(w->num_slots, sizeof(int64_t));
     w->morph_delta  = (int32_t*)calloc((size_t)w->num_slots * CELL_MORPH_AXES, sizeof(int32_t));
     w->vmem_delta   = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
-    w->hash_head    = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
-    w->hash_next    = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
+    w->hash_head     = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
+    w->hash_next     = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
+    w->photon_rem_uq = (int64_t*)calloc(w->num_slots, sizeof(int64_t));
 
     if (!w->voxels || !w->cells || !w->diff_delta || !w->heat_delta ||
         !w->quorum_delta || !w->morph_delta || !w->vmem_delta ||
-        !w->hash_head || !w->hash_next) {
+        !w->hash_head || !w->hash_next || !w->photon_rem_uq) {
         cellulogonic_destroy(w);
         return NULL;
     }
@@ -85,6 +93,7 @@ CELL_API void cellulogonic_destroy(CellWorld* w) {
     free(w->vmem_delta);
     free(w->hash_head);
     free(w->hash_next);
+    free(w->photon_rem_uq);
     free(w);
 }
 
@@ -471,6 +480,8 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
     FILE* f = fopen(path, "rb");
     if (!f) return NULL;
 
+    /* Safe upper bound (10^15, >9000x below INT64_MAX) prevents signed overflow UB on resume (F-01) */
+    const int64_t MAX_LEDGER_ACCUM = 1000000000000000LL;
     SnapshotHeader hdr;
     if (fread(&hdr, sizeof(hdr), 1, f) != 1 ||
         hdr.magic != CELL_SNAPSHOT_MAGIC ||
@@ -487,9 +498,11 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         hdr.cfg.enable_bioelectricity > 1u ||
         hdr.cfg.enable_hgt_phages > 1u ||
         hdr.num_slots != hdr.cfg.width * hdr.cfg.height ||
-        hdr.mass_initial_amu < 0 || hdr.e_initial_uq < 0 ||
-        hdr.e_inflow_cum_uq < 0 || hdr.e_export_cum_uq < 0 ||
-        hdr.e_heat_radiated_sink_uq < 0) {
+        hdr.mass_initial_amu < 0 || hdr.mass_initial_amu > MAX_LEDGER_ACCUM ||
+        hdr.e_initial_uq < 0 || hdr.e_initial_uq > MAX_LEDGER_ACCUM ||
+        hdr.e_inflow_cum_uq < 0 || hdr.e_inflow_cum_uq > MAX_LEDGER_ACCUM ||
+        hdr.e_export_cum_uq < 0 || hdr.e_export_cum_uq > MAX_LEDGER_ACCUM ||
+        hdr.e_heat_radiated_sink_uq < 0 || hdr.e_heat_radiated_sink_uq > MAX_LEDGER_ACCUM) {
         fclose(f);
         return NULL;
     }
@@ -576,12 +589,24 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
                 if (c->axon_target[a] != -1 || c->axon_weight[a] != 0u) { cellulogonic_destroy(w); return NULL; }
             }
             for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
-                if (c->org[k].active != 0u || c->org[k].pmf != 0) { cellulogonic_destroy(w); return NULL; }
+                if (c->org[k].active != 0u || c->org[k].pmf != 0 ||
+                    c->org[k].pad != 0u || c->org[k].pad2 != 0u) {
+                    cellulogonic_destroy(w);
+                    return NULL;
+                }
                 for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
                     if (c->org[k].mol[s] != 0) { cellulogonic_destroy(w); return NULL; }
                 }
             }
             continue;
+        }
+
+        /* Verify genotype -> phenotype sync for lipid_class & c_ring_nH (F-05) */
+        CellEntity tmp_chk = *c;
+        cell_decode_genome_traits(&tmp_chk);
+        if (tmp_chk.lipid_class != c->lipid_class || tmp_chk.c_ring_nH != c->c_ring_nH) {
+            cellulogonic_destroy(w);
+            return NULL;
         }
 
         if (c->lipid_class >= CELL_SOLVENT_COUNT ||
@@ -649,13 +674,16 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         }
         if (org_active != c->num_organelles) { cellulogonic_destroy(w); return NULL; }
 
-        /* Bonds: bounds, no self-bonds, no duplicates, active partner, exact symmetry */
+        /* Bonds: only active (alive_state==1) cells may hold bonds; bounds, no self/dup, exact symmetry (F-05) */
         uint8_t bond_cnt = 0u;
         for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
             int16_t pj = c->bond_partners[b];
             if (pj < -1 || pj >= (int16_t)w->num_slots) { cellulogonic_destroy(w); return NULL; }
             if (pj < 0) continue;
-            if (pj == (int16_t)i || w->cells[pj].alive_state == 0u) { cellulogonic_destroy(w); return NULL; }
+            if (c->alive_state != 1u || pj == (int16_t)i || w->cells[pj].alive_state != 1u) {
+                cellulogonic_destroy(w);
+                return NULL;
+            }
             for (uint32_t b2 = 0; b2 < b; ++b2) {
                 if (c->bond_partners[b2] == pj) { cellulogonic_destroy(w); return NULL; }
             }
@@ -668,7 +696,7 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         }
         if (bond_cnt != c->num_bonds) { cellulogonic_destroy(w); return NULL; }
 
-        /* Axons: bounds, no self-axons, no duplicate targets, live target, 0 weight when unwired */
+        /* Axons: only active neural cells may wire axons to active targets; 0 weight when unwired (F-05) */
         for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
             int16_t tj = c->axon_target[a];
             if (tj < -1 || tj >= (int16_t)w->num_slots) { cellulogonic_destroy(w); return NULL; }
@@ -676,7 +704,11 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
                 if (c->axon_weight[a] != 0u) { cellulogonic_destroy(w); return NULL; }
                 continue;
             }
-            if (tj == (int16_t)i || w->cells[tj].alive_state == 0u) { cellulogonic_destroy(w); return NULL; }
+            if (c->alive_state != 1u || c->morph_fate != CELL_FATE_NEURAL ||
+                tj == (int16_t)i || w->cells[tj].alive_state != 1u) {
+                cellulogonic_destroy(w);
+                return NULL;
+            }
             for (uint32_t a2 = 0; a2 < a; ++a2) {
                 if (c->axon_target[a2] == tj) { cellulogonic_destroy(w); return NULL; }
             }

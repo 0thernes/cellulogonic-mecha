@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
@@ -214,8 +217,8 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
         if (c->mol[CELL_SP_P] > 0 && leff >= 4) active_catalysts++;
 
         if (c->lipid_class == sp->optimal_lipid) out->solvent_adapted_cells++;
-        if (c->genome[56] > 125) out->autotroph_cells++;
-        if (c->c_ring_nH >= sp->min_cring && c->genome[8] > 80) out->respiratory_cells++;
+        if (c->alive_state == 1 && c->genome[56] > 125) out->autotroph_cells++;
+        if (c->alive_state == 1 && c->c_ring_nH >= sp->min_cring && c->genome[8] > 80) out->respiratory_cells++;
 
         /* Organelle & Eukaryogenesis Accounting */
         uint32_t org_here = 0, coop_here = 0, sec_here = 0;

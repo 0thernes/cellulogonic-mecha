@@ -1,34 +1,26 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/v0.4.schema.json
 # SPDX-License-Identifier: Apache-2.0
 version: "v0.4"
-release_version: "1.5.0"
 
 project:
-  name: "CELLULOGONIC MECHA Formal Verification Suite (CellulogonicProofs)"
+  name: "CELLULOGONIC MECHA Formal Verification Suite (CellulogonicProofs v1.6.0)"
   description: >-
-    Zero-Mathlib Lean 4.35.0 formalization of 70 audited theorems (62 core discrete
-    biophysical invariants T01-T58 & C59-C62 across 8 modules plus 8 concrete
-    NonVacuity and sharp negative-boundary witnesses NV01-NV08) certifying exact
-    4-solvent 19-reaction Chemoton mass/First-Law/strict-Second-Law thermodynamics,
-    discrete Canham-Helfrich elastic bilayer fission and the sextic Global Minimax
-    Theorem of Vesicle Division, Nick Lane's 1/R prokaryotic ceiling and endosymbiotic
-    O(1) scaling liberation, solvent c-ring floors, Levin bioelectric gap-junction
-    Dirichlet dissipation, eutelic 7-organ metazoan budgets and TDP bioglass
-    anhydrobiosis, 3D cytoskeletal nanomechanics and stateful Frohlich-Pokorny GHz
-    relaxation, developmental GRN embryogenesis (Wolpert, Steinberg, eutelic binary-tree
-    invariant, Hippo hysteresis, Hebbian pruning, coupled CPG waves, R8 zero-drift),
-    and continuum biomechanics (XPBD damping, carcass-detritus, yolk cleavage,
-    biotensegrity elasticity).
+    Zero-Mathlib Lean 4.35.0 formalization of 78 audited theorems (62 core discrete
+    biophysical invariants T01-T58 & C59-C62 across 8 modules, 8 concrete NonVacuity and
+    sharp negative-boundary witnesses NV01-NV08, and 8 adversarial false-variant
+    refutations AT01-AT08) certifying exact 4-solvent 19-reaction Chemoton mass/First-Law/
+    strict-Second-Law thermodynamics, discrete Canham-Helfrich elastic bilayer fission and
+    the sextic Global Minimax Theorem of Vesicle Division, Nick Lane's 1/R prokaryotic
+    ceiling and endosymbiotic O(1) scaling liberation, solvent c-ring floors, Levin
+    bioelectric gap-junction Dirichlet dissipation, eutelic 7-organ metazoan budgets and
+    TDP bioglass anhydrobiosis, 3D cytoskeletal nanomechanics and stateful Frohlich-Pokorny
+    GHz relaxation, developmental GRN embryogenesis (Wolpert, Steinberg, eutelic binary-tree
+    invariant, Hippo hysteresis, Hebbian pruning, coupled CPG waves, R8 zero-drift), and
+    continuum biomechanics (XPBD damping, carcass-detritus, yolk cleavage, biotensegrity).
   authors:
-    - name: "Alexander Stephen Donahue"
-      orcid: "0009-0006-8168-9648"
-      email: "0_0@0thernes.art"
-      affiliation: "Independent Researcher, Spokane, WA, USA"
+    - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
   responsible_maintainers:
-    - name: "Alexander Stephen Donahue"
-      github: "0thernes"
-      orcid: "0009-0006-8168-9648"
-      email: "0_0@0thernes.art"
+    - "Alexander Stephen Donahue <0_0@0thernes.art> (GitHub: @0thernes, ORCID 0009-0006-8168-9648)"
   license: "Apache-2.0"
 
 classification:
@@ -44,7 +36,7 @@ classification:
     - "80A30"
 
 sources:
-  - title: "CELLULOGONIC MECHA (v1.5.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with Six-Kernel Lean 4.35.0 Formal Proofs"
+  - title: "CELLULOGONIC MECHA (v1.6.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with Six-Kernel Lean 4.35.0 Formal Proofs"
     authors:
       - "Alexander Stephen Donahue"
     id: "https://github.com/0thernes/cellulogonic-mecha"
@@ -61,12 +53,12 @@ status:
   scope: >-
     Certifies exact integer, polynomial, combinatorial, and finite-trace invariants of
     the discrete biophysical model equations strictly within [propext, Classical.choice,
-    Quot.sound] with zero Mathlib, zero sorry in Solution, and zero native_decide.
-    Explicitly NOT formalized inside the Lean 4 kernel: C11 memory safety, AVX2/scalar
-    SIMD parity, .cmbin cryptographic snapshot verification, stochastic evolutionary
-    emergence, statistical inference, or physical wet-lab biological mechanisms.
-    Zero (0/1,900) overarching open problems in 0thernes/unsolved-problems-mega-atlas
-    are claimed solved or retired.
+    Quot.sound] with zero Mathlib, zero sorry in Solution, zero native_decide, and zero
+    compiler warnings. Explicitly NOT formalized inside the Lean 4 kernel: C11 memory
+    safety, AVX2/scalar/ARM64 parity, .cmbin cryptographic snapshot verification,
+    stochastic evolutionary emergence, statistical inference, or physical wet-lab
+    biological mechanisms. Zero (0/1,900) overarching open problems in
+    0thernes/unsolved-problems-mega-atlas (v2.6.0) are claimed solved or retired.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms:
@@ -127,37 +119,42 @@ status:
     - declaration: "Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness"
       file: "lean/CellulogonicProofs/NonVacuity.lean"
       sorry_count: 0
+      axioms: ["propext"]
+      comparator_config: "lean/comparator.json"
+    - declaration: "Cellulogonic.AdversarialTests.AT01_refute_titan_cring3_second_law"
+      file: "lean/CellulogonicProofs/AdversarialTests.lean"
+      sorry_count: 0
       axioms: ["propext", "Quot.sound"]
       comparator_config: "lean/comparator.json"
 
 automation:
   methods:
     - method: "manual"
-      notes: "Alexander Stephen Donahue conceived the biophysical architecture, theorem scope, falsification boundaries, and multi-cycle audit, and bears sole scholarly accountability."
+      prompting_notes: "Alexander Stephen Donahue conceived the biophysical architecture, theorem scope, falsification boundaries, and multi-cycle audit, and bears sole scholarly accountability."
     - method: "agent"
       models:
         - "Gemini (Antigravity)"
       framework: "Antigravity"
-      notes: >-
+      prompting_notes: >-
         Assisted with Lean 4.35.0 proof engineering, Palomar Spec/Challenge/Solution
-        refactoring, NonVacuity witness construction, C11 falsification engineering, and
-        AMS-LaTeX typesetting under human direction and audit.
+        refactoring, NonVacuity & AdversarialTests construction, C11 falsification
+        engineering, and AMS-LaTeX typesetting under human direction and audit.
 
 fidelity:
   divergences: >-
     Lean 4.35.0 verifies exact integer/polynomial abstractions (e.g., cleared-denominator
     Q(V,L) = 100 V^2 / L^3, 3*R^2 and R^3 spherical proxies, integer Chemoton stoichiometry,
     exact C11 Hippo TF7/Frohlich/CPG integer recurrences), whereas C11 runtime code
-    (src/cellular_world.c, src/chemoton_physics.c) also executes continuous 3D off-lattice
-    floating-point positions, AVX2 diffusion, Philox4x32-10 PRNG draws, and spatial hashing
+    (src/cellular_world.c, src/chemoton_physics.c) also executes continuous int32_t
+    fixed-point 3D positions (pos_nm[3]), AVX2/scalar conserved diffusion, Philox4x32-10
+    PRNG draws, spatial hashing, and float64/float32 telemetry/COVI/112-trait projections
     outside the Lean kernel. See docs/statement-fidelity.md for the full row-by-row matrix.
 
 review:
   status: "self-assessed"
   notes: >-
-    Not externally peer-reviewed. Machine-checked locally across 5 Windows-capable
-    independent Lean 4.35.0 checkers (lean, leanchecker --fresh, leanchecker-paranoid
-    --fresh, nanoda_bin with unpermitted_axiom_hard_error: true, con-leche --verified,
-    con-ron --verified; recorded in results/lean4-multi-kernel.txt) and wired across all
-    6/6 kernels via lake check --paranoid and lake comparator --config comparator.json
-    --paranoid on Ubuntu Linux with bubblewrap in .github/workflows/ci.yml.
+    Not externally peer-reviewed. Machine-checked across all 6 independent Lean 4.35.0
+    kernel checks in sandboxed bubblewrap on Ubuntu Linux CI (lean4 default,
+    leanchecker-paranoid, lean4lean, nanoda_bin, con-leche --verified, con-ron --verified)
+    via lake check --paranoid and lake comparator --config comparator.json --paranoid,
+    plus live negative tamper rejection testing.

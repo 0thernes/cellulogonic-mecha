@@ -15,7 +15,7 @@ AXIOMS_PATH = ROOT / "results" / "lean4-audit.txt"
 README_PATH = ROOT / "README.md"
 ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 FORBIDDEN = ("sorryAx", "Lean.ofReduceBool", "Lean.trustCompiler", "_native", "declaration uses 'sorry'")
-EXPECTED_THEOREMS = 70
+EXPECTED_THEOREMS = 78
 
 
 def main() -> None:

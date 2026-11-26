@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.5.0 — One-Word Task Runner (Build Standard A31, B01)
+# CELLULOGONIC MECHA v1.6.0 — One-Word Task Runner (Build Standard A31, B01)
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 Alexander Stephen Donahue
 
@@ -18,7 +18,7 @@ build:
 build:
     .\build.ps1
 
-# Run native 26-gate falsification suite + 1,000-case ABI fuzz + Python oracle + 2,700 property checks + 12 Web tests
+# Run native 26-gate falsification suite + 1,000-case ABI fuzz + Python oracle + 2,700 property checks + Web tests
 [unix]
 test:
     ./bin/test_falsification_linux
@@ -32,15 +32,16 @@ test:
 test:
     .\bin\test_falsification.exe
     .\bin\fuzz_cmbin_abi.exe 1000
-    python scripts/prop_check.py
-    python scripts/check_versions.py
+    $env:PYTHONDONTWRITEBYTECODE='1'; python scripts/verify_oracle_and_stats.py
+    $env:PYTHONDONTWRITEBYTECODE='1'; python scripts/prop_check.py
+    $env:PYTHONDONTWRITEBYTECODE='1'; python scripts/check_versions.py
     node test/test_web_server.mjs
 
-# Compile and run C11 falsification & fuzzer under ASan + UBSan + AVX2 (Linux/macOS, B16)
+# Compile and run C11 falsification & fuzzer under ASan + UBSan (portable x86-64/ARM64, B16)
 [unix]
 sanitize:
-    gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
-    gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
+    cc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+    cc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
     ./bin/test_falsification_asan
     ./bin/fuzz_cmbin_abi_asan 500
     rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan bin/fuzz_cmbin_abi_asan
@@ -48,7 +49,7 @@ sanitize:
 # Build dual-mode libFuzzer harness for binary "CMB5" .cmbin snapshot parser & ABI (Clang Linux, B15)
 [unix]
 fuzz:
-    clang -O1 -g -std=c11 -DCELLULOGONIC_LIBFUZZER -fsanitize=fuzzer,address,undefined -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_libfuzzer -lm
+    clang -O1 -g -std=c11 -DCELL_LIBFUZZER -fsanitize=fuzzer,address,undefined -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_libfuzzer -lm
     ./bin/fuzz_cmbin_abi_libfuzzer -max_total_time=15
 
 # Report-only static analysis and linter pass (B17)
@@ -58,15 +59,31 @@ lint:
     command -v clang-tidy >/dev/null && clang-tidy src/*.c -- -std=c11 -Iinclude || true
     command -v ruff >/dev/null && ruff check scripts/ examples/ reference/ || true
 
-# Build Pure Lean 4.35.0 suite (Solution + Challenge) and audit verbatim axioms
+# Build Pure Lean 4.35.0 suite (Solution + Challenge + AdversarialTests) and audit verbatim axioms
+[unix]
 lean:
     cd lean && lake build && lake build Challenge && lake env lean VerifyAxioms.lean > ../results/lean4-audit.txt
     python3 scripts/check_readme_axioms.py
+    python3 scripts/test_lean_negative.py
+
+[windows]
+lean:
+    Push-Location lean; lake build; lake build Challenge; lake env lean VerifyAxioms.lean | Set-Content -LiteralPath ..\results\lean4-audit.txt -Encoding utf8NoBOM; Pop-Location
+    python scripts/check_readme_axioms.py
 
 # Run full 6-kernel Palomar comparator (Linux with bubblewrap)
 [unix]
 lean-multi:
     cd lean && lake env leanchecker --fresh Solution && lake env leanchecker-paranoid --fresh Solution && lake check --paranoid && lake comparator --config comparator.json --paranoid
+
+# Build static interactive Lean 4 Proof Blueprint & Research Portal into _site/
+[unix]
+site:
+    python3 scripts/build_blueprint.py
+
+[windows]
+site:
+    python scripts/build_blueprint.py
 
 # Verify live DOIs in paper/refs.bib
 citations:

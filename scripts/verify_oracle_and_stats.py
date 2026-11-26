@@ -3,7 +3,7 @@
 # Copyright (c) 2026 Alexander Stephen Donahue
 """
 Independent Differential, Metamorphic, and Statistical Verification Script
-for CELLULOGONIC MECHA v1.5.0 (Build Standard B04, B08, B30).
+for CELLULOGONIC MECHA v1.6.0 (Build Standard B04, B08, B30).
 
 1. Runs the clean-room exact Python reference oracle (reference/chemoton_oracle.py).
 2. Runs the native C11 binary across metamorphic & differential checks:
@@ -74,11 +74,12 @@ def main() -> int:
             assert len(traits) == 112
             assert all(0.0 <= v <= 1.0 for v in traits), "Out-of-range Asmodensius trait!"
 
-    # 3. Verify --version banner matches VERSION file (if present)
+    # 3. Verify --version banner matches VERSION file (single source of truth, F-21)
+    expected_ver = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     ver_out = run_cli(bin_path, "--version").strip()
-    assert "cellulogonic 1.5.0" in ver_out, f"Unexpected --version output: {ver_out}"
+    assert f"cellulogonic {expected_ver}" in ver_out, f"Unexpected --version output: {ver_out} (expected {expected_ver})"
 
-    # 4. Validate locked paired statistical suite (N=8 fast CI check; full N=24 in results/09_stats_n24.txt)
+    # 4. Validate locked paired statistical suite (N=8 fast CI check; full N=24 in results/09_paired_stats_n24.txt)
     stats_out = run_cli(bin_path, "stats", "--pairs", "8", "--epochs", "80", "--size", "24")
     row_re = re.compile(
         r"^(H\d:[^|]+)\|\s*([+-]?\d+\.\d+)\s*\|\s*([+-]?\d+\.\d+)\s*\|\s*([+-]?\d+\.\d+)\s*\|\s*"
@@ -94,7 +95,7 @@ def main() -> int:
         f_pr, f_ph = float(p_raw), float(p_holm)
         assert abs((f_ma - f_mb) - f_diff) < 0.01, f"{name}: diff mismatch"
         assert f_lo <= f_diff + 1e-3 and f_diff <= f_hi + 1e-3, f"{name}: diff outside 95% CI [{f_lo}, {f_hi}]"
-        assert f_ph >= f_pr - 1e-6 and f_ph <= 1.0, f"{name}: invalid Holm-Bonferroni p-value"
+        assert f_ph >= f_pr - 1e-6 and f_ph <= 0.05, f"{name}: Holm-Bonferroni p={f_ph} exceeds alpha=0.05"
         assert abs(f_dz) > 0.5, f"{name}: unexpectedly tiny Cohen's dz={f_dz}"
 
     print(

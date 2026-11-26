@@ -1,7 +1,7 @@
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
- * CELLULOGONIC MECHA v1.5.0 — 26-Gate Lab-Grade Falsification & Mutant Suite
+ * CELLULOGONIC MECHA v1.6.0 — 26-Gate Lab-Grade Falsification & Mutant Suite
  * SPDX-License-Identifier: Apache-2.0
  * Includes 8 Planted Negative Mutants (M1..M8) Proven Caught!
  * ============================================================================ */
@@ -140,9 +140,30 @@ static int test_g06(void) {
     uint64_t c = cell_philox_u64(5000ULL, RNG_DOMAIN_CELL_MUT, 1, 1);
     uint64_t d = cell_philox_u64(5000ULL, RNG_DOMAIN_MITOSIS_PART, 1, 1);
     int ortho = (a != b && a != c && a != d && b != c && b != d && c != d);
-    /* Planted Mutant M3: Verify real world-step isolation & tampered .cmbin rejection & 112T clamping */
+    /* Planted Mutant M3: Verify Philox domain separation AND simulation-level coupled-seed divergence (F-42) */
     uint64_t shifted = cell_philox_u64(5000ULL, RNG_DOMAIN_CELL_MUT, 1, 2);
     int caught = (shifted != c && a != c);
+    {
+        CellWorldConfig mc1, mc2;
+        cellulogonic_default_config(&mc1);
+        cellulogonic_default_config(&mc2);
+        mc1.width = 16; mc1.height = 16; mc1.seed = 5000ULL;
+        mc2.width = 16; mc2.height = 16; mc2.seed = 5001ULL;
+        CellWorld* mw1 = cellulogonic_create(&mc1);
+        CellWorld* mw2 = cellulogonic_create(&mc2);
+        if (mw1 && mw2) {
+            cellulogonic_step_epochs(mw1, 15);
+            cellulogonic_step_epochs(mw2, 15);
+            char sh1[65], sh2[65];
+            cellulogonic_state_sha256(mw1, NULL, sh1);
+            cellulogonic_state_sha256(mw2, NULL, sh2);
+            if (strcmp(sh1, sh2) == 0) caught = 0;
+        } else {
+            caught = 0;
+        }
+        cellulogonic_destroy(mw1);
+        cellulogonic_destroy(mw2);
+    }
     /* Verify out-of-range specimen fields are strictly clamped into [0.0f, 1.0f] */
     CellSpecimen ext;
     memset(&ext, 0, sizeof(ext));
@@ -711,7 +732,7 @@ static int test_g23(void) {
 
     int distinct_fates = 0;
     for (int f = 1; f < 6; ++f) if (t.fate_counts[f] > 0) distinct_fates++;
-    return (yolk_ok && t.alive_cells >= 20 && t.alive_cells <= 512 &&
+    return (yolk_ok && t.alive_cells >= 20 && t.alive_cells <= 256 &&
             distinct_fates == 5 && t.fate_counts[CELL_FATE_GERM] > 0 &&
             z_invariant &&
             t.mean_morph_wnt > 0.0 && t.mean_morph_bmp > 0.0 && t.mean_morph_shh > 0.0 &&
@@ -826,12 +847,57 @@ static int test_g25(void) {
             (void)remove(bad_path);
         }
         w->cells[live_idx].pad_bonds = 0u;
+
+        /* F-01 regression: unbounded INT64_MAX-5 ledger accumulators MUST be rejected! */
+        int64_t saved_in = w->e_inflow_cum_uq;
+        int64_t saved_ex = w->e_export_cum_uq;
+        w->e_inflow_cum_uq = 9223372036854775800LL;
+        w->e_export_cum_uq = 9223372036854775800LL;
+        if (cellulogonic_save_snapshot(w, bad_path) == 0) {
+            CellWorld* rej = cellulogonic_load_snapshot(bad_path);
+            if (rej != NULL) { cellulogonic_destroy(rej); ok = 0; }
+            (void)remove(bad_path);
+        }
+        w->e_inflow_cum_uq = saved_in;
+        w->e_export_cum_uq = saved_ex;
+
+        /* F-05 regression: genotype/phenotype desync (lipid_class != decoded genome) MUST be rejected! */
+        uint8_t saved_lip = w->cells[live_idx].lipid_class;
+        w->cells[live_idx].lipid_class = (uint8_t)((saved_lip + 1u) % CELL_SOLVENT_COUNT);
+        if (cellulogonic_save_snapshot(w, bad_path) == 0) {
+            CellWorld* rej = cellulogonic_load_snapshot(bad_path);
+            if (rej != NULL) { cellulogonic_destroy(rej); ok = 0; }
+            (void)remove(bad_path);
+        }
+        w->cells[live_idx].lipid_class = saved_lip;
+
+        /* F-05 regression: non-neural cell holding wired axon MUST be rejected! */
+        int partner_idx = -1;
+        for (uint32_t i = 0; i < w->num_slots; ++i) {
+            if ((int)i != live_idx && w->cells[i].alive_state == 1u) { partner_idx = (int)i; break; }
+        }
+        if (partner_idx >= 0) {
+            uint8_t saved_fate = w->cells[live_idx].morph_fate;
+            int16_t saved_ax = w->cells[live_idx].axon_target[0];
+            uint8_t saved_aw = w->cells[live_idx].axon_weight[0];
+            w->cells[live_idx].morph_fate = CELL_FATE_GUT;
+            w->cells[live_idx].axon_target[0] = (int16_t)partner_idx;
+            w->cells[live_idx].axon_weight[0] = 50u;
+            if (cellulogonic_save_snapshot(w, bad_path) == 0) {
+                CellWorld* rej = cellulogonic_load_snapshot(bad_path);
+                if (rej != NULL) { cellulogonic_destroy(rej); ok = 0; }
+                (void)remove(bad_path);
+            }
+            w->cells[live_idx].morph_fate = saved_fate;
+            w->cells[live_idx].axon_target[0] = saved_ax;
+            w->cells[live_idx].axon_weight[0] = saved_aw;
+        }
     }
     cellulogonic_destroy(w);
     return ok;
 }
 
-/* G26: photon_flux_uq Budget Enforcement, Tun Bond Detachment & Complete State SHA-256 Regression (C06/C07/C14/C17) */
+/* G26: Per-Voxel photon_flux_uq Cap (F-13), 8x8 Stencil (F-14), High-Grad Clamp (F-06), SHA-256 & Tun Bonds */
 static int test_g26(void) {
     int ok = 1;
     /* 1. photon_flux_uq == 10 (< 34 uq min exogenous rxn) must admit 0 exogenous inflow (C06) */
@@ -846,6 +912,29 @@ static int test_g26(void) {
     CellLedgerSnapshot led;
     cell_compute_ledger(w, &led);
     if (led.e_inflow_cum_uq != 0 || led.mass_residual_amu != 0 || led.int_ledger_residual_uq != 0) ok = 0;
+
+    /* 1b. F-13 strict per-voxel photon_flux_uq cap across exogenous + autotrophs + chloroplasts */
+    {
+        CellWorldConfig pcfg;
+        cellulogonic_default_config(&pcfg);
+        pcfg.width = 8u; pcfg.height = 8u; pcfg.seed = 5262ULL;
+        pcfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
+        pcfg.photon_flux_uq = 60u;
+        CellWorld* wp = cellulogonic_create(&pcfg);
+        if (!wp) { ok = 0; }
+        else {
+            int64_t in_before = wp->e_inflow_cum_uq;
+            cellulogonic_step_epochs(wp, 10u);
+            int64_t total_in = wp->e_inflow_cum_uq - in_before;
+            /* Total inflow across 10 epochs * 64 voxels MUST NOT exceed 10 * 64 * 60 uq! */
+            if (total_in > 10LL * 64LL * 60LL) ok = 0;
+            /* Also check 8x8 conservation & zero violations (F-14) */
+            CellLedgerSnapshot pled;
+            cell_compute_ledger(wp, &pled);
+            if (pled.mass_residual_amu != 0 || pled.int_ledger_residual_uq != 0 || pled.second_law_violations != 0) ok = 0;
+            cellulogonic_destroy(wp);
+        }
+    }
 
     /* 2. Complete state_sha256 detects event counter mutation (C07) */
     char h1[65], h2[65];
@@ -874,7 +963,7 @@ typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.5.0 — 26-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.6.0 — 26-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
     struct { const char* id; const char* name; GateFn fn; } gates[26] = {

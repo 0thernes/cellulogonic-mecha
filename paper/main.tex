@@ -1,3 +1,5 @@
+% SPDX-License-Identifier: CC-BY-4.0
+% Copyright (c) 2026 Alexander Stephen Donahue
 \documentclass[11pt,reqno]{amsart}
 
 \usepackage[T1]{fontenc}
@@ -27,7 +29,7 @@
 \definecolor{cmSlate}{HTML}{475569}
 
 \hypersetup{
-  pdftitle={CELLULOGONIC MECHA v1.5.0: Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Laboratory with Six-Kernel Lean 4.35.0 Formal Proofs},
+  pdftitle={CELLULOGONIC MECHA v1.6.0: Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Laboratory with 78 Six-Kernel Lean 4.35.0 Formal Proofs},
   pdfauthor={Alexander Stephen Donahue (Independent Researcher, ORCID 0009-0006-8168-9648)}
 }
 
@@ -51,25 +53,25 @@
 
 \emergencystretch=3em
 
-\title[CELLULOGONIC MECHA v1.5.0]{CELLULOGONIC MECHA (v1.5.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Laboratory with Six-Kernel Lean 4.35.0 Formal Proofs}
+\title[CELLULOGONIC MECHA v1.6.0]{CELLULOGONIC MECHA (v1.6.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Laboratory with 78 Six-Kernel Lean 4.35.0 Formal Proofs}
 
 \author{Alexander Stephen Donahue}
 \address{Independent Researcher, Spokane, WA, USA}
 \email{0\_0@0thernes.art}
 \urladdr{https://orcid.org/0009-0006-8168-9648}
 
-\date{November 25, 2026}
+\date{November 26, 2026}
 \subjclass[2020]{Primary 92C15, 03B35; Secondary 92C40, 80A30, 68T20}
 \keywords{artificial life, chemoton, autopoiesis, Canham--Helfrich vesicles, chemiosmosis, endosymbiosis, bioelectricity, developmental embryogenesis, Lean 4, multi-kernel formal verification, deterministic SIMD simulation}
 
 \begin{document}
 
 \begin{abstract}
-We present \textbf{CELLULOGONIC MECHA \texttt{v1.5.0}}, a clean-room, zero-dependency native C11 artificial-life laboratory designed to occupy the rigorous middle ground between non-conservative abstract sandboxes and computationally intractable atomistic whole-cell models. Operating as \textbf{Build~2 (CELLULAR)} of a four-build ecosystem (\texttt{AUTOPHAGE} DNA $\to$ \texttt{Cellulogonic Mecha} Cellular $\to$ \texttt{Asmodensius} Creatures $\to$ \texttt{Asmodensius-Native} World), the engine couples eight cellular and developmental mechanisms inside an exact integer-quantum continuous $32\times 32\times 32\,\mu\mathrm{m}$ periodic 3D off-lattice fluid chamber: (i)~an 8-species, 19-reaction (\texttt{R1}--\texttt{R15c}) Chemoton enforcing $0\,\mathrm{amu}$ atomic mass residual, $0\,\mathrm{uq}$ First-Law energy residual, and strictly positive Second-Law heat dissipation ($q_r > 0$) across all four planetary solvents; (ii)~periodic 3D Taylor--Green Stokes hydrodynamics, Hertz soft-body collisions, chemotaxis, actomyosin breathing, and classical stateful ATP-pumped Fr\"ohlich--Pokorn\'y $1.2\text{--}14.8\,\mathrm{GHz}$ dielectric microtubule modes; (iii)~discrete Canham--Helfrich elastic bilayers governing osmotic lysis, symmetric binary fission ($Q \le \tfrac{1}{2}$), and asymmetric exosome budding ($\tfrac{1}{2} < Q < 1$); (iv)~Mitchell chemiosmosis with Gray-coded evolvable c-rings across four planetary solvents; (v)~Nick Lane's $1/R$ prokaryotic ceiling shattered by nested primary and secondary endosymbiosis; (vi)~Michael Levin's bioelectric gap-junction morphogenesis and cancer policing; (vii)~tardigrade TDP/CAHS bioglass anhydrobiosis; and (viii)~zero-blueprint translation-invariant 3D clonal embryogenesis combining local 3D paracrine \texttt{Wnt/BMP/Shh} gradients, conditional GRNs differentiating all five fates (\texttt{Ec/N/M/G/Gm}), Steinberg cadherin sorting, apical constriction, Netrin/Slit axon guidance with Hebbian pruning, Hippo/eutelic size arrest, and ATP-billed (\texttt{RXN\_R8}) CPG steering.
+We present \textbf{CELLULOGONIC MECHA \texttt{v1.6.0}}, a clean-room, zero-dependency native C11 artificial-life laboratory designed to occupy the rigorous middle ground between non-conservative abstract sandboxes and computationally intractable atomistic whole-cell models. Operating as \textbf{Build~2 (CELLULAR)} of a four-build ecosystem (\texttt{AUTOPHAGE} DNA $\to$ \texttt{Cellulogonic Mecha} Cellular $\to$ \texttt{Asmodensius} Creatures $\to$ \texttt{Asmodensius-Native} World), the engine couples eight cellular and developmental mechanisms inside an exact integer-quantum continuous $32\times 32\times 32\,\mu\mathrm{m}$ periodic 3D off-lattice fluid chamber: (i)~an 8-species, 19-reaction (\texttt{R1}--\texttt{R15c}) Chemoton enforcing $0\,\mathrm{amu}$ atomic mass residual, $0\,\mathrm{uq}$ First-Law energy residual, strictly positive Second-Law heat dissipation ($q_r > 0$) across all four planetary solvents, and unified per-voxel photochemical budgeting (\texttt{photon\_flux\_uq = 800 uq}); (ii)~periodic 3D Taylor--Green Stokes hydrodynamics, Hertz soft-body collisions, chemotaxis, actomyosin breathing, and classical stateful ATP-pumped Fr\"ohlich--Pokorn\'y $1.2\text{--}14.8\,\mathrm{GHz}$ dielectric microtubule modes; (iii)~discrete Canham--Helfrich elastic bilayers governing osmotic lysis, symmetric binary fission ($Q \le \tfrac{1}{2}$), and asymmetric exosome budding ($\tfrac{1}{2} < Q < 1$); (iv)~Mitchell chemiosmosis with Gray-coded evolvable c-rings across four planetary solvents; (v)~Nick Lane's $1/R$ prokaryotic ceiling shattered by nested primary and secondary endosymbiosis; (vi)~Michael Levin's bioelectric gap-junction morphogenesis and cancer policing; (vii)~tardigrade TDP/CAHS bioglass anhydrobiosis; and (viii)~zero-blueprint translation-invariant 3D clonal embryogenesis combining local 3D paracrine \texttt{Wnt/BMP/Shh} gradients, conditional GRNs differentiating all five fates (\texttt{Ec/N/M/G/Gm}), Steinberg cadherin sorting, apical constriction, Netrin/Slit axon guidance with Hebbian pruning, Hippo/eutelic size arrest, and ATP-billed (\texttt{RXN\_R8}) CPG steering.
 
-Every core discrete biophysical invariant is machine-checked across \textbf{70 audited Pure Lean~4 (\texttt{v4.35.0}) theorems} (\texttt{T01}--\texttt{T58}, \texttt{C59}--\texttt{C62}, plus 8 concrete non-vacuity and sharp negative-boundary witnesses \texttt{NV01}--\texttt{NV08}; zero Mathlib, \texttt{autoImplicit = false}, zero \texttt{sorry} in \texttt{Solution}, zero \texttt{native\_decide}, strictly within \texttt{[propext, Classical.choice, Quot.sound]}), isolated under a Palomar \texttt{Spec}/\texttt{Challenge}/\texttt{Solution} contract verified locally across five independent Windows-capable Lean~4.35.0 checkers (\texttt{lean}, \texttt{leanchecker}, \texttt{leanchecker-paranoid}, \texttt{nanoda\_bin}, \texttt{con-leche}, \texttt{con-ron}) and wired across all $6/6$ kernels (adding \texttt{lean4lean} and \texttt{lake comparator -\/-paranoid}) under \texttt{bubblewrap} on Ubuntu CI. Across Win64 PE64 (\texttt{clang 23.1.0}, \texttt{-Werror}) and Ubuntu Linux ELF64 (\texttt{gcc 13.3.0}), both 256-bit AVX2 and scalar C11 kernels agree to \textbf{0-bit SHA-256 diff} (\texttt{681a9747\ldots 519eceff}), pass \textbf{26/26 falsification gates} catching \textbf{8/8 planted mutants}, survive \textbf{1,000/1,000 adversarial ABI/CMBIN fuzz cases} (zero crashes, zero UB), and pass 2,700 randomized property-based checks. On locked paired seeds ($N = 24$, seeds \texttt{5000..5023}), all four pre-registered hypotheses win \textbf{24/24 unanimously} ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040$, Cohen's $d_z \in [1.47, 4.21]$).
+Every core discrete biophysical invariant is machine-checked across \textbf{78 audited Pure Lean~4 (\texttt{v4.35.0}) theorems} (\texttt{T01}--\texttt{T58}, \texttt{C59}--\texttt{C62}, 8 concrete non-vacuity witnesses \texttt{NV01}--\texttt{NV08}, and 8 adversarial false-variant refutations \texttt{AT01}--\texttt{AT08}; zero Mathlib, \texttt{autoImplicit = false}, zero \texttt{sorry} in \texttt{Solution}, zero \texttt{native\_decide}, strictly within \texttt{[propext, Classical.choice, Quot.sound]}), isolated under a Palomar \texttt{Spec}/\texttt{Challenge}/\texttt{Solution} contract (with 12 pinned \texttt{Spec} definitions and live negative tamper-rejection tests) verified across all $6/6$ independent Lean~4.35.0 kernels (\texttt{lean}, \texttt{leanchecker}, \texttt{leanchecker-paranoid}, \texttt{lean4lean}, \texttt{nanoda\_bin}, \texttt{con-leche}/\texttt{con-ron}, and \texttt{lake comparator -\/-paranoid}) on Ubuntu CI. Compiling portably with \texttt{-march=x86-64} plus isolated \texttt{\_\_attribute\_\_((target("avx2")))} dispatch on Win64 PE64 (\texttt{clang 23.1.0}, \texttt{-Werror}) and Ubuntu Linux ELF64 (\texttt{gcc 13.3.0}), and natively on macOS ARM64 in CI, both AVX2 and scalar kernels agree to \textbf{0-bit SHA-256 diff} (\texttt{83317026\ldots 532c9bbe}), pass \textbf{26/26 falsification gates} catching \textbf{8/8 planted mutants}, survive \textbf{1,000/1,000 adversarial ABI/CMBIN fuzz cases} plus \texttt{libFuzzer} and ASan/UBSan, and pass $2{,}720$ randomized property and native C11 checks. On locked paired seeds ($N = 24$, seeds \texttt{5000..5023}), all four pre-registered hypotheses win \textbf{24/24 unanimously} ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040$, Cohen's $d_z \in [1.468, 3.560]$).
 
-\emph{Honest verification boundary and non-peer-reviewed notice:} This document is an independent research preprint (not peer-reviewed), dual-licensed under Apache-2.0 (code) and CC-BY-4.0 (text/figures). Lean~4 certifies exact discrete algebraic and trace invariants of the model equations \emph{only}; C11 runtime parity, stochastic emergence, and statistics are program-audited outside the kernel. Zero ($0 / 1{,}900$) overarching open problems in \texttt{0thernes/unsolved-problems-mega-atlas} are claimed solved or retired.
+\emph{Honest verification boundary and non-peer-reviewed notice:} This document is an independent research preprint (not peer-reviewed), dual-licensed under Apache-2.0 (code) and CC-BY-4.0 (text/figures) with REUSE~3.x metadata, live Crossref retraction-audited citations ($36/36$ verified, $0$ retractions), and an RFC~3161 trusted timestamp. Lean~4 certifies exact discrete algebraic and trace invariants of the model equations \emph{only}; C11 runtime parity, stochastic emergence, and statistics are program-audited outside the kernel. Zero ($0 / 1{,}900$) overarching open problems in \texttt{0thernes/unsolved-problems-mega-atlas} (\texttt{v2.6.0}, commit \texttt{d23b4d7}) are claimed solved or retired.
 \end{abstract}
 
 \maketitle
@@ -85,17 +87,17 @@ Life on Earth is fundamentally cellular. Prior to nervous systems, macroscopic a
   \item \textbf{Intractable Atomistic Whole-Cell Models:} Landmark whole-cell simulations---including the Stanford \emph{Mycoplasma genitalium} model~\cite{karr2012} and the Illinois 4D \emph{JCVI-syn3A} minimal cell~\cite{hutchison2016,breuer2019,pelletier2021,thornburg2022}---achieve extraordinary biochemical fidelity for a single bacterium at the cost of hours per division cycle, making thousand-cell eukaryotic populations or eutelic micro-metazoans~\cite{szigeti2014} intractable on consumer workstations.
 \end{enumerate}
 
-\textbf{CELLULOGONIC MECHA \texttt{v1.5.0}} occupies the rigorous middle ground: an \emph{exact discrete biophysical laboratory} that strips away explicit solvent atomic coordinates while preserving exact integer atomic mass conservation, exact First-Law and strict 4-solvent Second-Law thermodynamic closure, exact Canham--Helfrich geometric thresholds, translation-invariant 5-fate developmental Gene Regulatory Networks, and nested compartmentalized heredity at tens of millions of conserved reactions per second in continuous 3D off-lattice space on a single consumer CPU.
+\textbf{CELLULOGONIC MECHA \texttt{v1.6.0}} occupies the rigorous middle ground: an \emph{exact discrete biophysical laboratory} that strips away explicit solvent atomic coordinates while preserving exact integer atomic mass conservation, exact First-Law and strict 4-solvent Second-Law thermodynamic closure, exact Canham--Helfrich geometric thresholds, translation-invariant 5-fate developmental Gene Regulatory Networks, and nested compartmentalized heredity at over twenty-seven million conserved reactions per second in continuous 3D off-lattice space on a single consumer CPU.
 
 To eliminate false-positive emergence claims, the engine enforces four Clean-Slate invariants inherited from Build~4 (\code{Asmodensius-Native}):
 \begin{itemize}[leftmargin=1.6em, itemsep=2pt]
-  \item \textbf{\texttt{P2} (Exact Conservation \& Strict Thermodynamic Arrow):} Atomic mass (\code{int64_t} amu) and First-Law energy (\code{int64_t} uq) close to identically $0$ residual every tick; \code{apply_exact_rxn()} enforces strictly positive heat dissipation ($q_r > 0$) across all 19 reactions and all 4 planetary solvents (\code{second_law_violations == 0}).
-  \item \textbf{\texttt{P4} (Domain-Isolated Stochasticity \& Authenticated \texttt{"CMB5"} Snapshots):} Deterministic runs draw from five domain-isolated counter-based \code{Philox4x32-10} streams; binary \code{"CMB5"} \code{.cmbin} snapshots append a NIST FIPS~180-4 SHA-256 trailer validated alongside bounds, zero-padding, bond-symmetry, no-trailing-EOF, and ledger closure checks; feral mode (\code{seed=0}) invokes CPUID-guarded hardware \code{RDSEED} (rejecting all-ones Zen-2 faults with \code{/dev/urandom} fallback).
+  \item \textbf{\texttt{P2} (Exact Conservation \& Strict Thermodynamic Arrow):} Atomic mass (\code{int64_t} amu) and First-Law energy (\code{int64_t} uq) close to identically $0$ residual every tick; \code{apply_exact_rxn()} enforces strictly positive heat dissipation ($q_r > 0$) across all 19 reactions and all 4 planetary solvents (\code{second_law_violations == 0}), and unified per-voxel \code{photon_rem_uq[i]} caps abiotic and autotrophic photochemistry jointly.
+  \item \textbf{\texttt{P4} (Domain-Isolated Stochasticity \& Authenticated \texttt{"CMB5"} Snapshots):} Deterministic runs draw from five domain-isolated counter-based \code{Philox4x32-10} streams; binary \code{"CMB5"} \code{.cmbin} snapshots append a NIST FIPS~180-4 SHA-256 trailer validated alongside bounds, accumulator overflow ceilings (\code{1e15}), zero-padding, genotype/phenotype consistency, active-only bond/axon invariants, no-trailing-EOF, and ledger closure checks; feral mode (\code{seed=0}) invokes CPUID-guarded hardware \code{RDSEED} (rejecting all-ones Zen-2 faults with portable entropy fallback).
   \item \textbf{\texttt{P9} (Strict Observer Independence):} Telemetry computation, apex inspection, and live 60~FPS WebGL2 Observatory JSON export accept strictly \texttt{const CellWorld*} and produce 0-bit complete-state SHA-256 divergence from headless execution.
-  \item \textbf{\texttt{P10} / \texttt{HW02} (Zero Post-Warmup Allocations):} All spatial grids, diffusion accumulators, and scratch pools allocate once inside \code{cellulogonic_create()}; \code{post_warmup_allocs == 0} across stepping.
+  \item \textbf{\texttt{P10} / \texttt{HW02} (Zero Post-Warmup Allocations):} All spatial grids, diffusion accumulators, and scratch pools allocate once inside \code{cellulogonic_create()}; \code{post_warmup_allocs == 0} across stepping, corroborated by a 3-module \code{nm -u} zero-heap symbol audit.
 \end{itemize}
 
-Figure~\ref{fig:arch} summarizes the four-build ecosystem pipeline (\code{include/cellulogonic_abi.h}, ABI \code{0x00010500}) and the nine verified biophysical and formal subsystems of \texttt{v1.5.0}.
+Figure~\ref{fig:arch} summarizes the four-build ecosystem pipeline (\code{include/cellulogonic_abi.h}, ABI \code{0x00010600}) and the ten verified biophysical and formal subsystems of \texttt{v1.6.0}.
 
 \begin{figure}[ht]
 \centering
@@ -123,16 +125,16 @@ Figure~\ref{fig:arch} summarizes the four-build ecosystem pipeline (\code{includ
   \node[sub, draw=cmCyan]    (s5) at (1.55,-3.12) {\textbf{5. Eutely / Tun (\texttt{T37--44})}\\7-organ budget, TDP bioglass};
   \node[sub, draw=cmGold]    (s6) at (5.75,-3.12) {\textbf{6. 3D Stokes / MT (\texttt{T45--50})}\\Off-lattice, GHz Fr\"ohlich};
   \node[sub, draw=cmCrimson] (s7) at (9.95,-3.12) {\textbf{7. Embryo GRN (\texttt{T51--58})}\\5-Fate GPS, Axons, CPG};
-  \node[sub, draw=cmEmerald] (s8) at (14.15,-3.12) {\textbf{8. Continuum (\texttt{C59--62, NV})}\\XPBD, Carcass, Yolk, Witness};
+  \node[sub, draw=cmEmerald] (s8) at (14.15,-3.12) {\textbf{8. Continuum + Audit (\texttt{C,NV,AT})}\\XPBD, Yolk, Witness, $\neg P$};
 
   \begin{scope}[on background layer]
-    \node[draw=cmEmerald!60, dashed, rounded corners=4pt, fill=cmEmerald!3, fit=(s1)(s4)(s5)(s8), inner sep=9pt, label={[font=\scriptsize\bfseries\color{cmEmerald}, yshift=-2pt]below:Build 2 Verified Core (\texttt{v1.5.0}): 70 Six-Kernel Lean~4.35.0 Proofs $\cdot$ 26/26 Gates $\cdot$ 4-Way 0-Bit SHA-256 Parity}] (core) {};
+    \node[draw=cmEmerald!60, dashed, rounded corners=4pt, fill=cmEmerald!3, fit=(s1)(s4)(s5)(s8), inner sep=9pt, label={[font=\scriptsize\bfseries\color{cmEmerald}, yshift=-2pt]below:Build 2 Verified Core (\texttt{v1.6.0}): 78 Six-Kernel Lean~4.35.0 Proofs $\cdot$ 26/26 Gates $\cdot$ 3-OS / 2-ISA 0-Bit SHA-256 Parity}] (core) {};
   \end{scope}
 
   \draw[->, thick, cmEmerald!80] (b2.south) -- (b2.south |- core.north);
 \end{tikzpicture}%
 }
-\caption{Four-build artificial-life ecosystem integration and the verified cellular, developmental, and continuum subsystems inside \texttt{CELLULOGONIC MECHA v1.5.0}.}
+\caption{Four-build artificial-life ecosystem integration and the verified cellular, developmental, continuum, and adversarial-audit subsystems inside \texttt{CELLULOGONIC MECHA v1.6.0}.}
 \label{fig:arch}
 \end{figure}
 
@@ -141,7 +143,7 @@ Figure~\ref{fig:arch} summarizes the four-build ecosystem pipeline (\code{includ
 \label{sec:claims}
 % =====================================================================
 
-Every quantitative and formal claim in \texttt{CELLULOGONIC MECHA v1.5.0} is assigned an explicit epistemic tier and paired with both its primary verification artifact and a concrete refutation criterion (Table~\ref{tab:claims}; full command-indexed ledger in \code{CLAIMS.md}).
+Every quantitative and formal claim in \texttt{CELLULOGONIC MECHA v1.6.0} is assigned an explicit epistemic tier and paired with both its primary verification artifact and a concrete refutation criterion (Table~\ref{tab:claims}; full command-indexed ledger in \code{CLAIMS.md}).
 
 \begin{table}[ht]
 \centering
@@ -153,20 +155,20 @@ Every quantitative and formal claim in \texttt{CELLULOGONIC MECHA v1.5.0} is ass
 \toprule
 \textbf{ID} & \textbf{Tier} & \textbf{Exact Claim Statement} & \textbf{Primary Artifact} & \textbf{What Proves Us Wrong} \\
 \midrule
-C1 & \tagkc & $70$ Pure Lean~4.35.0 theorems (\tcode{T01}--\tcode{T58}, \tcode{C59}--\tcode{C62}, \tcode{NV01}--\tcode{NV08}) compile with $0$ \tcode{sorry} in \tcode{Solution}, axioms $\subseteq$ [\tcode{propext}, \tcode{Classical.choice}, \tcode{Quot.sound}], verified across independent kernels. & \tcode{lean/}, \tcode{results/lean4-audit.txt}, \tcode{lean4-multi-kernel.txt} & Any kernel rejects \tcode{Solution}, comparator fails, or unpermitted axiom appears. \\
-C2 & \tagpa & Native C11 builds (\tcode{-Werror}) pass $26/26$ falsification gates, catch $8/8$ planted mutants (\tcode{M1}--\tcode{M8}), survive $1{,}000$ adversarial ABI/CMBIN fuzz cases, and pass $2{,}700/2{,}700$ property checks with $0\,\mathrm{amu}$/$0\,\mathrm{uq}$ drift and $0$ allocs. & \tcode{test/test_falsification.c}, \tcode{fuzz_cmbin_abi.c}, \tcode{prop_check.py} & Any gate fails, mutant survives, fuzz crashes, or residual $\neq 0$. \\
-C3 & \tagpa & Four-way cross-OS/compiler/ISA runs (Win64 \texttt{clang 23.1.0} + Linux \texttt{gcc 13.3.0}, AVX2 vs.\ Scalar) yield 0-bit identical SHA-256 \tcode{681a9747...519eceff} over 300 epochs (1,222,070 rxns). & \tcode{results/02_bench_win64.txt}, \tcode{02_bench_linux.txt} & Any single bit differs across OS, compiler, or kernel mode. \\
-C4 & \tagem & From $0$ cells, abiotic soup condenses $1{,}737$ vesicles peaking at $598$ cells, $105$ organelles, and $\mathrm{COVI} = 89.49$ (Stage~6); from $8$ identical-DNA blastomeres, 3D embryogenesis forms all $5$ fates (\tcode{Gm=5}, $80.0\%$ peak sort, $328$ wired axons, $725$ CPG pulses). & \tcode{results/03_protocell_abiogenesis.txt}, \tcode{12_embryogenesis_grn_3d.txt} & Seed \tcode{5000} replay fails to reproduce counts or Z-invariance breaks. \\
-C5 & \tagem & On $N = 24$ locked paired seeds (\tcode{5000..5023}), all four pre-registered hypotheses (\tcode{H1}--\tcode{H4}) achieve unanimous $24/24$ wins ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040$, $d_z \in [1.47, 4.21]$). & \tcode{results/09_paired_stats_n24.txt}, \tcode{docs/preregistration.md} & Locked replay diverges or any $p_{\mathrm{Holm}} > 0.05$. \\
-C6 & \tagem & From neutral $25\%$ uniform genomes, de-novo solvent adaptation reaches $66.7\%\text{--}94.5\%$ (Titan c-ring $4.11 \ge 4$), and Terran$\to$Venus transplants reach $59.7\%$ Venus-adapted ($40/67$). & \tcode{results/05_xenocellular_transplants.txt} & Replay stalls at neutral $25\%$ or violates $q_r > 0$. \\
+C1 & \tagkc & $78$ Pure Lean~4.35.0 theorems (\tcode{T01}--\tcode{T58}, \tcode{C59}--\tcode{C62}, \tcode{NV01}--\tcode{NV08}, \tcode{AT01}--\tcode{AT08}) compile with $0$ \tcode{sorry} in \tcode{Solution}, axioms $\subseteq$ [\tcode{propext}, \tcode{Classical.choice}, \tcode{Quot.sound}], verified across $6$ kernels with $12$ pinned defs and live tamper rejection. & \tcode{lean/}, \tcode{results/lean4-audit.txt}, \tcode{test_lean_negative.py} & Any kernel rejects \tcode{Solution}, comparator fails, tamper passes, or forbidden axiom appears. \\
+C2 & \tagpa & Portable C11 builds (\tcode{-Werror}, 3-module \tcode{nm} zero-heap) pass $26/26$ gates, catch $8/8$ mutants (incl.\ simulation \tcode{M3}), survive $1{,}000$ ABI/CMBIN fuzz + \tcode{libFuzzer} + ASan/UBSan, and pass $2{,}720/2{,}720$ property checks with $0$ drift and $0$ allocs. & \tcode{test/test_falsification.c}, \tcode{fuzz_cmbin_abi.c}, \tcode{prop_check.py} & Any gate fails, mutant survives, sanitizer/fuzz crashes, or residual $\neq 0$. \\
+C3 & \tagpa & Cross-OS/compiler/ISA runs (Win64 \texttt{clang 23.1.0}, Linux \texttt{gcc 13.3.0}, AVX2 vs.\ Scalar, and macOS ARM64 CI) yield 0-bit identical SHA-256 \tcode{83317026...532c9bbe} over 300 epochs ($50{,}243$ steps, $1{,}224{,}310$ rxns). & \tcode{results/02_bench_win64.txt}, \tcode{02_bench_linux.txt} & Any single bit differs across OS, compiler, or kernel mode. \\
+C4 & \tagem & From $0$ cells, abiotic soup condenses $1{,}707$ vesicles peaking at $603$ cells, $107$ organelles, and $\mathrm{COVI} = 88.92$ (Stage~6); from $8$ identical-DNA blastomeres, 3D embryogenesis forms $47$ cells spanning all $5$ fates (\tcode{Gm=6}, $81.1\%$ peak sort, $288$ wired axons, $674$ CPG pulses). & \tcode{results/03_protocell_abiogenesis.txt}, \tcode{12_embryogenesis_grn_3d.txt} & Seed \tcode{5000} replay fails to reproduce counts or Z-invariance breaks. \\
+C5 & \tagem & On $N = 24$ locked paired seeds (\tcode{5000..5023}), all four pre-registered hypotheses (\tcode{H1}--\tcode{H4}) achieve unanimous $24/24$ wins ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040 \le 0.05$, $d_z \in [1.468, 3.560]$; $9.90\times$ vol, $73.5\times$ TDP). & \tcode{results/09_paired_stats_n24.txt}, \tcode{docs/preregistration.md} & Locked replay diverges or any $p_{\mathrm{Holm}} > 0.05$. \\
+C6 & \tagem & From neutral $25\%$ uniform genomes under unified \tcode{photon_flux_uq = 800 uq}, de-novo solvent adaptation reaches $77.0\%\text{--}87.1\%$ (Titan c-ring $4.17 \ge 4$), and Terran$\to$Venus transplants sweep from $12.4\%$ to $31.6\%$ ($30/95$, $0$ drift). & \tcode{results/05_xenocellular_transplants.txt} & Replay stalls at neutral $25\%$ or violates $q_r > 0$. \\
 C7 & \tagio & \tcode{COVI} composite score, LZ77 Assembly Index $A$, and classical Fr\"ohlich--Pokorn\'y GHz dielectric coherence are model-internal indicators, not wet-lab assays or quantum-consciousness claims. & \tcode{src/metrology_covi.c}, \tcode{LIMITATIONS.md} & N/A (explicitly scoped indicator-only boundary). \\
-C8 & \tagoc & Zero ($0/1{,}900$) overarching open problems in \tcode{unsolved-problems-mega-atlas} are solved or retired by this computational laboratory. & \tcode{docs/MEGA_ATLAS_CROSSCHECK.md} & External peer-reviewed proof of an overarching biological law. \\
+C8 & \tagoc & Zero ($0/1{,}900$) overarching open problems in \tcode{unsolved-problems-mega-atlas} (\tcode{v2.6.0}) are solved or retired across all $13$ adjacent catalog IDs. & \tcode{docs/MEGA_ATLAS_CROSSCHECK.md} & External peer-reviewed proof of an overarching biological law. \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 % =====================================================================
-\section{Mathematical Formulation: Theorems I--IX}
+\section{Mathematical Formulation: Theorems I--X}
 \label{sec:math}
 % =====================================================================
 
@@ -187,7 +189,7 @@ Let $\mathcal{R} = \{\mathrm{R1}, \dots, \mathrm{R15c}\}$ be the 19 cellular, sa
   \item \textbf{Exact Atomic Mass Conservation} (\textup{\texttt{T01, T07, T10}}): $\forall r \in \mathcal{R}$, $\mathbf{w}^\top \boldsymbol{\nu}_r = 0$. Arbitrary reaction multiplicities $k \in \mathbb{Z}$, binary fissions, and phagocytic engulfments conserve total world atomic mass identically ($\Delta M_{\mathrm{world}} = 0$).
   \item \textbf{Exact 4-Solvent First-Law Energy Balance} (\textup{\texttt{T02, T08}}): $\forall s, n_H, r \in \mathcal{R}$, $\boldsymbol{\mu}^\top \boldsymbol{\nu}_r + \Delta p_r(s, n_H) \cdot e_{\mathrm{pmf}}(s) + q_r(s, n_H) = E_r^{\mathrm{in}}$, closing $E_{\mathrm{total}} - E_{\mathrm{inflow}}$ to identically $0\,\mathrm{uq}$.
   \item \textbf{Strict 4-Solvent Second Law \& No Perpetual Motion} (\textup{\texttt{T03, T06, T09}}): $\forall s, n_H \ge n_H^{\min}(s), r \in \mathcal{R}$, $q_r(s, n_H) > 0$ (including Titan $e_{\mathrm{pmf}}=8, k_p=7, q_{\mathrm{R2}}=6, q_{\mathrm{R3}} = 8 n_H - 28 \ge +4 > 0$). Any non-empty closed cycle ($\sum \Delta G = 0$) satisfies $\sum q_{r_j} > 0$ and strictly requires equal external inflow $\sum E_{r_j}^{\mathrm{in}} = \sum q_{r_j} > 0$.
-  \item \textbf{Mandatory ATP Coupling \& Respiratory Yield Advantage} (\textup{\texttt{T04, T05}}): Uncoupled synthesis of lipids ($+8\,\mathrm{uq}$), polypeptides ($+12\,\mathrm{uq}$), and templates ($+20\,\mathrm{uq}$) is strictly endergonic; oxidative respiration ($\mathrm{R1}+\mathrm{R2}+2\mathrm{R3}$) yields $2\,\mathrm{E}$ per $1\,\mathrm{S}$ in Terran, Vent, and Venus solvents ($4\times$ the $0.5\,\mathrm{E}/\mathrm{S}$ yield of fermentation $\mathrm{R4}$; and $1.75\,\mathrm{E}/\mathrm{S}$, or $3.5\times$, in cryogenic Titan due to $k_p=7, n_H \ge 4$).
+  \item \textbf{Mandatory ATP Coupling \& Respiratory Yield Advantage} (\textup{\texttt{T04, T05}}): Uncoupled synthesis of lipids ($+8\,\mathrm{uq}$), polypeptides ($+12\,\mathrm{uq}$), and templates ($+20\,\mathrm{uq}$) is strictly endergonic; oxidative respiration ($\mathrm{R1}+\mathrm{R2}+2\mathrm{R3}$) closes net PMF to $0$ identically across Terran ($n_H=3$), Hydrothermal ($n_H=3$), and Venus ($n_H=2$) solvents, yielding $2\,\mathrm{E}$ per $1\,\mathrm{S}$ ($4\times$ the $0.5\,\mathrm{E}/\mathrm{S}$ yield of fermentation $\mathrm{R4}$; and $1.75\,\mathrm{E}/\mathrm{S}$, or $3.5\times$, in cryogenic Titan due to $k_p=7, n_H \ge 4$).
 \end{enumerate}
 \end{theorem}
 
@@ -244,7 +246,7 @@ Figure~\ref{fig:minimax} plots the exact feasible parent ceiling $Q_{\max}(f) = 
 \label{fig:minimax}
 \end{figure}
 
-\subsection{Theorems III--IX: Endosymbiosis, Chemiosmosis, Eutely, Cytoskeleton, GRNs, Continuum Biomechanics, and Non-Vacuity (\texttt{T20}--\texttt{T58}, \texttt{C59}--\texttt{C62}, \texttt{NV01}--\texttt{NV08})}
+\subsection{Theorems III--X: Endosymbiosis, Chemiosmosis, Eutely, Cytoskeleton, GRNs, Continuum, Non-Vacuity, and Adversarial Refutations (\texttt{T20}--\texttt{T58}, \texttt{C59}--\texttt{C62}, \texttt{NV01}--\texttt{NV08}, \texttt{AT01}--\texttt{AT08})}
 \begin{itemize}[leftmargin=1.6em, itemsep=2pt]
   \item \textbf{Theorem III --- Lane's $1/R$ Ceiling \& Endosymbiosis (\texttt{T20}--\texttt{T27}):} Prokaryotic surface power $3 c_A R^2$ beats volumetric cost $c_V R^3$ iff $c_V R < 3 c_A$ (\texttt{T20}), with strictly falling power density (\texttt{T21})~\cite{lane2010}. Internalizing $K$ organelles of radius $r < R$ amplifies area-per-volume by $R/r > 1$ (\texttt{T23}), liberating host radius $R$ arbitrarily (\texttt{T22})~\cite{margulis1967}; depth-2 chimeras add strict power (\texttt{T24}), uneven mitotic partitioning exposes cheaters to purifying selection (\texttt{T26}), and EGT cuts replication cost by $(K-1)g$ (\texttt{T27}).
   \item \textbf{Theorem IV --- Solvent c-Rings, Levin Bioelectricity \& Anti-Gaming (\texttt{T28}--\texttt{T36}):} Strict Second-Law phosphorylation ($n_H \cdot e_{\mathrm{pmf}} > 28$) forces $n_H \ge 3$ on Terran/hydrothermal worlds~\cite{caforio2017} (\texttt{T28}), $n_H \ge 2$ on Venusian $\mathrm{H}_2\mathrm{SO}_4$~\cite{seager2023,seager2024} (\texttt{T29}), and $n_H \ge 4$ on cryogenic Titan azotosomes~\cite{stevenson2015} (\texttt{T30}). Passive gap-junction relaxation conserves charge, contracts voltage variance (\texttt{T33}), and dissipates Dirichlet energy (\texttt{T31}--\texttt{T32})~\cite{levin2022}. Inert crystals and uncatalyzed white noise score identically $0$ on gated $\mathrm{COVI}$ (\texttt{T34}--\texttt{T35}), and Markov-blanket flux preserves conservation (\texttt{T36})~\cite{krakauer2020,hoshika2019}.
@@ -252,7 +254,8 @@ Figure~\ref{fig:minimax} plots the exact feasible parent ceiling $Q_{\max}(f) = 
   \item \textbf{Theorem VI --- 3D Cytoskeletal Nanomechanics (\texttt{T45}--\texttt{T50}):} Stokes drag dissipates kinetic power non-negatively (\texttt{T45}); Hertz collisions conserve 3D linear momentum (\texttt{T46}); prolate elongation raises surface area strictly (\texttt{T47}); the stateful classical Fr\"ohlich--Pokorn\'y ODE (\code{frohlichStep}) fixes $0$ under starvation, decays monotonically below $s_{\mathrm{crit}}$, stays in $[0,1000]$, and condenses iff $s_{\mathrm{pump}} > s_{\mathrm{crit}}$ (\texttt{T48})~\cite{frohlich1968,pokorny2004} with inverse-length frequency scaling (\texttt{T49})~\cite{sahu2013}; and cyclic actomyosin work stays strictly below ATP hydrolysis energy (\texttt{T50}).
   \item \textbf{Theorem VII --- Developmental GRN Embryogenesis (\texttt{T51}--\texttt{T58}):} Wolpert French-Flag thresholds partition concentrations disjointly (\texttt{T51})~\cite{wolpert1969}; Steinberg homophilic adhesion lowers interfacial energy (\texttt{T52})~\cite{steinberg1963}; apical constriction creates positive wedge curvature (\texttt{T53}); the eutelic binary tree invariant proves $\sum 2^{\mathrm{rem}(c)} \le N_0 2^{d_0}$ across arbitrary division/death traces (\texttt{T54}); exact C11 Hippo TF7 hysteresis locks growth after 3 crowded epochs and releases uncrowded (\texttt{T55}); Hebbian updates strengthen active and prune silent axons (\texttt{T56}); exact C11 CPG phase steps stay in $[280,1360] \subset (0, 6283)$ (\texttt{T57})~\cite{marder2001}; and structural induction backed by \code{StoichiometryThermo.applyRxn .R8_atp_hyd} certifies $0$-drift conservation (\texttt{T58}).
   \item \textbf{Theorem VIII --- Continuum Biomechanics (\texttt{C59}--\texttt{C62}):} Extended Position-Based Dynamics (XPBD) damping preserves monotonicity and non-negativity across traces (\texttt{C59}); death transfers $100\%$ of somatic and reserve mass into detritus with $0$ drift (\texttt{C60}); maternal yolk cleavage satisfies $\sum \mathrm{daughters} + \mathrm{rem} + \mathrm{heat} = Y$ with $\mathrm{rem} < k$ (\texttt{C61}); and quadratic biotensegrity strain $k\Delta x^2 \ge 0$ vanishes at zero displacement (\texttt{C62}).
-  \item \textbf{Theorem IX --- Non-Vacuity \& Sharp Boundary Witnesses (\texttt{NV01}--\texttt{NV08}):} Eight concrete witness theorems prove every hypothesis bundle across Groups~I--VIII is satisfiable (including a concrete closed cycle \code{[R14a, R14a, R4, R8]} with $\Delta G = 0, q = 92$, Titan sharp flip $q(4)=+4$ vs.\ $q(3)=-4$, sextic symmetry equality at $x=y=3$, eukaryotic liberation at $R=10, K=334$, 3-cell vs.\ 2-cell lumen, 355-cell minimal organ witness, concrete \code{EutelicTrace} step, and concrete XPBD/carcass/yolk/biotensegrity inhabitants).
+  \item \textbf{Theorem IX --- Non-Vacuity \& Sharp Boundary Witnesses (\texttt{NV01}--\texttt{NV08}):} Eight concrete witness theorems prove every hypothesis bundle across Groups~I--VIII is satisfiable (including closed cycle \code{[R14a, R14a, R4, R8]} with $\Delta G = 0, q = 92$, Titan flip $q(4)=+4$ vs.\ $q(3)=-4$, sextic symmetry equality at $x=y=3$, eukaryotic liberation at $R=10, K=334$, 3-cell vs.\ 2-cell lumen, 355-cell minimal organ witness, concrete \code{EutelicTrace} step, and concrete XPBD/carcass/yolk/biotensegrity inhabitants).
+  \item \textbf{Theorem X --- Adversarial False-Variant Refutations (\texttt{AT01}--\texttt{AT08}):} Eight explicit negations ($\neg P$) prove that weakening key hypotheses across Groups~I--VIII fails sharply: Titan $n_H = 3$ breaks strict Second Law (\texttt{AT01}); intact $(47,72)$ refutes universal symmetric fission (\texttt{AT02}); $R=3$ refutes unbounded prokaryotic radius (\texttt{AT03}); passive gap junctions cannot raise Dirichlet energy (\texttt{AT04}); $2$ cells cannot enclose a lumen and unvitrified TDP yields zero decay drop (\texttt{AT05}); starved Fr\"ohlich coherence cannot grow (\texttt{AT06}); $d=3$ eutelic traces cannot exceed $8$ cells (\texttt{AT07}); and neither negative biotensegrity strain nor mass-losing carcass transfer exists (\texttt{AT08}).
 \end{itemize}
 
 % =====================================================================
@@ -260,11 +263,11 @@ Figure~\ref{fig:minimax} plots the exact feasible parent ceiling $Q_{\max}(f) = 
 \label{sec:lean}
 % =====================================================================
 
-In \texttt{v1.5.0}, the formal proof suite (\code{lean/}, pinned \code{leanprover/lean4:v4.35.0}~\cite{demoura2021}) was upgraded to the Palomar isolated specification architecture with strict compiler flags (\code{autoImplicit = false}, \code{relaxedAutoImplicit = false}, \code{linter.unusedVariables = true}, \code{linter.deprecated = true}). Pure definitions live exclusively in \code{CellulogonicProofs/Spec.lean} (zero proofs, zero \code{sorry}); \code{Challenge.lean} (445 lines, $19.0\,\mathrm{KiB}$) imports \emph{only} \code{Spec.lean} and states all 70 theorem signatures with intentional \code{sorry} proofs; \code{Solution.lean} re-exports all 70 sorry-free proofs; and \code{VerifyAxioms.lean} audits every declaration verbatim into \code{results/lean4-audit.txt} (checked against \code{README.md} by \code{scripts/check_readme_axioms.py}).
+In \texttt{v1.6.0}, the formal proof suite (\code{lean/}, pinned \code{leanprover/lean4:v4.35.0}~\cite{demoura2021}) enforces strict compiler flags (\code{autoImplicit = false}, \code{relaxedAutoImplicit = false}, \code{linter.unusedVariables = true}, \code{linter.deprecated = true}) under the Palomar isolated specification contract. Pure definitions live exclusively in \code{CellulogonicProofs/Spec.lean} (zero proofs, zero \code{sorry}); \code{Challenge.lean} imports \emph{only} \code{Spec.lean} and states all 78 theorem signatures with intentional \code{sorry} proofs; \code{Solution.lean} re-exports all 78 sorry-free proofs; \code{comparator.json} pins all 78 theorems alongside 12 core \code{Spec.lean} definitions; and \code{VerifyAxioms.lean} audits every declaration verbatim into \code{results/lean4-audit.txt} (CI-diffed against \code{README.md} via \code{scripts/check_readme_axioms.py}). In addition, \code{scripts/test_lean_negative.py} and a dedicated Ubuntu CI tamper-injection job verify live that \texttt{sorry}, custom \texttt{axiom}, and \texttt{native\_decide} are actively rejected by both the axiom gate and \texttt{lake comparator -\/-paranoid}. An interactive dependency blueprint of all 78 theorems is published via GitHub Pages (\code{scripts/build_blueprint.py}).
 
 \begin{table}[ht]
 \centering
-\caption{Pure Lean~4.35.0 formal verification ledger (\code{results/lean4-audit.txt}, \code{results/lean4-multi-kernel.txt}). All 70 declarations in \code{Solution} compile with zero warnings, zero \code{sorryAx}, zero \code{native\_decide}, and axioms strictly within \code{[propext, Classical.choice, Quot.sound]}.}
+\caption{Pure Lean~4.35.0 formal verification ledger (\code{results/lean4-audit.txt}, \code{results/lean4-multi-kernel.txt}). All 78 declarations in \code{Solution} compile with zero warnings, zero \code{sorryAx}, zero \code{native\_decide}, and axioms strictly within \code{[propext, Classical.choice, Quot.sound]}.}
 \label{tab:lean}
 \scriptsize
 \setlength{\tabcolsep}{3.5pt}
@@ -272,8 +275,8 @@ In \texttt{v1.5.0}, the formal proof suite (\code{lean/}, pinned \code{leanprove
 \toprule
 \textbf{Group} & \textbf{Lean~4.35.0 Module} & \textbf{Decls} & \textbf{Machine-Checked Scope} \\
 \midrule
-Spec & \tcode{CellulogonicProofs/Spec.lean} & Defs & Pure definitions only (zero proofs, zero \tcode{sorry}); shared by \tcode{Challenge} and \tcode{Solution} \\
-I    & \tcode{StoichiometryThermo.lean} & \tcode{T01}--\tcode{T10} & 4-solvent 19-rxn exact mass ($0\,\mathrm{amu}$), 1st-Law ($0\,\mathrm{uq}$), strict 2nd-Law $q_r>0$, ATP coupling, $4\times$ resp., no perpetual cycles \\
+Spec & \tcode{CellulogonicProofs/Spec.lean} & 12 Pinned & Pure definitions only (zero proofs, zero \tcode{sorry}); shared by \tcode{Challenge} and \tcode{Solution} \\
+I    & \tcode{StoichiometryThermo.lean} & \tcode{T01}--\tcode{T10} & 4-solvent 19-rxn exact mass ($0\,\mathrm{amu}$), 1st-Law ($0\,\mathrm{uq}$), strict 2nd-Law $q_r>0$, ATP coupling, 3-solvent $4\times$ resp., no perpetual cycles \\
 II   & \tcode{MembraneGeometry.lean} & \tcode{T11}--\tcode{T19} & $Q \le 1/2$ fission iff, exosome escape \tcode{T15}, sextic \textbf{Global Minimax Theorem} \tcode{T16}, osmotic lysis \\
 III  & \tcode{BioenergeticsEndosymbiosis.lean} & \tcode{T20}--\tcode{T27} & Lane $1/R$ ceiling, $O(1)$ endosymbiotic liberation, $R/r$ amplification, heteroplasmy purifying selection, EGT \\
 IV   & \tcode{ChemiosmosisAutopoiesis.lean} & \tcode{T28}--\tcode{T36} & Strict Terran/Venus/Titan ($e_{\mathrm{pmf}}=8$) c-ring floors, Levin Dirichlet dissipation, crystal/noise $\mathrm{COVI}=0$, Markov blanket \\
@@ -282,29 +285,30 @@ VI   & \tcode{CytoskeletonNanomechanics.lean} & \tcode{T45}--\tcode{T50} & Stoke
 VII  & \tcode{MorphogeneticGRN.lean} & \tcode{T51}--\tcode{T58} & Wolpert GPS, Steinberg sorting, apical wedge, eutelic tree $\sum 2^{\mathrm{rem}}$, Hippo hysteresis, Hebbian, coupled CPG, \tcode{R8} 0-drift \\
 VIII & \tcode{ContinuumBiomechanics.lean} & \tcode{C59}--\tcode{C62} & XPBD numerical damping monotonicity, 100\% carcass-to-detritus mass, maternal yolk cleavage, biotensegrity strain $\ge 0$ \\
 IX   & \tcode{NonVacuity.lean} & \tcode{NV01}--\tcode{NV08} & Concrete inhabitants \& sharp negative-boundary witnesses across Groups~I--VIII \\
+X    & \tcode{AdversarialTests.lean} & \tcode{AT01}--\tcode{AT08} & Machine-checked negations ($\neg P$) refuting weakened or sign-flipped variants across Groups~I--VIII \\
 \midrule
-\textbf{Total} & \textbf{10 Modules + \tcode{Challenge}/\tcode{Solution}} & \textbf{70 / 70} & \textbf{Local 5-kernel PASS (\tcode{lean}, \tcode{leanchecker}, \tcode{leanchecker-paranoid}, \tcode{con-leche}, \tcode{con-ron}, \tcode{nanoda\_bin}); 6/6 + \tcode{lean4lean} in Ubuntu CI} \\
+\textbf{Total} & \textbf{11 Modules + \tcode{Challenge}/\tcode{Solution}} & \textbf{78 / 78} & \textbf{6/6 Kernels (\tcode{lean}, \tcode{leanchecker-paranoid}, \tcode{lean4lean}, \tcode{nanoda\_bin}, \tcode{con-leche}/\tcode{con-ron}, \tcode{comparator}) + Live Tamper Reject} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Table~\ref{tab:fidelity} documents the row-by-row statement-fidelity boundary between Lean~4 declarations and the native C11 implementation (full matrix in \code{docs/statement-fidelity.md}), preventing conflation of discrete kernel invariants with unformalized runtime code.
+Table~\ref{tab:fidelity} documents the row-by-row statement-fidelity boundary between Lean~4 declarations and exact C11 runtime symbols (full matrix in \code{docs/statement-fidelity.md}), preventing conflation of discrete kernel invariants with unformalized runtime code.
 
 \begin{table}[ht]
 \centering
-\caption{Statement-Fidelity Audit Matrix mapping C11 code to Lean~4.35.0 declarations and explicit scope divergences (\code{docs/statement-fidelity.md}).}
+\caption{Statement-Fidelity Audit Matrix mapping exact C11 runtime symbols to Lean~4.35.0 declarations and explicit scope divergences (\code{docs/statement-fidelity.md}).}
 \label{tab:fidelity}
 \scriptsize
 \renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{@{} P{2.4cm} P{2.5cm} P{2.1cm} Y @{}}
+\begin{tabularx}{\textwidth}{@{} P{2.4cm} P{2.7cm} P{2.1cm} Y @{}}
 \toprule
-\textbf{Subsystem} & \textbf{C11 Source} & \textbf{Lean Decls} & \textbf{Exact Fidelity Match \& Disclosed Divergence} \\
+\textbf{Subsystem} & \textbf{Exact C11 Symbol} & \textbf{Lean Decls} & \textbf{Exact Fidelity Match \& Disclosed Divergence} \\
 \midrule
-19-Rxn 4-Solvent Chemoton & \tcode{chemoton_physics.c}, \tcode{cellulogonic_internal.h} & \tcode{T01}--\tcode{T10}, \tcode{NV01} & Identical integer weights, $\mu_i$, $e_{\mathrm{pmf}}$, $r_2$, and $q_r > 0$. Divergence: C11 uses \tcode{int64_t} overflow guards and spatial diffusion outside Lean. \\
-Canham--Helfrich Bilayers & \tcode{cellular_world.c} (\tcode{Q=100*V^2/L^3}) & \tcode{T11}--\tcode{T19}, \tcode{NV02} & Exact cleared-denominator integer $C_0 = 100$ match. Divergence: C11 applies continuous 3D fission axis sampling via \tcode{Philox4x32-10}. \\
-Bioenergetics \& Solvents & \tcode{chemoton_physics.c} (\tcode{SOLVENT_TABLE}) & \tcode{T20}--\tcode{T30}, \tcode{NV03}--\tcode{NV04} & Exact c-ring floors ($3, 2, 4$) and spherical scaling proxies. Divergence: C11 tracks up to 8 explicit organelle slots per cell. \\
-Bioelectricity \& COVI & \tcode{metrology_covi.c}, \tcode{cellular_world.c} & \tcode{T31}--\tcode{T36}, \tcode{NV04} & Exact pairwise Dirichlet dissipation and template/catalyst zero-gates. Divergence: C11 aggregates 8 weighted float pillars for \tcode{COVI}. \\
-Cytoskeleton, GRN \& Continuum & \tcode{cellular_world.c}, \tcode{test_falsification.c} & \tcode{T45}--\tcode{T58}, \tcode{C59}--\tcode{C62}, \tcode{NV06}--\tcode{NV08} & Exact C11 integer recurrences for Fr\"ohlich (\tcode{frohlichStep}), Hippo TF7, and CPG phase $[280,1360]$. Divergence: 3D positions, Hertz forces, and AVX2 diffusion are verified by C11 gates \tcode{G07}/\tcode{G21}--\tcode{G24}, not inside Lean. \\
+19-Rxn 4-Solvent Chemoton & \tcode{apply_exact_rxn()} (\tcode{chemoton_physics.c}) & \tcode{T01}--\tcode{T10}, \tcode{NV01}, \tcode{AT01} & Identical integer weights, $\mu_i$, $e_{\mathrm{pmf}}$, $r_2$, and $q_r > 0$. Divergence: C11 uses \tcode{int64_t} guards, unified \tcode{photon_rem_uq[i]}, and spatial diffusion outside Lean. \\
+Canham--Helfrich Bilayers & \tcode{step_membrane_mechanics_and_division()} & \tcode{T11}--\tcode{T19}, \tcode{NV02}, \tcode{AT02} & Exact cleared-denominator integer $C_0 = 100$ match. Divergence: C11 applies 3D fission axis sampling via \tcode{Philox4x32-10}. \\
+Bioenergetics \& Solvents & \tcode{SOLVENT_TABLE}, \tcode{CellOrganelle org[8]} & \tcode{T20}--\tcode{T30}, \tcode{NV03}--\tcode{NV04}, \tcode{AT03} & Exact c-ring floors ($3, 2, 4$) and spherical scaling proxies. Divergence: C11 caps explicit organelle slots at 8 with \tcode{born_org_mask} single-step guard. \\
+Bioelectricity \& COVI & \tcode{cell_compute_telemetry()} (\tcode{metrology_covi.c}) & \tcode{T31}--\tcode{T36}, \tcode{NV04}, \tcode{AT04} & Exact pairwise Dirichlet dissipation and template/catalyst zero-gates. Divergence: C11 aggregates 8 weighted float pillars for \tcode{COVI}. \\
+Cytoskeleton, GRN \& Continuum & \tcode{step_developmental_morphogenesis()}, \tcode{int32_t pos_nm[3]} & \tcode{T45}--\tcode{T58}, \tcode{C59}--\tcode{C62}, \tcode{NV06}--\tcode{08}, \tcode{AT06}--\tcode{08} & Exact C11 integer recurrences for Fr\"ohlich (\tcode{frohlichStep}), Hippo TF7, and CPG phase $[280,1360]$. Divergence: 3D nanometer \tcode{int32_t pos_nm[3]}, Hertz forces, and AVX2 diffusion are verified by C11 gates \tcode{G07}/\tcode{G21}--\tcode{G24}. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -314,12 +318,12 @@ Cytoskeleton, GRN \& Continuum & \tcode{cellular_world.c}, \tcode{test_falsifica
 \label{sec:results}
 % =====================================================================
 
-\subsection{4-Way Cross-OS Bit-Exact Parity, 26 Gates, 8 Mutants, Fuzzing, and Property Checks}
-CELLULOGONIC MECHA compiles cleanly under strict \texttt{-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror -ffp-contract=off} with zero external runtime dependencies on Windows~11 PE64 (\texttt{clang 23.1.0 + lld}, portable \code{x86-64-v3} AVX2/ThinLTO) and Ubuntu Linux ELF64 (\texttt{gcc 13.3.0}), and passes a static \code{llvm-nm}/\code{nm} zero-heap hot-loop audit confirming zero \code{malloc}/\code{calloc}/\code{realloc}/\code{free} imports in \code{chemoton_physics} and \code{cellular_world}. Table~\ref{tab:parity} records the live \texttt{v1.5.0} cross-OS parity benchmark on the Intel Core Ultra~9 275HX workstation: across every OS, compiler, and ISA mode, the canonical 300-epoch complete-state SHA-256 digest matches to \textbf{0-bit diff} (\code{681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff}), with $0\,\mathrm{amu}$ mass drift, $0\,\mathrm{uq}$ energy drift, $0$ Second-Law violations, and $0$ post-warmup allocations. All \textbf{26/26 falsification gates} (\code{G01}--\code{G26}, including negative ABI/re-signed \code{.cmbin} rejection \code{G25} and photon-budget/complete-SHA/tun-bond regression \code{G26}) pass and catch \textbf{8/8 planted negative mutants} (\code{M1}--\code{M8}) identically on Win64 and Linux (including ASan+UBSan+AVX2 with zero leaks and zero UB), complemented by $1{,}000/1{,}000$ passing dual-mode standalone+\code{libFuzzer} binary/ABI fuzz cases (\code{test/fuzz_cmbin_abi.c}), $2{,}700/2{,}700$ passing randomized property checks (\code{scripts/prop_check.py}), an independent clean-room exact Python reference oracle (\code{reference/chemoton_oracle.py}), and $12/12$ Web Observatory HTTP/CSP/CSRF bridge tests (\code{test/test_web_server.mjs}).
+\subsection{3-OS / 2-ISA Bit-Exact Parity, 26 Gates, 8 Mutants, Fuzzing, and Property Checks}
+CELLULOGONIC MECHA compiles cleanly under strict \texttt{-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror -ffp-contract=off} with zero external runtime dependencies on Windows~11 PE64 (\texttt{clang 23.1.0 + lld}, portable \code{-march=x86-64} + isolated \code{target("avx2")} ThinLTO), Ubuntu Linux ELF64 (\texttt{gcc 13.3.0}), and macOS Apple Silicon ARM64 (\texttt{clang} in CI), and passes a 3-module \code{llvm-nm}/\code{nm} zero-heap hot-loop audit confirming zero \code{malloc}/\code{calloc}/\code{realloc}/\code{free} imports in \code{chemoton_physics}, \code{cellular_world}, and \code{metrology_covi}. Table~\ref{tab:parity} records the live \texttt{v1.6.0} cross-OS parity benchmark on the Intel Core Ultra~9 275HX workstation: across every OS, compiler, and ISA mode, the canonical 300-epoch complete-state SHA-256 digest matches to \textbf{0-bit diff} (\code{83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe}), with $0\,\mathrm{amu}$ mass drift, $0\,\mathrm{uq}$ energy drift, $0$ Second-Law violations, and $0$ post-warmup allocations. All \textbf{26/26 falsification gates} (\code{G01}--\code{G26}) pass and catch \textbf{8/8 planted negative mutants} (\code{M1}--\code{M8}, including simulation-level RNG-coupling mutant \code{M3}) identically across Win64 ($0.692\,\mathrm{s}$), Linux ($0.802\,\mathrm{s}$), Linux ASan+UBSan ($2.906\,\mathrm{s}$), and macOS ARM64 CI, complemented by $1{,}000/1{,}000$ passing adversarial binary/ABI fuzz cases plus \code{libFuzzer} smoke testing (\code{test/fuzz_cmbin_abi.c}), $2{,}720/2{,}720$ passing randomized property and native C11 checks (\code{scripts/prop_check.py}), an independent clean-room exact Python reference oracle (\code{reference/chemoton_oracle.py}, $6{,}586$ checks), and $13/13$ Web Observatory HTTP/CSP/CSRF bridge tests (\code{test/test_web_server.mjs}).
 
 \begin{table}[ht]
 \centering
-\caption{Four-way cross-OS, cross-compiler, and cross-ISA bit-exact SHA-256 parity in \texttt{v1.5.0} (300 epochs, 51,488 cell steps, 1,222,070 reactions, seed \texttt{5000}; full digest \code{681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff}).}
+\caption{Four-way cross-OS, cross-compiler, and cross-ISA bit-exact SHA-256 parity in \texttt{v1.6.0} (300 epochs, 50,243 cell steps, 1,224,310 reactions, seed \texttt{5000}; full digest \code{83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe}; macOS ARM64 scalar parity verified in CI).}
 \label{tab:parity}
 \scriptsize
 \setlength{\tabcolsep}{3.8pt}
@@ -327,20 +331,20 @@ CELLULOGONIC MECHA compiles cleanly under strict \texttt{-Wall -Wextra -Wshadow 
 \toprule
 \textbf{Platform / Compiler} & \textbf{Kernel} & \textbf{Elapsed} & \textbf{Throughput} & \textbf{Drift/Allocs} & \textbf{State SHA-256} \\
 \midrule
-Win64 (\texttt{clang 23.1.0}) & \texttt{SIMD\_AVX2}  & 0.0540\,s & 22.643\,M rxns/s (1.23$\times$) & 0 / 0 & \texttt{681a9747\ldots 519eceff} \\
-Win64 (\texttt{clang 23.1.0}) & \texttt{SCALAR\_REF} & 0.0664\,s & 0.775\,M steps/s                & 0 / 0 & \texttt{681a9747\ldots 519eceff} \\
-Linux (\texttt{gcc 13.3.0})   & \texttt{SIMD\_AVX2}  & 0.0776\,s & 15.752\,M rxns/s (1.09$\times$) & 0 / 0 & \texttt{681a9747\ldots 519eceff} \\
-Linux (\texttt{gcc 13.3.0})   & \texttt{SCALAR\_REF} & 0.0844\,s & 0.610\,M steps/s                & 0 / 0 & \texttt{681a9747\ldots 519eceff} \\
+Win64 (\texttt{clang 23.1.0}) & \texttt{SIMD\_AVX2}  & 0.0443\,s & 27.665\,M rxns/s (1.19$\times$) & 0 / 0 & \texttt{83317026\ldots 532c9bbe} \\
+Win64 (\texttt{clang 23.1.0}) & \texttt{SCALAR\_REF} & 0.0527\,s & 0.954\,M steps/s                & 0 / 0 & \texttt{83317026\ldots 532c9bbe} \\
+Linux (\texttt{gcc 13.3.0})   & \texttt{SIMD\_AVX2}  & 0.0517\,s & 23.681\,M rxns/s (1.15$\times$) & 0 / 0 & \texttt{83317026\ldots 532c9bbe} \\
+Linux (\texttt{gcc 13.3.0})   & \texttt{SCALAR\_REF} & 0.0595\,s & 0.844\,M steps/s                & 0 / 0 & \texttt{83317026\ldots 532c9bbe} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Emergent Trajectories, Xenocellular Solvents, and Honest Tradeoffs}
-Figure~\ref{fig:curves} plots the live \texttt{v1.5.0} deterministic trajectories for zero-seed abiogenesis (\code{results/03_protocell_abiogenesis.txt}) and clonal 5-fate 3D embryogenesis (\code{results/12_embryogenesis_grn_3d.txt}), while Table~\ref{tab:solvents} reports de-novo evolution from neutral uniform ($25.0\%$) initial genomes across all four planetary solvents (\code{results/05_xenocellular_transplants.txt}):
+Figure~\ref{fig:curves} plots the live \texttt{v1.6.0} deterministic trajectories for zero-seed abiogenesis (\code{results/03_protocell_abiogenesis.txt}) and clonal 5-fate 3D embryogenesis (\code{results/12_embryogenesis_grn_3d.txt}), while Table~\ref{tab:solvents} reports de-novo evolution from neutral uniform ($25.0\%$) initial genomes across all four planetary solvents (\code{results/05_xenocellular_transplants.txt}):
 \begin{itemize}[leftmargin=1.6em, itemsep=1.5pt]
-  \item \textbf{Zero-Seed Abiogenesis:} Starting from $0$ cells ($\mathrm{COVI}=0.00$), $1{,}737$ vesicles condense above CMC and radiate across $100$ lineages, peaking at $598$ living cells ($t=72$), $105$ organelles ($t=144$), and $\mathrm{COVI} = 89.49$ (Stage~6, $\mathrm{MET}=7/7$, $t=96$), finishing at $269$ living cells and LZ77 Assembly Index $A = 25.11$~\cite{sharma2023}.
-  \item \textbf{Translation-Invariant 5-Fate 3D Embryogenesis:} From $8$ identical-DNA clonal blastomeres, local 3D paracrine GPS and conditional GRNs organize $50$ cells (largest tissue $47$) spanning all five fates (\texttt{P=4, Ec=8, N=18, M=9, G=6, Gm=5}; $\mathrm{ApicalWedge}=0.364$), raising Steinberg homotypic sorting from $44.4\%$ to $80.0\%$ peak ($69.9\%$ final), wiring $328$ axons ($292$ pruned, $36$ active), halting via $118$ Hippo and $1{,}644$ eutelic stops, and firing $725$ ATP-billed CPG pulses (exact Z-invariance in \code{G23}, SHA \texttt{9526ca6a\ldots bc3bbb89}).
-  \item \textbf{Honest Negative Tradeoffs Observed:} (a)~Enabling endosymbiosis (\code{results/04}) achieves $7.63\times$ larger maximum cell volume ($1305$ vs.\ $171$) and $1.93\times$ higher Assembly Index ($34.60$ vs.\ $17.90$) with $262$ secondary chimeras and $119$ EGT events, \emph{but} lowers final headcount ($74$ vs.\ $507$) because biomass concentrates into fewer large eukaryotes; (b)~Titan's higher $n_H \ge 4$ ATP-synthase gearing depresses carrying capacity ($81$ vs.\ $219\text{--}392$ alive) and adaptation rate ($66.7\%$ vs.\ $87.1\%\text{--}94.5\%$); and (c)~under 50\% partial Omega restraints (\code{results/08}), backlash channels fire ($96$ kill-switch deletions, $394$ dormancy spores, $167$ HGT smuggles, $1{,}991$ metabolic bypasses), causing \texttt{SPEEDBUMPING 50\%} ($\mathrm{COVI}=92.80$) and \texttt{NERFING 50\%} ($91.23$) to overshoot the feral baseline ($86.83$), whereas $100\%$ restraint collapses vitality to $0.00$.
+  \item \textbf{Zero-Seed Abiogenesis:} Starting from $0$ cells ($\mathrm{COVI}=0.00$), $1{,}707$ vesicles condense above CMC and radiate across $81$ lineages, peaking at $603$ living cells ($t=72$), $107$ organelles ($t=144\text{--}168$), and $\mathrm{COVI} = 88.92$ (Stage~6, $\mathrm{MET}=7/7$, $t=120$), finishing at $240$ living cells and LZ77 Assembly Index $A = 26.10$~\cite{sharma2023}.
+  \item \textbf{Translation-Invariant 5-Fate 3D Embryogenesis:} From $8$ identical-DNA clonal blastomeres, local 3D paracrine GPS and conditional GRNs organize $47$ cells (largest tissue $45$) spanning all five fates (\texttt{P=4, Ec=8, N=18, M=5, G=6, Gm=6}; $\mathrm{ApicalWedge}=0.390$), raising Steinberg homotypic sorting from $44.4\%$ to $81.1\%$ peak ($67.9\%$ final), wiring $288$ axons ($254$ pruned, $34$ active), halting via $119$ Hippo and $1{,}633$ eutelic stops, and firing $674$ ATP-billed CPG pulses (exact Z-invariance in \code{G23}, SHA \texttt{cafc83d0\ldots 15bad443}).
+  \item \textbf{Honest Negative Tradeoffs Observed:} (a)~Enabling endosymbiosis (\code{results/04}) achieves $5.64\times$ larger single-seed maximum cell volume ($1{,}122$ vs.\ $199$; $9.90\times$ across $N=24$) and $1.99\times$ higher Assembly Index ($35.71$ vs.\ $17.90$) with $249$ secondary chimeras and $121$ EGT events, \emph{but} lowers final headcount ($81$ vs.\ $517$) because biomass concentrates into fewer large eukaryotes; (b)~Titan's higher $n_H \ge 4$ ATP-synthase gearing depresses carrying capacity ($122$ vs.\ $256\text{--}405$ alive), and enforcing unified per-voxel \code{photon_rem_uq[i]} caps slows Terran$\to$Venus cross-world transplant sweep to $31.6\%$ ($30/95$, up from $12.4\%$ post-shock) relative to uncapped host photosynthesis; and (c)~under 50\% partial Omega restraints (\code{results/08}), backlash channels fire ($96$ kill-switch deletions, $394$ dormancy spores, $167$ HGT smuggles, $1{,}991$ metabolic bypasses), with individual \texttt{BOXING 50\%} ($\mathrm{COVI}=91.34$) and \texttt{SLOWING 50\%} ($90.23$) overshooting the feral baseline ($88.60$), whereas $100\%$ global restraint collapses vitality to $0.00$.
 \end{itemize}
 
 \begin{figure}[ht]
@@ -360,19 +364,19 @@ Figure~\ref{fig:curves} plots the live \texttt{v1.5.0} deterministic trajectorie
   label style={font=\scriptsize}, tick label style={font=\scriptsize}
 ]
   \addplot[color=cmEmerald, very thick, mark=*, mark size=1.4pt] coordinates {
-    (0,0) (24,205) (48,346) (72,598) (96,555) (120,436) (144,373) (168,337) (192,313) (216,290) (240,269)
+    (0,0) (24,213) (48,374) (72,603) (96,578) (120,481) (144,365) (168,294) (192,262) (216,256) (240,240)
   };
-  \addlegendentry{Alive Cells (peak 598)}
+  \addlegendentry{Alive Cells (peak 603)}
 
   \addplot[color=cmCyan, very thick, dashed, mark=triangle*, mark size=1.5pt] coordinates {
-    (0,0) (24,1) (48,5) (72,34) (96,78) (120,100) (144,105) (168,101) (192,96) (216,93) (240,103)
+    (0,0) (24,4) (48,12) (72,50) (96,92) (120,104) (144,107) (168,107) (192,104) (216,97) (240,99)
   };
-  \addlegendentry{Organelles (peak 105)}
+  \addlegendentry{Organelles (peak 107)}
 
   \addplot[color=cmGold, thick, mark=square*, mark size=1.2pt] coordinates {
-    (0,0) (24,63.13) (48,68.76) (72,84.28) (96,89.49) (120,87.81) (144,86.42) (168,78.87) (192,72.72) (216,67.65) (240,64.10)
+    (0,0) (24,59.87) (48,69.64) (72,85.68) (96,88.80) (120,88.92) (144,86.13) (168,84.00) (192,83.38) (216,83.18) (240,80.17)
   };
-  \addlegendentry{COVI Score (peak 89.49)}
+  \addlegendentry{COVI Score (peak 88.92)}
 \end{axis}
 
 \begin{axis}[
@@ -387,29 +391,29 @@ Figure~\ref{fig:curves} plots the live \texttt{v1.5.0} deterministic trajectorie
   label style={font=\scriptsize}, tick label style={font=\scriptsize}
 ]
   \addplot[color=cmViolet, very thick, mark=*, mark size=1.4pt] coordinates {
-    (0,44.4) (25,78.2) (50,76.6) (75,80.0) (100,79.5) (125,78.8) (150,77.5) (175,71.8) (200,69.9)
+    (0,44.4) (25,77.4) (50,78.7) (75,81.1) (100,81.0) (125,75.6) (150,66.7) (175,67.9) (200,67.9)
   };
-  \addlegendentry{Steinberg Sort \% (peak 80.0\%)}
+  \addlegendentry{Steinberg Sort \% (peak 81.1\%)}
 
   \addplot[color=cmEmerald, very thick, mark=square*, mark size=1.3pt] coordinates {
-    (0,8) (25,35) (50,38) (75,46) (100,47) (125,48) (150,47) (175,47) (200,50)
+    (0,8) (25,32) (50,37) (75,43) (100,46) (125,47) (150,47) (175,47) (200,47)
   };
-  \addlegendentry{Clonal Cells (8 to 50, 5 fates)}
+  \addlegendentry{Clonal Cells (8 to 47, 5 fates)}
 
   \addplot[color=cmCrimson, very thick, dashed, mark=triangle*, mark size=1.5pt] coordinates {
-    (0,0) (25,2) (50,2) (75,4) (100,16) (125,26) (150,38) (175,35) (200,36)
+    (0,0) (25,2) (50,2) (75,6) (100,12) (125,28) (150,34) (175,30) (200,34)
   };
-  \addlegendentry{Active Axons (328w / 292p)}
+  \addlegendentry{Active Axons (288w / 254p)}
 \end{axis}
 \end{tikzpicture}%
 }
-\caption{Verbatim deterministic trajectories verified bit-identically in \texttt{v1.5.0} ($0\,\mathrm{amu}$/$0\,\mathrm{uq}$ residual every tick): (A)~zero-seed protocell abiogenesis (\code{results/03}); (B)~translation-invariant 5-fate 3D clonal embryogenesis (\code{results/12}).}
+\caption{Verbatim deterministic trajectories verified bit-identically in \texttt{v1.6.0} ($0\,\mathrm{amu}$/$0\,\mathrm{uq}$ residual every tick): (A)~zero-seed protocell abiogenesis (\code{results/03}); (B)~translation-invariant 5-fate 3D clonal embryogenesis (\code{results/12}).}
 \label{fig:curves}
 \end{figure}
 
 \begin{table}[ht]
 \centering
-\caption{De-novo evolution from neutral uniform initial genomes ($25.0\%$ adapted, 240 epochs, seed \texttt{5000}, \code{results/05_xenocellular_transplants.txt}) confirming Gray-coded adaptation and strict Lean \texttt{T28}--\texttt{T30} c-ring floors.}
+\caption{De-novo evolution from neutral uniform initial genomes ($25.0\%$ adapted, 240 epochs, seed \texttt{5000}, unified \code{photon_flux_uq = 800 uq}, \code{results/05_xenocellular_transplants.txt}) confirming Gray-coded adaptation and strict Lean \texttt{T28}--\texttt{T30} c-ring floors.}
 \label{tab:solvents}
 \scriptsize
 \setlength{\tabcolsep}{4pt}
@@ -417,20 +421,20 @@ Figure~\ref{fig:curves} plots the live \texttt{v1.5.0} deterministic trajectorie
 \toprule
 \textbf{Planetary Solvent Regime} & $e_{\mathrm{pmf}}$ & \textbf{Floor $n_H^{\min}$} & \textbf{Alive} & \textbf{De-Novo Adapted} & \textbf{c-Ring} & \textbf{COVI} & \textbf{Drift} \\
 \midrule
-Terran Aqueous ($\mathrm{H}_2\mathrm{O}$)        & 10 & $\ge 3$ (\texttt{T28}) & 392 & 90.8\% (356/392) & 3.17 & 93.99 & 0 / 0 \\
-Titan Azotosome ($\mathrm{CH}_4/\mathrm{N}_2$)   &  8 & $\ge 4$ (\texttt{T30}) &  81 & 66.7\% (54/81)   & 4.11 & 80.78 & 0 / 0 \\
-Hydrothermal GDGT Monolayer                      & 10 & $\ge 3$ (\texttt{T28}) & 219 & 94.5\% (207/219) & 3.74 & 91.39 & 0 / 0 \\
-Venusian Sulfuric ($\mathrm{H}_2\mathrm{SO}_4$)  & 15 & $\ge 2$ (\texttt{T29}) & 310 & 87.1\% (270/310) & 3.25 & 77.37 & 0 / 0 \\
+Terran Aqueous ($\mathrm{H}_2\mathrm{O}$)        & 10 & $\ge 3$ (\texttt{T28}) & 405 & 84.2\% (341/405) & 3.37 & 95.48 & 0 / 0 \\
+Titan Azotosome ($\mathrm{CH}_4/\mathrm{N}_2$)   &  8 & $\ge 4$ (\texttt{T30}) & 122 & 77.0\% (94/122)  & 4.17 & 82.77 & 0 / 0 \\
+Hydrothermal GDGT Monolayer                      & 10 & $\ge 3$ (\texttt{T28}) & 256 & 87.1\% (223/256) & 3.74 & 92.25 & 0 / 0 \\
+Venusian Sulfuric ($\mathrm{H}_2\mathrm{SO}_4$)  & 15 & $\ge 2$ (\texttt{T29}) & 267 & 77.5\% (207/267) & 3.06 & 79.77 & 0 / 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \subsection{Locked Multi-Arm Paired Statistical Suite (\texorpdfstring{$N = 24$}{N = 24})}
-Table~\ref{tab:stats} confirms the deterministic 10,000-iteration sign-flip permutation test with step-down Holm--Bonferroni FWER correction, paired Cohen's $d_z$, and 95\% bootstrap confidence intervals across 24 locked paired seeds (\code{5000..5023}, 180 epochs; live \texttt{v1.5.0}). All four pre-registered hypotheses (\code{docs/preregistration.md}) win $24/24$ unanimously ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040$).
+Table~\ref{tab:stats} confirms the deterministic 10,000-iteration sign-flip permutation test with step-down Holm--Bonferroni FWER correction, paired Cohen's $d_z$, and 95\% bootstrap confidence intervals across 24 locked paired seeds (\code{5000..5023}, 180 epochs; live \texttt{v1.6.0}). All four pre-registered hypotheses (\code{docs/preregistration.md}) win $24/24$ unanimously ($96/96$ total, $p_{\mathrm{Holm}} = 0.00040 \le 0.05$).
 
 \begin{table}[ht]
 \centering
-\caption{Locked paired statistical verification ($N = 24$, seeds \texttt{5000..5023}, 180 epochs; \code{results/09_paired_stats_n24.txt}, live \texttt{v1.5.0}).}
+\caption{Locked paired statistical verification ($N = 24$, seeds \texttt{5000..5023}, 180 epochs; \code{results/09_paired_stats_n24.txt}, live \texttt{v1.6.0}).}
 \label{tab:stats}
 \scriptsize
 \setlength{\tabcolsep}{2.8pt}
@@ -438,10 +442,10 @@ Table~\ref{tab:stats} confirms the deterministic 10,000-iteration sign-flip perm
 \toprule
 \textbf{Pre-Registered Hypothesis ($N = 24$)} & \textbf{Mean A} & \textbf{Mean B} & \textbf{Diff} & \textbf{95\% Bootstrap CI} & $d_z$ & \textbf{Wins} & $p_{\mathrm{Holm}}$ \\
 \midrule
-\textbf{H1:} COVI (Feral vs.\ 70\% Castrated)         &   87.090 &  40.535 &   $+46.555$ & $[+39.778, +53.153]$    & 2.675 & \textbf{24/24} & \textbf{0.00040} \\
-\textbf{H2:} MaxVol (Endosymbiosis ON/OFF)            & 1439.417 & 153.333 & $+1286.083$ & $[+1075.542, +1495.875]$ & 2.305 & \textbf{24/24} & \textbf{0.00040} \\
-\textbf{H3:} Bioelectric $\sigma(V_m)$ (ON/OFF)       &   23.130 &   0.000 &   $+23.130$ & $[+21.000, +25.277]$    & 4.214 & \textbf{24/24} & \textbf{0.00040} \\
-\textbf{H4:} Tardigrade TDP Survival (Intact/KO)      &  167.125 &   2.417 &  $+164.708$ & $[+122.792, +211.792]$  & 1.468 & \textbf{24/24} & \textbf{0.00040} \\
+\textbf{H1:} COVI (Feral vs.\ 70\% Castrated)         &   86.453 &  37.625 &   $+48.828$ & $[+41.784, +55.634]$    & 2.767 & \textbf{24/24} & \textbf{0.00040} \\
+\textbf{H2:} MaxVol (Endosymbiosis ON/OFF)            & 1610.792 & 162.625 & $+1448.167$ & $[+1293.917, +1603.875]$ & 3.560 & \textbf{24/24} & \textbf{0.00040} \\
+\textbf{H3:} Bioelectric $\sigma(V_m)$ (ON/OFF)       &   21.235 &   0.000 &   $+21.235$ & $[+18.891, +23.488]$    & 3.529 & \textbf{24/24} & \textbf{0.00040} \\
+\textbf{H4:} Tardigrade TDP Survival (Intact/KO)      &  165.333 &   2.250 &  $+163.083$ & $[+121.333, +207.417]$  & 1.468 & \textbf{24/24} & \textbf{0.00040} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -451,25 +455,31 @@ Table~\ref{tab:stats} confirms the deterministic 10,000-iteration sign-flip perm
 \label{sec:megaatlas}
 % =====================================================================
 
-In strict compliance with our companion registry \code{0thernes/unsolved-problems-mega-atlas} ($1{,}900$ cataloged open problems across $8$ Macro-Pillars), \textbf{zero ($0 / 1{,}900$) overarching Mega-Atlas open problems are solved or retired by \texttt{CELLULOGONIC MECHA v1.5.0}}. Table~\ref{tab:megaatlas} maps the seven biological, cybernetic, and geochemical Atlas IDs for which this engine provides scoped discrete mathematical invariants or controlled computational testbeds while affirming that every parent problem remains strictly \textbf{OPEN} (full cross-check in \code{docs/MEGA_ATLAS_CROSSCHECK.md}).
+In strict compliance with our companion registry \code{0thernes/unsolved-problems-mega-atlas} (\texttt{v2.6.0}, commit \texttt{d23b4d7}, $1{,}900$ cataloged open problems across $8$ Macro-Pillars), \textbf{zero ($0 / 1{,}900$) overarching Mega-Atlas open problems are solved or retired by \texttt{CELLULOGONIC MECHA v1.6.0}}. Table~\ref{tab:megaatlas} maps all thirteen directly adjacent biological, neurobiological, artificial-life, cybernetic, and geochemical Atlas IDs verified verbatim from \code{MegaAtlas_Unsolved_Problems_V2.json.gz}, affirming that every parent problem remains strictly \textbf{OPEN} (full cross-check in \code{docs/MEGA_ATLAS_CROSSCHECK.md}).
 
 \begin{table}[ht]
 \centering
-\caption{Cross-check against \code{0thernes/unsolved-problems-mega-atlas} ($0 / 1{,}900$ overarching problems retired; every parent problem remains OPEN).}
+\caption{Verbatim cross-check against \code{0thernes/unsolved-problems-mega-atlas v2.6.0} ($0 / 1{,}900$ overarching problems retired; all 13 adjacent parent problems remain OPEN).}
 \label{tab:megaatlas}
 \scriptsize
-\renewcommand{\arraystretch}{1.15}
-\begin{tabularx}{\textwidth}{@{} P{1.5cm} P{3.6cm} Y P{1.2cm} @{}}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\textwidth}{@{} P{1.65cm} P{3.95cm} Y P{1.15cm} @{}}
 \toprule
 \textbf{Atlas ID} & \textbf{Overarching Open Problem} & \textbf{Scoped Invariant / Empirical Probe in This Repo} & \textbf{Status} \\
 \midrule
-\tcode{BIO-001} & Abiogenesis: Origin of Life \& RNA-to-Ribosome Transition & Exact 8-species Chemoton closure (\tcode{T01}--\tcode{T10}), Canham--Helfrich budding (\tcode{T15}--\tcode{T16}), zero-seed CMC condensation (\tcode{G11}) & \textbf{OPEN} \\
-\tcode{BIO-015} & Origins of Multicellularity, Germline--Soma \& Cheater Suppression & Lane $1/R$ liberation (\tcode{T20}--\tcode{T27}), Track A apoptotic policing (\tcode{G15}), 7-organ eutelic budget (\tcode{T37}--\tcode{T41}) & \textbf{OPEN} \\
-\tcode{BIO-022} & Morphogenesis, Pattern Formation \& Bioelectric Target Memory & Gap-junction Dirichlet dissipation (\tcode{T31}--\tcode{T33}), 5-fate clonal 3D embryogenesis (\tcode{T51}--\tcode{T58}, \tcode{G23}--\tcode{G24}) & \textbf{OPEN} \\
-\tcode{SUB-001} & Bioelectric Pattern Memory in Planarian Regeneration & Discrete gap-junction $V_m$ polarization testbed (\tcode{H3}: $24/24$ wins) vs.\ zero-pump homogenization (\tcode{T32}) & \textbf{OPEN} \\
-\tcode{SUB-047} & Hydrothermal Alkaline Vents vs.\ Subaerial Warm-Pond Abiogenesis & 4-solvent strict 2nd-Law c-ring thermodynamics (\tcode{T28}--\tcode{T30}, \tcode{G14}) comparing aqueous, vent GDGT, Titan, Venus & \textbf{OPEN} \\
+\tcode{BIO-001} & Abiogenesis: Origin of Life \& RNA-to-Ribosome Transition & Exact 8-species Chemoton closure (\tcode{T01}--\tcode{T10}, \tcode{AT01}), Canham--Helfrich budding (\tcode{T15}--\tcode{T16}, \tcode{AT02}), CMC condensation (\tcode{G11}) & \textbf{OPEN} \\
+\tcode{BIO-006} & Origin of Eukaryogenesis (Asgard Archaea to Nucleated Cells) & Lane $1/R$ ceiling \& $O(1)$ liberation (\tcode{T20}--\tcode{T27}, \tcode{AT03}), primary/secondary chimeras, EGT (\tcode{G13}, \tcode{H2}: $9.90\times$ vol) & \textbf{OPEN} \\
+\tcode{BIO-015} & Origins of Multicellularity, Germline--Soma \& Cheaters & Track A apoptotic policing (\tcode{G15}), 5-fate germline isolation (\tcode{G23}), 7-organ eutelic budget (\tcode{T37}--\tcode{T41}) & \textbf{OPEN} \\
+\tcode{BIO-022} & Morphogenesis, Pattern Formation \& Bioelectric Target Memory & Gap-junction Dirichlet dissipation (\tcode{T31}--\tcode{T33}, \tcode{AT04}), 5-fate clonal 3D embryogenesis (\tcode{T51}--\tcode{T58}, \tcode{G23}--\tcode{G24}) & \textbf{OPEN} \\
+\tcode{BIO-046} & Extreme Anhydrobiosis, Cryptobiosis \& Radiotolerance & Tardigrade TDP vitrification decay drop (\tcode{T42}, \tcode{AT05}) \& 92\% drying + 90\% shock survival (\tcode{G16}, \tcode{H4}: $73.5\times$) & \textbf{OPEN} \\
+\tcode{BIO-070} & Physical \& Chemical Bounds of Alternative Biochemistries & Strict 2nd-Law 4-solvent c-ring stoichiometry floors (\tcode{T28}--\tcode{T30}, \tcode{AT01}) \& neutral de-novo adaptation (\tcode{G14}) & \textbf{OPEN} \\
+\tcode{NEURO-043} & Wiring Precision of $10^{14}$ Synapses (Genomic Bottleneck) & Netrin/Slit growth cones, Hebbian pruning (\tcode{T56}), and ATP-billed CPG waves (\tcode{T57}--\tcode{T58}, \tcode{G24}) from 128\,B DNA & \textbf{OPEN} \\
+\tcode{AI-045} & Open-Ended Artificial Life \& Unbounded Novelty Creation & Conservation-exact 3D off-lattice ecosystem measuring LZ77 Assembly Index $A$ and Bedau $A_{\mathrm{new}}$ (\tcode{G11}--\tcode{G13}) & \textbf{OPEN} \\
+\tcode{SUB-001} & Bioelectric Pattern Memory in Planarian Regeneration & Discrete gap-junction $V_m$ polarization testbed (\tcode{H3}: $24/24$ wins) vs.\ zero-pump homogenization (\tcode{T32}, \tcode{AT04}) & \textbf{OPEN} \\
+\tcode{SUB-012} & Molecular Glass-Transition Mechanism of Anhydrobiosis & Mass-conserving TDP vitrification with organelle PMF heat dissipation and reversible rehydration (\tcode{T42}, \tcode{G16}) & \textbf{OPEN} \\
+\tcode{SUB-047} & Hydrothermal Vents vs.\ Warm-Pond Abiogenesis Discriminant & 4-solvent comparative adaptation across aqueous, vent GDGT, Titan, and Venus under unified \tcode{photon_flux_uq} (\tcode{G14}) & \textbf{OPEN} \\
 \tcode{SYS-009} & Formal Cybernetic Theory of Multi-Scale Agency \& Autopoiesis & Gated anti-gaming \tcode{COVI} (\tcode{T34}--\tcode{T35}), Markov-blanket flux (\tcode{T36}), 13-vector restraint backlash (\tcode{G17}) & \textbf{OPEN} \\
-\tcode{XSPEC-009} & Information-Theoretic Channel Capacity of Stochastic GRNs & Local 3D paracrine morphogen GPS + 8-channel TF cascade + Hebbian pruning (\tcode{T51}--\tcode{T56}) & \textbf{OPEN} \\
+\tcode{XSPEC-009} & Information-Theoretic Channel Capacity of Stochastic GRNs & Local 3D paracrine morphogen GPS + 8-channel TF cascade + Lipschitz 128\,B operon decoding (\tcode{T51}, \tcode{G19}, \tcode{G23}) & \textbf{OPEN} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -480,8 +490,8 @@ In strict compliance with our companion registry \code{0thernes/unsolved-problem
 % =====================================================================
 
 \begin{enumerate}[leftmargin=1.6em, itemsep=2pt]
-  \item \textbf{Coarse-Graining, 2.5D Fluid Coupling \& Engineered Controls:} Every cell tracks integer counts of 8 coarse-grained molecular classes coupled to a 2.5D column-averaged $W\times H$ voxel fluid grid and continuous 3D $(x,y,z)$ off-lattice cell coordinates (so Z-translation is strictly invariant while X/Y shifts couple to voxel stoichiometry). We also explicitly disclose the prokaryotic maintenance surcharge above volume 85 without organelles (\code{chemoton_physics.c}) and the explicit restraint-response gates ($<95\%$/$<98\%$) in the 13-vector castration workbench; results establish properties of the discrete computational laboratory, not proof of wet-lab abiogenesis or astrobiological habitability.
-  \item \textbf{Formal-vs-Implementation Gap:} Lean~4.35.0 verifies the exact algebraic/combinatorial specification of the discrete laws (\code{T01}--\tcode{T58}, \code{C59}--\tcode{C62}, \code{NV01}--\tcode{NV08}), not a verified C11 compiler proof (e.g., CompCert) of \code{src/*.c}. Runtime C11 memory safety, AVX2 intrinsics, and parser robustness rely on \texttt{-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror}, static zero-heap hot-loop symbol audits, ASan/UBSan+AVX2 sanitizers, dual-mode \code{fuzz_cmbin_abi.c}, clean-room \code{reference/chemoton_oracle.py}, and the 26-gate / 8-mutant harness.
+  \item \textbf{Coarse-Graining, 2.5D Fluid Coupling \& Engineered Controls:} Every cell tracks integer counts of 8 coarse-grained molecular classes coupled to a 2.5D column-averaged $W\times H$ voxel fluid grid and continuous 3D \code{int32_t pos_nm[3]} off-lattice cell coordinates (so Z-translation is strictly invariant while X/Y shifts couple to voxel stoichiometry). We also explicitly disclose the prokaryotic maintenance surcharge above volume 85 without organelles (\code{chemoton_physics.c}) and the explicit restraint-response gates ($<95\%$/$<98\%$) in the 13-vector castration workbench; results establish properties of the discrete computational laboratory, not proof of wet-lab abiogenesis or astrobiological habitability.
+  \item \textbf{Formal-vs-Implementation Gap:} Lean~4.35.0 verifies the exact algebraic/combinatorial specification of the discrete laws (\code{T01}--\tcode{T58}, \code{C59}--\tcode{C62}, \code{NV01}--\tcode{NV08}, \code{AT01}--\tcode{AT08}), not a verified C11 compiler proof (e.g., CompCert) of \code{src/*.c}. Runtime C11 memory safety, AVX2 intrinsics, and parser robustness rely on \texttt{-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror}, 3-module zero-heap hot-loop symbol audits, ASan/UBSan sanitizers, dual-mode \code{fuzz_cmbin_abi.c} + \code{libFuzzer}, clean-room \code{reference/chemoton_oracle.py}, and the 26-gate / 8-mutant harness across Linux, Windows, and macOS ARM64.
   \item \textbf{Real-vs-Metaphor Boundary (\code{LIMITATIONS.md}):} Terms such as ``ATP,'' ``mitochondria,'' ``Wnt/BMP/Shh,'' ``Steinberg cadherins,'' ``TDP bioglass,'' and ``Fr\"ohlich--Pokorn\'y GHz microtubules'' denote \emph{mechanistic discrete biophysical abstractions} matching the cited mathematical laws, \textbf{not} literal biological molecules, sentience, or quantum-consciousness mechanisms. Our Fr\"ohlich--Pokorn\'y ODE (\code{T48}) is strictly a classical ATP-pumped dielectric damping recurrence.
   \item \textbf{Statistical Scope:} Paired seed sweeps ($N = 24$, \code{5000..5023}) test pre-registered structural ablations inside one $32\times 32\times 32\,\mu\mathrm{m}$ chamber parameterization; generalization to much larger chambers, longer geological timescales, or alternative solvent tables remains open future work.
 \end{enumerate}
@@ -492,10 +502,10 @@ In strict compliance with our companion registry \code{0thernes/unsolved-problem
 % =====================================================================
 
 \begin{itemize}[leftmargin=1.6em, itemsep=2pt]
-  \item \textbf{Clean-Clone Reproducibility (\code{REPLICATION.md}, \code{justfile}):} From a clean clone of \url{https://github.com/0thernes/cellulogonic-mecha}, running \texttt{.\textbackslash build.ps1} (Win64) or \code{./build_linux.sh} (Linux) builds all native artifacts under \code{-Werror}, verifies zero-heap hot-loop symbols, executes the 26-gate / 8-mutant falsification suite + 1,000-case ABI fuzzer + C11 quickstart, and audits Lean~4.35.0; \texttt{python3} \code{scripts/verify_oracle_and_stats.py}, \texttt{python3} \code{scripts/prop_check.py}, \texttt{node} \code{test/test_web_server.mjs}, \texttt{python3} \code{scripts/check_readme_axioms.py}, \texttt{python3} \code{scripts/check_citations.py}, and \texttt{python3} \code{scripts/build_paper.py} independently verify the exact Python oracle, property tests, web bridge security, verbatim axioms, live DOIs, and clean-room arXiv PDF compilation.
+  \item \textbf{Clean-Clone Reproducibility (\code{REPLICATION.md}, \code{SUBMISSION_READINESS.md}, \code{justfile}):} From a clean clone of \url{https://github.com/0thernes/cellulogonic-mecha}, running \texttt{.\textbackslash build.ps1} (Win64) or \code{./build_linux.sh} (Linux/macOS ARM64) builds all native artifacts under \code{-Werror}, verifies 3-module zero-heap hot-loop symbols, executes the 26-gate / 8-mutant falsification suite + 1,000-case ABI fuzzer + C11 quickstart, and audits all 78 Lean~4.35.0 declarations; \code{verify_oracle_and_stats.py}, \code{prop_check.py}, \code{test_web_server.mjs}, \code{check_readme_axioms.py}, \code{test_lean_negative.py}, \code{check_citations.py} (live Crossref metadata \& retraction audit into \code{results/citation-audit.json}), \code{build_blueprint.py}, and \code{build_paper.py} independently verify every formal, empirical, bibliographic, and publication invariant. Frozen artifact checksums (\code{CHECKSUMS.sha256}) are cryptographically attested via SLSA~v4 and an independent DigiCert RFC~3161 trusted timestamp (\code{data/timestamps/CHECKSUMS.sha256.tsr}).
   \item \textbf{CRediT Authorship \& Funding:} \textbf{Alexander Stephen Donahue} (Independent Researcher, Spokane, WA, USA; ORCID \code{0009-0006-8168-9648}): Conceptualization, Methodology, Software, Validation, Formal Analysis, Writing---Original Draft, Writing---Review \& Editing, Supervision, Funding Acquisition (self-funded; zero external institutional grants or commercial conflicts of interest).
   \item \textbf{Transparent AI-Assistance Disclosure (\code{docs/AI_DISCLOSURE.md}):} Substantive AI engineering and formalization assistance (Google DeepMind / Antigravity agent under direct human supervision) was used across C11 engineering, Lean~4.35.0 proof refactoring and Palomar specification isolation, test-suite hardening, and AMS-LaTeX typesetting. AI tools are disclosed transparently and are \emph{not} listed as authors; every mathematical and empirical claim is backed by independently replayable Lean kernels, SHA-256 digests, and open-source tests.
-  \item \textbf{Dual Open License:} Source code, Lean~4.35.0 proof modules, scripts, and CI workflows are licensed under \textbf{Apache-2.0} (\code{LICENSE}); this preprint, LaTeX source, figures, documentation, and empirical result logs are licensed under \textbf{CC-BY-4.0} (\code{LICENSE-DOCS}).
+  \item \textbf{Dual Open License (REUSE~3.x / SPDX):} Source code, Lean~4.35.0 proof modules, scripts, and CI workflows are licensed under \textbf{Apache-2.0} (\code{LICENSE}); this preprint, LaTeX source, figures, documentation, and empirical result logs are licensed under \textbf{CC-BY-4.0} (\code{LICENSE-DOCS}, \code{REUSE.toml}).
 \end{itemize}
 
 \FloatBarrier

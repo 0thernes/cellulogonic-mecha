@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #include "cellulogonic_internal.h"
 
 static const char* SOLVENT_NAMES[CELL_SOLVENT_COUNT] = {
@@ -39,7 +42,7 @@ static CellWorld* create_world_checked(const CellWorldConfig* cfg) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.5.0 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.6.0 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -47,7 +50,7 @@ static int cmd_probe(void) {
            caps.has_avx2, caps.has_bmi1, caps.has_bmi2, caps.has_popcnt,
            caps.has_rdseed, caps.has_rdtscp);
     printf("Compiled Kernels : SIMD_AVX2=%s | SCALAR_REF=ENABLED\n",
-#if defined(__AVX2__)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
            caps.has_avx2 ? "ENABLED (256-bit int64 finite-volume diffusion, OSXSAVE verified)"
                          : "COMPILED_BUT_RUNTIME_DISABLED (OSXSAVE/AVX2 absent)"
 #else
@@ -58,7 +61,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.5.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.6.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -1052,14 +1055,15 @@ static int cmd_stream(void) {
             }
             emit_world_json(w);
         } else if (strncmp(line, "autophage_dna ", 14) == 0) {
-            /* REAL 128-byte (256 hex char) evolved AUTOPHAGE DNA transfection (even-length validated!) */
+            /* REAL 128-byte (256 hex char) evolved AUTOPHAGE DNA transfection (strict hex + terminator check, F-35!) */
             const char* hx = line + 14;
             size_t hlen = 0u;
             while (hex_nibble(hx[hlen]) >= 0 && hlen < 257u) hlen++;
+            int term_ok = (hx[hlen] == '\0' || hx[hlen] == '\n' || hx[hlen] == '\r' || hx[hlen] == ' ');
             uint8_t dna128[128];
             memset(dna128, 0, sizeof(dna128));
             int parsed = 0;
-            if ((hlen & 1u) == 0u && hlen >= 64u && hlen <= 256u) {
+            if (term_ok && (hlen & 1u) == 0u && hlen >= 64u && hlen <= 256u) {
                 for (size_t b = 0; b < hlen / 2u; ++b) {
                     int hi = hex_nibble(hx[b * 2u]);
                     int lo = hex_nibble(hx[b * 2u + 1u]);
@@ -1117,9 +1121,18 @@ static int cmd_stream(void) {
     return 0;
 }
 
+static int parse_u64_strict(const char* s, uint64_t* out) {
+    if (!s || !out || s[0] == '\0' || s[0] == '-' || s[0] == '+') return 0;
+    char* ep = NULL;
+    unsigned long long v = strtoull(s, &ep, 10);
+    if (ep == s || *ep != '\0') return 0;
+    *out = (uint64_t)v;
+    return 1;
+}
+
 int main(int argc, char** argv) {
     if (argc < 2 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "help") == 0) {
-        printf("CELLULOGONIC MECHA v1.5.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
+        printf("CELLULOGONIC MECHA v1.6.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
         printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");
@@ -1128,7 +1141,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
-        printf("cellulogonic 1.5.0 (ABI 0x%08x)\n", cellulogonic_abi_version());
+        printf("cellulogonic 1.6.0 (ABI 0x%08x)\n", cellulogonic_abi_version());
         return 0;
     }
 
@@ -1141,7 +1154,13 @@ int main(int argc, char** argv) {
     for (int i = 2; i < argc; ++i) {
         if (strcmp(argv[i], "--epochs") == 0 && i + 1 < argc)     epochs = parse_u32_clamped(argv[++i], 200u, 1u, 100000u);
         else if (strcmp(argv[i], "--size") == 0 && i + 1 < argc)  size = parse_u32_clamped(argv[++i], 32u, 8u, 64u);
-        else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc)  seed = strtoull(argv[++i], NULL, 10);
+        else if (strcmp(argv[i], "--seed") == 0 && i + 1 < argc) {
+            const char* sval = argv[++i];
+            if (!parse_u64_strict(sval, &seed)) {
+                fprintf(stderr, "Invalid --seed value: '%s' (expected unsigned integer, 0 = hardware entropy)\n", sval);
+                return 2;
+            }
+        }
         else if (strcmp(argv[i], "--pairs") == 0 && i + 1 < argc) pairs = (int)parse_u32_clamped(argv[++i], 24u, 4u, 48u);
         else if (strcmp(argv[i], "--regime") == 0 && i + 1 < argc) regime = parse_u32_clamped(argv[++i], 3u, 0u, 5u);
         else if (strcmp(argv[i], "--solvent") == 0 && i + 1 < argc) solvent = parse_u32_clamped(argv[++i], 0u, 0u, 3u);

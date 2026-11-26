@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
  *
- * CELLULOGONIC MECHA v1.5.0 — Hardened Loopback HTTP + Native C11 Streaming Bridge
+ * CELLULOGONIC MECHA v1.6.0 — Hardened Loopback HTTP + Native C11 Streaming Bridge
  */
 import http from "node:http";
 import fs from "node:fs";
@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const VERSION = "1.5.0";
+const VERSION = "1.6.0";
 
 const rawPort = process.env.PORT !== undefined ? Number(process.env.PORT) : 8788;
 if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65535) {
@@ -409,6 +409,12 @@ const server = http.createServer(async (req, res) => {
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { ...SECURITY_HEADERS, Allow: "GET, HEAD" });
     res.end("Method not allowed");
+    return;
+  }
+
+  if (u.pathname === "/favicon.ico") {
+    res.writeHead(204, SECURITY_HEADERS);
+    res.end();
     return;
   }
 

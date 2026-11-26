@@ -1,4 +1,4 @@
-name: CELLULOGONIC MECHA CI — Cross-OS C11, 6-Kernel Lean 4.35, Web, Paper & Security
+name: CELLULOGONIC MECHA CI — 3-OS C11, 78-Theorem 6-Kernel Lean 4.35, Web, Paper & Security
 
 on:
   push:
@@ -14,37 +14,46 @@ permissions:
 
 jobs:
   native-c11-matrix:
-    name: C11 Build, 26 Gates, 8 Mutants, Fuzz, Oracle & Web Tests (${{ matrix.os }})
+    name: C11 Build, 26 Gates, 8 Mutants, Fuzz, Oracle & Web (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-      - name: Build Linux ELF64, 26-Gate Falsification, 1000-Case Fuzz, Oracle, Web Bridge & ASan/UBSan+AVX2
+      - uses: actions/checkout@v7
+      - name: Build Linux x86-64, 26 Gates, 1000-Case Fuzz, libFuzzer Smoke, Oracle, Web 13/13 & ASan/UBSan
         if: matrix.os == 'ubuntu-latest'
         run: |
           chmod +x build_linux.sh
           SKIP_LEAN=1 ./build_linux.sh
           ./bin/cellulogonic_linux bench --epochs 300 --size 32 --seed 5000
           ./bin/cellulogonic_linux embryo --epochs 200 --size 32 --seed 5000
+          if ./bin/cellulogonic_linux probe --seed abc 2>/dev/null; then
+            echo "FAIL: --seed abc should have exited non-zero" >&2
+            exit 1
+          fi
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/verify_oracle_and_stats.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/prop_check.py
           PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_versions.py
+          PYTHONDONTWRITEBYTECODE=1 python3 examples/01_embryogenesis_demo.py
           node --check web/server.mjs && node --check web/app.js && node --check web/renderer3d.js
           node test/test_web_server.mjs
-          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
-          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64-v3 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
+          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/test_falsification.c -o bin/test_falsification_asan -lm
+          gcc -O1 -g -std=c11 -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Wno-unused-parameter -Werror -ffp-contract=off -march=x86-64 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_cmbin_abi_asan -lm
           ./bin/test_falsification_asan
           ./bin/fuzz_cmbin_abi_asan 500
-          rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan bin/fuzz_cmbin_abi_asan
-      - name: Build Win64 PE64 & Run 26-Gate Falsification + 1000-Case ABI Fuzz + Web Bridge + Oracle
+          if command -v clang >/dev/null 2>&1; then
+            clang -O1 -g -std=c11 -DCELL_LIBFUZZER -fsanitize=fuzzer,address,undefined -fno-omit-frame-pointer -Iinclude src/crypto_rng.c src/chemoton_physics.c src/cellular_world.c src/metrology_covi.c src/abi_exports.c test/fuzz_cmbin_abi.c -o bin/fuzz_libfuzzer -lm
+            ./bin/fuzz_libfuzzer -max_total_time=2 -runs=2000
+          fi
+          rm -f test_tmp_cell.cmbin test_tamper_tmp.cmbin bin/test_falsification_asan bin/fuzz_cmbin_abi_asan bin/fuzz_libfuzzer
+      - name: Build Win64 PE64 & Run 26 Gates, 1000-Case Fuzz, Oracle & Web 13/13
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path bin | Out-Null
-          $flags = @('-O3','-std=c11','-Wall','-Wextra','-Wshadow','-Wstrict-prototypes','-Wconversion','-Wno-unused-parameter','-Werror','-ffp-contract=off','-march=x86-64-v3','-Iinclude')
+          $flags = @('-O3','-std=c11','-Wall','-Wextra','-Wshadow','-Wstrict-prototypes','-Wconversion','-Wno-unused-parameter','-Werror','-ffp-contract=off','-march=x86-64','-Iinclude')
           $core = @('src/crypto_rng.c','src/chemoton_physics.c','src/cellular_world.c','src/metrology_covi.c','src/abi_exports.c')
           gcc @flags @core src/main_cli.c -o bin/cellulogonic.exe -lm
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -67,22 +76,36 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python scripts/check_versions.py
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python examples/01_embryogenesis_demo.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           node test/test_web_server.mjs
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           Remove-Item -Force -ErrorAction SilentlyContinue test_tmp_cell.cmbin, test_tamper_tmp.cmbin, bin\test_falsification_ci.exe, bin\fuzz_cmbin_abi_ci.exe, bin\quickstart_c_abi_ci.exe
+      - name: Build macOS ARM64 (Apple Silicon) & Run 26 Gates, 1000-Case Fuzz, Oracle & Web 13/13
+        if: matrix.os == 'macos-latest'
+        run: |
+          chmod +x build_linux.sh
+          CC=clang SKIP_LEAN=1 ./build_linux.sh
+          ./bin/cellulogonic_linux probe
+          ./bin/cellulogonic_linux embryo --epochs 200 --size 32 --seed 5000
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/verify_oracle_and_stats.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/prop_check.py
+          PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_versions.py
+          PYTHONDONTWRITEBYTECODE=1 python3 examples/01_embryogenesis_demo.py
+          node test/test_web_server.mjs
 
   lean4-six-kernel:
-    name: Pure Lean 4.35.0 — 70 Theorems & 6-Kernel Palomar Comparator
+    name: Pure Lean 4.35.0 — 78 Theorems, 6-Kernel Palomar & Live Tamper Rejection
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install bubblewrap for 6-kernel Palomar sandbox
         run: sudo apt-get update && sudo apt-get install -y bubblewrap
       - name: Install Elan & Pinned Lean v4.35.0
         run: |
           curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
-      - name: Build Solution + Challenge, Verify Axioms & README Verbatim Parity
+      - name: Build Solution + Challenge, Verify 78 Axioms, Audit Diff & README Parity
         working-directory: lean
         run: |
           set -o pipefail
@@ -91,13 +114,15 @@ jobs:
           lake env lean VerifyAxioms.lean 2>&1 | tee /tmp/lean4-audit.txt
           COUNT=$(grep -cE "depends on axioms:|does not depend on any axioms" /tmp/lean4-audit.txt)
           echo "Audited theorem count: $COUNT"
-          test "$COUNT" -eq 70
+          test "$COUNT" -eq 78
           if grep -iE "\bwarning\b|\berror\b|sorryAx|ofReduceBool|trustCompiler|_native" /tmp/lean4-audit.txt; then
             echo "FORBIDDEN AXIOM OR WARNING DETECTED" >&2
             exit 1
           fi
+          diff -u ../results/lean4-audit.txt /tmp/lean4-audit.txt
           cd ..
           python3 scripts/check_readme_axioms.py
+          python3 scripts/test_lean_negative.py
       - name: Run All 6 Independent Proof Kernels (leanchecker-paranoid, lake check, lake comparator)
         working-directory: lean
         run: |
@@ -105,14 +130,40 @@ jobs:
           lake env leanchecker-paranoid --fresh Solution
           lake check --paranoid
           lake comparator --config comparator.json --paranoid
+      - name: Live Negative Comparator Tamper Rejection Test (F-12)
+        run: |
+          cp -r lean /tmp/lean_tamper
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("/tmp/lean_tamper/CellulogonicProofs/StoichiometryThermo.lean")
+          txt = p.read_text(encoding="utf-8")
+          new_txt = txt.replace(
+              "public theorem T01_all_reactions_conserve_mass (r : RxnId) : rxnMassDelta r = 0 := by\n  cases r <;> rfl",
+              "public theorem T01_all_reactions_conserve_mass (r : RxnId) : rxnMassDelta r = 0 := by\n  sorry",
+              1,
+          )
+          assert new_txt != txt, "Failed to inject sorry tamper!"
+          p.write_text(new_txt, encoding="utf-8")
+          PY
+          cd /tmp/lean_tamper
+          lake build
+          if lake comparator --config comparator.json --paranoid; then
+            echo "FAIL: comparator WRONGLY ACCEPTED a sorry-tampered Solution!" >&2
+            exit 1
+          fi
+          echo "PASS: 6-kernel Palomar comparator cleanly REJECTED sorry-tampered Solution!"
+          rm -rf /tmp/lean_tamper
 
   paper-and-provenance:
-    name: AMS-LaTeX White Paper (Tectonic), Citations, SHA256SUMS & SLSA
+    name: AMS-LaTeX White Paper (Tectonic), Citations, Blueprint, SHA256SUMS & SLSA v4
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Verify paper/refs.bib citation syntax
-        run: python3 scripts/check_citations.py --offline
+      - uses: actions/checkout@v7
+      - name: Verify paper/refs.bib syntax, citation-audit.json & Blueprint build
+        run: |
+          python3 scripts/check_citations.py --offline
+          python3 -c 'import json; d=json.load(open("results/citation-audit.json")); assert d["targets_checked"]>=30 and d["targets_passed"]==d["targets_checked"] and d["retractions_found"]==0, d; print("Citation audit JSON OK:", d["targets_passed"], "/", d["targets_checked"], "retractions=0")'
+          python3 scripts/build_blueprint.py
       - name: Install Tectonic TeX engine
         run: |
           curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh
@@ -122,10 +173,10 @@ jobs:
         run: python3 scripts/build_paper.py
       - name: Generate CI SHA256SUMS
         run: |
-          sha256sum dist/Donahue_2026_cellulogonic_mecha.pdf dist/arxiv_submission.tar.gz results/lean4-audit.txt lean/comparator.json > SHA256SUMS
+          sha256sum dist/Donahue_2026_cellulogonic_mecha.pdf dist/arxiv_submission.tar.gz results/lean4-audit.txt results/citation-audit.json lean/comparator.json > SHA256SUMS
           cat SHA256SUMS
-      - name: Attest build provenance (SLSA)
-        uses: actions/attest-build-provenance@v2
+      - name: Attest build provenance (SLSA v4)
+        uses: actions/attest-build-provenance@v4
         continue-on-error: true
         with:
           subject-path: |
@@ -134,10 +185,10 @@ jobs:
             SHA256SUMS
 
   audit-and-security:
-    name: Build Standard v1.2.0 Audit & Report-Only Security Scans
+    name: Build Standard v1.2.0 Audit & SHA-256-Verified Report-Only Security Scans
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Run Build Standard v1.2.0 self-audit (report-only)
@@ -148,9 +199,21 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y cppcheck
           cppcheck --enable=warning,style --quiet -Iinclude src/ test/
-      - name: Secret scan via gitleaks (report-only)
+      - name: Secret scan via SHA-256-verified gitleaks v8.30.1 (report-only)
         continue-on-error: true
         run: |
-          GITLEAKS_VER="8.21.2"
-          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VER}/gitleaks_${GITLEAKS_VER}_linux_x64.tar.gz" | tar -xz -C /tmp gitleaks
+          GITLEAKS_VER="8.30.1"
+          GITLEAKS_SHA="551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+          curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VER}/gitleaks_${GITLEAKS_VER}_linux_x64.tar.gz" -o /tmp/gitleaks.tgz
+          echo "${GITLEAKS_SHA}  /tmp/gitleaks.tgz" | sha256sum -c -
+          tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
           /tmp/gitleaks detect --source . --no-banner --redact
+      - name: Dependency vulnerability scan via SHA-256-verified osv-scanner v2.7.1 (report-only)
+        continue-on-error: true
+        run: |
+          OSV_VER="2.7.1"
+          OSV_SHA="fb7dab19a8bd9bbe5c3189f09d4b7ee1820c9553a23bac202648a56efd2f6ee8"
+          curl -fsSL "https://github.com/google/osv-scanner/releases/download/v${OSV_VER}/osv-scanner_linux_amd64" -o /tmp/osv-scanner
+          echo "${OSV_SHA}  /tmp/osv-scanner" | sha256sum -c -
+          chmod +x /tmp/osv-scanner
+          /tmp/osv-scanner scan source -r .

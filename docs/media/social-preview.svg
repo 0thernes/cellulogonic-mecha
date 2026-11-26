@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="CELLULOGONIC MECHA v1.5.0 Social Preview">
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="CELLULOGONIC MECHA v1.6.0 Social Preview">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#07111F"/>
@@ -37,7 +37,7 @@
   <rect x="64" y="54" width="1152" height="5" rx="2.5" fill="url(#accent)"/>
   <!-- Header badge -->
   <rect x="64" y="88" width="320" height="34" rx="17" fill="#0F2942" stroke="#10B981" stroke-width="1.5"/>
-  <text x="224" y="110" text-anchor="middle" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">BUILD 2 · CELLULAR ALIFE ENGINE · v1.5.0</text>
+  <text x="224" y="110" text-anchor="middle" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">BUILD 2 · CELLULAR ALIFE ENGINE · v1.6.0</text>
   <!-- Title -->
   <text x="64" y="192" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="800" letter-spacing="1">CELLULOGONIC MECHA</text>
   <text x="64" y="240" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="400">Clean-Room 3D Off-Lattice Embryogenesis, Chemiosmotic,</text>
@@ -45,9 +45,9 @@
   <!-- Metric cards -->
   <g font-family="Segoe UI, Arial, sans-serif">
     <rect x="64" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
-    <text x="84" y="362" fill="#A78BFA" font-size="30" font-weight="800">70 / 70</text>
+    <text x="84" y="362" fill="#A78BFA" font-size="30" font-weight="800">78 / 78</text>
     <text x="84" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Pure Lean 4.35.0 Proofs</text>
-    <text x="84" y="408" fill="#94A3B8" font-size="12">6-Kernel Palomar · 0 sorry</text>
+    <text x="84" y="408" fill="#94A3B8" font-size="12">6-Kernel Palomar · AT01-08</text>
 
     <rect x="308" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
     <text x="328" y="362" fill="#34D399" font-size="30" font-weight="800">26/26 · 8/8</text>

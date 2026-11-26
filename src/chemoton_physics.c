@@ -410,17 +410,21 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     }
 
     /* --- 4. Autotrophic Carbon & Oxidant Fixation (R14a / R14b -> Great Oxidation Event!) --- */
-    if (r_box < 95 && w->cfg.photon_flux_uq > 0 && photo_gene > 125) {
+    if (r_box < 95 && w->photon_rem_uq[vidx] >= 46LL && photo_gene > 125) {
         int64_t max_fix = 1 + ((int64_t)(photo_gene - 125) * enzyme_cap) / 256;
         if (max_fix > 4) max_fix = 4;
-        int64_t flux_cap = (int64_t)w->cfg.photon_flux_uq / 46;
-        if (max_fix > flux_cap) max_fix = flux_cap;
         if (r_box > 0) max_fix = (max_fix * (100 - r_box)) / 100;
-        if (max_fix > 0) {
-            apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R14A_PHOTS, 0, 46, max_fix);
+        int64_t cap_a = w->photon_rem_uq[vidx] / 46LL;
+        int64_t req_a = max_fix < cap_a ? max_fix : cap_a;
+        if (req_a > 0) {
+            int64_t made_s = apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R14A_PHOTS, 0, 46, req_a);
+            w->photon_rem_uq[vidx] -= 46LL * made_s;
             /* Oxygenic branch (byte 57) regenerates oxidant X and exports surplus to ambient world! */
-            if (c->genome[57] > 120) {
-                int64_t made_x = apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R14B_PHOTX, 0, 34, max_fix);
+            if (c->genome[57] > 120 && w->photon_rem_uq[vidx] >= 34LL) {
+                int64_t cap_b = w->photon_rem_uq[vidx] / 34LL;
+                int64_t req_b = max_fix < cap_b ? max_fix : cap_b;
+                int64_t made_x = (req_b > 0) ? apply_exact_rxn(w, vx, c->mol, &c->pmf, RXN_R14B_PHOTX, 0, 34, req_b) : 0;
+                w->photon_rem_uq[vidx] -= 34LL * made_x;
                 if (made_x > 0 && c->mol[CELL_SP_X] > 6) {
                     int64_t ex_x = c->mol[CELL_SP_X] - 4;
                     c->mol[CELL_SP_X] -= ex_x;
@@ -468,9 +472,10 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     }
 
     /* --- 6. Nested Endosymbiont Organelles (Shatters Prokaryotic 1/R Ceiling! Lean T22-T27) --- */
+    uint32_t born_org_mask = 0u; /* Prevent slot-index-dependent double-stepping of newly replicated organelles (F-37) */
     for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
         CellOrganelle* o = &c->org[k];
-        if (!o->active) continue;
+        if (!o->active || (born_org_mask & (1u << k))) continue;
 
         /* Host feeds substrate S / oxidant X / waste W into organelle compartment (0 mass loss) */
         if (o->org_type == 0) {
@@ -495,14 +500,20 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
             int64_t feed_w = c->mol[CELL_SP_W] > 2 ? (c->mol[CELL_SP_W] / 2) : 0;
             if (feed_w > 6) feed_w = 6;
             c->mol[CELL_SP_W] -= feed_w; o->mol[CELL_SP_W] += feed_w;
-            if (r_box < 95 && w->cfg.photon_flux_uq > 0) {
+            if (r_box < 95 && w->photon_rem_uq[vidx] >= 34LL) {
                 int64_t p_cap = 2 + (o->nesting_depth >= 2 ? 1 : 0);
-                int64_t flux_cap = (int64_t)w->cfg.photon_flux_uq / 46;
-                if (p_cap > flux_cap) p_cap = flux_cap;
                 if (r_box > 0) p_cap = (p_cap * (100 - r_box)) / 100;
-                if (p_cap > 0) {
-                    apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14A_PHOTS, 0, 46, p_cap);
-                    apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14B_PHOTX, 0, 34, p_cap);
+                int64_t cap_a = w->photon_rem_uq[vidx] / 46LL;
+                int64_t req_a = p_cap < cap_a ? p_cap : cap_a;
+                if (req_a > 0) {
+                    int64_t made_s = apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14A_PHOTS, 0, 46, req_a);
+                    w->photon_rem_uq[vidx] -= 46LL * made_s;
+                }
+                int64_t cap_b = w->photon_rem_uq[vidx] / 34LL;
+                int64_t req_b = p_cap < cap_b ? p_cap : cap_b;
+                if (req_b > 0) {
+                    int64_t made_x = apply_exact_rxn(w, vx, o->mol, &o->pmf, RXN_R14B_PHOTX, 0, 34, req_b);
+                    w->photon_rem_uq[vidx] -= 34LL * made_x;
                 }
                 /* Export fixed S & X back to host (exact mass conservation) */
                 if (o->mol[CELL_SP_S] > 2) {
@@ -602,6 +613,7 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
                 o->pmf -= half_p;
                 d->pmf  = half_p;
                 c->num_organelles++;
+                born_org_mask |= (1u << (uint32_t)free_slot);
             }
         }
 

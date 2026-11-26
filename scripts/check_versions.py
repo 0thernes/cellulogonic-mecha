@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 Alexander Stephen Donahue
-"""Single-source-of-truth version consistency checker across all tracked manifests & headers."""
+"""Single-source-of-truth version consistency checker across ALL tracked manifests,
+headers, proofs, Web UI, tests, and paper sources (Build Standard A08 / F-34)."""
 from __future__ import annotations
 
 import pathlib
@@ -33,9 +34,19 @@ def main() -> int:
         ("src/main_cli.c", f"cellulogonic {version}"),
         ("web/server.mjs", f'VERSION = "{version}"'),
         ("web/index.html", f"v{version}"),
+        ("web/app.js", f"v{version}"),
+        ("web/renderer3d.js", f"v{version}"),
+        ("web/styles.css", f"v{version}"),
+        ("test/test_web_server.mjs", f'"{version}"'),
         ("lean/lakefile.toml", f'version = "{version}"'),
+        ("lean/formalization.yaml", f"v{version}"),
         ("CITATION.cff", f'version: "{version}"'),
+        ("CITATION.bib", f"v{version}"),
+        (".zenodo.json", f'"version": "{version}"'),
+        ("repo.yaml", f"v{version}"),
         ("CHANGELOG.md", f"## [{version}]"),
+        ("README.md", f"v{version}"),
+        ("paper/main.tex", f"v{version}"),
     ]
 
     failures: list[str] = []
@@ -54,7 +65,7 @@ def main() -> int:
             print(f"  - {f}", file=sys.stderr)
         return 1
 
-    print(f"PASS: All {len(checks)} versioned manifests and headers match VERSION={version} (ABI {abi_hex}).")
+    print(f"PASS: All {len(checks)} versioned manifests, headers, proofs, UI & paper files match VERSION={version} (ABI {abi_hex}).")
     return 0
 
 

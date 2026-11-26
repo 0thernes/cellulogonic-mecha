@@ -1,5 +1,12 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #ifndef CELLULOGONIC_INTERNAL_H
 #define CELLULOGONIC_INTERNAL_H
+
+#if !defined(__SIZEOF_INT128__)
+#  error "CELLULOGONIC MECHA requires a 64-bit C11 compiler with __int128 support (GCC/Clang LP64/LLP64)"
+#endif
 
 #include "bare_crt.h"
 #include "cellulogonic_abi.h"
@@ -199,6 +206,7 @@ struct CellWorld {
     int32_t*    vmem_delta;        /* num_slots conservative bioelectric Laplacian buffer */
     int32_t*    hash_head;         /* num_slots 3D off-lattice spatial hash head (0 alloc!) */
     int32_t*    hash_next;         /* num_slots 3D off-lattice spatial hash linked list */
+    int64_t*    photon_rem_uq;     /* num_slots per-voxel remaining exogenous/autotroph photon budget */
 };
 
 /* Helper: mathematical floor division by CELL_VOXEL_NM in int64_t (overflow-free even at INT32_MIN!) */

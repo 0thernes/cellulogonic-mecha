@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
  *
- * CELLULOGONIC MECHA v1.5.0 — Structured Fuzzing Harness (Build Standard B15)
+ * CELLULOGONIC MECHA v1.6.0 — Structured Fuzzing Harness (Build Standard B15)
  * Dual-mode:
  *   1. libFuzzer target: compile with `-fsanitize=fuzzer,address,undefined -DCELL_LIBFUZZER`
- *   2. Standalone 1,000-case deterministic adversarial corpus runner under ASan+UBSan
+ *   2. Standalone deterministic adversarial corpus runner (`./fuzz_cmbin_abi [N_CASES]`) under ASan+UBSan
  * Exercises:
  *   - .cmbin snapshot loader against truncated, corrupted, oversized, and re-signed malformed blobs
  *   - cellulogonic_create() extreme config clamping
@@ -14,6 +14,14 @@
  */
 
 #include "cellulogonic_internal.h"
+
+static uint64_t g_fuzz_seq = 0ULL;
+
+static void make_temp_cmbin_path(char out[128], const char* tag) {
+    uint64_t seq = ++g_fuzz_seq;
+    uint64_t mix = (uint64_t)(uintptr_t)&out ^ (seq * 0x9E3779B97F4A7C15ULL);
+    snprintf(out, 128, "fuzz_%s_%08x_%llu.cmbin", tag, (unsigned)(mix & 0xFFFFFFFFu), (unsigned long long)seq);
+}
 
 static void fuzz_one_input(const uint8_t* data, size_t size) {
     if (!data || size < 16u) return;
@@ -78,7 +86,8 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
         cellulogonic_destroy(w);
     } else if (mode == 2u) {
         /* Target C: Raw untrusted bytes fed directly to cellulogonic_load_snapshot() */
-        const char* fpath = "fuzz_cmbin_tmp.cmbin";
+        char fpath[128];
+        make_temp_cmbin_path(fpath, "raw");
         FILE* f = fopen(fpath, "wb");
         if (f) {
             (void)fwrite(data, 1, size, f);
@@ -95,7 +104,8 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
         CellWorld* base = cellulogonic_create(&cfg);
         if (!base) return;
         cellulogonic_step_epochs(base, 2u);
-        const char* fpath = "fuzz_resign_tmp.cmbin";
+        char fpath[128];
+        make_temp_cmbin_path(fpath, "resign");
         if (cellulogonic_save_snapshot(base, fpath) == 0) {
             FILE* f = fopen(fpath, "rb");
             if (f) {
@@ -139,20 +149,27 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
     }
 }
 
-#if defined(CELL_LIBFUZZER)
+#if defined(CELL_LIBFUZZER) || defined(CELLULOGONIC_LIBFUZZER)
 int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {
     fuzz_one_input(data, size);
     return 0;
 }
 #else
-int main(void) {
-    const uint32_t N_CASES = 1000u;
+int main(int argc, char** argv) {
+    uint32_t n_cases = 1000u;
+    if (argc >= 2 && argv[1] && argv[1][0] != '\0') {
+        char* ep = NULL;
+        unsigned long long parsed = strtoull(argv[1], &ep, 10);
+        if (ep != argv[1] && *ep == '\0' && parsed >= 1ull && parsed <= 1000000ull) {
+            n_cases = (uint32_t)parsed;
+        }
+    }
     uint8_t buf[512];
     double t0 = cell_wall_seconds();
-    for (uint32_t c = 0; c < N_CASES; ++c) {
+    for (uint32_t c = 0; c < n_cases; ++c) {
         size_t len = 16u + (size_t)((c * 37u) % (sizeof(buf) - 16u));
         for (size_t i = 0; i < len; i += 8u) {
-            uint64_t r = cell_philox_u64(0xF0221500ULL, 0x7777u, (uint64_t)c, (uint64_t)i);
+            uint64_t r = cell_philox_u64(0xF0221600ULL, 0x7777u, (uint64_t)c, (uint64_t)i);
             uint8_t tmp[8];
             cell_store_le64(tmp, r);
             for (size_t j = 0; j < 8u && i + j < len; ++j) buf[i + j] = tmp[j];
@@ -162,7 +179,7 @@ int main(void) {
     }
     double dt = cell_wall_seconds() - t0;
     printf("PASS: Structured fuzz harness completed %u adversarial cases (0 crashes, 0 UB, 0 conservation leaks) in %.3fs\n",
-           N_CASES, dt);
+           n_cases, dt);
     return 0;
 }
 #endif

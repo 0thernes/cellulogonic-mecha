@@ -3,7 +3,7 @@
 
 /*
  * ============================================================================
- * CELLULOGONIC MECHA v1.5.0
+ * CELLULOGONIC MECHA v1.6.0
  * Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic
  * Cellular Artificial Life Engine — Flat C11 Public ABI
  * ============================================================================
@@ -42,7 +42,7 @@ extern "C" {
   #define CELL_API __attribute__((visibility("default")))
 #endif
 
-#define CELLULOGONIC_ABI_VERSION 0x00010500u
+#define CELLULOGONIC_ABI_VERSION 0x00010600u
 
 /* 8 Conserved Molecular Species */
 typedef enum CellSpecies {
@@ -131,7 +131,7 @@ typedef struct CellWorldConfig {
     uint32_t regime;             /* CellOperatingRegime */
     uint32_t solvent;            /* CellSolventRegime (0..3) */
     uint32_t kernel_mode;        /* CellKernelMode (SIMD_AVX2 or SCALAR_REF) */
-    uint32_t photon_flux_uq;     /* External photosynthetic/hydrothermal flux budget per voxel/epoch (default 572 uq) */
+    uint32_t photon_flux_uq;     /* External photosynthetic/hydrothermal flux budget per voxel/epoch (default 800 uq) */
     uint64_t seed;               /* Deterministic Philox4x32-10 master seed (0 = hardware RDSEED) */
     uint8_t  restraints[CELL_RESTRAINT_COUNT]; /* Initial 13-vector restraint percentages (0..100) */
     uint8_t  enable_endosymbiosis;

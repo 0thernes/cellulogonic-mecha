@@ -7,12 +7,33 @@ matching C11 (`include/cellulogonic_internal.h`) and Lean 4.35.0 (`Spec.lean`)."
 
 from __future__ import annotations
 
+import json
+import os
+import pathlib
 import random
+import subprocess
 import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+
+def find_c11_binary() -> pathlib.Path | None:
+    env_bin = os.environ.get("CELLULOGONIC_BIN")
+    if env_bin and pathlib.Path(env_bin).exists():
+        return pathlib.Path(env_bin)
+    cands = (
+        [ROOT / "bin" / "cellulogonic.exe", ROOT / "bin" / "cellulogonic_linux"]
+        if sys.platform == "win32"
+        else [ROOT / "bin" / "cellulogonic_linux", ROOT / "bin" / "cellulogonic.exe"]
+    )
+    for c in cands:
+        if c.exists():
+            return c
+    return None
 
 
 def prop_check(name: str, trials: int, fn) -> None:
-    rng = random.Random(20261125)
+    rng = random.Random(20261126)
     for i in range(trials):
         ok = fn(rng)
         if not ok:
@@ -22,7 +43,7 @@ def prop_check(name: str, trials: int, fn) -> None:
 
 
 def main() -> None:
-    print("=== CELLULOGONIC MECHA v1.5.0 — Property-Based Invariant Suite (B10) ===")
+    print("=== CELLULOGONIC MECHA v1.6.0 — Property-Based Invariant & Native C11 Differential Suite (B10) ===")
 
     # 1. Canham-Helfrich Sextic Minimax Polynomial Identity (Lean T16)
     def check_sextic(rng: random.Random) -> bool:
@@ -121,7 +142,37 @@ def main() -> None:
 
     prop_check("continuum_yolk_and_biotensegrity_C61_C62", 500, check_continuum)
 
-    print("PASS: All 2,700 randomized property-based trials passed with 0 counterexamples!")
+    # 6. Randomized Native C11 Engine Execution Invariant Trials (F-34: test real compiled binary!)
+    c_bin = find_c11_binary()
+    if c_bin is not None:
+        def check_native_c11(rng: random.Random) -> bool:
+            seed = rng.randint(1, 9_000_000)
+            solvent = rng.randint(0, 3)
+            size = rng.choice([8, 12, 16])
+            epochs = rng.randint(8, 25)
+            proc = subprocess.run(
+                [str(c_bin), "json", "--seed", str(seed), "--solvent", str(solvent), "--size", str(size), "--epochs", str(epochs)],
+                cwd=str(ROOT),
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if proc.returncode != 0:
+                return False
+            data = json.loads(proc.stdout)
+            t = data["telemetry"]
+            return (
+                t["mass_res"] == 0
+                and t["energy_res"] == 0
+                and t["second_law"] == 0
+                and t["drift"] == 0.0
+                and len(t["sha256"]) == 64
+            )
+
+        prop_check("native_c11_random_seed_solvent_size_closure", 20, check_native_c11)
+        print("PASS: All 2,720 randomized property-based & native C11 differential trials passed with 0 counterexamples!")
+    else:
+        print("PASS: All 2,700 randomized mathematical property-based trials passed (native binary not present).")
 
 
 if __name__ == "__main__":

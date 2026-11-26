@@ -111,3 +111,14 @@
 'Cellulogonic.NonVacuity.NV06_cytoskeleton_frohlich_nonvacuous_witness' does not depend on any axioms
 'Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness' depends on axioms: [propext]
 'Cellulogonic.NonVacuity.NV08_continuum_biomechanics_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.AdversarialTests.AT01_refute_titan_cring3_second_law' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.AdversarialTests.AT02_refute_universal_symmetric_fission' does not depend on any axioms
+'Cellulogonic.AdversarialTests.AT03_refute_unbounded_prokaryotic_radius' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.AdversarialTests.AT04_refute_passive_gap_junction_energy_increase' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.AdversarialTests.AT05_refute_sub3_lumen_and_unvitrified_decay_drop' does not depend on any axioms
+'Cellulogonic.AdversarialTests.AT06_refute_starved_frohlich_coherence_growth' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.AdversarialTests.AT07_refute_overbudget_eutelic_population' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.AdversarialTests.AT08_refute_negative_biotensegrity_or_carcass_mass_loss' depends on axioms: [propext,
+ Quot.sound]

@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem I: Exact Multi-Solvent Stoichiometric Mass
+  CELLULOGONIC MECHA v1.6.0 — Theorem I: Exact Multi-Solvent Stoichiometric Mass
   Conservation, First-Law Energy Closure & Strict Second-Law Impossibility of
   Perpetual-Motion Cellular Cycles across ALL 4 Planetary Solvents.
 
@@ -44,12 +44,15 @@ public theorem T04_endergonic_biosynthesis_requires_atp :
     (muPot .T - 4 * muPot .S > 0) := by
   decide
 
-/-- T05: Chemiosmotic oxidative respiration (R1 + R2 + 2·R3 in Terran/Vent/Venus with balanced PMF)
-    nets 2 ATP per 1 S, whereas anaerobic fermentation (R4) yields 1 ATP per 2 S — an exact 4× yield ratio. -/
+/-- T05: Chemiosmotic oxidative respiration (`R1 + R2 + 2·R3` across Terran `nH=3`, Hydrothermal `nH=3`,
+    and Venus `nH=2` with exact 0 net PMF) nets 2 ATP per 1 S, whereas anaerobic fermentation (`R4`)
+    yields 1 ATP per 2 S — an exact 4× yield ratio. -/
 public theorem T05_respiration_quadruples_fermentation_yield :
     (stoich .R1_catab .S + stoich .R2_pump .S + 2 * stoich .R3_atp_synth .S = -1) ∧
     (stoich .R1_catab .E + stoich .R2_pump .E + 2 * stoich .R3_atp_synth .E = 2) ∧
     (dPmf .Terran 3 .R1_catab + dPmf .Terran 3 .R2_pump + 2 * dPmf .Terran 3 .R3_atp_synth = 0) ∧
+    (dPmf .Hydrothermal 3 .R1_catab + dPmf .Hydrothermal 3 .R2_pump + 2 * dPmf .Hydrothermal 3 .R3_atp_synth = 0) ∧
+    (dPmf .Venus 2 .R1_catab + dPmf .Venus 2 .R2_pump + 2 * dPmf .Venus 2 .R3_atp_synth = 0) ∧
     (stoich .R4_ferment .S = -2) ∧
     (stoich .R4_ferment .E = 1) := by
   decide

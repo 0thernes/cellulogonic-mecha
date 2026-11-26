@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
  *
- * Automated Integration & Security Test Suite for web/server.mjs (CELLULOGONIC MECHA v1.5.0)
+ * Automated Integration & Security Test Suite for web/server.mjs (CELLULOGONIC MECHA v1.6.0)
  * Verifies /healthz, static CSP/security headers, P9 GET /api/state, POST /api/cmd,
  * CSRF origin/host/fetch-site/content-type blocking, 405 legacy GET block,
  * odd-hex & array rejection, 413 payload limit, and path-traversal denial.
@@ -75,7 +75,7 @@ async function main() {
     assert.equal(hz.status, 200);
     const hzJson = JSON.parse(hz.body);
     assert.equal(hzJson.status, "ok");
-    assert.equal(hzJson.version, "1.5.0");
+    assert.equal(hzJson.version, "1.6.0");
     assert.equal(hzJson.worker_alive, true);
 
     /* 2. Static index.html + strict security headers (zero unsafe-inline!) */
@@ -167,7 +167,12 @@ async function main() {
     const trav = await httpReq(port, "GET", "/../README.md");
     assert.equal(trav.status, 404);
 
-    console.log(`PASS: All 12 Web Observatory HTTP, CSP, CSRF, and Engine-Bridge tests passed (port ${port})!`);
+    /* 13. Clean 204 for /favicon.ico with strict security headers (F-38) */
+    const fav = await httpReq(port, "GET", "/favicon.ico");
+    assert.equal(fav.status, 204);
+    assert.equal(fav.headers["x-content-type-options"], "nosniff");
+
+    console.log(`PASS: All 13 Web Observatory HTTP, CSP, CSRF, and Engine-Bridge tests passed (port ${port})!`);
   } finally {
     srv.kill("SIGTERM");
   }

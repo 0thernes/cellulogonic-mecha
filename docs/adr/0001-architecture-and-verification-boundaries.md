@@ -1,7 +1,7 @@
 # ADR 0001: Exact Integer Conservation Core, Palomar Six-Kernel Lean 4.35.0 Boundary & Dual Open Licensing
 
-- **Date:** 2026-11-25
-- **Status:** Accepted (`v1.5.0`)
+- **Date:** 2026-11-25 (amended `2026-11-26` for `v1.6.0`)
+- **Status:** Accepted (`v1.6.0`)
 - **Author:** Alexander Stephen Donahue (`Independent Researcher, Spokane, WA, USA`)
 
 ## Context
@@ -13,12 +13,12 @@ Computational Artificial Life simulations frequently fail independent scrutiny f
 
 ## Decision
 
-1. **Exact `int64_t` Thermodynamic & Stoichiometric Ledger (`P2`/`P4`/`P9`/`P10`):** Retain exact integer counts for all 8 molecular species (`S, X, M, E, L, P, T, W`), 19 reactions (`R1`–`R15c`), and 4 planetary solvents with dual bit-exact `SIMD_AVX2` and `SCALAR_REF` kernels (`0-bit` SHA-256 parity across Win64 & Linux) and zero third-party runtime dependencies. Version public C11 ABI cleanly at `0x00010500` with explicit negative-bounds rejection (`G25`) and static zero-heap hot-loop auditing.
-2. **Palomar Isolated Six-Kernel Lean 4.35.0 Architecture:** Refactor all formal proofs into Lean 4.35.0 `module` syntax with `autoImplicit = false` and `relaxedAutoImplicit = false`, placing pure definitions exclusively in `lean/CellulogonicProofs/Spec.lean`, statement-only `sorry` signatures in `lean/Challenge.lean`, sorry-free proofs (including explicit `NonVacuity.lean` witnesses `NV01`–`NV08`) in `lean/Solution.lean`, verified across independent kernels locally and all 6/6 kernels under `bubblewrap` in Ubuntu CI.
-3. **Dual Open Licensing & Independent Researcher Attribution:** Permanently migrate all code, Lean proofs, scripts, and CI workflows to **Apache-2.0** (`LICENSE`), all papers, PDFs, documentation, and figures to **CC-BY-4.0** (`LICENSE-DOCS`), and standardize all attribution on `Alexander Stephen Donahue` (`Independent Researcher, Spokane, WA, USA`, ORCID `0009-0006-8168-9648`).
-4. **Explicit Epistemic & Mega-Atlas Boundaries:** Maintain explicit separation between kernel-checked theorems, program-audited C11 gates, indicator-only observables, and unretired open conjectures (`0 / 1,900` Mega-Atlas problems retired).
+1. **Exact `int64_t` Thermodynamic & Stoichiometric Ledger (`P2`/`P4`/`P9`/`P10`):** Retain exact integer counts for all 8 molecular species (`S, X, M, E, L, P, T, W`), 19 reactions (`R1`–`R15c`), and 4 planetary solvents with portable `-march=x86-64` + isolated `target("avx2")` / `SCALAR_REF` / macOS ARM64 kernels (`0-bit` SHA-256 parity across 3 OSes / 2 ISAs) and zero third-party runtime dependencies. Version public C11 ABI cleanly at `0x00010600` with explicit negative-bounds rejection (`G25`) and 3-module static zero-heap hot-loop auditing.
+2. **Palomar Isolated Six-Kernel Lean 4.35.0 Architecture:** Maintain all formal proofs in Lean 4.35.0 `module` syntax with `autoImplicit = false` and `relaxedAutoImplicit = false`, placing pure definitions exclusively in `lean/CellulogonicProofs/Spec.lean` (`12` pinned definitions), statement-only `sorry` signatures in `lean/Challenge.lean`, and sorry-free proofs (including `NonVacuity.lean` `NV01`–`NV08` and `AdversarialTests.lean` `AT01`–`AT08`, `78/78` audited theorems) in `lean/Solution.lean`, verified across all 6/6 kernels under `bubblewrap` in Ubuntu CI with live negative tamper rejection (`scripts/test_lean_negative.py`).
+3. **Dual Open Licensing & Independent Researcher Attribution:** Permanently maintain all code, Lean proofs, scripts, and CI workflows under **Apache-2.0** (`LICENSE`), all papers, PDFs, documentation, and figures under **CC-BY-4.0** (`LICENSE-DOCS`, `REUSE.toml`, `LICENSES/`), and standardize all attribution on `Alexander Stephen Donahue` (`Independent Researcher, Spokane, WA, USA`, ORCID `0009-0006-8168-9648`).
+4. **Explicit Epistemic & Mega-Atlas Boundaries:** Maintain explicit separation between kernel-checked theorems, program-audited C11 gates, indicator-only observables, and unretired open conjectures (`0 / 1,900` Mega-Atlas `v2.6.0` problems retired across 13 verbatim adjacent catalog IDs).
 
 ## Consequences
 
-- **Positive:** Any independent researcher can verify all 70 mathematical proofs across 6 independent kernels, reproduce bit-exact SHA-256 runs, verify 36 live DOIs, compile a zero-overflow AMS-LaTeX preprint, and reuse code/text legally under standard OSI/Creative Commons licenses.
+- **Positive:** Any independent researcher can verify all 78 mathematical proofs across 6 independent kernels, reproduce bit-exact SHA-256 runs across Linux/Windows/macOS ARM64, verify 36 live Crossref retraction-free DOIs, explore the interactive GitHub Pages Proof Blueprint, compile a zero-overflow AMS-LaTeX preprint, and reuse code/text legally under standard OSI/Creative Commons licenses.
 - **Trade-off:** Coarse-grained integer quanta cannot model atomistic protein folding or wet-lab reaction rates, and 6th-kernel `lean4lean` / `bubblewrap` replay runs on Linux CI rather than native Windows (explicitly disclosed in `DEVIATIONS.md`).

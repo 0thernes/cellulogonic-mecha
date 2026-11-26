@@ -6,11 +6,23 @@ set -euo pipefail
 PROJ="$(cd "$(dirname "$0")" && pwd)"
 mkdir -p "$PROJ/bin" "$PROJ/results"
 
-CC="${CC:-gcc}"
+CC="${CC:-cc}"
+if [ "$CC" = "cc" ] && command -v gcc >/dev/null 2>&1 && [ "$(uname -s)" = "Linux" ]; then
+  CC="gcc"
+fi
+HOST_OS="$(uname -s)"
+HOST_ARCH="$(uname -m)"
+ARCH_FLAGS=()
 if [ "${NATIVE:-0}" = "1" ]; then
-  ARCH_FLAGS=(-march=native -mavx2 -mbmi -mbmi2 -mpopcnt)
-else
-  ARCH_FLAGS=(-march=x86-64-v3)
+  ARCH_FLAGS=(-march=native)
+elif [ "$HOST_ARCH" = "x86_64" ] || [ "$HOST_ARCH" = "amd64" ]; then
+  # Portable x86-64 baseline (AVX2 is isolated via __attribute__((target("avx2"))) & runtime OSXSAVE guard, F-02)
+  ARCH_FLAGS=(-march=x86-64)
+fi
+
+SHLIB_EXT="so"
+if [ "$HOST_OS" = "Darwin" ]; then
+  SHLIB_EXT="dylib"
 fi
 
 FLAGS=(
@@ -30,13 +42,13 @@ CORE=(
   "$PROJ/src/abi_exports.c"
 )
 
-echo "[1/6] Building Linux ELF64 bin/cellulogonic_linux (x86-64-v3, -Werror) ..."
+echo "[1/6] Building POSIX bin/cellulogonic_linux (${HOST_OS}/${HOST_ARCH}, -Werror) ..."
 "$CC" "${FLAGS[@]}" "${CORE[@]}" "$PROJ/src/main_cli.c" -o "$PROJ/bin/cellulogonic_linux" -lm
 
-echo "[2/6] Building Linux shared library bin/libcellulogonic.so ..."
-"$CC" "${FLAGS[@]}" -fPIC -shared "${CORE[@]}" -o "$PROJ/bin/libcellulogonic.so" -lm
+echo "[2/6] Building POSIX shared library bin/libcellulogonic.${SHLIB_EXT} ..."
+"$CC" "${FLAGS[@]}" -fPIC -shared "${CORE[@]}" -o "$PROJ/bin/libcellulogonic.${SHLIB_EXT}" -lm
 
-echo "[3/6] Building Linux static archive bin/libcellulogonic_linux.a & auditing zero-heap hot-loop symbols ..."
+echo "[3/6] Building POSIX static archive bin/libcellulogonic_linux.a & auditing zero-heap hot-loop symbols ..."
 OBJS=()
 for s in "${CORE[@]}"; do
   o="$PROJ/bin/$(basename "$s" .c)_linux.o"
@@ -44,23 +56,23 @@ for s in "${CORE[@]}"; do
   OBJS+=("$o")
 done
 if command -v nm >/dev/null 2>&1; then
-  for hot in "$PROJ/bin/chemoton_physics_linux.o" "$PROJ/bin/cellular_world_linux.o"; do
-    if nm -u "$hot" | grep -Eq '\b(malloc|calloc|realloc|free)\b'; then
+  for hot in "$PROJ/bin/chemoton_physics_linux.o" "$PROJ/bin/cellular_world_linux.o" "$PROJ/bin/metrology_covi_linux.o"; do
+    if nm -u "$hot" | grep -Eq '(^|[[:space:]_])(malloc|calloc|realloc|free)($|[[:space:]@])'; then
       echo "ERROR: HOT-LOOP HEAP ALLOCATION VIOLATION in $hot" >&2
       exit 1
     fi
   done
-  echo "  [PASS] Hot-loop symbol audit: chemoton_physics_linux.o & cellular_world_linux.o have ZERO malloc/calloc/realloc/free imports."
+  echo "  [PASS] Hot-loop symbol audit: chemoton_physics, cellular_world & metrology_covi have ZERO malloc/calloc/realloc/free imports."
 fi
 ar rcs "$PROJ/bin/libcellulogonic_linux.a" "${OBJS[@]}"
 rm -f "${OBJS[@]}"
 
-echo "[4/6] Building Linux 26-gate falsification suite, ABI fuzzer, and C11 quickstart ..."
+echo "[4/6] Building POSIX 26-gate falsification suite, ABI fuzzer, and C11 quickstart ..."
 "$CC" "${FLAGS[@]}" "${CORE[@]}" "$PROJ/test/test_falsification.c" -o "$PROJ/bin/test_falsification_linux" -lm
 "$CC" "${FLAGS[@]}" "${CORE[@]}" "$PROJ/test/fuzz_cmbin_abi.c" -o "$PROJ/bin/fuzz_cmbin_abi_linux" -lm
 "$CC" "${FLAGS[@]}" "${CORE[@]}" "$PROJ/examples/quickstart_c_abi.c" -o "$PROJ/bin/quickstart_c_abi_linux" -lm
 
-echo "[5/6] Running Linux 26-gate falsification suite + 1000-case fuzzer + quickstart ..."
+echo "[5/6] Running POSIX 26-gate falsification suite + 1000-case fuzzer + quickstart ..."
 (
   cd "$PROJ/bin"
   ./test_falsification_linux
@@ -82,8 +94,8 @@ forbidden = re.compile(r"(\bwarning\b|\berror\b|sorryAx|declaration uses 'sorry'
 if forbidden.search(text):
     sys.exit("ERROR: Lean kernel integrity violation detected in audit output!\n" + text)
 matches = re.findall(r"'([^']+)'\s+(does not depend on any axioms|depends on axioms:\s*\[([^\]]*)\])", text)
-if len(matches) < 70:
-    sys.exit(f"ERROR: expected >= 70 audited theorems, found {len(matches)}")
+if len(matches) < 78:
+    sys.exit(f"ERROR: expected >= 78 audited theorems, found {len(matches)}")
 for name, _, axs in matches:
     for ax in [a.strip() for a in axs.split(",") if a.strip()]:
         if ax not in allowed:
@@ -92,4 +104,4 @@ print(f"Lean 4.35.0 Strict Axiom Audit PASSED ({len(matches)} theorems, strictly
 PY
 fi
 
-echo "CELLULOGONIC MECHA v1.5.0 LINUX ELF64 BUILD & 26-GATE VERIFICATION PASSED!"
+echo "CELLULOGONIC MECHA v1.6.0 POSIX (${HOST_OS}/${HOST_ARCH}) BUILD & 26-GATE VERIFICATION PASSED!"

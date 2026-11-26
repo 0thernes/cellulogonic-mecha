@@ -3,10 +3,10 @@ module
 public import Solution
 
 /-!
-# CELLULOGONIC MECHA v1.5.0 — Standalone Strict Axiom Audit (`VerifyAxioms.lean`)
+# CELLULOGONIC MECHA v1.6.0 — Standalone Strict Axiom Audit (`VerifyAxioms.lean`)
 
-Runs `#print axioms` on all 70 machine-checked theorems (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`)
-exported by `Solution.lean`. Every declaration MUST depend strictly on a subset of
+Runs `#print axioms` on all 78 machine-checked theorems (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`,
+`AT01`–`AT08`) exported by `Solution.lean`. Every declaration MUST depend strictly on a subset of
 `[propext, Classical.choice, Quot.sound]` (or zero axioms), with ZERO `sorryAx`,
 `Lean.ofReduceBool`, `Lean.trustCompiler`, `_native`, or custom axioms.
 
@@ -101,3 +101,13 @@ SPDX-License-Identifier: Apache-2.0
 #print axioms Cellulogonic.NonVacuity.NV06_cytoskeleton_frohlich_nonvacuous_witness
 #print axioms Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness
 #print axioms Cellulogonic.NonVacuity.NV08_continuum_biomechanics_nonvacuous_witness
+
+-- Theorem X: Adversarial False-Variant Refutations (AT01–AT08)
+#print axioms Cellulogonic.AdversarialTests.AT01_refute_titan_cring3_second_law
+#print axioms Cellulogonic.AdversarialTests.AT02_refute_universal_symmetric_fission
+#print axioms Cellulogonic.AdversarialTests.AT03_refute_unbounded_prokaryotic_radius
+#print axioms Cellulogonic.AdversarialTests.AT04_refute_passive_gap_junction_energy_increase
+#print axioms Cellulogonic.AdversarialTests.AT05_refute_sub3_lumen_and_unvitrified_decay_drop
+#print axioms Cellulogonic.AdversarialTests.AT06_refute_starved_frohlich_coherence_growth
+#print axioms Cellulogonic.AdversarialTests.AT07_refute_overbudget_eutelic_population
+#print axioms Cellulogonic.AdversarialTests.AT08_refute_negative_biotensegrity_or_carcass_mass_loss

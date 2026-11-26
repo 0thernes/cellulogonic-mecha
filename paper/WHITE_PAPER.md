@@ -2,15 +2,15 @@
 
 **Author:** Alexander Stephen Donahue¹ (ORCID: [0009-0006-8168-9648](https://orcid.org/0009-0006-8168-9648))  
 **Affiliation:** ¹Independent Researcher, Spokane, WA, USA (`0_0@0thernes.art`)  
-**Date:** November 25, 2026 | **Version:** `1.5.0` (Independent Research Preprint & Reproducible Laboratory Artifact — Not Peer-Reviewed)  
-**License:** Code `Apache-2.0` (`LICENSE`) · Paper & Documentation `CC-BY-4.0` (`LICENSE-DOCS`)  
+**Date:** November 26, 2026 | **Version:** `1.6.0` (Independent Research Preprint & Reproducible Laboratory Artifact — Not Peer-Reviewed)  
+**License:** Code `Apache-2.0` (`LICENSE`) · Paper & Documentation `CC-BY-4.0` (`LICENSE-DOCS`, `REUSE.toml`)  
 **Repository:** `https://github.com/0thernes/cellulogonic-mecha`  
-**Formal Verification:** 70 / 70 Pure Lean 4 (`v4.35.0`) Audited Theorems (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses; `0 sorryAx` in `Solution`, `0` custom axioms, `[propext, Classical.choice, Quot.sound]` only, `0` warnings; 6-kernel Palomar ready)  
-**Empirical Verification:** 26 / 26 Falsification Gates · 8 / 8 Planted Negative Mutants Caught · 1,000 / 1,000 ABI Fuzz Cases · 4-Way Cross-OS SHA-256 Bit-Exact Parity
+**Formal Verification:** 78 / 78 Pure Lean 4 (`v4.35.0`) Audited Theorems (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses + `8` `AdversarialTests` refutations `AT01`–`AT08`; `0 sorryAx` in `Solution`, `0` custom axioms, `[propext, Classical.choice, Quot.sound]` only, `0` warnings; 6-kernel Palomar + live negative tamper rejection)  
+**Empirical Verification:** 26 / 26 Falsification Gates · 8 / 8 Planted Negative Mutants Caught · 1,000 / 1,000 ABI Fuzz Cases + `libFuzzer` · 3-OS / 2-ISA SHA-256 Bit-Exact Parity
 
 ---
 
-> **Authoritative Typeset Manuscript Notice:** The canonical `v1.5.0` research preprint is [`paper/main.tex`](main.tex) compiled cleanly to [`dist/Donahue_2026_cellulogonic_mecha.pdf`](../dist/Donahue_2026_cellulogonic_mecha.pdf) (Playbook v1.3 AMS-LaTeX, 12 pages, 0 Overfull `\hbox`, `36/36` live-verified DOIs in [`paper/refs.bib`](refs.bib)). This Markdown companion mirrors all `v1.5.0` formal proofs and live empirical results.
+> **Authoritative Typeset Manuscript Notice:** The canonical `v1.6.0` research preprint is [`paper/main.tex`](main.tex) compiled cleanly to [`dist/Donahue_2026_cellulogonic_mecha.pdf`](../dist/Donahue_2026_cellulogonic_mecha.pdf) (Playbook v1.3 AMS-LaTeX, `0` Overfull `\hbox`/`\vbox`, `36/36` live Crossref retraction-audited DOIs in [`paper/refs.bib`](refs.bib) & [`results/citation-audit.json`](../results/citation-audit.json)). This Markdown companion mirrors the conceptual framework and corrected literature list; all live `v1.6.0` numerical tables, `78/78` Lean proofs, and 13 verbatim Mega-Atlas `v2.6.0` IDs are authoritative in `paper/main.tex`, `CLAIMS.md`, and `results/`.
 
 ## Abstract
 
@@ -246,7 +246,7 @@ CELLULOGONIC MECHA v1.5.0 demonstrates that a single consumer computer can run a
 22. Seager, S., Petkowski, J. J., Bains, W., et al. (2024). Year-long stability of nucleic acid bases in concentrated sulfuric acid: Implications for the persistence of organic chemistry in Venus' clouds. *Life*, 14(5), 538. DOI: [`10.3390/life14050538`](https://doi.org/10.3390/life14050538)
 23. Karr, J. R., Sanghvi, J. C., Macklin, D. N., Gutschow, M. V., Jacobs, J. M., Bolival, B., Assad-Garcia, N., Glass, J. I., & Covert, M. W. (2012). A whole-cell computational model predicts phenotype from genotype. *Cell*, 150(2), 389–401. DOI: [`10.1016/j.cell.2012.05.044`](https://doi.org/10.1016/j.cell.2012.05.044)
 24. Szigeti, B., Gleeson, P., Vella, M., Khayrulin, S., Palyanov, A., Hokanson, J., Currie, M., Cantarelli, M., Idili, G., & Larson, S. (2014). OpenWorm: an open-science approach to modeling *Caenorhabditis elegans*. *Frontiers in Computational Neuroscience*, 8, 137. DOI: [`10.3389/fncom.2014.00137`](https://doi.org/10.3389/fncom.2014.00137)
-25. Rosen, R. (1958). A relational theory of biological systems. *The Bulletin of Mathematical Biophysics*, 20, 245–260. DOI: [`10.1007/BF02476354`](https://doi.org/10.1007/BF02476354)
+25. Rosen, R. (1958). A relational theory of biological systems. *The Bulletin of Mathematical Biophysics*, 20, 245–260. DOI: [`10.1007/BF02478302`](https://doi.org/10.1007/BF02478302)
 26. Boothby, T. C., Tapia, H., Brozena, A. H., Piszkiewicz, S., Smith, A. E., Giovannini, I., Rebecchi, L., Pielak, G. J., Koshland, D., & Goldstein, B. (2017). Tardigrades use intrinsically disordered proteins to survive desiccation. *Molecular Cell*, 65(6), 975–984.e5. DOI: [`10.1016/j.molcel.2017.02.018`](https://doi.org/10.1016/j.molcel.2017.02.018)
 27. Hashimoto, T., Horikawa, D. D., Saito, Y., Kuwahara, H., Kozuka-Hata, H., Shin-I, T., Minakuchi, Y., Ohishi, K., Motoyama, A., Aizu, T., Enomoto, A., Kondo, K., Tanaka, S., Hara, Y., Koshikawa, S., Sagara, H., Miura, T., Yokobori, S., Miyagawa, K., Suzuki, Y., Kubo, T., Oyama, M., Kohara, Y., Fujiyama, A., Arakawa, K., Katayama, T., Toyoda, A., & Kunieda, T. (2016). Extremotolerant tardigrade genome and improved radiotolerance of human cultured cells by tardigrade-unique protein. *Nature Communications*, 7, 12808. DOI: [`10.1038/ncomms12808`](https://doi.org/10.1038/ncomms12808)
 28. Thornburg, Z. R., Bianchi, D. M., Brier, T. A., Gilbert, B. R., Earnest, T. M., Melo, M. C. R., Safronova, N., Sáenz, J. P., Cook, A. T., Wise, K. S., Hutchison, C. A., Smith, H. O., Glass, J. I., & Luthey-Schulten, Z. (2022). Fundamental behaviors emerge from simulations of a living minimal cell. *Cell*, 185(2), 345–360.e28. DOI: [`10.1016/j.cell.2021.12.025`](https://doi.org/10.1016/j.cell.2021.12.025)
@@ -254,7 +254,7 @@ CELLULOGONIC MECHA v1.5.0 demonstrates that a single consumer computer can run a
 30. Krakauer, D., Bertschinger, N., Olbrich, E., Flack, J. C., & Ay, N. (2020). The information theory of individuality. *Theory in Biosciences*, 139, 209–223. DOI: [`10.1007/s12064-020-00313-7`](https://doi.org/10.1007/s12064-020-00313-7)
 31. Fröhlich, H. (1968). Long-range coherence and energy storage in biological systems. *International Journal of Quantum Chemistry*, 2(5), 641–649. DOI: [`10.1002/qua.560020505`](https://doi.org/10.1002/qua.560020505)
 32. Pokorný, J. (2004). Excitation of vibrations in microtubules in living cells. *Bioelectrochemistry*, 63(1–2), 321–326. DOI: [`10.1016/j.bioelechem.2003.09.028`](https://doi.org/10.1016/j.bioelechem.2003.09.028)
-33. Sahu, S., Ghosh, S., Hirata, K., Fujita, D., & Bandyopadhyay, A. (2013). Multi-level memory-switching properties of a single brain microtubule. *Biosensors and Bioelectronics*, 47, 141–148. DOI: [`10.1016/j.bios.2013.02.050`](https://doi.org/10.1016/j.bios.2013.02.050)
+33. Sahu, S., Ghosh, S., Hirata, K., Fujita, D., & Bandyopadhyay, A. (2013). Atomic water channel controlling remarkable properties of a single brain microtubule: Correlating single protein to its supramolecular assembly. *Biosensors and Bioelectronics*, 47, 141–148. DOI: [`10.1016/j.bios.2013.02.050`](https://doi.org/10.1016/j.bios.2013.02.050)
 34. Wolpert, L. (1969). Positional information and the spatial pattern of cellular differentiation. *Journal of Theoretical Biology*, 25(1), 1–47. DOI: [`10.1016/s0022-5193(69)80016-0`](https://doi.org/10.1016/s0022-5193(69)80016-0)
 35. Steinberg, M. S. (1963). Reconstruction of tissues by dissociated cells. *Science*, 141(3579), 401–408. DOI: [`10.1126/science.141.3579.401`](https://doi.org/10.1126/science.141.3579.401)
 36. Marder, E., & Bucher, D. (2001). Central pattern generators and the control of rhythmic movements. *Current Biology*, 11(23), R986–R996. DOI: [`10.1016/s0960-9822(01)00581-4`](https://doi.org/10.1016/s0960-9822(01)00581-4)

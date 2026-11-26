@@ -1,6 +1,10 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #include "cellulogonic_internal.h"
 
-#if defined(__AVX2__)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
+#  define CELL_HAVE_AVX2_TARGET 1
 typedef int64_t  v4i64 __attribute__((vector_size(32), aligned(1)));
 typedef uint64_t v4u64 __attribute__((vector_size(32), aligned(1)));
 #endif
@@ -479,7 +483,8 @@ static void diffuse_fields_scalar(CellWorld* w, int shift) {
     }
 }
 
-#if defined(__AVX2__)
+#if defined(CELL_HAVE_AVX2_TARGET)
+__attribute__((target("avx2")))
 static inline v4i64 avx2_sdiv_pow2_v4i64(v4i64 v, int shift) {
     if (shift <= 0) return v;
     if (shift > 62) shift = 62;
@@ -495,6 +500,7 @@ static inline v4i64 avx2_sdiv_pow2_v4i64(v4i64 v, int shift) {
     return (v4i64)lshr | sgn;
 }
 
+__attribute__((target("avx2")))
 static void diffuse_fields_avx2(CellWorld* w, int shift) {
     const uint32_t W = w->cfg.width;
     const uint32_t H = w->cfg.height;
@@ -602,8 +608,8 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
         CellVoxel* vx = &w->voxels[i];
         uint32_t x = i % W, y = i / W;
 
-        if (r_box < 100 && w->cfg.photon_flux_uq > 0) {
-            int64_t budget = (int64_t)w->cfg.photon_flux_uq;
+        int64_t budget = (r_box < 100 && w->cfg.photon_flux_uq > 0) ? (int64_t)w->cfg.photon_flux_uq : 0LL;
+        if (budget > 0) {
             int in_band = (((x + W - wave_x) % W) < (W / 2u)) ? 1 : 0;
             int in_ox   = (((y + H - wave_y) % H) < (H / 2u)) ? 1 : 0;
             int64_t k_s = (in_band ? 8 : 4);
@@ -652,6 +658,8 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
                 }
             }
         }
+        /* Store remaining per-voxel photon budget for host autotrophs & chloroplasts (F-13) */
+        w->photon_rem_uq[i] = budget;
 
         /* Spontaneous CMC Protocell Vesicle Self-Assembly in continuous 3D space! */
         if (w->cfg.regime != CELL_REGIME_EMBRYOGENESIS &&
@@ -869,11 +877,12 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
             }
         }
 
-        /* Scan exact interaction stencil covering full 3860 nm eukaryote interaction sphere (no missed collisions!) */
-        int irad = (W >= 9u && H >= 9u) ? 4 : 3;
-        for (int dy = -irad; dy <= irad; ++dy) {
+        /* Scan exact interaction stencil covering full 3860 nm eukaryote interaction sphere (exact 1x on W==8/H==8, F-14!) */
+        int dy_min = (H >= 9u) ? -4 : -3;
+        int dx_min = (W >= 9u) ? -4 : -3;
+        for (int dy = dy_min; dy <= 4; ++dy) {
             uint32_t ny = (uint32_t)((int)vy0 + dy + (int)H) % H;
-            for (int dx = -irad; dx <= irad; ++dx) {
+            for (int dx = dx_min; dx <= 4; ++dx) {
                 uint32_t nx = (uint32_t)((int)vx0 + dx + (int)W) % W;
                 int32_t j = w->hash_head[ny * W + nx];
                 while (j >= 0) {
@@ -1557,9 +1566,9 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             c->tf[4] = (uint8_t)(c->tf[4] + 32u > 255u ? 255u : c->tf[4] + 32u);
             c->tf[6] = (uint8_t)(c->tf[6] + 38u > 255u ? 255u : c->tf[6] + 38u); /* Apical actin-myosin ring! */
         }
-        /* IF-THEN Clause F: Scale-invariant posterior-ventral BMP+Shh > Wnt gonadal boundary niche -> Germline (PGC) */
-        if ((c->v_mem_mv <= -40 && bmp >= t_bmp_hi && shh >= t_shh_hi && (bmp + shh) > (wnt + 10) &&
-             c->generation >= 2u && c->contact_pressure >= 1u && c->contact_pressure <= 2u &&
+        /* IF-THEN Clause F: Scale-invariant posterior-ventral BMP+Shh >= Wnt gonadal boundary niche -> Germline (PGC) */
+        if ((c->v_mem_mv <= -40 && bmp >= t_bmp_hi && shh >= t_shh_hi && (bmp + shh) >= wnt &&
+             c->generation >= 2u && c->contact_pressure >= 1u && c->contact_pressure <= 3u &&
              c->num_bonds > 0u) || c->tf[5] >= 155u) {
             c->tf[5] = (uint8_t)(c->tf[5] + 48u > 255u ? 255u : c->tf[5] + 48u);
             /* Blimp1/Prdm1-like germline repression of somatic TFs in the gonadal niche */
@@ -1655,9 +1664,10 @@ static void step_developmental_morphogenesis(CellWorld* w) {
             int32_t ax = wrap_nm(ci->pos_nm[0] + (ci->heading_q10[0] * 1800) / 1024, span_x) / CELL_VOXEL_NM;
             int32_t ay = wrap_nm(ci->pos_nm[1] + (ci->heading_q10[1] * 1800) / 1024, span_y) / CELL_VOXEL_NM;
             int64_t grad_s = w->voxels[(uint32_t)ay * W + (uint32_t)ax].env[CELL_SP_S] - w->voxels[vc].env[CELL_SP_S];
-            int32_t bias = (int32_t)(grad_s * 6);
-            if (bias >  260) bias =  260;
-            if (bias < -260) bias = -260;
+            int64_t raw_bias = grad_s * 6LL;
+            if (raw_bias >  260LL) raw_bias =  260LL;
+            if (raw_bias < -260LL) raw_bias = -260LL;
+            int32_t bias = (int32_t)raw_bias;
 
             /* Anti-phase pacemaker coupling across bonded neural neighbors -> traveling swimming wave! */
             int32_t couple = 0;
@@ -1747,7 +1757,7 @@ void cell_step_one_epoch(CellWorld* w) {
     step_exogenous_flux_and_abiogenesis(w);
 
     /* 2. Conserved spatial finite-volume diffusion (runtime OSXSAVE/AVX2 guarded, 0-bit parity!) */
-#if defined(__AVX2__)
+#if defined(CELL_HAVE_AVX2_TARGET)
     if (w->cfg.kernel_mode == CELL_KERNEL_SIMD_AVX2 && w->cpu_has_avx2) {
         diffuse_fields_avx2(w, (int)sp->diff_shift);
     } else {

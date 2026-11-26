@@ -1,9 +1,9 @@
 {
-  "title": "CELLULOGONIC MECHA (v1.5.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with Six-Kernel Lean 4.35.0 Formal Proofs",
+  "title": "CELLULOGONIC MECHA (v1.6.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with 78 Six-Kernel Lean 4.35.0 Formal Proofs",
   "upload_type": "software",
-  "version": "1.5.0",
-  "publication_date": "2026-11-25",
-  "description": "Clean-room, zero-dependency native C11 + dual AVX2/Scalar bit-exact 3D cellular artificial life and developmental embryogenesis laboratory paired with a zero-Mathlib Lean 4.35.0 formal proof suite verified across six independent proof kernels (Palomar Challenge/Solution contract) and a 24-gate / 8-mutant falsification harness.",
+  "version": "1.6.0",
+  "publication_date": "2026-11-26",
+  "description": "Clean-room, zero-dependency native C11 + runtime-dispatched AVX2/Scalar bit-exact 3D cellular artificial life and developmental embryogenesis laboratory (Linux x86-64, Windows x86-64, macOS ARM64) paired with a 78-theorem zero-Mathlib Lean 4.35.0 formal proof suite verified across six independent proof kernels (Palomar Challenge/Solution contract, including 8 non-vacuity witnesses and 8 adversarial false-variant refutations) and a 26-gate / 8-mutant falsification harness.",
   "creators": [
     {
       "name": "Donahue, Alexander Stephen",
@@ -27,5 +27,5 @@
     "deterministic-simulation",
     "c11"
   ],
-  "notes": "Dual open licensed: code, Lean 4 proofs, scripts, and CI under Apache-2.0; preprint PDF, LaTeX source, figures, and documentation under CC-BY-4.0. Transparent AI-assistance disclosure included in docs/AI_DISCLOSURE.md and paper/main.tex. Independent research preprint, not peer-reviewed. Zero (0/1,900) overarching Mega-Atlas open problems are claimed solved or retired."
+  "notes": "Dual open licensed: code, Lean 4 proofs, scripts, and CI under Apache-2.0; preprint PDF, LaTeX source, figures, and documentation under CC-BY-4.0. Transparent AI-assistance disclosure included in docs/AI_DISCLOSURE.md and paper/main.tex. Independent research preprint, not peer-reviewed. Zero (0/1,900) overarching Mega-Atlas v2.6.0 open problems are claimed solved or retired."
 }

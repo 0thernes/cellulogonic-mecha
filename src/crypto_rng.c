@@ -1,3 +1,6 @@
+/* SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
+ */
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
@@ -51,7 +54,7 @@ uint32_t cell_philox_u32(uint64_t seed, uint32_t domain, uint64_t ctr_hi, uint64
 /* True Hardware Thermal Silicon Entropy via CPUID-guarded x86-64 RDSEED / RDRAND (for seed == 0 Feral Mode!) */
 uint64_t cell_hw_rdseed_u64(void) {
     uint64_t val = 0;
-#if defined(__x86_64__) || defined(_M_X64)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
     __asm__ __volatile__("cpuid" : "=a"(eax), "=b"(ebx), "=c"(ecx), "=d"(edx) : "a"(0u), "c"(0u));
     uint32_t max_leaf = eax;
@@ -81,6 +84,7 @@ uint64_t cell_hw_rdseed_u64(void) {
     __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
     val = (((uint64_t)hi << 32) | lo) ^ 0x9E3779B97F4A7C15ULL;
 #else
+#  if !defined(_WIN32)
     FILE* ur = fopen("/dev/urandom", "rb");
     if (ur) {
         uint8_t buf[8];
@@ -89,8 +93,10 @@ uint64_t cell_hw_rdseed_u64(void) {
         }
         fclose(ur);
     }
+#  endif
     if (val == 0ULL || val == ~0ULL) {
-        val = (uint64_t)(cell_wall_seconds() * 1e9) ^ 0xD1B54A32D192ED03ULL;
+        uint64_t t = (uint64_t)(cell_wall_seconds() * 1e9);
+        val = cell_philox_u64(t ^ (uint64_t)(uintptr_t)&val, 0xE47091u, t, 0xD1B54A32D192ED03ULL);
     }
 #endif
     return (val != 0ULL && val != ~0ULL) ? val : 0xCAFEBABE12345678ULL;
@@ -226,7 +232,7 @@ void cell_sha256_to_hex(const uint8_t hash[32], char hex[65]) {
  * ============================================================================ */
 
 static void run_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t out[4]) {
-#if defined(__x86_64__) || defined(_M_X64)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     __asm__ __volatile__(
         "cpuid"
         : "=a"(out[0]), "=b"(out[1]), "=c"(out[2]), "=d"(out[3])
@@ -238,7 +244,7 @@ static void run_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t out[4]) {
 }
 
 static uint64_t run_xgetbv0(void) {
-#if defined(__x86_64__) || defined(_M_X64)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     uint32_t lo = 0, hi = 0;
     __asm__ __volatile__("xgetbv" : "=a"(lo), "=d"(hi) : "c"(0u));
     return ((uint64_t)hi << 32) | (uint64_t)lo;
@@ -248,7 +254,7 @@ static uint64_t run_xgetbv0(void) {
 }
 
 int cell_runtime_has_avx2(void) {
-#if defined(__x86_64__) || defined(_M_X64)
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     uint32_t r[4] = {0};
     run_cpuid(0, 0, r);
     uint32_t max_leaf = r[0];
@@ -268,6 +274,7 @@ int cell_runtime_has_avx2(void) {
 CELL_API void cellulogonic_probe_hw(CellHwCaps* out_caps) {
     if (!out_caps) return;
     memset(out_caps, 0, sizeof(*out_caps));
+#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     uint32_t r[4] = {0};
     run_cpuid(0, 0, r);
     uint32_t max_leaf = r[0];
@@ -306,4 +313,15 @@ CELL_API void cellulogonic_probe_hw(CellHwCaps* out_caps) {
     } else {
         snprintf(out_caps->brand, sizeof(out_caps->brand), "Generic x86-64");
     }
+#elif defined(__aarch64__) || defined(_M_ARM64)
+    snprintf(out_caps->vendor, sizeof(out_caps->vendor), "ARM64");
+#  if defined(__APPLE__)
+    snprintf(out_caps->brand, sizeof(out_caps->brand), "Apple Silicon ARM64 (Portable Scalar Kernel)");
+#  else
+    snprintf(out_caps->brand, sizeof(out_caps->brand), "Generic ARM64 (Portable Scalar Kernel)");
+#  endif
+#else
+    snprintf(out_caps->vendor, sizeof(out_caps->vendor), "PortableC11");
+    snprintf(out_caps->brand, sizeof(out_caps->brand), "Generic Non-x86_64 (Portable Scalar Kernel)");
+#endif
 }

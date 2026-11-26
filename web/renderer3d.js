@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
  * ============================================================================
- * CELLULOGONIC MECHA v1.5.0 — Zero-Dependency Bare-Metal WebGL2 3D Organic
+ * CELLULOGONIC MECHA v1.6.0 — Zero-Dependency Bare-Metal WebGL2 3D Organic
  * Deformable Cellular Microscopy Engine (GLSL ES 3.00)
  * ============================================================================ */
 
@@ -403,6 +403,7 @@ export class CellMicroscope3D {
     this.dist = 36.0;
     this.target = [0, 0, 0];
     this.autoOrbit = true;
+    this.reducedMotion = false;
     this.layer = "fates";
     this.showGlyphs = true;
     this.showMicrotubules = true;
@@ -594,7 +595,7 @@ export class CellMicroscope3D {
   render(nowMs) {
     if (this.contextLost) return;
     const gl = this.gl;
-    const t = nowMs * 0.001;
+    const t = this.reducedMotion ? 0.0 : nowMs * 0.001;
     const dt = this.lastNowMs === null ? (1 / 60) : Math.min(0.1, Math.max(0.001, (nowMs - this.lastNowMs) * 0.001));
     this.lastNowMs = nowMs;
 
@@ -957,9 +958,10 @@ export class CellMicroscope3D {
 
     ctx.font = `${Math.round(10.5 * dpr)}px ui-monospace, Consolas, monospace`;
 
+    const orgCount = (pack) => (pack & 15) + ((pack >>> 4) & 15);
     const ranked = [...this.grid.cells]
       .filter((c) => c[1] !== 0)
-      .sort((a, b) => (b[8] + (b[15] & 255) * 400) - (a[8] + (a[15] & 255) * 400))
+      .sort((a, b) => (b[8] + orgCount(b[15]) * 400) - (a[8] + orgCount(a[15]) * 400))
       .slice(0, this.layer === "glyphs" ? 36 : 12);
 
     for (const c of ranked) {
@@ -985,7 +987,7 @@ export class CellMicroscope3D {
       ctx.fillStyle = "rgba(7, 13, 24, 0.58)";
       const tw = ctx.measureText(tag).width + 10 * dpr;
       ctx.fillRect(sx + 8 * dpr, sy - 10 * dpr, tw, 15 * dpr);
-      ctx.fillStyle = c[1] === 3 ? "#8cebff" : ((c[15] & 255) > 0 ? "#ffd46b" : "#67f7dc");
+      ctx.fillStyle = c[1] === 3 ? "#8cebff" : (orgCount(c[15]) > 0 ? "#ffd46b" : "#67f7dc");
       ctx.fillText(tag, sx + 13 * dpr, sy + 1 * dpr);
     }
   }

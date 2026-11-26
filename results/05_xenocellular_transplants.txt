@@ -1,12 +1,12 @@
 === EXPERIMENT 3: 4 PLANETARY / XENOCELLULAR SOLVENTS (DE-NOVO EVOLUTION & TRANSPLANT) ===
 
 --- Part A: De-Novo Solvent Evolution from Neutral Uniform Initial Genomes (~25% adapted) ---
-[DE-NOVO TERRAN_H2O      ] init=25.0% -> adapted= 356/ 392 ( 90.8%) | mean_cring=3.17 (min=3) | mean_Q=0.656 | COVI=93.99 | mRes=0 eRes=0
-[DE-NOVO TITAN_AZOTOSOME ] init=25.0% -> adapted=  54/  81 ( 66.7%) | mean_cring=4.11 (min=4) | mean_Q=0.408 | COVI=80.78 | mRes=0 eRes=0
-[DE-NOVO VENT_TETRAETHER ] init=25.0% -> adapted= 207/ 219 ( 94.5%) | mean_cring=3.74 (min=3) | mean_Q=0.421 | COVI=91.39 | mRes=0 eRes=0
-[DE-NOVO VENUS_H2SO4     ] init=25.0% -> adapted= 270/ 310 ( 87.1%) | mean_cring=3.25 (min=2) | mean_Q=0.466 | COVI=77.37 | mRes=0 eRes=0
+[DE-NOVO TERRAN_H2O      ] init=25.0% -> adapted= 341/ 405 ( 84.2%) | mean_cring=3.37 (min=3) | mean_Q=0.560 | COVI=95.48 | mRes=0 eRes=0
+[DE-NOVO TITAN_AZOTOSOME ] init=25.0% -> adapted=  94/ 122 ( 77.0%) | mean_cring=4.17 (min=4) | mean_Q=0.415 | COVI=82.77 | mRes=0 eRes=0
+[DE-NOVO VENT_TETRAETHER ] init=25.0% -> adapted= 223/ 256 ( 87.1%) | mean_cring=3.74 (min=3) | mean_Q=0.540 | COVI=92.25 | mRes=0 eRes=0
+[DE-NOVO VENUS_H2SO4     ] init=25.0% -> adapted= 207/ 267 ( 77.5%) | mean_cring=3.06 (min=2) | mean_Q=0.553 | COVI=79.77 | mRes=0 eRes=0
 
 --- Part B: Cross-World Transplant: Terran H2O (100 ep) -> Venusian H2SO4 (220 ep) ---
-Pre-Transplant (Terran)     : alive= 212 | adapted_to_H2O= 198 (93.4%) | mean_cring=3.13 | mRes=0 eRes=0
-Post-Shock (+20 ep Venus)   : alive= 144 | adapted_to_H2SO4=  39 (27.1%) | lyses=489 | mRes=0 eRes=0
-Adapted (+220 ep Venus)     : alive=  67 | adapted_to_H2SO4=  40 (59.7%) | mean_cring=3.21 | COVI=74.65 | mRes=0 eRes=0
+Pre-Transplant (Terran)     : alive= 116 | adapted_to_H2O= 107 (92.2%) | mean_cring=3.18 | mRes=0 eRes=0
+Post-Shock (+20 ep Venus)   : alive=  89 | adapted_to_H2SO4=  11 (12.4%) | lyses=321 | mRes=0 eRes=0
+Adapted (+220 ep Venus)     : alive=  95 | adapted_to_H2SO4=  30 (31.6%) | mean_cring=2.77 | COVI=77.14 | mRes=0 eRes=0

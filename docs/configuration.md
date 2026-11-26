@@ -1,20 +1,24 @@
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Configuration & CLI Reference (`docs/configuration.md`)
 
-All runtime parameters for **CELLULOGONIC MECHA `v1.5.0`** are configured through deterministic CLI flags, the C11 `CellWorldConfig` struct, or optional environment variables documented in [`.env.example`](../.env.example). **Zero secrets or external API keys are required.**
+All runtime parameters for **CELLULOGONIC MECHA `v1.6.0`** are configured through deterministic CLI flags, the C11 `CellWorldConfig` struct, or optional environment variables documented in [`.env.example`](../.env.example). **Zero secrets or external API keys are required.**
 
 ## 1. Environment Variables (`.env.example`)
 
 | Variable | Default | Scope | Description |
 |---|---|---|---|
 | `PORT` | `8788` | `web/server.mjs` | Local loopback HTTP port (`127.0.0.1` only) for the WebGL2 3D Observatory |
+| `CELLULOGONIC_BIN` | OS auto-detected | `web/server.mjs`, `examples/`, `scripts/` | Optional explicit path to the compiled native C11 binary |
 | `TECTONIC_BIN` | auto-detected | `scripts/build_paper.py` | Optional override path to the `tectonic` TeX compiler |
-| `CC` | `gcc` | `build_linux.sh` | C11 compiler override on Linux/WSL2 |
+| `CC` | `gcc` (Linux) / `clang` (macOS) | `build_linux.sh` | C11 compiler override on POSIX systems |
 
 ## 2. Native CLI Subcommands (`bin/cellulogonic`)
 
+All numeric CLI flags (`--seed`, `--epochs`, `--size`, `--solvent`, `--pairs`) are validated strictly by `parse_u64_strict()`; malformed values (e.g., `--seed abc`) exit immediately with status code `2`.
+
 | Command | Canonical Example | Purpose |
 |---|---|---|
-| `probe` | `cellulogonic probe` | Prints ABI version (`0x00010500`), CPU vendor/brand, ISA flags (`AVX2`, `BMI1/2`, `POPCNT`, `RDSEED`, `RDTSCP`) |
+| `probe` | `cellulogonic probe` | Prints ABI version (`0x00010600`), CPU vendor/brand (x86-64 CPUID or ARM64), ISA flags |
 | `bench` | `cellulogonic bench --epochs 300 --size 32 --seed 5000` | Runs `SIMD_AVX2` vs. `SCALAR_REF` parity and throughput benchmark |
 | `abiogenesis` | `cellulogonic abiogenesis --epochs 240 --size 32 --seed 5000` | Zero-seed spontaneous protocell condensation from abiotic soup |
 | `endosymbiosis` | `cellulogonic endosymbiosis --epochs 240 --size 32 --seed 5000` | Endosymbiosis ON vs. prokaryotic-only OFF comparison |
@@ -33,4 +37,5 @@ All runtime parameters for **CELLULOGONIC MECHA `v1.5.0`** are configured throug
 - `restraints[0..12]` clamped strictly to `[0, 100]`.
 - `regime` clamped to `[0, CELL_REGIME_EMBRYOGENESIS (5)]`.
 - `solvent` clamped to `[0, CELL_SOLVENT_COUNT - 1 (3)]`.
-- `seed == 0` explicitly invokes CPUID-guarded hardware `RDSEED`/`RDRAND`; any nonzero `seed` guarantees 0-bit deterministic replay.
+- `photon_flux_uq` defaults to `800u` (unified per-voxel budget shared by abiotic photochemistry, host autotrophs, and chloroplasts).
+- `seed == 0` explicitly invokes hardware `RDSEED`/`RDRAND` or portable OS entropy; any nonzero `seed` guarantees 0-bit deterministic replay.
