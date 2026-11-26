@@ -119,13 +119,14 @@ public theorem NV07_embryogenesis_trace_nonvacuous_witness :
     eutelicBudget (4 :: 4 :: List.replicate 7 5) = 256 ∧
     hippoUpdate (hippoUpdate (hippoUpdate 0 10 10) 10 10) 10 10 = 180 ∧
     hippoMitosisPermitted 180 5 = false ∧
-    let w0 : WorldState := ⟨fun _ => 10, 5, 0, 0⟩
-    let mw0 : MorphWorld := ⟨w0, 1, 2, 3, 0⟩
-    let mw1 := runMorphTrace .Terran 3 mw0 [.signalUpdate 2 2 4 540, .cpgAtpHyd 3 (by omega) 1080]
-    stateMass mw1.thermo = stateMass mw0.thermo ∧
-    stateEnergy .Terran mw1.thermo - mw1.thermo.inflow = stateEnergy .Terran mw0.thermo - mw0.thermo.inflow ∧
-    mw1.thermo.heatSink = 84 := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+    ∃ h3 : (3 : Int) ≥ 0,
+      let w0 : WorldState := ⟨fun _ => 10, 5, 0, 0⟩
+      let mw0 : MorphWorld := ⟨w0, 1, 2, 3, 0⟩
+      let mw1 := runMorphTrace .Terran 3 mw0 [.signalUpdate 2 2 4 540, .cpgAtpHyd 3 h3 1080]
+      stateMass mw1.thermo = stateMass mw0.thermo ∧
+      stateEnergy .Terran mw1.thermo - mw1.thermo.inflow = stateEnergy .Terran mw0.thermo - mw0.thermo.inflow ∧
+      mw1.thermo.heatSink = 84 := by
+  refine ⟨?_, ?_, ?_, ?_, Int.natCast_nonneg 3, ?_, ?_, ?_⟩
   · exact EutelicTrace.step (EutelicStep.divide [] (List.replicate 7 5) 4) (EutelicTrace.refl _)
   · decide
   · decide

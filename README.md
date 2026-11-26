@@ -237,7 +237,7 @@ Synchronized automatically against [`results/lean4-audit.txt`](results/lean4-aud
 'Cellulogonic.NonVacuity.NV04_chemiosmosis_bioelectric_nonvacuous_witness' does not depend on any axioms
 'Cellulogonic.NonVacuity.NV05_eutelic_bioglass_nonvacuous_witness' does not depend on any axioms
 'Cellulogonic.NonVacuity.NV06_cytoskeleton_frohlich_nonvacuous_witness' does not depend on any axioms
-'Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness' depends on axioms: [propext]
 'Cellulogonic.NonVacuity.NV08_continuum_biomechanics_nonvacuous_witness' does not depend on any axioms
 ```
 <!-- LEAN_AXIOMS_END -->
