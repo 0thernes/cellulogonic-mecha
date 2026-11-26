@@ -23,7 +23,7 @@ All live `v1.6.0` measurements below were collected on **Intel Core Ultra 9 275H
 | 3-Module Hot-Loop Zero-Heap Symbol Audit (`llvm-nm`/`nm`) | `0` alloc imports | `0` (`chemoton_physics.o`, `cellular_world.o`, `metrology_covi.o`) | PASS |
 | Post-warmup heap allocations (`G10` / `HW02` / `P10`) | `= 0` | `0` across >10,000 cell steps | PASS |
 | Randomized Property & Native C11 Suite (`scripts/prop_check.py`) | `< 5.0 s` | `~0.6 s` (`2,720` trials incl. 20 randomized native C11 runs) | PASS |
-| Pure Lean 4.35.0 full clean build (`lake build` + `Challenge`) | `< 60 s` | `~14 s` (11 modules + `Challenge` + `Solution`, `78/78` theorems) | PASS |
+| Pure Lean 4.35.0 full clean build (`lake build` + `Challenge`) | `< 60 s` | `~14 s` (10 proof modules + `Spec` + `Challenge` + `Solution`, 78 model theorems) | PASS |
 | Live Negative Lean Kernel Rejection (`test_lean_negative.py`) | `< 15 s` | `3/3` exploits caught (`sorry`, custom `axiom`, `native_decide`) | PASS |
 | WebGL2 3D Observatory frame pacing (`web/renderer3d.js`) | `60 FPS` (`<= 16.6 ms`) | Hardware-instanced icospheres (`maxCells = 4096`), epoch-gated 2D scope | PASS |
 

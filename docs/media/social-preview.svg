@@ -45,9 +45,9 @@
   <!-- Metric cards -->
   <g font-family="Segoe UI, Arial, sans-serif">
     <rect x="64" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
-    <text x="84" y="362" fill="#A78BFA" font-size="30" font-weight="800">78 / 78</text>
-    <text x="84" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Pure Lean 4.35.0 Proofs</text>
-    <text x="84" y="408" fill="#94A3B8" font-size="12">6-Kernel Palomar · AT01-08</text>
+    <text x="84" y="362" fill="#A78BFA" font-size="30" font-weight="800">78</text>
+    <text x="84" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Lean 4.35.0 Model Theorems</text>
+    <text x="84" y="408" fill="#94A3B8" font-size="12">About Spec.lean, not the C11 code</text>
 
     <rect x="308" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
     <text x="328" y="362" fill="#34D399" font-size="30" font-weight="800">26/26 · 8/8</text>
@@ -62,5 +62,5 @@
   <!-- Footer -->
   <line x1="64" y1="538" x2="1216" y2="538" stroke="#1E3A5F" stroke-width="1"/>
   <text x="64" y="576" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="600">Alexander Stephen Donahue · Independent Researcher, Spokane, WA · ORCID 0009-0006-8168-9648</text>
-  <text x="64" y="604" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="14">Code: Apache-2.0 · Preprint &amp; Docs: CC-BY-4.0 · 36/36 Verified DOIs · 0/1,900 Mega-Atlas Problems Retired</text>
+  <text x="64" y="604" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="14">Code: Apache-2.0 · Preprint &amp; Docs: CC-BY-4.0 · 36 DOIs checked on Crossref · 0/1,900 Mega-Atlas Problems Retired</text>
 </svg>
