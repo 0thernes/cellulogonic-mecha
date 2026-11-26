@@ -207,7 +207,7 @@ jobs:
           curl -fsSL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VER}/gitleaks_${GITLEAKS_VER}_linux_x64.tar.gz" -o /tmp/gitleaks.tgz
           echo "${GITLEAKS_SHA}  /tmp/gitleaks.tgz" | sha256sum -c -
           tar -xzf /tmp/gitleaks.tgz -C /tmp gitleaks
-          /tmp/gitleaks detect --source . --no-banner --redact
+          /tmp/gitleaks detect --source . --config .gitleaks.toml --no-banner --redact
       - name: Dependency vulnerability scan via SHA-256-verified osv-scanner v2.7.1 (report-only)
         continue-on-error: true
         run: |
@@ -216,4 +216,10 @@ jobs:
           curl -fsSL "https://github.com/google/osv-scanner/releases/download/v${OSV_VER}/osv-scanner_linux_amd64" -o /tmp/osv-scanner
           echo "${OSV_SHA}  /tmp/osv-scanner" | sha256sum -c -
           chmod +x /tmp/osv-scanner
-          /tmp/osv-scanner scan source -r .
+          rc=0
+          /tmp/osv-scanner scan source -r . || rc=$?
+          if [ "$rc" -eq 128 ]; then
+            echo "PASS: Zero third-party dependency lockfiles present (zero-dependency C11/Lean/Node architecture)."
+          else
+            exit "$rc"
+          fi

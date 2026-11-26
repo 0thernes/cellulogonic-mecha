@@ -231,27 +231,21 @@ void cell_sha256_to_hex(const uint8_t hash[32], char hex[65]) {
  * Silicon CPUID Probe (x86-64)
  * ============================================================================ */
 
-static void run_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t out[4]) {
 #if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
+static void run_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t out[4]) {
     __asm__ __volatile__(
         "cpuid"
         : "=a"(out[0]), "=b"(out[1]), "=c"(out[2]), "=d"(out[3])
         : "a"(leaf), "c"(subleaf)
     );
-#else
-    out[0] = out[1] = out[2] = out[3] = 0;
-#endif
 }
 
 static uint64_t run_xgetbv0(void) {
-#if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))
     uint32_t lo = 0, hi = 0;
     __asm__ __volatile__("xgetbv" : "=a"(lo), "=d"(hi) : "c"(0u));
     return ((uint64_t)hi << 32) | (uint64_t)lo;
-#else
-    return 0ULL;
-#endif
 }
+#endif
 
 int cell_runtime_has_avx2(void) {
 #if (defined(__x86_64__) || defined(_M_X64)) && (defined(__GNUC__) || defined(__clang__))

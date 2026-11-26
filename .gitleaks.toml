@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2026 Alexander Stephen Donahue
+# Gitleaks configuration extending built-in ruleset with documented false-positive exclusions.
+
+title = "CELLULOGONIC MECHA Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "BibTeX citation key fields (e.g. 'schnakenberg1976') in results/citation-audit.json trigger generic-api-key"
+paths = [
+  '''^results/citation-audit\.json$''',
+]

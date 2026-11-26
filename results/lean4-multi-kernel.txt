@@ -1,14 +1,31 @@
-# CELLULOGONIC MECHA v1.5.0 — Independent Multi-Kernel Lean 4.35.0 Verification Transcript
-Toolchain: leanprover/lean4:v4.35.0 (Windows x64 local replay; full 6-kernel bubblewrap replay in .github/workflows/ci.yml)
-Date: 2026-11-25
-Audited Theorems: 70 (62 core T01..T58, C59..C62 + 8 NonVacuity NV01..NV08)
+# CELLULOGONIC MECHA v1.6.0 — Independent 6-Kernel Lean 4.35.0 Verification Transcript
+Toolchain: leanprover/lean4:v4.35.0 (GitHub Actions ubuntu-latest bubblewrap 6-kernel Palomar replay)
+CI Run: https://github.com/0thernes/cellulogonic-mecha/actions/runs/45810469384 (Job 139876644499)
+Commit: 40e995b69af6d44326269236d62947035915d1fd
+Date: 2026-11-26
+Audited Theorems: 78 (62 core T01..T58, C59..C62 + 8 NonVacuity NV01..NV08 + 8 AdversarialTests AT01..AT08)
+Pinned Spec Definitions in comparator.json: 12
 Permitted Axioms: [propext, Classical.choice, Quot.sound]
-Challenge.lean: 445 lines, 19487 bytes
 
-[1/6] lean 4.35.0 (lake build + lake build Challenge + VerifyAxioms.lean): PASS (70/70 theorems, 0 sorryAx in Solution, 0 warnings)
-[2/6] leanchecker --fresh Solution: PASS ()
-[3/6] leanchecker-paranoid --fresh Solution: PASS ()
-[4/6] con-leche --verified (export 16266799 bytes): PASS (con-leche: accepted 3326 declarations (--verified))
-[5/6] con-ron --verified: PASS (con-ron: accepted 3326 declarations (--verified))
-[6/6] nanoda_bin (unpermitted_axiom_hard_error=true, nat/string_extension=true): PASS (Checked 3735 declarations with no typechecker errors, 1 pretty printer errors: [     "Unable to print axioms", ])
-[CI ] lean4lean + lake check --paranoid + lake comparator --config comparator.json --paranoid: wired on ubuntu-latest with bubblewrap in .github/workflows/ci.yml
+[1/6] lean 4.35.0 (lake build + lake build Challenge + VerifyAxioms.lean + diff -u results/lean4-audit.txt): PASS (78/78 theorems, 0 sorryAx in Solution, 0 warnings)
+[2/6] leanchecker --fresh Solution: PASS
+[3/6] leanchecker-paranoid --fresh Solution: PASS
+[4/6] lake check --paranoid (full environment, 58720/58723 declarations):
+      - Lean paranoid kernel: accepts the solution
+      - lean4lean kernel: checked 58720 declarations — accepts the solution
+      - nanoda kernel: accepts the solution
+      - con-leche kernel (--verified): accepted 58723 declarations — accepts the solution
+      - con-ron kernel (--verified): accepted 58723 declarations — accepts the solution
+      - Lean default kernel: accepts the solution (Uses axioms: Classical.choice, propext, Quot.sound)
+[5/6] lake comparator --config comparator.json --paranoid (78 theorems + 12 pinned Spec.lean definitions, 3346/3349 declarations):
+      - Lean paranoid kernel: accepts the solution
+      - lean4lean kernel: checked 3346 declarations — accepts the solution
+      - nanoda kernel: accepts the solution
+      - con-leche kernel (--verified): accepted 3349 declarations — accepts the solution
+      - con-ron kernel (--verified): accepted 3349 declarations — accepts the solution
+      - Lean default kernel: accepts the solution
+      - Verdict: Your solution is okay!
+[6/6] Live Negative Tamper Rejection (F-12):
+      - scripts/test_lean_negative.py: PASS
+      - Sorry-tampered StoichiometryThermo.lean rejected by lake comparator --config comparator.json --paranoid:
+        `error: Illegal axiom detected: 'sorryAx'` -> PASS!

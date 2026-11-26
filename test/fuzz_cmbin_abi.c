@@ -39,7 +39,7 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
         for (int i = 0; i < 112; ++i) {
             if (!(out112[i] >= 0.0f && out112[i] <= 1.0f)) {
                 fprintf(stderr, "FUZZ FAIL: out112[%d] = %g out of [0,1]\n", i, (double)out112[i]);
-                *(volatile int*)0 = 1; /* trap sanitizer immediately */
+                abort(); /* trap sanitizer immediately */
             }
         }
     } else if (mode == 1u) {
@@ -76,7 +76,7 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
             fprintf(stderr, "FUZZ FAIL: conservation violation m=%lld e=%lld v=%u\n",
                     (long long)led.mass_residual_amu, (long long)led.int_ledger_residual_uq,
                     led.second_law_violations);
-            *(volatile int*)0 = 1;
+            abort();
         }
 
         size_t cap = (size_t)(data[14] * 32u);
@@ -135,7 +135,7 @@ static void fuzz_one_input(const uint8_t* data, size_t size) {
                             cell_compute_ledger(loaded, &led);
                             if (led.mass_residual_amu != 0 || led.int_ledger_residual_uq != 0) {
                                 fprintf(stderr, "FUZZ FAIL: accepted malformed snapshot broke ledger!\n");
-                                *(volatile int*)0 = 1;
+                                abort();
                             }
                             cellulogonic_destroy(loaded);
                         }

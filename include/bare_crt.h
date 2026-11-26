@@ -6,11 +6,11 @@
 #endif
 
 /*
- * CELLULOGONIC MECHA v1.5.0 — Minimal Zero-Dependency CRT & OS Portability Layer
+ * CELLULOGONIC MECHA v1.6.0 — Minimal Zero-Dependency CRT & OS Portability Layer
  * SPDX-License-Identifier: Apache-2.0
  * Compiles cleanly under:
  *   1. Bundled LLVM/Clang targeting x86_64-w64-windows-gnu (no external SDK required)
- *   2. Native GCC / Clang on Linux ELF64 (WSL2 / Ubuntu / standard POSIX)
+ *   2. Native GCC / Clang on Linux ELF64 & macOS ARM64 (Apple Silicon / POSIX)
  *   3. Full MinGW-w64 GCC / Clang toolchains
  */
 
@@ -50,6 +50,7 @@ extern int    __cdecl setvbuf(FILE* stream, char* buf, int mode, size_t size);
 extern void*  __cdecl malloc(size_t size);
 extern void*  __cdecl calloc(size_t num, size_t size);
 extern void   __cdecl free(void* ptr);
+extern void   __cdecl abort(void);
 extern long   __cdecl strtol(const char* str, char** endptr, int base);
 extern long long __cdecl strtoll(const char* str, char** endptr, int base);
 extern unsigned long long __cdecl strtoull(const char* str, char** endptr, int base);

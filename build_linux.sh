@@ -12,13 +12,6 @@ if [ "$CC" = "cc" ] && command -v gcc >/dev/null 2>&1 && [ "$(uname -s)" = "Linu
 fi
 HOST_OS="$(uname -s)"
 HOST_ARCH="$(uname -m)"
-ARCH_FLAGS=()
-if [ "${NATIVE:-0}" = "1" ]; then
-  ARCH_FLAGS=(-march=native)
-elif [ "$HOST_ARCH" = "x86_64" ] || [ "$HOST_ARCH" = "amd64" ]; then
-  # Portable x86-64 baseline (AVX2 is isolated via __attribute__((target("avx2"))) & runtime OSXSAVE guard, F-02)
-  ARCH_FLAGS=(-march=x86-64)
-fi
 
 SHLIB_EXT="so"
 if [ "$HOST_OS" = "Darwin" ]; then
@@ -30,9 +23,14 @@ FLAGS=(
   -Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion
   -Wno-unused-parameter -Werror
   -ffp-contract=off
-  "${ARCH_FLAGS[@]}"
   -I"$PROJ/include"
 )
+if [ "${NATIVE:-0}" = "1" ]; then
+  FLAGS+=(-march=native)
+elif [ "$HOST_ARCH" = "x86_64" ] || [ "$HOST_ARCH" = "amd64" ]; then
+  # Portable x86-64 baseline (AVX2 is isolated via __attribute__((target("avx2"))) & runtime OSXSAVE guard, F-02)
+  FLAGS+=(-march=x86-64)
+fi
 
 CORE=(
   "$PROJ/src/crypto_rng.c"
@@ -57,7 +55,7 @@ for s in "${CORE[@]}"; do
 done
 if command -v nm >/dev/null 2>&1; then
   for hot in "$PROJ/bin/chemoton_physics_linux.o" "$PROJ/bin/cellular_world_linux.o" "$PROJ/bin/metrology_covi_linux.o"; do
-    if nm -u "$hot" | grep -Eq '(^|[[:space:]_])(malloc|calloc|realloc|free)($|[[:space:]@])'; then
+    if nm -u "$hot" | grep -Eq '(^|[[:space:]])_?(malloc|calloc|realloc|free)($|[[:space:]@])'; then
       echo "ERROR: HOT-LOOP HEAP ALLOCATION VIOLATION in $hot" >&2
       exit 1
     fi
