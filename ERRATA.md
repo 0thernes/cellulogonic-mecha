@@ -9,3 +9,28 @@ All substantive factual, legal, mathematical, or engineering corrections discove
 | 2026-11-25 | `v1.5.0` | `error` | `VERSION` stayed at `1.3.0` and `paper/main.tex` stayed at `v1.3.0` (reporting 58 Lean proofs) even after `v1.4.0` added `ContinuumBiomechanics.lean` (`C59`–`C62`, 62 proofs). | Synchronized `VERSION` (`1.5.0`), `CHANGELOG.md`, `CITATION.cff`, `lean/lakefile.toml`, and `paper/main.tex` (`amsart`, 70 audited theorems including `C59`–`C62` and `NV01`–`NV08`). |
 | 2026-11-25 | `v1.5.0` | `gap` | Lean 4 suite lacked Palomar `module` / `Spec` / `Challenge` / `Solution` isolation, `autoImplicit = false`, explicit `NonVacuity` witnesses, and multi-kernel replay. | Upgraded all Lean modules to Lean 4.35.0 `module` system with `Spec.lean`, `Challenge.lean`, `Solution.lean`, `NonVacuity.lean` (`NV01`–`NV08`), `comparator.json`, `formalization.yaml`, local 5-kernel replay (`results/lean4-multi-kernel.txt`), and 6/6 CI bubblewrap verification. |
 | 2026-11-21 | `v1.3.0` | `bug` | Titan azotosome `e_pmf = 7` allowed `q = 0` boundary and GRN Wnt loci collided with bioelectric `genome[96..97]`. | Tightened Titan to `e_pmf = 8, r2 = 7, q = 6` (`q_r > 0` across all 4 solvents) and moved Wnt loci to `genome[102..103]`. |
+
+## 2026-11-26 statement audit
+
+An external statement audit of commit `d033ab0` rebuilt the Lean library (`lake build`, `VerifyAxioms.lean`: 78 theorems, axioms within `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) and compared the public claims with the Lean statements. Audit log: <https://github.com/0thernes/0thernes-research-archive/blob/main/docs/reviews/2026-11-26-statement-audit.md>.
+
+The repository documents (`README.md`, `CLAIMS.md`, `LIMITATIONS.md`, `CITATION.cff`, `lean/formalization.yaml`, `docs/`) were corrected in this pass. The items below sit in the frozen paper or in the Lean sources and are recorded here instead of being changed in place. None of them makes a Lean theorem false.
+
+### Paper (frozen `paper/main.tex`, `dist/Donahue_2026_cellulogonic_mecha.pdf`, `paper/WHITE_PAPER.md`)
+
+| Where | What is wrong | Correction | Affects a theorem statement? |
+|---|---|---|---|
+| `paper/main.tex` lines 196, 199, 205, 280 (Section "Theorem II", theorem environment `thm:minimax`, Table of modules); `paper/WHITE_PAPER.md` lines 63, 72 | `T16` is called the "Global Minimax Theorem of Vesicle Division" / "Global Minimax Law". | `T16` is the elementary polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$, on the cube/square proxy model, proved from the factorisation $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4+2x^3y+2xy^3+y^4)$. | No (label only). |
+| `paper/WHITE_PAPER.md` line 213 | Lists the `T16` proof as a "Genuine Original Contribution". | The factorisation is elementary; no originality claim is made for it. | No. |
+| `paper/main.tex` line 72 (abstract) and line 290 (module table) | Presents all 78 theorems as core biophysical invariants and counts "11 Modules". | The 78 theorems concern `Spec.lean` only; several are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`). They live in 10 proof modules + `Spec.lean` (15 `.lean` files in `lean/`). | No. |
+| `paper/main.tex` line 290, Section "Six-Kernel Lean 4.35.0 Architecture" | "6/6 Kernels" reads as six independent kernels. | Six kernel checks: Lean default and paranoid modes, `lean4lean`, `nanoda`, `con-leche`, `con-ron`; two of them use the Lean reference kernel. | No. |
+
+### Known issues in the formal code (not yet fixed)
+
+| Where | What is wrong | Correction | Affects a theorem statement? |
+|---|---|---|---|
+| `lean/CellulogonicProofs/MembraneGeometry.lean` lines 127-131 (docstring of `T16`) | Docstring says "Global Minimax Theorem" and "equality iff V1 = V2", but the statement proves only `≤` and strict `<` for `x ≠ y`. | Remove the "Global Minimax" label and the unstated "iff", or add the equality case to the statement. | No (docstring only). |
+| `lean/Challenge.lean` line 139 (`T25`), line 228 (`T44`), line 208 (`T40`), line 149 (`T27`); same statements in `lean/CellulogonicProofs/*.lean` | These are arithmetic identities (`T25`: $(c_1+s_1)+(c_2+s_2) = (c_1+c_2)+(s_1+s_2)$ over `Nat`; `T44`: a ring identity; `T40`: $A_1L_1 = A_2L_2, A_2 < A_1 \Rightarrow L_1 < L_2$; `T27`: $Kg > g \wedge Kg - g = (K-1)g$) presented under biological names. | Relabel as bookkeeping lemmas, or report them separately from the model theorems. | No. |
+| `lean/Challenge.lean` lines 214-216 (`T41`), 290-296 (`T54`), 369-373 (`C62`), 441-446 (`NV08`) | Literal-only conjuncts: `N0 - N0 = 0`; `8 * 2 ^ 5 = 256 ∧ 2 ^ 9 = 512`; `k * 0 * 0 = 0`; `(5 : Int) * (-3) * (-3) = 45`. | Drop the literal-only conjuncts. | Yes, if fixed (the statements would become shorter; the remaining content is unchanged). |
+| `lean/Challenge.lean` line 203 (`T39`), line 224 (`T43`) | Statements use truncated `Nat` subtraction (`(E + M_musc) - M_shared`, `V + J_in - J_excr ≤ V`), so excess efflux clamps volume at 0. | Note the clamping in the docstrings or state over `Int`. | Yes, if restated over `Int`. |
+| `results/lean4-multi-kernel.txt` lines 3-4 | The six-kernel transcript was recorded at parent commit `40e995b` (CI run `45810469384`), not at `d033ab0`. `lean/` is unchanged between the two commits, and CI run `45812871840` at `d033ab0` also passed. | Regenerate the transcript from CI run `45812871840`. | No. |

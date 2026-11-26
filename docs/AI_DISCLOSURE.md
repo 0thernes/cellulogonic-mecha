@@ -23,7 +23,7 @@ Substantive AI engineering and research assistance—specifically **Google DeepM
 
 - **AI systems are NOT listed as authors** and cannot bear scholarly responsibility.
 - **Zero unverified AI outputs are accepted as truth:**
-  - Every mathematical claim in `lean/` is mechanically checked by independent Lean 4.35.0 kernels (`lean`, `leanchecker`, `leanchecker-paranoid`, `con-leche`, `con-ron`, `nanoda_bin`, plus `lean4lean` in Linux CI) with zero `sorry` in `Solution` and zero `native_decide`.
+  - Every theorem in `lean/` is mechanically checked by Lean 4.35.0 kernel checkers (`lean`, `leanchecker`, `leanchecker-paranoid`, `con-leche`, `con-ron`, `nanoda_bin`, plus `lean4lean` in Linux CI) with zero `sorry` in `Solution` and zero `native_decide`.
   - Every computational claim is backed by live native C11 execution, 4-way 0-bit SHA-256 parity, 26/26 falsification gates, 8/8 caught mutants, 1,000/1,000 ABI fuzz cases, and 2,700 property checks.
   - Every bibliographic DOI in `paper/refs.bib` is verified live against the authoritative DOI Handle REST API via `scripts/check_citations.py`.
 - **No peer review, arXiv ID, or Zenodo DOI is claimed** prior to confirmed external assignment.

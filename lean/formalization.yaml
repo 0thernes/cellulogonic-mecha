@@ -5,14 +5,17 @@ version: "v0.4"
 project:
   name: "CELLULOGONIC MECHA Formal Verification Suite (CellulogonicProofs v1.6.0)"
   description: >-
-    Zero-Mathlib Lean 4.35.0 formalization of 78 audited theorems (62 core discrete
-    biophysical invariants T01-T58 & C59-C62 across 8 modules, 8 concrete NonVacuity and
-    sharp negative-boundary witnesses NV01-NV08, and 8 adversarial false-variant
-    refutations AT01-AT08) certifying exact 4-solvent 19-reaction Chemoton mass/First-Law/
-    strict-Second-Law thermodynamics, discrete Canham-Helfrich elastic bilayer fission and
-    the sextic Global Minimax Theorem of Vesicle Division, Nick Lane's 1/R prokaryotic
-    ceiling and endosymbiotic O(1) scaling liberation, solvent c-ring floors, Levin
-    bioelectric gap-junction Dirichlet dissipation, eutelic 7-organ metazoan budgets and
+    Zero-Mathlib Lean 4.35.0 formalization of 78 theorems about the integer model in
+    lean/CellulogonicProofs/Spec.lean (62 core statements T01-T58 & C59-C62 across 8
+    modules, 8 NonVacuity witnesses NV01-NV08, and 8 false-variant refutations AT01-AT08),
+    in 10 proof modules + Spec.lean. They concern the Lean model only, not src/*.c, and
+    several are arithmetic bookkeeping identities or contain literal-only conjuncts (T25,
+    T27, T40, T41, T44, T54, C62, NV08). Topics: 4-solvent 19-reaction Chemoton mass,
+    first-law and positive-heat ledgers; Canham-Helfrich-inspired integer fission and
+    budding inequalities (T16 is the polynomial inequality (x^2+y^2)^3 <= 2(x^3+y^3)^2,
+    strict for x /= y); a 1/R prokaryotic power bound (after N. Lane) and an
+    endosymbiotic scaling model; solvent c-ring floors; Levin-style bioelectric
+    gap-junction Dirichlet dissipation, eutelic 7-organ metazoan budgets and
     TDP bioglass anhydrobiosis, 3D cytoskeletal nanomechanics and stateful Frohlich-Pokorny
     GHz relaxation, developmental GRN embryogenesis (Wolpert, Steinberg, eutelic binary-tree
     invariant, Hippo hysteresis, Hebbian pruning, coupled CPG waves, R8 zero-drift), and
@@ -43,16 +46,16 @@ sources:
     type: "original-proof"
     relationship: "other"
     note: >-
-      Original formal invariant suite and companion AMS-LaTeX preprint first presented
-      in this repository. No external DOI, arXiv ID, or peer review is claimed prior to
+      Formal invariant suite and companion AMS-LaTeX preprint presented in this
+      repository. No external DOI, arXiv ID, or peer review is claimed prior to
       confirmed external assignment.
 
 related_formalizations: []
 
 status:
   scope: >-
-    Certifies exact integer, polynomial, combinatorial, and finite-trace invariants of
-    the discrete biophysical model equations strictly within [propext, Classical.choice,
+    Proves integer, polynomial, combinatorial, and finite-trace statements about the
+    discrete model in Spec.lean, with axioms within [propext, Classical.choice,
     Quot.sound] with zero Mathlib, zero sorry in Solution, zero native_decide, and zero
     compiler warnings. Explicitly NOT formalized inside the Lean 4 kernel: C11 memory
     safety, AVX2/scalar/ARM64 parity, .cmbin cryptographic snapshot verification,
@@ -153,8 +156,8 @@ fidelity:
 review:
   status: "self-assessed"
   notes: >-
-    Not externally peer-reviewed. Machine-checked across all 6 independent Lean 4.35.0
-    kernel checks in sandboxed bubblewrap on Ubuntu Linux CI (lean4 default,
-    leanchecker-paranoid, lean4lean, nanoda_bin, con-leche --verified, con-ron --verified)
+    Not externally peer-reviewed. Accepted by six kernel checks in sandboxed bubblewrap
+    on Ubuntu CI (Lean default and paranoid modes, lean4lean, nanoda_bin,
+    con-leche --verified, con-ron --verified; two of the six use the Lean reference kernel)
     via lake check --paranoid and lake comparator --config comparator.json --paranoid,
     plus live negative tamper rejection testing.

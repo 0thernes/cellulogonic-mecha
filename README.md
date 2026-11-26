@@ -1,13 +1,13 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # CELLULOGONIC MECHA v1.6.0
 
-Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, cytoskeletal, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + runtime-dispatched AVX2/Scalar kernels (Linux x86-64, Windows x86-64, macOS ARM64), paired with **78 six-kernel Pure Lean 4.35.0 formal proofs** and a 60 FPS WebGL2 3D Observatory.
+Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, cytoskeletal, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + runtime-dispatched AVX2/Scalar kernels (Linux x86-64, Windows x86-64, macOS ARM64), paired with a zero-Mathlib Lean 4.35.0 library of **78 theorems about its integer specification model** (`lean/CellulogonicProofs/Spec.lean`, not the C11 code) and a 60 FPS WebGL2 3D Observatory.
 
 [![Version](https://img.shields.io/badge/version-1.6.0-0284C7)](VERSION)
 [![Status](https://img.shields.io/badge/status-active-059669)](ROADMAP.md)
 [![Code License](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
 [![Docs License](https://img.shields.io/badge/docs%20%26%20paper-CC--BY--4.0-blueviolet)](LICENSE-DOCS)
-[![Lean 4.35.0](https://img.shields.io/badge/Lean%204.35.0-78%2F78%20theorems%20%C2%B7%206--kernel-7C3AED)](results/lean4-multi-kernel.txt)
+[![Lean 4.35.0](https://img.shields.io/badge/Lean%204.35.0-78%20model%20theorems%20%C2%B7%206%20kernel%20checks-7C3AED)](results/lean4-multi-kernel.txt)
 [![Falsification](https://img.shields.io/badge/falsification-26%2F26%20gates%20%C2%B7%208%2F8%20mutants-059669)](results/11_falsification_win64.txt)
 [![Mega-Atlas](https://img.shields.io/badge/Mega--Atlas%20retired-0%2F1%2C900-475569)](docs/MEGA_ATLAS_CROSSCHECK.md)
 
@@ -28,11 +28,11 @@ Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemio
 
 ---
 
-## Verified Proof & Benchmark Highlights (`v1.6.0`, Intel Core Ultra 9 275HX)
+## Proof & Benchmark Summary (`v1.6.0`, Intel Core Ultra 9 275HX)
 
-| Verification Gate | Verified Result | Primary Evidence |
+| Verification Gate | Reported Result | Primary Evidence |
 |---|---|---|
-| **Lean 4.35.0 Six-Kernel Palomar Suite** | **78 / 78 Audited Theorems** (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses `NV01`–`NV08` + `8` adversarial false-variant refutations `AT01`–`AT08`; `12` pinned `Spec` defs; `0 sorry` in `Solution`, strictly `[propext, Classical.choice, Quot.sound]`, + live negative kernel tamper rejection) | [`results/lean4-audit.txt`](results/lean4-audit.txt) · [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt) |
+| **Lean 4.35.0 model theorems (Palomar `Spec`/`Challenge`/`Solution`)** | **78 theorems about `Spec.lean`** (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses `NV01`–`NV08` + `8` false-variant refutations `AT01`–`AT08`) in 10 proof modules + `Spec.lean` (15 `.lean` files, 2,541 lines); `12` pinned `Spec` defs; `0 sorry` in `Solution`; axioms within `[propext, Classical.choice, Quot.sound]`. Kernel-checked by Lean (`lake build`, `leanchecker`) and accepted in CI by six kernel checks (Lean default and paranoid modes, `lean4lean`, `nanoda`, `con-leche`, `con-ron`; two of the six use the Lean reference kernel); a `sorry`-tampered `Solution` is rejected. Several theorems are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`), so the count overstates model content. | [`results/lean4-audit.txt`](results/lean4-audit.txt) · [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt) (recorded at parent commit `40e995b`, CI run `45810469384`; `lean/` is unchanged at `d033ab0`, whose CI run `45812871840` also passed) |
 | **Win64 PE64 Falsification (`clang 23.1.0`, `-Werror`)** | **26 / 26 PASSED · 8 / 8 Planted Mutants Caught (`0.692s`) · 1,000/1,000 Fuzz Cases PASS** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
 | **Linux ELF64 & macOS ARM64 (`gcc`/`clang`, ASan/UBSan)** | **26 / 26 PASSED · 8 / 8 Planted Mutants Caught (`0.802s` Linux) · ASan/UBSan + `libFuzzer` + 3-OS CI** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
 | **Randomized Property & Native C11 Suite (`B10`)** | **2,720 / 2,720 `prop_check` trials PASSED (`0` counterexamples) + `6,586` Python Exact Oracle checks** | [`scripts/prop_check.py`](scripts/prop_check.py) |
@@ -41,6 +41,8 @@ Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemio
 | **3D Embryogenesis (8 Identical-DNA Blastomeres)** | **`47` alive (`maxT 45`), ALL 5 fates (`Gm=6`), `81.1%` peak sort, `288` wired axons, `674` CPG pulses, exact Z-invariance** | [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) |
 | **Locked Paired Stats (`N = 24`, Seeds `5000..5023`)** | **4 / 4 Pre-Registered Hypotheses UNANIMOUS `24/24` WINS (`96/96` total; $p_{\text{Holm}} = 0.00040$; $d_z \in [1.468, 3.560]$)** | [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt) |
 | **AMS-LaTeX Paper, Crossref Retractions & RFC 3161 TSA** | **Zero Overfull `\hbox`/`\vbox`, clean-room arXiv PASS, `36/36` Crossref live OK (`0` retractions), DigiCert `.tsr`** | [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`results/citation-audit.json`](results/citation-audit.json) |
+
+The rows other than the Lean row report the output of this repository's own scripts and CI. The 2026-11-26 statement audit rebuilt the Lean library only; it did not re-run the C engine, parity, statistics, citation or timestamp checks. The CI security scans (cppcheck, gitleaks, osv-scanner) are report-only, so a green CI run does not show that they found nothing.
 
 ---
 
@@ -259,17 +261,20 @@ Synchronized automatically against [`results/lean4-audit.txt`](results/lean4-aud
 
 ---
 
-## Honest Verification Boundaries & Mega-Atlas Non-Retirement
+## Verification Boundaries & Mega-Atlas Non-Retirement
 
-- **Formal vs. Runtime Boundary:** Lean 4.35.0 verifies the 78 discrete mathematical, thermodynamic, geometric, bioenergetic, developmental, continuum, non-vacuity, and adversarial-refutation invariants inside `lean/` (`docs/statement-fidelity.md`). Runtime C11 memory safety, portable AVX2/scalar/ARM64 parity, `"CMB5"` `.cmbin` validation, stochastic emergence, web bridge security, and `N = 24` statistical tests are verified outside the Lean kernel by `test/test_falsification.c` (26 gates + 8 mutants), `test/fuzz_cmbin_abi.c` (1,000-case standalone + `libFuzzer`), `test/test_web_server.mjs` (13 tests), `reference/chemoton_oracle.py`, `scripts/prop_check.py`, and 3-OS CI.
+- **What Lean proves:** For the integer model in `lean/CellulogonicProofs/Spec.lean`, each of the 19 tabulated reactions has zero mass delta (`T01`) and an exact first-law energy balance for all 4 solvents and every rotor stoichiometry `nH` (`T02`); heat per reaction is positive when `nH ≥ minCRing sv` (`T03`); further theorems give integer fission and budding inequalities, power-scaling bounds, a clamped Fröhlich update bounded by 1000, and a contact-exchange energy decrease, plus 8 witnesses and 8 false-variant refutations. `T16` is the polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$; it is an elementary inequality for the cube/square proxy model, not a general minimax theorem.
+- **What Lean does not prove:** No theorem connects `Spec.lean` to `src/*.c`. Statements over hard-coded constant tables (reaction stoichiometry, solvent c-ring thresholds, organ budgets) hold only for those constants. Several of the 78 theorems are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`). Some statements use truncated natural-number subtraction (`T39`, `T43`). No biological, wet-lab, physical or sentience claim follows from these proofs (`docs/statement-fidelity.md`).
+- **Runtime checks outside Lean:** Runtime C11 memory safety, portable AVX2/scalar/ARM64 parity, `"CMB5"` `.cmbin` validation, stochastic emergence, web bridge security, and `N = 24` statistical tests are verified outside the Lean kernel by `test/test_falsification.c` (26 gates + 8 mutants), `test/fuzz_cmbin_abi.c` (1,000-case standalone + `libFuzzer`), `test/test_web_server.mjs` (13 tests), `reference/chemoton_oracle.py`, `scripts/prop_check.py`, and 3-OS CI.
 - **Unsolved Problems Mega-Atlas (`0 / 1,900` Retired):** As documented in [`docs/MEGA_ATLAS_CROSSCHECK.md`](docs/MEGA_ATLAS_CROSSCHECK.md), **`0 / 1,900`** overarching open problems in `0thernes/unsolved-problems-mega-atlas` (`v2.6.0`, commit `d23b4d7`) are claimed solved or retired. Scoped invariants and computational probes touch 13 adjacent IDs (`BIO-001`, `BIO-006`, `BIO-015`, `BIO-022`, `BIO-046`, `BIO-070`, `NEURO-043`, `AI-045`, `SUB-001`, `SUB-012`, `SUB-047`, `SYS-009`, `XSPEC-009`), while every parent problem remains **OPEN**.
 - **Limitations & Real-vs-Metaphor:** See [`LIMITATIONS.md`](LIMITATIONS.md) and [`CLAIMS.md`](CLAIMS.md) (including explicit "What Would Prove Us Wrong" falsifiers).
+- **Statement audit (2026-11-26):** Corrections from the external statement audit are listed in [`ERRATA.md`](ERRATA.md); audit log: <https://github.com/0thernes/0thernes-research-archive/blob/main/docs/reviews/2026-11-26-statement-audit.md>.
 
 ---
 
 ## Documentation, Manuscripts & Governance
 
-- **Compiled AMS-LaTeX White Paper (`v1.6.0`, 36 Live Crossref-Verified DOIs, 0 Retractions):** [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`paper/main.tex`](paper/main.tex) · [`paper/refs.bib`](paper/refs.bib) · [`dist/arxiv_submission.tar.gz`](dist/arxiv_submission.tar.gz) · [`results/citation-audit.json`](results/citation-audit.json)
+- **Compiled AMS-LaTeX White Paper (`v1.6.0`; 36 DOIs checked against Crossref with 0 retractions, as reported by `scripts/check_citations.py`):** [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`paper/main.tex`](paper/main.tex) · [`paper/refs.bib`](paper/refs.bib) · [`dist/arxiv_submission.tar.gz`](dist/arxiv_submission.tar.gz) · [`results/citation-audit.json`](results/citation-audit.json)
 - **Epistemic & Readiness Ledgers:** [`CLAIMS.md`](CLAIMS.md) · [`SUBMISSION_READINESS.md`](SUBMISSION_READINESS.md) · [`LIMITATIONS.md`](LIMITATIONS.md) · [`REPLICATION.md`](REPLICATION.md) · [`EVIDENCE.md`](EVIDENCE.md) · [`HARDENING_LOG.md`](HARDENING_LOG.md) · [`DEVIATIONS.md`](DEVIATIONS.md) · [`ERRATA.md`](ERRATA.md)
 - **Audit & Reference Docs:** [`docs/statement-fidelity.md`](docs/statement-fidelity.md) · [`docs/MEGA_ATLAS_CROSSCHECK.md`](docs/MEGA_ATLAS_CROSSCHECK.md) · [`docs/AI_DISCLOSURE.md`](docs/AI_DISCLOSURE.md) · [`docs/benchmarks.md`](docs/benchmarks.md) · [`docs/preregistration.md`](docs/preregistration.md) · [`docs/reviews/2026-11-25-10-pass-red-team-audit.md`](docs/reviews/2026-11-25-10-pass-red-team-audit.md)
 - **Deep-Dive & Architecture:** [`INDEX.md`](INDEX.md) · [`SUMMARY.md`](SUMMARY.md) · [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`VERIFICATION.md`](VERIFICATION.md) · [`docs/MASTER_REPORT.md`](docs/MASTER_REPORT.md)

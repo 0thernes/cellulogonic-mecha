@@ -2,6 +2,12 @@
 
 All notable changes to **CELLULOGONIC MECHA** are documented in this file.
 
+## [Unreleased] — 2026-11-26 statement audit (documentation only)
+
+- Corrected `README.md`, `CLAIMS.md` (`C1`), `LIMITATIONS.md`, `CITATION.cff` (title), `lean/formalization.yaml` (descriptive text) and `docs/` to match the external statement audit of `d033ab0`: the 78 Lean theorems concern `Spec.lean` only; several are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`); `T16` is described as a polynomial inequality, not a "Global Minimax Theorem"; "6 independent kernels" is replaced by "six kernel checks" (two use the Lean reference kernel); module count is "10 proof modules + `Spec.lean` (15 `.lean` files)".
+- Updated the `lean/formalization.yaml` line of `CHECKSUMS.sha256`.
+- Recorded paper and Lean-source items that are not changed in place in `ERRATA.md` ("2026-11-26 statement audit"). No Lean source, paper, data or CI file was changed.
+
 ## [1.6.0] — 2026-11-26
 
 ### 3-Cycle World-Class Hardening: 78 Six-Kernel Lean Proofs (`AT01`–`AT08`), 3-OS ARM64 Parity, Unified Photon Cap, Crossref Retraction Audit, RFC 3161 TSA & Interactive GitHub Pages Proof Blueprint

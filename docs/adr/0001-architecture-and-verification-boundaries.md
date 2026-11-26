@@ -20,5 +20,5 @@ Computational Artificial Life simulations frequently fail independent scrutiny f
 
 ## Consequences
 
-- **Positive:** Any independent researcher can verify all 78 mathematical proofs across 6 independent kernels, reproduce bit-exact SHA-256 runs across Linux/Windows/macOS ARM64, verify 36 live Crossref retraction-free DOIs, explore the interactive GitHub Pages Proof Blueprint, compile a zero-overflow AMS-LaTeX preprint, and reuse code/text legally under standard OSI/Creative Commons licenses.
+- **Positive:** Any independent researcher can re-check the 78 Lean theorems about the `Spec.lean` model under six kernel checks, reproduce bit-exact SHA-256 runs across Linux/Windows/macOS ARM64, verify 36 live Crossref retraction-free DOIs, explore the interactive GitHub Pages Proof Blueprint, compile a zero-overflow AMS-LaTeX preprint, and reuse code/text legally under standard OSI/Creative Commons licenses.
 - **Trade-off:** Coarse-grained integer quanta cannot model atomistic protein folding or wet-lab reaction rates, and 6th-kernel `lean4lean` / `bubblewrap` replay runs on Linux CI rather than native Windows (explicitly disclosed in `DEVIATIONS.md`).
