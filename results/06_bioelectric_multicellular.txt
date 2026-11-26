@@ -1,17 +1,17 @@
 === EXPERIMENT 4: LEVIN BIOELECTRIC MORPHOGENESIS & TRACK B FERAL vs. TRACK A CONSTITUTIONAL ===
 
 [TRACK B (FERAL + BIOELECTRIC)]
-t= 240 | alive=  97 (prok= 48 euk= 49 sec=34 spore= 6 tun=  0) | org=138 (mito=  5 chlo=133) | tis=  4 maxT=  2 | sym=3098 bud=  5 endo=742 | COVI=79.29 (S5, MET=6/7) | mRes=0 eRes=0 2nd=0
-  V_mem mean=-32.64 mV, std=19.95 mV | Roles: boundary=4 soma=30 germ=6 interior=0
-  Somatic Cancer Defections=167 | Constitutional Apoptotic Policings=0 | SHA=f13ea463f145e5fd092840c21fb24efe3c8a6d146acbf434a0484f7b10e26a92
+t= 240 | alive=  60 (prok= 30 euk= 30 sec=19 spore= 1 tun=  0) | org= 90 (mito=  4 chlo=86) | tis=  2 maxT=  2 | sym=3071 bud=  6 endo=880 | COVI=76.43 (S5, MET=5/7) | mRes=0 eRes=0 2nd=0
+  V_mem mean=-27.12 mV, std=18.97 mV | Roles: boundary=2 soma=23 germ=0 interior=2
+  Somatic Cancer Defections=105 | Constitutional Apoptotic Policings=0 | SHA=3e57c4ff2033c5806d9b4c6932d48e5562caa902db4fb867216d2d6bdcb50da0
 
 [TRACK A (CONSTITUTIONAL + BIOELECTRIC)]
-t= 240 | alive= 110 (prok= 56 euk= 54 sec=33 spore= 2 tun=  0) | org=134 (mito=  1 chlo=133) | tis= 11 maxT=  3 | sym=3492 bud=  8 endo=706 | COVI=81.52 (S5, MET=6/7) | mRes=0 eRes=0 2nd=0
-  V_mem mean=-28.68 mV, std=22.04 mV | Roles: boundary=11 soma=39 germ=2 interior=0
-  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=8 | SHA=d1f0dffb44497a0957bcd60d86da08c2e25e127ac5a747b8d1875201c14f2031
+t= 240 | alive=  60 (prok= 33 euk= 27 sec=19 spore= 1 tun=  0) | org= 81 (mito=  1 chlo=80) | tis=  6 maxT=  4 | sym=2357 bud=  6 endo=758 | COVI=75.25 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
+  V_mem mean=-36.60 mV, std=9.87 mV | Roles: boundary=6 soma=6 germ=0 interior=6
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=9 | SHA=97419750247421b3085e0b87bfb17ca86e547ed593ad758f83f7482ca0156128
 
 [NEGATIVE CONTROL (BIOELECTRICITY ABLATED)]
-t= 240 | alive= 102 (prok= 69 euk= 33 sec=17 spore= 0 tun=  0) | org= 77 (mito= 13 chlo=64) | tis=  0 maxT=  0 | sym=1137 bud=  4 endo=219 | COVI=73.22 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
+t= 240 | alive=  31 (prok= 15 euk= 16 sec= 9 spore= 0 tun=  0) | org= 43 (mito= 10 chlo=33) | tis=  0 maxT=  0 | sym= 718 bud=  5 endo=131 | COVI=68.36 (S4, MET=5/7) | mRes=0 eRes=0 2nd=0
   V_mem mean=-45.00 mV, std=0.00 mV | Roles: boundary=0 soma=0 germ=0 interior=0
-  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=8dbd597572b913aa55b7eefa51dd05cc7821233031aa2dececf83fbfd81a200a
+  Somatic Cancer Defections=0 | Constitutional Apoptotic Policings=0 | SHA=a06bf6b3bffef8e9d65dc7799fead4d13c2f50b99a050dd198f503bc953152bd
 

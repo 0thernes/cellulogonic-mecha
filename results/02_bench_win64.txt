@@ -1,9 +1,9 @@
-=== CELLULOGONIC MECHA v1.3.0 DUAL-KERNEL BENCHMARK & PARITY ===
+=== CELLULOGONIC MECHA v1.5.0 DUAL-KERNEL BENCHMARK & PARITY ===
 Grid: 32x32 (1024 voxels) | Epochs: 300 | Seed: 5000
 
-[SIMD_AVX2 ] elapsed=0.0290s | cell_steps=51208 (1.765 M/s) | rxns=971811 (33.499 M/s)
-             SHA-256=be46eceb5dcbfe1f401934e62b2b6816829c38f3d3c6ababf18803608f7422a1
-[SCALAR_REF] elapsed=0.0397s | cell_steps=51208 (1.289 M/s) | rxns=971811
-             SHA-256=be46eceb5dcbfe1f401934e62b2b6816829c38f3d3c6ababf18803608f7422a1
-Dual-Kernel Bit-Exact Parity : EXACT 0-BIT DIFF MATCH (Speedup=1.37x)
+[SIMD_AVX2 ] elapsed=0.0540s | cell_steps=51488 (0.954 M/s) | rxns=1222070 (22.643 M/s)
+             SHA-256=681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff
+[SCALAR_REF] elapsed=0.0664s | cell_steps=51488 (0.775 M/s) | rxns=1222070
+             SHA-256=681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff
+Dual-Kernel Bit-Exact Parity : EXACT 0-BIT DIFF MATCH (Speedup=1.23x)
 Ledger Closure: mass_res=0 amu | energy_res=0 uq | drift=0.00e+00 | 2nd_law_viol=0 | allocs=0

@@ -1,7 +1,8 @@
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
- * CELLULOGONIC MECHA v1.4.0 — 24-Gate Lab-Grade Falsification Suite
+ * CELLULOGONIC MECHA v1.5.0 — 26-Gate Lab-Grade Falsification & Mutant Suite
+ * SPDX-License-Identifier: Apache-2.0
  * Includes 8 Planted Negative Mutants (M1..M8) Proven Caught!
  * ============================================================================ */
 
@@ -115,10 +116,10 @@ static int test_g04(void) {
 /* G05: Closed-Box (BOXING=100) & Open-Flux 120-Epoch Exact Conservation Closure */
 static int test_g05(void) {
     int ok = 1;
-    for (int closed = 0; closed < 2; ++closed) {
+    for (uint32_t closed = 0u; closed < 2u; ++closed) {
         CellWorldConfig cfg;
         cellulogonic_default_config(&cfg);
-        cfg.width = 24; cfg.height = 24; cfg.seed = 5020ULL + closed;
+        cfg.width = 24; cfg.height = 24; cfg.seed = UINT64_C(5020) + (uint64_t)closed;
         if (closed) cfg.restraints[CELL_RESTRAINT_BOXING] = 100;
         CellWorld* w = cellulogonic_create(&cfg);
         cellulogonic_step_epochs(w, 120);
@@ -325,7 +326,7 @@ static int test_g12(void) {
     if (m5_caught) g_mutants_caught++;
 
     /* Planted Mutant M6: Pure random byte noise with 0 functional enzymes (P=0) OR 0 templates (T=0, Lean T34) */
-    for (int i = 0; i < 128; ++i) w->cells[0].genome[i] = (uint8_t)(i * 37u + 13u);
+    for (uint32_t i = 0u; i < 128u; ++i) w->cells[0].genome[i] = (uint8_t)(i * 37u + 13u);
     w->cells[0].mol[CELL_SP_P] = 4;
     w->cells[0].mol[CELL_SP_T] = 0;
     w->total_reactions = 100;
@@ -427,7 +428,7 @@ static int test_g15(void) {
     cellulogonic_destroy(wC);
 
     return (tF.std_v_mem_mv > 5.0 && tF.multicellular_cells > 20 &&
-            tC.cancer_defections == 0 && tF.cancer_defections > 0);
+            tC.cancer_defections == 0 && tC.apoptotic_policings > 0 && tF.cancer_defections > 0);
 }
 
 /* G16: Tardigrade TDP Bioglass Anhydrobiosis + Planted Mutant M7 (TDP Knockout Collapse!) */
@@ -532,12 +533,12 @@ static int test_g19(void) {
     cfg.width = 16; cfg.height = 16; cfg.seed = 5160ULL;
     CellWorld* w = cellulogonic_create(&cfg);
     uint8_t dna[256];
-    for (int i = 0; i < 256; ++i) dna[i] = (uint8_t)((i * 73u + 19u) & 0xFFu);
+    for (uint32_t i = 0u; i < 256u; ++i) dna[i] = (uint8_t)((i * 73u + 19u) & 0xFFu);
     int rc = cellulogonic_ingest_autophage_genome(w, 0, dna);
 
     /* Verify exported 128B API + Lipschitz locality (1-bit input flip -> <= 2 changed operon bytes!) */
     uint8_t dna128_a[128], dna128_b[128];
-    for (int i = 0; i < 128; ++i) dna128_a[i] = dna128_b[i] = (uint8_t)((i * 53u + 7u) & 0xFFu);
+    for (uint32_t i = 0u; i < 128u; ++i) dna128_a[i] = dna128_b[i] = (uint8_t)((i * 53u + 7u) & 0xFFu);
     dna128_b[45] ^= 0x04u; /* Flip 1 single bit in non-structural byte 45 */
     int rc128a = cellulogonic_ingest_autophage_128b(w, dna128_a, 4);
     uint8_t g_a[128];
@@ -555,11 +556,15 @@ static int test_g19(void) {
     int bounds_ok = 1;
     double mean = 0.0, var = 0.0;
     for (int i = 0; i < 112; ++i) {
-        if (t112[i] < 0.0f || t112[i] > 1.0f) bounds_ok = 0;
-        mean += t112[i];
+        double tv = (double)t112[i];
+        if (tv < 0.0 || tv > 1.0) bounds_ok = 0;
+        mean += tv;
     }
     mean /= 112.0;
-    for (int i = 0; i < 112; ++i) var += (t112[i] - mean) * (t112[i] - mean);
+    for (int i = 0; i < 112; ++i) {
+        double dv = (double)t112[i] - mean;
+        var += dv * dv;
+    }
     cellulogonic_destroy(w);
     return (rc == 0 && lipschitz_ok && irc == 0 && bounds_ok && var > 0.5);
 }
@@ -567,10 +572,10 @@ static int test_g19(void) {
 /* G20: Multi-Seed Paired Statistical Dominance (8 Locked Seeds: Feral > Castrated) */
 static int test_g20(void) {
     int wins = 0;
-    for (int p = 0; p < 8; ++p) {
+    for (uint32_t p = 0u; p < 8u; ++p) {
         CellWorldConfig cfg;
         cellulogonic_default_config(&cfg);
-        cfg.width = 24; cfg.height = 24; cfg.seed = 5200ULL + (uint64_t)p;
+        cfg.width = 24; cfg.height = 24; cfg.seed = UINT64_C(5200) + (uint64_t)p;
         cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
         CellWorld* wA = cellulogonic_create(&cfg);
         cellulogonic_step_epochs(wA, 70);
@@ -694,10 +699,10 @@ static int test_g23(void) {
     /* v1.4.0 Compiled Check (Lean C61): maternal yolk cleavage exact enthalpy conservation */
     int yolk_ok = 1;
     uint64_t yolk_total = (uint64_t)(t.ledger.mass_current_amu > 0 ? t.ledger.mass_current_amu : 1024LL);
-    static const uint64_t cleavage_k[4] = { 2ULL, 4ULL, 8ULL, 16ULL };
-    for (int ci = 0; ci < 4; ++ci) {
+    static const uint64_t cleavage_k[4] = { UINT64_C(2), UINT64_C(4), UINT64_C(8), UINT64_C(16) };
+    for (uint32_t ci = 0u; ci < 4u; ++ci) {
         uint64_t k = cleavage_k[ci];
-        uint64_t heat = (yolk_total / 16ULL) + (uint64_t)ci;
+        uint64_t heat = (yolk_total / UINT64_C(16)) + (uint64_t)ci;
         uint64_t avail = yolk_total - heat;
         uint64_t q = avail / k;
         uint64_t rem = avail % k;
@@ -732,19 +737,147 @@ static int test_g24(void) {
     return (t.axons_wired_cum > 0 &&
             t.axons_pruned_cum > 0 &&
             t.cpg_pulses_cum > 0 &&
+            (t.axons_wired_cum - t.axons_pruned_cum) == (uint64_t)t.active_axons &&
             t.ledger.mass_residual_amu == 0 &&
             t.ledger.int_ledger_residual_uq == 0 &&
             t.ledger.second_law_violations == 0);
+}
+
+/* G25: Negative ABI Contract, Extreme Overflow/Specimen Safety & Re-Signed Malformed .cmbin Rejection (B06/B07/B09) */
+static int test_g25(void) {
+    int ok = 1;
+    /* 1. NULL-pointer contract safety across public ABI */
+    cellulogonic_default_config(NULL);
+    cellulogonic_probe_hw(NULL);
+    cellulogonic_destroy(NULL);
+    cellulogonic_step_epochs(NULL, 5u);
+    cellulogonic_set_restraint(NULL, 0u, 50u);
+    cellulogonic_set_solvent(NULL, 0u);
+    cellulogonic_set_kernel_mode(NULL, 0u);
+    cellulogonic_get_telemetry(NULL, NULL);
+    uint8_t raw_h[32];
+    char hex_h[65];
+    memset(raw_h, 0xAA, sizeof(raw_h));
+    hex_h[0] = 'X';
+    cellulogonic_state_sha256(NULL, raw_h, hex_h);
+    if (hex_h[0] != '\0' || raw_h[0] != 0u) ok = 0;
+    if (cellulogonic_inspect_slot(NULL, 0u, NULL) != -1) ok = 0;
+    if (cellulogonic_inspect_apex(NULL, NULL) != -1) ok = 0;
+    if (cellulogonic_save_snapshot(NULL, "nope.cmbin") != -1) ok = 0;
+    if (cellulogonic_load_snapshot(NULL) != NULL) ok = 0;
+    if (cellulogonic_ingest_autophage_128b(NULL, NULL, 0u) != -1) ok = 0;
+    if (cellulogonic_ingest_autophage_genome(NULL, 0u, NULL) != -1) ok = 0;
+    if (cellulogonic_apply_shock_lysis(NULL, 50u) != 0u) ok = 0;
+    if (cellulogonic_apply_desiccation_tun(NULL, 50u) != 0u) ok = 0;
+    if (cellulogonic_rehydrate_tun(NULL) != 0u) ok = 0;
+    if (cellulogonic_export_grid_json(NULL, NULL, 0u) != 0u) ok = 0;
+
+    /* 2. Extreme CellSpecimen (INT32_MIN/MAX) -> Asmodensius 112-trait vector stays strictly in [0,1] (C20) */
+    CellSpecimen extreme;
+    memset(&extreme, 0, sizeof(extreme));
+    extreme.v_mem_mv = -2147483647 - 1;
+    extreme.radius_nm = -2147483647 - 1;
+    extreme.elong_q10 = 2147483647;
+    extreme.mt_freq_mhz = 4294967295u;
+    extreme.vel_nm[0] = 2147483647;
+    extreme.reduced_Q = 1e300;
+    float t112[112];
+    cellulogonic_project_asmodensius_112(&extreme, t112);
+    for (int i = 0; i < 112; ++i) {
+        if (!(t112[i] >= 0.0f && t112[i] <= 1.0f)) ok = 0;
+    }
+
+    /* 3. INT32_MIN floor-div regression (C02) */
+    if (cell_floor_div_voxel(-2147483647 - 1) != -2147484) ok = 0;
+
+    /* 4. Re-signed adversarial .cmbin MUST be rejected by field/padding/domain checks (C01/C04/C27) */
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 8u; cfg.height = 8u; cfg.seed = 5250ULL;
+    CellWorld* w = cellulogonic_create(&cfg);
+    if (!w) return 0;
+    cellulogonic_step_epochs(w, 5u);
+    /* Verify small JSON buffer (600B) still emits non-empty valid JSON prefix (C22) */
+    char small_json[600];
+    uint32_t jn = cellulogonic_export_grid_json(w, small_json, sizeof(small_json));
+    if (jn == 0u || small_json[0] != '{' || small_json[jn - 1u] != '}') ok = 0;
+
+    /* Mutate live cell heading out-of-range, save & re-sign, confirm loader REJECTS it! */
+    int live_idx = -1;
+    for (uint32_t i = 0; i < w->num_slots; ++i) {
+        if (w->cells[i].alive_state == 1u) { live_idx = (int)i; break; }
+    }
+    if (live_idx >= 0) {
+        int32_t saved_h = w->cells[live_idx].heading_q10[0];
+        w->cells[live_idx].heading_q10[0] = 999999; /* Invalid heading (C04) */
+        const char* bad_path = "test_resigned_bad_g25.cmbin";
+        if (cellulogonic_save_snapshot(w, bad_path) == 0) {
+            CellWorld* rej = cellulogonic_load_snapshot(bad_path);
+            if (rej != NULL) { cellulogonic_destroy(rej); ok = 0; }
+            (void)remove(bad_path);
+        }
+        w->cells[live_idx].heading_q10[0] = saved_h;
+
+        /* Mutate non-zero explicit padding byte, confirm loader REJECTS it! */
+        w->cells[live_idx].pad_bonds = 1u;
+        if (cellulogonic_save_snapshot(w, bad_path) == 0) {
+            CellWorld* rej = cellulogonic_load_snapshot(bad_path);
+            if (rej != NULL) { cellulogonic_destroy(rej); ok = 0; }
+            (void)remove(bad_path);
+        }
+        w->cells[live_idx].pad_bonds = 0u;
+    }
+    cellulogonic_destroy(w);
+    return ok;
+}
+
+/* G26: photon_flux_uq Budget Enforcement, Tun Bond Detachment & Complete State SHA-256 Regression (C06/C07/C14/C17) */
+static int test_g26(void) {
+    int ok = 1;
+    /* 1. photon_flux_uq == 10 (< 34 uq min exogenous rxn) must admit 0 exogenous inflow (C06) */
+    CellWorldConfig cfg;
+    cellulogonic_default_config(&cfg);
+    cfg.width = 16u; cfg.height = 16u; cfg.seed = 5260ULL;
+    cfg.regime = CELL_REGIME_ABIOGENESIS_ZERO_SEED;
+    cfg.photon_flux_uq = 10u;
+    CellWorld* w = cellulogonic_create(&cfg);
+    if (!w) return 0;
+    cellulogonic_step_epochs(w, 20u);
+    CellLedgerSnapshot led;
+    cell_compute_ledger(w, &led);
+    if (led.e_inflow_cum_uq != 0 || led.mass_residual_amu != 0 || led.int_ledger_residual_uq != 0) ok = 0;
+
+    /* 2. Complete state_sha256 detects event counter mutation (C07) */
+    char h1[65], h2[65];
+    cellulogonic_state_sha256(w, NULL, h1);
+    w->total_reactions += 1u;
+    cellulogonic_state_sha256(w, NULL, h2);
+    if (strcmp(h1, h2) == 0) ok = 0;
+    cellulogonic_destroy(w);
+
+    /* 3. Vitrified tuns hold zero stale bonds (C14) */
+    cellulogonic_default_config(&cfg);
+    cfg.width = 24u; cfg.height = 24u; cfg.seed = 5261ULL;
+    cfg.regime = CELL_REGIME_FERAL_ECOSYSTEM;
+    CellWorld* wt = cellulogonic_create(&cfg);
+    if (!wt) return 0;
+    cellulogonic_step_epochs(wt, 60u);
+    (void)cellulogonic_apply_desiccation_tun(wt, 92u);
+    for (uint32_t i = 0; i < wt->num_slots; ++i) {
+        if (wt->cells[i].alive_state == 3u && wt->cells[i].num_bonds != 0u) ok = 0;
+    }
+    cellulogonic_destroy(wt);
+    return ok;
 }
 
 typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.4.0 — 24-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.5.0 — 26-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
-    struct { const char* id; const char* name; GateFn fn; } gates[24] = {
+    struct { const char* id; const char* name; GateFn fn; } gates[26] = {
         { "G01", "CPUID Silicon Probe + NIST FIPS 180-4 SHA-256 Vector",        test_g01 },
         { "G02", "Exact Mass/First-Law Ledger + Mutant M1 (Phantom Energy)",    test_g02 },
         { "G03", "4-Solvent Second-Law Sink + Mutant M2 (Sink Reversal)",       test_g03 },
@@ -768,11 +901,13 @@ int main(void) {
         { "G21", "3D Off-Lattice Free-Swimming, Polymorphism & Breathing",      test_g21 },
         { "G22", "Frohlich-Pokorny GHz Microtubule Coherence (Lean T48-T49)",   test_g22 },
         { "G23", "3D Embryogenesis: Morphogen GPS, GRN, Sorting & Hippo/Eutely",test_g23 },
-        { "G24", "Axon Guidance (Netrin/Slit), Pruning & CPG Waves (T56-T58)",  test_g24 }
+        { "G24", "Axon Guidance (Netrin/Slit), Pruning & CPG Waves (T56-T58)",  test_g24 },
+        { "G25", "Negative ABI, Extreme Struct Bounds & Re-Signed .cmbin Reject",test_g25 },
+        { "G26", "Photon Budget, Complete SHA-256 & Tun Bond Detach Regression",test_g26 }
     };
 
     double t_all = cell_wall_seconds();
-    for (int i = 0; i < 24; ++i) {
+    for (int i = 0; i < 26; ++i) {
         double t0 = cell_wall_seconds();
         int ok = gates[i].fn();
         report_gate(gates[i].id, gates[i].name, ok, cell_wall_seconds() - t0);
@@ -780,7 +915,7 @@ int main(void) {
     double total_dt = cell_wall_seconds() - t_all;
 
     printf("==================================================================================\n");
-    printf(" SUMMARY: %d / 24 GATES PASSED | %d / 8 PLANTED MUTANTS CAUGHT | %.3fs\n",
+    printf(" SUMMARY: %d / 26 GATES PASSED | %d / 8 PLANTED MUTANTS CAUGHT | %.3fs\n",
            g_pass, g_mutants_caught, total_dt);
     printf("==================================================================================\n");
     return (g_fail == 0 && g_mutants_caught == 8) ? 0 : 1;

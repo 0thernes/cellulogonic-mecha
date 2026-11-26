@@ -114,11 +114,11 @@ static double cell_assembly_index(const CellEntity* c) {
     return a;
 }
 
-static uint32_t lineage_table_find_or_insert(uint32_t hashes[1024], uint32_t counts[1024],
+static uint32_t lineage_table_find_or_insert(uint32_t hashes[4096], uint32_t counts[4096],
                                              uint32_t lineage_id, uint32_t* distinct_out) {
-    uint32_t slot = lineage_id & 1023u;
-    for (uint32_t probe = 0; probe < 1024u; ++probe) {
-        uint32_t idx = (slot + probe) & 1023u;
+    uint32_t slot = lineage_id & 4095u;
+    for (uint32_t probe = 0; probe < 4096u; ++probe) {
+        uint32_t idx = (slot + probe) & 4095u;
         if (counts[idx] == 0u) {
             hashes[idx] = lineage_id;
             counts[idx] = 1u;
@@ -133,11 +133,11 @@ static uint32_t lineage_table_find_or_insert(uint32_t hashes[1024], uint32_t cou
     return slot;
 }
 
-static uint32_t lineage_table_lookup(const uint32_t hashes[1024], const uint32_t counts[1024],
+static uint32_t lineage_table_lookup(const uint32_t hashes[4096], const uint32_t counts[4096],
                                      uint32_t lineage_id) {
-    uint32_t slot = lineage_id & 1023u;
-    for (uint32_t probe = 0; probe < 1024u; ++probe) {
-        uint32_t idx = (slot + probe) & 1023u;
+    uint32_t slot = lineage_id & 4095u;
+    for (uint32_t probe = 0; probe < 4096u; ++probe) {
+        uint32_t idx = (slot + probe) & 4095u;
         if (counts[idx] == 0u) return 0u;
         if (hashes[idx] == lineage_id) return counts[idx];
     }
@@ -162,8 +162,8 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
     const uint32_t N = w->num_slots;
     const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
 
-    uint32_t lineage_hashes[1024];
-    uint32_t lineage_counts[1024];
+    uint32_t lineage_hashes[4096];
+    uint32_t lineage_counts[4096];
     memset(lineage_hashes, 0, sizeof(lineage_hashes));
     memset(lineage_counts, 0, sizeof(lineage_counts));
 
@@ -251,10 +251,9 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
                 out->active_axons++;
             }
         }
-        if (c->num_bonds > 0) {
+        if (c->alive_state == 1 && c->num_bonds > 0) {
             out->multicellular_cells++;
             if (c->num_bonds < 4u) out->role_boundary_epi++;
-            else                   out->role_stroma_interior++;
             for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
                 int16_t pj = c->bond_partners[b];
                 if (pj >= 0 && (uint32_t)pj < N && (uint32_t)pj > i && w->cells[pj].alive_state == 1) {
@@ -263,8 +262,9 @@ void cell_compute_telemetry(const CellWorld* w, CellTelemetry* out) {
                 }
             }
         }
-        if (c->diff_role == 1) out->role_soma_forage++;
-        if (c->diff_role == 2) out->role_germ_repro++;
+        if (c->diff_role == 1)      out->role_soma_forage++;
+        else if (c->diff_role == 2) out->role_germ_repro++;
+        else if (c->diff_role == 3) out->role_stroma_interior++;
     }
 
     /* High-copy (N >= 4) Assembly Index to filter single-copy random noise */
@@ -459,9 +459,7 @@ CELL_API int cellulogonic_ingest_autophage_128b(
     cell_sha256_update(&sha, dna128, 128);
     cell_sha256_final(&sha, digest);
 
-    uint64_t sig = 0;
-    memcpy(&sig, digest, 8);
-    c->autophage_dna_sig = sig;
+    c->autophage_dna_sig = cell_load_le64(digest);
 
     apply_smooth_autophage_operons(w, c, dna128);
     return 0;
@@ -486,9 +484,7 @@ CELL_API int cellulogonic_ingest_autophage_genome(
     cell_sha256_update(&sha, clean_256b, 256);
     cell_sha256_final(&sha, digest);
 
-    uint64_t sig = 0;
-    memcpy(&sig, digest, 8);
-    c->autophage_dna_sig = sig;
+    c->autophage_dna_sig = cell_load_le64(digest);
 
     /* Smooth 0.5-Lipschitz dual-strand arithmetic fold (ZERO XOR avalanche!) */
     uint8_t folded_128b[128];
@@ -508,10 +504,10 @@ static inline float cell_clamp01f(double v) {
 
 /* ============================================================================
  * Ecosystem Bridge 2: Asmodensius 112-Trait Deterministic Physiological Bridge
- * Projects a Cellulogonic Mecha v1.3.0 specimen strictly into [0.0, 1.0]^112!
+ * Projects a Cellulogonic Mecha v1.5.0 specimen strictly into [0.0, 1.0]^112!
  *   0..7   : Core bioenergetics, reduced Q, endosymbionts, V_mem, solvent/c-ring, role
  *   8..15  : Conserved molecular pools mol[0..7]
- *   16..23 : v1.1–v1.3 cytoskeleton, GHz microtubules, 3D swim speed, GRN fate/cadherin/axons
+ *   16..23 : v1.1–v1.5 cytoskeleton, GHz microtubules, 3D swim speed, GRN fate/cadherin/axons
  *   24..111: Exact smooth operon projection normalized cleanly by / 1020.0
  * ============================================================================ */
 
@@ -519,26 +515,27 @@ CELL_API void cellulogonic_project_asmodensius_112(
     const CellSpecimen* spec, float out_traits_112[112])
 {
     if (!spec || !out_traits_112) return;
-    /* Traits 0..15: Strictly clamped [0.0f, 1.0f] physiological & bioenergetic observables */
+    /* Traits 0..15: Strictly clamped [0.0f, 1.0f] physiological & bioenergetic observables
+     * (all arithmetic promoted to double BEFORE add/sub so arbitrary fuzzed structs never UB!) */
     out_traits_112[0]  = cell_clamp01f((double)spec->total_volume / 250.0);
     out_traits_112[1]  = cell_clamp01f(spec->reduced_Q / 1.5);
     out_traits_112[2]  = cell_clamp01f((double)spec->num_organelles / (double)CELL_MAX_ORGANELLES);
     out_traits_112[3]  = cell_clamp01f((double)spec->max_nesting_depth / 2.0);
-    out_traits_112[4]  = cell_clamp01f((double)(spec->v_mem_mv + 90) / 130.0);
+    out_traits_112[4]  = cell_clamp01f(((double)spec->v_mem_mv + 90.0) / 130.0);
     out_traits_112[5]  = cell_clamp01f((double)spec->lipid_class / 3.0);
-    out_traits_112[6]  = cell_clamp01f((double)(spec->c_ring_nH - 2) / 3.0);
+    out_traits_112[6]  = cell_clamp01f(((double)spec->c_ring_nH - 2.0) / 3.0);
     out_traits_112[7]  = cell_clamp01f((double)spec->differentiation_role / 3.0);
-    for (int s = 0; s < 8; ++s) {
+    for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
         out_traits_112[8 + s] = cell_clamp01f((double)spec->mol[s] / 80.0);
     }
 
-    /* Traits 16..23: v1.1–v1.3 cytoskeletal, GHz microtubule, 3D motility & morphogenetic observables */
+    /* Traits 16..23: v1.1–v1.5 cytoskeletal, GHz microtubule, 3D motility & morphogenetic observables */
     double speed_nm = sqrt((double)spec->vel_nm[0] * (double)spec->vel_nm[0] +
                            (double)spec->vel_nm[1] * (double)spec->vel_nm[1] +
                            (double)spec->vel_nm[2] * (double)spec->vel_nm[2]);
-    out_traits_112[16] = cell_clamp01f((double)(spec->radius_nm - 220) / 1260.0);
-    out_traits_112[17] = cell_clamp01f((double)(spec->elong_q10 - 650) / 1500.0);
-    out_traits_112[18] = cell_clamp01f((double)((int32_t)spec->mt_freq_mhz - 1200) / 13600.0);
+    out_traits_112[16] = cell_clamp01f(((double)spec->radius_nm - 220.0) / 1260.0);
+    out_traits_112[17] = cell_clamp01f(((double)spec->elong_q10 - 650.0) / 1500.0);
+    out_traits_112[18] = cell_clamp01f(((double)spec->mt_freq_mhz - 1200.0) / 13600.0);
     out_traits_112[19] = cell_clamp01f((double)spec->mt_coherence_q10 / 1000.0);
     out_traits_112[20] = cell_clamp01f(speed_nm / 800.0);
     out_traits_112[21] = cell_clamp01f((double)spec->morph_fate / 5.0);

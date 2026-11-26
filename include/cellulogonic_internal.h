@@ -12,7 +12,7 @@
 #define CELL_MT_GENOME_BYTES  32u
 #define CELL_VESICLE_C0       100LL
 #define CELL_VOXEL_NM         1000
-#define CELL_SNAPSHOT_MAGIC   0x434D4234u /* "CMB4" (v1.3.0 zero-padding validated snapshot) */
+#define CELL_SNAPSHOT_MAGIC   0x434D4235u /* "CMB5" (v1.5.0 hardened zero-padding validated snapshot) */
 
 /* Domain-Isolated Philox4x32-10 Stream IDs (Clean-Slate P4) */
 #define RNG_DOMAIN_WORLD_EXOG   0x1001u
@@ -21,7 +21,7 @@
 #define RNG_DOMAIN_MITOSIS_PART 0x4004u
 #define RNG_DOMAIN_PHAGO_HGT    0x5005u
 
-/* Exact Stoichiometric Constants Matching Lean 4 Proofs T01-T36 */
+/* Exact Stoichiometric Constants Matching Lean 4 Proofs T01-T58 & C59-C62 */
 static const int64_t CELL_MASS_W[CELL_SPECIES_COUNT] = {
     4, 2, 6, 4, 8, 12, 16, 2
 };
@@ -69,8 +69,8 @@ typedef struct CellOrganelle {
 /* Living Cellular Compartment on the Spatial Torus (Zero Implicit Padding!) */
 typedef struct CellEntity {
     uint8_t  alive_state;          /* 0=empty, 1=alive, 2=endospore, 3=vitrified tun */
-    uint8_t  lipid_class;          /* 0..3 (Gray-coded from Locus 8 bytes 64..71) */
-    uint8_t  c_ring_nH;            /* 2..5 (Gray-coded from Locus 2 bytes 16, 18..23) */
+    uint8_t  lipid_class;          /* 0..3 (Gray-coded from Locus 8 bytes 64..67) */
+    uint8_t  c_ring_nH;            /* 2..5 (Gray-coded from Locus 2 bytes 16, 18..20) */
     uint8_t  num_organelles;       /* 0..CELL_MAX_ORGANELLES */
     uint8_t  bond_mask;            /* Bit 0..3 adhesion/gap-junction mask */
     uint8_t  diff_role;            /* 0=undiff, 1=soma, 2=germ, 3=stroma */
@@ -123,13 +123,7 @@ _Static_assert(sizeof(CellWorldConfig) == 48,   "CellWorldConfig must have zero 
 _Static_assert(sizeof(CellOrganelle)   == 120,  "CellOrganelle must have zero implicit padding");
 _Static_assert(sizeof(CellEntity)      == 1304, "CellEntity must have zero implicit padding");
 
-/* Kahan-Neumaier Compensated Accumulator */
-typedef struct KahanSum {
-    double sum;
-    double c;
-} KahanSum;
-
-/* Spatial Voxel Environment */
+/* Spatial Voxel Environment (2.5D column-averaged chemistry + 3D continuous off-lattice cells) */
 typedef struct CellVoxel {
     int64_t env[CELL_SPECIES_COUNT];
     int64_t quorum;
@@ -147,12 +141,13 @@ _Static_assert(sizeof(CellVoxel) == 128, "CellVoxel must have zero implicit padd
 struct CellWorld {
     CellWorldConfig cfg;
     uint32_t num_slots;
+    uint32_t cpu_has_avx2;         /* Runtime OSXSAVE+XGETBV+CPUID AVX2 guard */
     uint64_t epoch;
     uint64_t total_cell_steps;
     uint64_t total_reactions;
     uint64_t post_warmup_allocs;
     uint32_t next_lineage_id;
-    uint32_t rng_step_nonce;
+    uint32_t pad_hdr;
 
     /* Exact Integer Conservation Ledger */
     int64_t  mass_initial_amu;
@@ -191,9 +186,7 @@ struct CellWorld {
     uint64_t eutelic_stops_cum;
     uint64_t cpg_pulses_cum;
 
-    /* Activity / Novelty Tracking (fixed preallocated buffers, 0 post-warmup alloc!) */
-    uint32_t lineage_seen_hash[1024];
-    uint32_t lineage_activity[1024];
+    /* Activity / Novelty Tracking */
     uint64_t novel_adaptations_cum;
 
     /* Preallocated Spatial & Scratch Arrays (Zero Post-Warmup Allocs!) */
@@ -204,18 +197,18 @@ struct CellWorld {
     int64_t*    quorum_delta;      /* num_slots quorum diffusion buffer */
     int32_t*    morph_delta;       /* num_slots * 3 morphogen GPS diffusion buffer (0 alloc!) */
     int32_t*    vmem_delta;        /* num_slots conservative bioelectric Laplacian buffer */
-    uint32_t*   bfs_queue;         /* num_slots scratch queue for tissue cluster sizing */
-    uint8_t*    bfs_vis;           /* num_slots scratch visited bitmap */
     int32_t*    hash_head;         /* num_slots 3D off-lattice spatial hash head (0 alloc!) */
     int32_t*    hash_next;         /* num_slots 3D off-lattice spatial hash linked list */
 };
 
-/* Helper: mathematical floor division by CELL_VOXEL_NM (handles negative coords properly!) */
+/* Helper: mathematical floor division by CELL_VOXEL_NM in int64_t (overflow-free even at INT32_MIN!) */
 static inline int32_t cell_floor_div_voxel(int32_t p) {
-    return (p >= 0) ? (p / CELL_VOXEL_NM) : -(((-p) + CELL_VOXEL_NM - 1) / CELL_VOXEL_NM);
+    int64_t p64 = (int64_t)p;
+    if (p64 >= 0) return (int32_t)(p64 / (int64_t)CELL_VOXEL_NM);
+    return (int32_t)(-((-p64 + (int64_t)CELL_VOXEL_NM - 1LL) / (int64_t)CELL_VOXEL_NM));
 }
 
-/* Helper: map a cell's continuous 3D off-lattice position to its local spatial fluid voxel */
+/* Helper: map a cell's continuous 3D off-lattice position to its local spatial fluid column */
 static inline uint32_t cell_voxel_idx(const CellWorld* w, const CellEntity* c) {
     int32_t W = (int32_t)w->cfg.width;
     int32_t H = (int32_t)w->cfg.height;
@@ -226,10 +219,41 @@ static inline uint32_t cell_voxel_idx(const CellWorld* w, const CellEntity* c) {
     return (uint32_t)vy * (uint32_t)W + (uint32_t)vx;
 }
 
+/* Helper: exact integer floor square root for non-negative int64_t (0 FP64 nondeterminism!) */
+static inline int32_t cell_isqrt32(int64_t x) {
+    if (x <= 0) return 0;
+    if (x >= 4611686014132420609LL) return 2147483647; /* (2^31 - 1)^2 cap */
+    uint64_t ux = (uint64_t)x;
+    uint64_t res = 0ULL;
+    uint64_t bit = 1ULL << 62;
+    while (bit > ux) bit >>= 2;
+    while (bit != 0ULL) {
+        if (ux >= res + bit) {
+            ux -= res + bit;
+            res = (res >> 1) + bit;
+        } else {
+            res >>= 1;
+        }
+        bit >>= 2;
+    }
+    return (int32_t)res;
+}
+
+/* Helper: canonical little-endian uint64 load/store (host-endianness independent!) */
+static inline void cell_store_le64(uint8_t out[8], uint64_t v) {
+    for (int i = 0; i < 8; ++i) out[i] = (uint8_t)((v >> (i * 8)) & 0xFFu);
+}
+static inline uint64_t cell_load_le64(const uint8_t in[8]) {
+    uint64_t v = 0ULL;
+    for (int i = 0; i < 8; ++i) v |= ((uint64_t)in[i]) << (i * 8);
+    return v;
+}
+
 /* Internal Function Declarations */
 uint64_t cell_philox_u64(uint64_t seed, uint32_t domain, uint64_t ctr_hi, uint64_t ctr_lo);
 uint32_t cell_philox_u32(uint64_t seed, uint32_t domain, uint64_t ctr_hi, uint64_t ctr_lo);
 uint64_t cell_hw_rdseed_u64(void);
+int      cell_runtime_has_avx2(void);
 double   cell_wall_seconds(void);
 
 typedef struct CellSha256Ctx {
@@ -262,6 +286,8 @@ void    cell_step_chemoton(CellWorld* w, uint32_t idx);
 void    cell_compute_ledger(const CellWorld* w, CellLedgerSnapshot* out);
 
 /* Spatial World, Diffusion, Abiogenesis, Endosymbiosis & Bioelectricity (src/cellular_world.c) */
+void    cell_clear_bonds_and_axons(CellWorld* w, uint32_t idx);
+void    cell_lyse_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, int is_phage);
 void    cell_init_world_state(CellWorld* w);
 void    cell_step_one_epoch(CellWorld* w);
 

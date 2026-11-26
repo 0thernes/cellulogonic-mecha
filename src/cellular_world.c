@@ -34,11 +34,7 @@ static inline int32_t tri_wave_q10(int32_t p, int32_t span) {
 }
 
 static inline int32_t isqrt32(int64_t x) {
-    if (x <= 0) return 0;
-    int64_t r = (int64_t)sqrt((double)x);
-    while ((r + 1) * (r + 1) <= x) r++;
-    while (r * r > x) r--;
-    return (int32_t)r;
+    return cell_isqrt32(x);
 }
 
 static void init_random_unit_heading(int32_t h[3], uint64_t r) {
@@ -52,7 +48,7 @@ static void init_random_unit_heading(int32_t h[3], uint64_t r) {
     h[2] = (dz * 1024) / mag;
 }
 
-static void clear_cell_bonds(CellWorld* w, uint32_t idx) {
+void cell_clear_bonds_and_axons(CellWorld* w, uint32_t idx) {
     CellEntity* c = &w->cells[idx];
     for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
         int16_t pj = c->bond_partners[b];
@@ -73,10 +69,13 @@ static void clear_cell_bonds(CellWorld* w, uint32_t idx) {
     c->num_bonds = 0;
     c->bond_mask = 0;
     for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
+        if (c->axon_target[a] >= 0) {
+            w->axons_pruned_cum++;
+        }
         c->axon_target[a] = -1;
         c->axon_weight[a] = 0;
     }
-    /* Detach any incoming axons pointing at this lysed cell */
+    /* Detach any incoming axons pointing at this lysed/dormant cell and account exact pruning */
     for (uint32_t k = 0; k < w->num_slots; ++k) {
         CellEntity* o = &w->cells[k];
         if (o->alive_state == 0) continue;
@@ -84,9 +83,14 @@ static void clear_cell_bonds(CellWorld* w, uint32_t idx) {
             if (o->axon_target[a] == (int16_t)idx) {
                 o->axon_target[a] = -1;
                 o->axon_weight[a] = 0;
+                w->axons_pruned_cum++;
             }
         }
     }
+}
+
+static inline void clear_cell_bonds(CellWorld* w, uint32_t idx) {
+    cell_clear_bonds_and_axons(w, idx);
 }
 
 static int are_bonded(const CellEntity* a, int16_t j) {
@@ -147,7 +151,7 @@ static void init_empty_bonds(CellEntity* c) {
  * Conservation-Exact Helper: Lyse a Cell (+ All Nested Organelles) into Voxel
  * ============================================================================ */
 
-static void lyse_cell_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, int is_phage) {
+void cell_lyse_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, int is_phage) {
     CellEntity* c = &w->cells[idx];
     if (c->alive_state == 0) return;
 
@@ -189,6 +193,10 @@ static void lyse_cell_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, in
     init_empty_bonds(c);
 }
 
+static inline void lyse_cell_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, int is_phage) {
+    cell_lyse_to_voxel(w, idx, leave_plasmid, is_phage);
+}
+
 /* ============================================================================
  * World Initialization (Continuous 3D Off-Lattice Placement + Abiotic Soup)
  * ============================================================================ */
@@ -196,7 +204,7 @@ static void lyse_cell_to_voxel(CellWorld* w, uint32_t idx, int leave_plasmid, in
 static void seed_primordial_genome(CellEntity* c, uint64_t seed, uint32_t idx, uint32_t solvent, uint32_t regime) {
     for (uint32_t b = 0; b < CELL_GENOME_BYTES; b += 8) {
         uint64_t r = cell_philox_u64(seed, RNG_DOMAIN_ABIOGENESIS, 1ULL, (uint64_t)idx * 32ULL + b);
-        memcpy(&c->genome[b], &r, 8);
+        cell_store_le64(&c->genome[b], r);
     }
     c->genome[0]   = (uint8_t)(160u + (c->genome[0] & 63u));  /* R1 catabolism */
     c->genome[8]   = (uint8_t)(160u + (c->genome[8] & 63u));  /* R2 proton pump */
@@ -411,6 +419,9 @@ void cell_init_world_state(CellWorld* w) {
  * ============================================================================ */
 
 static void diffuse_fields_scalar(CellWorld* w, int shift) {
+    if (shift < 0) shift = 0;
+    if (shift > 62) shift = 62;
+    const int64_t div_pow2 = (int64_t)(1ULL << (unsigned)shift);
     const uint32_t W = w->cfg.width;
     const uint32_t H = w->cfg.height;
     const uint32_t N = w->num_slots;
@@ -437,8 +448,8 @@ static void diffuse_fields_scalar(CellWorld* w, int shift) {
             int64_t* ds = &dd[is * 8u];
 
             for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
-                int64_t fe = (vi->env[s] - ve->env[s]) / (1LL << shift);
-                int64_t fs = (vi->env[s] - vs->env[s]) / (1LL << shift);
+                int64_t fe = (vi->env[s] - ve->env[s]) / div_pow2;
+                int64_t fs = (vi->env[s] - vs->env[s]) / div_pow2;
                 di[s] -= (fe + fs);
                 de[s] += fe;
                 ds[s] += fs;
@@ -471,12 +482,12 @@ static void diffuse_fields_scalar(CellWorld* w, int shift) {
 #if defined(__AVX2__)
 static inline v4i64 avx2_sdiv_pow2_v4i64(v4i64 v, int shift) {
     if (shift <= 0) return v;
-    if (shift >= 63) shift = 63;
+    if (shift > 62) shift = 62;
+    const int64_t mb = (int64_t)((1ULL << (unsigned)shift) - 1ULL);
+    const int64_t sf = (int64_t)(~0ULL << (unsigned)(64 - shift));
     const v4i64 zero   = { 0, 0, 0, 0 };
-    const v4i64 mask_b = { (1LL << shift) - 1LL, (1LL << shift) - 1LL,
-                           (1LL << shift) - 1LL, (1LL << shift) - 1LL };
-    const v4i64 sign_f = { (int64_t)(~0ULL << (64 - shift)), (int64_t)(~0ULL << (64 - shift)),
-                           (int64_t)(~0ULL << (64 - shift)), (int64_t)(~0ULL << (64 - shift)) };
+    const v4i64 mask_b = { mb, mb, mb, mb };
+    const v4i64 sign_f = { sf, sf, sf, sf };
     v4i64 neg  = (v < zero);
     v4i64 adj  = v + (neg & mask_b);
     v4u64 lshr = ((v4u64)adj) >> (uint64_t)shift;
@@ -592,6 +603,7 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
         uint32_t x = i % W, y = i / W;
 
         if (r_box < 100 && w->cfg.photon_flux_uq > 0) {
+            int64_t budget = (int64_t)w->cfg.photon_flux_uq;
             int in_band = (((x + W - wave_x) % W) < (W / 2u)) ? 1 : 0;
             int in_ox   = (((y + H - wave_y) % H) < (H / 2u)) ? 1 : 0;
             int64_t k_s = (in_band ? 8 : 4);
@@ -600,31 +612,43 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
                 k_s = (k_s * (100 - r_box)) / 100;
                 k_x = (k_x * (100 - r_box)) / 100;
             }
+            if (k_s > budget / 46LL) k_s = budget / 46LL;
             if (k_s > 0 && vx->env[CELL_SP_W] >= 2 * k_s) {
                 vx->env[CELL_SP_W] -= 2 * k_s;
                 vx->env[CELL_SP_S] += k_s;
                 w->e_inflow_cum_uq += 46 * k_s;
                 vx->heat_local_uq  += 10 * k_s;
+                w->total_reactions += (uint64_t)k_s;
+                budget -= 46 * k_s;
             }
+            if (k_x > budget / 34LL) k_x = budget / 34LL;
             if (k_x > 0 && vx->env[CELL_SP_W] >= k_x) {
                 vx->env[CELL_SP_W] -= k_x;
                 vx->env[CELL_SP_X] += k_x;
                 w->e_inflow_cum_uq += 34 * k_x;
                 vx->heat_local_uq  += 4 * k_x;
+                w->total_reactions += (uint64_t)k_x;
+                budget -= 34 * k_x;
             }
             if (w->cfg.regime == CELL_REGIME_ABIOGENESIS_ZERO_SEED && vx->env[CELL_SP_S] >= 8 && vx->env[CELL_SP_L] < 64) {
                 uint32_t roll = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_ABIOGENESIS, w->epoch, i * 5u + 1u);
-                if ((roll % 3u) == 0u) {
+                if ((roll % 3u) == 0u && budget >= 12LL) {
                     vx->env[CELL_SP_S] -= 2; vx->env[CELL_SP_L] += 1;
                     w->e_inflow_cum_uq += 12; vx->heat_local_uq += 4;
+                    w->total_reactions += 1u;
+                    budget -= 12LL;
                 }
-                if ((roll % 13u) == 0u && vx->env[CELL_SP_S] >= 6 && vx->env[CELL_SP_P] < 4) {
+                if ((roll % 13u) == 0u && vx->env[CELL_SP_S] >= 6 && vx->env[CELL_SP_P] < 4 && budget >= 16LL) {
                     vx->env[CELL_SP_S] -= 3; vx->env[CELL_SP_P] += 1;
                     w->e_inflow_cum_uq += 16; vx->heat_local_uq += 4;
+                    w->total_reactions += 1u;
+                    budget -= 16LL;
                 }
-                if ((roll % 17u) == 0u && vx->env[CELL_SP_S] >= 8 && vx->env[CELL_SP_T] < 4) {
+                if ((roll % 17u) == 0u && vx->env[CELL_SP_S] >= 8 && vx->env[CELL_SP_T] < 4 && budget >= 24LL) {
                     vx->env[CELL_SP_S] -= 4; vx->env[CELL_SP_T] += 1;
                     w->e_inflow_cum_uq += 24; vx->heat_local_uq += 4;
+                    w->total_reactions += 1u;
+                    budget -= 24LL;
                 }
             }
         }
@@ -676,7 +700,7 @@ static void step_exogenous_flux_and_abiogenesis(CellWorld* w) {
                     for (uint32_t b = 0; b < CELL_GENOME_BYTES; b += 8) {
                         uint64_t rb = cell_philox_u64(w->cfg.seed, RNG_DOMAIN_ABIOGENESIS, w->epoch,
                                                       (uint64_t)i * 64ULL + b + 100ULL);
-                        memcpy(&c->genome[b], &rb, 8);
+                        cell_store_le64(&c->genome[b], rb);
                     }
                     cell_decode_genome_traits(c);
                     w->abiogenesis_vesicles++;
@@ -845,10 +869,11 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
             }
         }
 
-        /* Scan 3x3 spatial column neighborhood in continuous 3D! */
-        for (int dy = -1; dy <= 1; ++dy) {
+        /* Scan exact interaction stencil covering full 3860 nm eukaryote interaction sphere (no missed collisions!) */
+        int irad = (W >= 9u && H >= 9u) ? 4 : 3;
+        for (int dy = -irad; dy <= irad; ++dy) {
             uint32_t ny = (uint32_t)((int)vy0 + dy + (int)H) % H;
-            for (int dx = -1; dx <= 1; ++dx) {
+            for (int dx = -irad; dx <= irad; ++dx) {
                 uint32_t nx = (uint32_t)((int)vx0 + dx + (int)W) % W;
                 int32_t j = w->hash_head[ny * W + nx];
                 while (j >= 0) {
@@ -918,6 +943,7 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                                     host->mol[CELL_SP_E] -= 1;
                                     host->mol[CELL_SP_W] += 2;
                                     hvx->heat_local_uq   += 28;
+                                    w->total_reactions   += 1u;
 
                                     int free_org = -1;
                                     for (int k = 0; k < (int)CELL_MAX_ORGANELLES; ++k) {
@@ -1051,13 +1077,15 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
                 cj->vel_nm[d] -= dv;
             }
 
-            /* Exact conservative Levin bioelectric gap-junction relaxation (continuous LOBOTOMIZING + MUZZLING scaling!) */
+            /* Exact conservative Levin bioelectric gap-junction relaxation (degree-normalized for global T32/T33 stability!) */
             if (r_lobot < 100 && r_muzzle < 85) {
                 int32_t diff = ci->v_mem_mv - cj->v_mem_mv;
                 int32_t g_cond = (((int32_t)ci->genome[98] + (int32_t)cj->genome[98]) *
                                   (100 - (int32_t)r_lobot) * (100 - (int32_t)r_muzzle)) / 640000;
+                int32_t max_deg = (int32_t)(ci->num_bonds > cj->num_bonds ? ci->num_bonds : cj->num_bonds);
+                if (max_deg < 1) max_deg = 1;
                 if (g_cond > 0) {
-                    int32_t delta = (diff * g_cond) / 32;
+                    int32_t delta = (diff * g_cond) / (32 * max_deg);
                     vd[i] -= delta;
                     vd[j] += delta;
                 }
@@ -1103,10 +1131,14 @@ static void step_3d_free_swimming_and_interactions(CellWorld* w) {
         }
     }
 
-    /* 4. Integrate Continuous 3D Off-Lattice Positions & Bioelectric Voltages */
+    /* 4. Clamp Velocities (<= 40000 nm/ep, strictly within .cmbin load bounds) & Integrate Continuous 3D Positions */
     for (uint32_t i = 0; i < N; ++i) {
         CellEntity* c = &w->cells[i];
         if (c->alive_state == 0) continue;
+        for (int d = 0; d < 3; ++d) {
+            if (c->vel_nm[d] >  40000) c->vel_nm[d] =  40000;
+            if (c->vel_nm[d] < -40000) c->vel_nm[d] = -40000;
+        }
         c->pos_nm[0] = wrap_nm(c->pos_nm[0] + c->vel_nm[0], span_x);
         c->pos_nm[1] = wrap_nm(c->pos_nm[1] + c->vel_nm[1], span_y);
         c->pos_nm[2] = wrap_nm(c->pos_nm[2] + c->vel_nm[2], span_z);
@@ -1149,6 +1181,7 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
             c->mol[CELL_SP_E] -= pen;
             c->mol[CELL_SP_W] += 2 * pen;
             w->voxels[vidx].heat_local_uq += 28 * pen;
+            w->total_reactions += (uint64_t)pen;
         }
 
         if (r_degress >= 60) {
@@ -1300,7 +1333,6 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
             for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
                 if (s == CELL_SP_L) continue;
                 int64_t share = (s == CELL_SP_T) ? 1 : (c->mol[s] / 5);
-                if (share > c->mol[s] - 1 && s == CELL_SP_T) share = 1;
                 if (share < 0) share = 0;
                 c->mol[s] -= share; dcell->mol[s] = share;
             }
@@ -1356,10 +1388,6 @@ static void step_membrane_mechanics_and_division(CellWorld* w) {
             dcell->lineage_id = w->next_lineage_id++;
             w->novel_adaptations_cum++;
         }
-
-        uint32_t lslot = dcell->lineage_id & 1023u;
-        w->lineage_seen_hash[lslot] = dcell->lineage_id;
-        w->lineage_activity[lslot]++;
     }
 }
 
@@ -1450,12 +1478,14 @@ static void step_developmental_morphogenesis(CellWorld* w) {
         uint32_t vx0 = v0 % W, vy0 = v0 / W;
         const CellVoxel* vx = &w->voxels[v0];
 
-        /* True translation-invariant 3D paracrine Z-stratification over local 5x5 cell neighborhood
-         * (ZERO global coordinates! Exact delta_torus_nm in X, Y, Z; 0 heap allocs; AVX2 == Scalar!) */
+        /* Exact isotropic 3D paracrine signaling sphere (R = 4000 nm inside [-4..+4] stencil ->
+         * mathematically guaranteed X, Y, AND Z translation invariance on all W, H >= 9!) */
         int32_t wnt_3d = 0, bmp_3d = 0, shh_3d = 0;
-        for (int dy = -2; dy <= 2; ++dy) {
+        int prad = (W >= 9u && H >= 9u) ? 4 : 3;
+        int64_t r_cut = (prad == 4) ? 4000LL : 3000LL;
+        for (int dy = -prad; dy <= prad; ++dy) {
             uint32_t ny = (uint32_t)((int)vy0 + dy + (int)H) % H;
-            for (int dx = -2; dx <= 2; ++dx) {
+            for (int dx = -prad; dx <= prad; ++dx) {
                 uint32_t nx = (uint32_t)((int)vx0 + dx + (int)W) % W;
                 int32_t j = w->hash_head[ny * W + nx];
                 while (j >= 0) {
@@ -1465,9 +1495,9 @@ static void step_developmental_morphogenesis(CellWorld* w) {
                         int32_t ry = delta_torus_nm(c->pos_nm[1], cj->pos_nm[1], span_y);
                         int32_t rz = delta_torus_nm(c->pos_nm[2], cj->pos_nm[2], span_z);
                         int64_t d2 = (int64_t)rx * rx + (int64_t)ry * ry + (int64_t)rz * rz;
-                        if (d2 < 4500LL * 4500LL) {
+                        if (d2 < r_cut * r_cut) {
                             int32_t dist = isqrt32(d2);
-                            int32_t atten = (4500 - dist) / 180;
+                            int32_t atten = ((int32_t)r_cut - dist) / 160;
                             if (atten > 0) {
                                 if (cj->morph_fate == CELL_FATE_PLURI || cj->morph_fate == CELL_FATE_NEURAL || cj->tf[0] >= 110u) {
                                     wnt_3d += atten;
@@ -1716,9 +1746,9 @@ void cell_step_one_epoch(CellWorld* w) {
     /* 1. Exogenous hydrothermal/photochemical flux, CMC abiogenesis & radiative cooling */
     step_exogenous_flux_and_abiogenesis(w);
 
-    /* 2. Conserved spatial finite-volume diffusion (dual AVX2 / Scalar bit-exact!) */
+    /* 2. Conserved spatial finite-volume diffusion (runtime OSXSAVE/AVX2 guarded, 0-bit parity!) */
 #if defined(__AVX2__)
-    if (w->cfg.kernel_mode == CELL_KERNEL_SIMD_AVX2) {
+    if (w->cfg.kernel_mode == CELL_KERNEL_SIMD_AVX2 && w->cpu_has_avx2) {
         diffuse_fields_avx2(w, (int)sp->diff_shift);
     } else {
         diffuse_fields_scalar(w, (int)sp->diff_shift);

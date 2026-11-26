@@ -1,21 +1,18 @@
 cff-version: 1.2.0
-title: "CELLULOGONIC MECHA — Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic Cellular Artificial Life Engine with Lean 4 Formal Verification"
-message: "If you reference, verify, or build upon CELLULOGONIC MECHA in academic or independent non-commercial research, please cite this software and preprint using the metadata below."
+title: "CELLULOGONIC MECHA — Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic & Xenocellular Artificial Life Engine with Six-Kernel Lean 4.35.0 Formal Proofs"
+message: "If you reference, verify, or build upon CELLULOGONIC MECHA in academic or independent research, please cite this software and preprint using the metadata below."
 type: software
-version: "1.4.0"
-date-released: "2026-11-21"
+version: "1.5.0"
+date-released: "2026-11-25"
 authors:
   - family-names: "Donahue"
-    given-names: "Alexander S."
-    affiliation: "0thernes LLC"
+    given-names: "Alexander Stephen"
+    affiliation: "Independent Researcher, Spokane, WA, USA"
     email: "0_0@0thernes.art"
     orcid: "https://orcid.org/0009-0006-8168-9648"
-  - name: "0thernes LLC"
-    website: "https://0thernes.art"
-    email: "0_0@0thernes.art"
 repository-code: "https://github.com/0thernes/cellulogonic-mecha"
 url: "https://github.com/0thernes/cellulogonic-mecha"
-license: "NOASSERTION"
+license: "Apache-2.0"
 license-url: "https://github.com/0thernes/cellulogonic-mecha/blob/main/LICENSE"
 keywords:
   - artificial-life
@@ -26,10 +23,13 @@ keywords:
   - endosymbiosis
   - canham-helfrich
   - bioelectricity
+  - embryogenesis
+  - morphogenesis
   - xenobiology
   - open-ended-evolution
   - non-equilibrium-thermodynamics
   - lean4
   - formal-verification
+  - multi-kernel-verification
   - deterministic-simulation
   - c11

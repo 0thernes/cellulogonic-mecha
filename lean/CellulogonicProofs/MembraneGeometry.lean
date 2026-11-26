@@ -1,38 +1,22 @@
-/-
-  CELLULOGONIC MECHA v1.3.0 — Theorem II: Discrete Canham-Helfrich Isoperimetric Fission
+module
+
+public import CellulogonicProofs.Spec
+
+/-!
+  CELLULOGONIC MECHA v1.5.0 — Theorem II: Discrete Canham-Helfrich Isoperimetric Fission
   Trichotomy, Symmetric Binary Fission Threshold (Q ≤ 1/2), & Exact Algebraic Proof of
   Asymmetric Budding Minimax Optimality.
 
-  Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).
-  Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
+  Pure Lean 4.35.0 `module` (zero Mathlib, zero sorry, zero custom axioms).
+  Copyright (c) 2026 Alexander Stephen Donahue <0_0@0thernes.art>.
+  SPDX-License-Identifier: Apache-2.0
 -/
 
 namespace Cellulogonic.MembraneGeometry
 
-/-- Exact vesicle spherical-geometric scaling constant C0 = 100 matching the C11 engine.
-    Squared reduced volume is Q(V, L) = C0 * V^2 / L^3. -/
-def C0 : Nat := 100
-
-/-- A vesicle (V, L) is intact (non-rupturing under osmotic turgor) iff Q(V, L) ≤ 1,
-    expressed without division as C0 * V^2 ≤ L^3. -/
-def IsIntact (V L : Nat) : Prop :=
-  C0 * V * V ≤ L * L * L
-
-/-- A vesicle (V, L) satisfies the symmetric binary fission threshold iff Q(V, L) ≤ 1/2,
-    expressed without division as 2 * C0 * V^2 ≤ L^3. -/
-def CanSymmetricFission (V L : Nat) : Prop :=
-  2 * C0 * V * V ≤ L * L * L
-
-/-- A vesicle (V, L) admits a valid non-rupturing binary split into daughters
-    (V1, L1) and (V2, L2) conserving volume and membrane lipid area. -/
-def ValidBinarySplit (V L V1 L1 V2 L2 : Nat) : Prop :=
-  V1 > 0 ∧ V2 > 0 ∧ L1 > 0 ∧ L2 > 0 ∧
-  V1 + V2 = V ∧ L1 + L2 = L ∧
-  IsIntact V1 L1 ∧ IsIntact V2 L2
-
 /-- T11: Exact algebraic scaling law — symmetric halving (2v, 2l) → (v, l)
     strictly doubles the squared reduced volume Q. -/
-theorem T11_symmetric_fission_doubles_Q (c v l : Nat) :
+public theorem T11_symmetric_fission_doubles_Q (c v l : Nat) :
     2 * (c * (2 * v) * (2 * v)) * (l * l * l) =
     (c * v * v) * ((2 * l) * (2 * l) * (2 * l)) := by
   grind
@@ -40,7 +24,7 @@ theorem T11_symmetric_fission_doubles_Q (c v l : Nat) :
 /-- T12: Exact Necessary and Sufficient Threshold for Symmetric Binary Fission.
     Two identical spherical daughters (v, l) are intact iff the parent (2v, 2l) satisfies
     Q_parent ≤ 1/2 (i.e. 2 * C0 * (2v)^2 ≤ (2l)^3). -/
-theorem T12_symmetric_fission_iff_half_threshold (v l : Nat) :
+public theorem T12_symmetric_fission_iff_half_threshold (v l : Nat) :
     IsIntact v l ↔ CanSymmetricFission (2 * v) (2 * l) := by
   unfold IsIntact CanSymmetricFission C0
   have h1 : 2 * 100 * (2 * v) * (2 * v) = 8 * (100 * v * v) := by grind
@@ -55,7 +39,7 @@ theorem T12_symmetric_fission_iff_half_threshold (v l : Nat) :
 /-- T13: The Swollen Interphase Window (1/2 < Q ≤ 1).
     Any vesicle with L^3 < 2 * C0 * V^2 ≤ 2 * L^3 is intact (non-lysed) yet strictly
     blocked from symmetric binary fission until further lipid synthesis lowers Q. -/
-theorem T13_high_Q_blocks_symmetric_fission (V L : Nat)
+public theorem T13_high_Q_blocks_symmetric_fission (V L : Nat)
     (hLo : L * L * L < 2 * C0 * V * V)
     (hHi : C0 * V * V ≤ L * L * L) :
     IsIntact V L ∧ ¬ CanSymmetricFission V L := by
@@ -65,7 +49,7 @@ theorem T13_high_Q_blocks_symmetric_fission (V L : Nat)
 /-- T14: Equal-ratio asymmetric splits never improve over the Q ≤ 1/2 symmetric threshold.
     If two daughters split volume and lipid area in the same proportion (V1*L = L1*V,
     V2*L = L2*V), then if both daughters are intact, the parent MUST already satisfy Q ≤ 1/2. -/
-theorem T14_equal_ratio_asymmetric_split_suboptimal (V L V1 L1 V2 L2 : Nat)
+public theorem T14_equal_ratio_asymmetric_split_suboptimal (V L V1 L1 V2 L2 : Nat)
     (hV1 : V1 > 0) (hV2 : V2 > 0)
     (hSumV : V1 + V2 = V) (_hSumL : L1 + L2 = L)
     (hProp1 : V1 * L = L1 * V)
@@ -128,16 +112,14 @@ theorem T14_equal_ratio_asymmetric_split_suboptimal (V L V1 L1 V2 L2 : Nat)
 /-- T15: Constructive Proof of Asymmetric Exosome / Budding Escape Above Q = 1/2.
     For (V = 47, L = 72), Q ≈ 0.592 > 1/2 makes symmetric fission strictly impossible,
     yet an optimal-area-allocated asymmetric bud (6, 16) + (41, 56) is strictly intact. -/
-theorem T15_exosome_asymmetric_budding_escapes_half_barrier :
+public theorem T15_exosome_asymmetric_budding_escapes_half_barrier :
     IsIntact 47 72 ∧
     ¬ CanSymmetricFission 47 72 ∧
     ValidBinarySplit 47 72 6 16 41 56 := by
   unfold ValidBinarySplit IsIntact CanSymmetricFission C0
   decide
 
-/-- Exact polynomial factorization identity powering the Global Vesicle Division Minimax Law:
-    2(x^3 + y^3)^2 - (x^2 + y^2)^3 = (x - y)^2 * (x^4 + 2x^3y + 2xy^3 + y^4). -/
-theorem vesicle_minimax_poly_identity (x y : Int) :
+private theorem vesicle_minimax_poly_identity (x y : Int) :
     2 * (x^3 + y^3)^2 - (x^2 + y^2)^3 =
     (x - y)^2 * (x^4 + 2 * x^3 * y + 2 * x * y^3 + y^4) := by
   grind
@@ -147,7 +129,7 @@ theorem vesicle_minimax_poly_identity (x y : Int) :
     L1 = x^2, L2 = y^2, total required area satisfies (L1 + L2)^3 ≤ 2 * (V1 + V2)^2,
     with STRICT inequality whenever V1 ≠ V2 (x ≠ y), and equality iff V1 = V2.
     Symmetric binary fission is therefore the unique global maximum of membrane area demand. -/
-theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
+public theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
     (hx : x > 0) (hy : y > 0) :
     (x^2 + y^2)^3 ≤ 2 * (x^3 + y^3)^2 ∧
     (x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2) := by
@@ -202,7 +184,7 @@ theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
     omega
 
 /-- T17: Increasing internal osmolyte volume V strictly raises osmotic turgor strain. -/
-theorem T17_osmotic_lysis_monotone_in_volume (V1 V2 : Nat) (hLt : V1 < V2) :
+public theorem T17_osmotic_lysis_monotone_in_volume (V1 V2 : Nat) (hLt : V1 < V2) :
     C0 * V1 * V1 < C0 * V2 * V2 := by
   unfold C0
   have h1 : V1 * V1 < V2 * V2 := by
@@ -214,7 +196,7 @@ theorem T17_osmotic_lysis_monotone_in_volume (V1 V2 : Nat) (hLt : V1 < V2) :
   exact h2
 
 /-- T18: Synthesizing additional membrane lipid L strictly lowers osmotic rupture strain. -/
-theorem T18_lipid_synthesis_relieves_membrane_stress (L1 L2 : Nat) (hLt : L1 < L2) :
+public theorem T18_lipid_synthesis_relieves_membrane_stress (L1 L2 : Nat) (hLt : L1 < L2) :
     L1 * L1 * L1 < L2 * L2 * L2 := by
   have hsq : L1 * L1 < L2 * L2 := by
     have hle : L1 * L1 ≤ L1 * L2 := Nat.mul_le_mul_left L1 (Nat.le_of_lt hLt)
@@ -226,7 +208,7 @@ theorem T18_lipid_synthesis_relieves_membrane_stress (L1 L2 : Nat) (hLt : L1 < L
 
 /-- T19: Endosymbiotic double-membrane engulfment preserves outer lipid budget while
     strictly bounding total internalized organelle volume inside the host lumen. -/
-theorem T19_double_membrane_vesicle_preservation
+public theorem T19_double_membrane_vesicle_preservation
     (V_host V_endo L_host : Nat)
     (hInt : IsIntact (V_host + V_endo) L_host) :
     IsIntact V_host L_host := by

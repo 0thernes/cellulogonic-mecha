@@ -1,6 +1,6 @@
-=== CELLULOGONIC MECHA v1.3.0 SILICON PROBE ===
-ABI Version : 0x00010300
+=== CELLULOGONIC MECHA v1.5.0 SILICON PROBE ===
+ABI Version : 0x00010500
 CPU Vendor  : GenuineIntel
 CPU Brand   : Intel(R) Core(TM) Ultra 9 275HX
 ISA Flags   : AVX2=1 BMI1=1 BMI2=1 POPCNT=1 RDSEED=1 RDTSCP=1
-Compiled Kernels : SIMD_AVX2=ENABLED (256-bit int64 finite-volume diffusion) | SCALAR_REF=ENABLED
+Compiled Kernels : SIMD_AVX2=ENABLED (256-bit int64 finite-volume diffusion, OSXSAVE verified) | SCALAR_REF=ENABLED

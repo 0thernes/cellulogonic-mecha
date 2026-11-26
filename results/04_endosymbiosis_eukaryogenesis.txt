@@ -1,14 +1,14 @@
 === EXPERIMENT 2: PROKARYOTIC 1/R CEILING vs. SERIAL ENDOSYMBIOSIS ===
 
 [ARM A: ENDOSYMBIOSIS ENABLED (Eukaryogenesis)]
-t= 240 | alive=  43 (prok= 14 euk= 29 sec=27 spore= 2 tun=  0) | org=155 (mito=  2 chlo=153) | tis=  5 maxT=  3 | sym=1613 bud=  5 endo=926 | COVI=77.32 (S5, MET=6/7) | mRes=0 eRes=0 2nd=0
-  Mean Prok Vol=69.79 | Mean Euk Vol=474.41 | Max Cell Vol=1046.00
-  Captures=926 (Secondary Chimeras=259) | EGT=178 | Mitophagy=1 | HeteroplasmyVar=0.0059
-  Ambient Oxidant X=151.39 | Assembly A=34.71 | SHA-256=af6eb491521b49b86f9fe066d014c1d1624b550b27f072286b201311d3e43a63
+t= 240 | alive=  74 (prok= 48 euk= 26 sec=17 spore= 8 tun=  0) | org= 95 (mito=  0 chlo=95) | tis= 45 maxT=  6 | sym=1742 bud=  3 endo=821 | COVI=80.80 (S5, MET=6/7) | mRes=0 eRes=0 2nd=0
+  Mean Prok Vol=78.08 | Mean Euk Vol=469.38 | Max Cell Vol=1305.00
+  Captures=821 (Secondary Chimeras=262) | EGT=119 | Mitophagy=2 | HeteroplasmyVar=0.0010
+  Ambient Oxidant X=150.28 | Assembly A=34.60 | SHA-256=a349e76f720cc27c6aef4e1aaa6e79dce4c1e298f10f9db7409f0717d6f9d05b
 
 [ARM B: ENDOSYMBIOSIS ABLATED (Prokaryotes Only)]
-t= 240 | alive= 542 (prok=542 euk=  0 sec= 0 spore=22 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis=396 maxT= 52 | sym= 848 bud=  3 endo=  0 | COVI=80.00 (S5, MET=5/7) | mRes=0 eRes=0 2nd=0
-  Mean Prok Vol=75.32 | Mean Euk Vol=0.00 | Max Cell Vol=157.00
+t= 240 | alive= 507 (prok=507 euk=  0 sec= 0 spore=17 tun=  0) | org=  0 (mito=  0 chlo= 0) | tis=387 maxT=130 | sym= 852 bud=  3 endo=  0 | COVI=80.68 (S5, MET=5/7) | mRes=0 eRes=0 2nd=0
+  Mean Prok Vol=76.84 | Mean Euk Vol=0.00 | Max Cell Vol=171.00
   Captures=0 (Secondary Chimeras=0) | EGT=0 | Mitophagy=0 | HeteroplasmyVar=0.0000
-  Ambient Oxidant X=133.13 | Assembly A=17.24 | SHA-256=e1c2cf5b738f089b6a1f706c58016f3337fe62db101bd4b61055a58e58d4854c
+  Ambient Oxidant X=135.42 | Assembly A=17.90 | SHA-256=21a95462253e041a41606bb0544e619d8ef4d2f949bb3242defe5f8d010a5c0a
 

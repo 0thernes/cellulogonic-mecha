@@ -1,6 +1,18 @@
 name = "CellulogonicProofs"
-version = "1.4.0"
-defaultTargets = ["CellulogonicProofs"]
+version = "1.5.0"
+defaultTargets = ["CellulogonicProofs", "Solution"]
+
+[leanOptions]
+autoImplicit = false
+relaxedAutoImplicit = false
+linter.unusedVariables = true
+linter.deprecated = true
 
 [[lean_lib]]
 name = "CellulogonicProofs"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"

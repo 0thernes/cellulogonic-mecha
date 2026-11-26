@@ -1,26 +1,47 @@
-# CELLULOGONIC MECHA — Pure Lean 4 Formal Proof Suite (`v4.35.0`)
+# CELLULOGONIC MECHA v1.5.0 — Six-Kernel Pure Lean 4.35.0 Formal Proof Suite
 
-This directory contains **62 machine-checked theorems** (`T01`–`T58`, `C59`–`C62` across 9 modules) spanning **8 flagship theorem groups** formalizing the exact discrete biophysical, thermodynamic, geometric, bioenergetic, bioelectric, eutelic 7-organ metazoan, 3D cytoskeletal/nanomechanical, developmental GRN embryogenesis, and continuum biomechanics invariants of **CELLULOGONIC MECHA v1.4.0** using **core Lean 4 (`v4.35.0`) only** (zero Mathlib dependencies, zero `sorryAx`, zero custom axioms, zero external SAT/compiler axioms — strictly within `{propext, Classical.choice, Quot.sound}`).
+This directory contains **70 machine-checked audited theorems** (`62` core theorems `T01`–`T58`, `C59`–`C62` across 8 biophysical modules + `8` concrete `NonVacuity` witness & sharp negative-boundary theorems `NV01`–`NV08` in Module 9) built using **core Lean 4 (`v4.35.0`) only** (zero Mathlib dependencies, `autoImplicit = false`, `relaxedAutoImplicit = false`, `linter.unusedVariables = true`, `linter.deprecated = true`, zero `sorryAx` in `Solution`, zero `native_decide`, zero custom axioms — strictly within `{propext, Classical.choice, Quot.sound}`).
 
-## Build & Verify
+## Palomar Isolated Specification & Six-Kernel Architecture
+
+| File | Role |
+|---|---|
+| [`CellulogonicProofs/Spec.lean`](CellulogonicProofs/Spec.lean) | Pure shared mathematical definitions only (`module`, `public`, ZERO proofs, ZERO `sorry`) |
+| [`Challenge.lean`](Challenge.lean) | Isolated statement-only specification importing ONLY `CellulogonicProofs.Spec` (`70` intentional `sorry` targets matched by `lake comparator`) |
+| [`Solution.lean`](Solution.lean) | Sorry-free solution entrypoint publicly re-exporting all 70 theorems from `CellulogonicProofs` |
+| [`VerifyAxioms.lean`](VerifyAxioms.lean) | Standalone `#print axioms` audit across all 70 theorems (`../results/lean4-audit.txt`) |
+| [`comparator.json`](comparator.json) | Machine-readable Palomar comparator config (`Challenge` vs `Solution`, 70 theorem names, permitted axioms) |
+| [`formalization.yaml`](formalization.yaml) | Standardized `v0.4` formalization metadata, scope boundaries, and CRediT/AI disclosure |
+
+## Build & Multi-Kernel Verification
 
 ```bash
 cd lean
 lake build
-lake env lean CellulogonicProofs.lean
+lake build Challenge
+lake env lean VerifyAxioms.lean > ../results/lean4-audit.txt
+lake env leanchecker --fresh Solution
+lake env leanchecker-paranoid --fresh Solution
+# On Linux with bubblewrap (automated in .github/workflows/ci.yml):
+lake check --paranoid
+lake comparator --config comparator.json --paranoid
 ```
 
-Full archived kernel output and `#print axioms` transcript: [`../results/lean4-audit.txt`](../results/lean4-audit.txt).
+Archived verification transcripts:
+- [`../results/lean4-audit.txt`](../results/lean4-audit.txt) (verbatim 70-theorem `#print axioms` log)
+- [`../results/lean4-multi-kernel.txt`](../results/lean4-multi-kernel.txt) (local Windows 5-kernel replay: `lean`, `leanchecker`, `leanchecker-paranoid`, `con-leche --verified`, `con-ron --verified`, `nanoda_bin`)
 
-## Theorem Index & Axiom Audit Summary
+## Module & Theorem Index (`70 / 70` Audited Theorems)
 
-| Module | Theorems | Flagship Result Formalized | Axioms Used |
+| Group | Module | Theorems | Machine-Checked Invariants |
 |---|---|---|---|
-| [`CellulogonicProofs/StoichiometryThermo.lean`](CellulogonicProofs/StoichiometryThermo.lean) | `T01`–`T10` | **Theorem I**: Exact 8-species atomic mass conservation across all 19 reactions (`R1`–`R15c`, `0` residual), exact First-Law energy closure (`0 uq`) and strict Second-Law entropy production (`q_r > 0`) parameterized across **ALL 4 planetary solvents** (`Terran`, `Titan e_pmf=8`, `Hydrothermal`, `Venus`) & c-ring `n_H`, mandatory ATP coupling for endergonic `L`/`P`/`T` biosynthesis, exact 4× respiration-vs-fermentation ATP yield, and impossibility of closed-box perpetual-motion cycles | `none` / `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/MembraneGeometry.lean`](CellulogonicProofs/MembraneGeometry.lean) | `T11`–`T19` | **Theorem II**: Exact Canham–Helfrich isoperimetric reduced-volume doubling under symmetric halving, necessary & sufficient `Q ≤ 1/2` symmetric fission threshold, swollen interphase blockage (`1/2 < Q ≤ 1`), suboptimality of equal-ratio asymmetric splits, constructive exosome escape `(47,72) -> (6,16)+(41,56)`, and exact algebraic **Global Minimax Theorem of Vesicle Division** via $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4 + 2x^3y + 2xy^3 + y^4)$ | `none` / `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/BioenergeticsEndosymbiosis.lean`](CellulogonicProofs/BioenergeticsEndosymbiosis.lean) | `T20`–`T27` | **Theorem III**: Nick Lane's prokaryotic $1/R$ bioenergetic ceiling ($c_V R < 3 c_A$), strictly decreasing prokaryotic specific power density, **Endosymbiotic $O(1)$ Scaling Liberation** shattering the ceiling for arbitrarily large host $R$, organelle $R/r$ surface amplification, secondary endosymbiosis additivity, mitotic heteroplasmy purifying selection theorem, and Endosymbiotic Gene Transfer (EGT) genome economy | `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/ChemiosmosisAutopoiesis.lean`](CellulogonicProofs/ChemiosmosisAutopoiesis.lean) | `T28`–`T36` | **Theorem IV**: Strict Second-Law solvent-dependent chemiosmotic c-ring stoichiometry thresholds ($n_H \cdot e_{\text{pmf}} > 28$: Terran $n_H \ge 3$, Venusian $\text{H}_2\text{SO}_4$ $n_H \ge 2$, Titan cryogenic $e_{\text{pmf}}=8 \implies n_H \ge 4$), passive Levin bioelectric gap-junction Dirichlet energy dissipation and charge conservation, voltage contraction stability, inert-crystal (`templateCount = 0` aligned with C11) & white-noise `COVI = 0` anti-gaming bounds, and Markov-blanket boundary separation | `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/EutelicOrganogenesis.lean`](CellulogonicProofs/EutelicOrganogenesis.lean) | `T37`–`T44` | **Theorem V**: 3D hollow-tube lumen lower bound ($\ge 3 L_{\text{rings}}$ cells), minimum viable 7-organ metazoan cell budget ($\ge 355$ absolute / $[500, 1000]$ eutelic Tardigrade–*C. elegans*–Rotifer scale + 800-cell constructive witness), syncytial & myoepithelial sub-500 compression, hydrostatic skeleton incompressibility ($A_2 < A_1 \implies L_1 < L_2$), eutely hypertrophy zero-hyperplasia law, Tardigrade TDP/CAHS bioglass anhydrobiosis protection, protonephridial flame-cell osmoregulation balance, and 5-tier DNA→Organism mass conservation | `none` / `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/CytoskeletonNanomechanics.lean`](CellulogonicProofs/CytoskeletonNanomechanics.lean) | `T45`–`T50` | **Theorem VI**: Stokes overdamped viscous kinetic dissipation (`T45`), pairwise 3D soft-body Hertz collision momentum conservation (`T46`), cytokinetic prolate elongation surface-area excess (`T47`), **stateful Fröhlich–Pokorný GHz relaxation ODE** (`T48`: `0` fixed point, monotone thermal decay `coh' ≤ coh`, strict decay when `coh > 0`, `[0, 1000]` invariant, condensation pumping threshold), GHz standing-wave length scaling (`T49`), and ATP-bounded actomyosin pulsatile mechanical work (`T50`) | `[propext, Classical.choice, Quot.sound]` |
-| [`CellulogonicProofs/MorphogeneticGRN.lean`](CellulogonicProofs/MorphogeneticGRN.lean) | `T51`–`T58` | **Theorem VII**: Wolpert French-Flag morphogen partition completeness (`T51`), Steinberg differential cadherin adhesion oil-and-water sorting (`T52`), apical actomyosin constriction wedge curvature (`T53`), **genuine eutelic lineage tree-invariant** $\sum 2^{\text{eutelic\_rem}} \le N_0 \cdot 2^{d_0}$ across arbitrary division/death traces (`T54`), **exact C11 Hippo TF7 leaky-integrator hysteresis** (`T55`), Hebbian activity-dependent axon pruning & LTP (`T56`), **exact C11 coupled CPG phase bound** (`T57`: `280 ≤ 540 + bias + couple ≤ 1360 < 6283`), and `StoichiometryThermo`-backed zero-drift morphogenetic trace conservation (`T58`) | `[propext, Quot.sound]` |
-| [`CellulogonicProofs/ContinuumBiomechanics.lean`](CellulogonicProofs/ContinuumBiomechanics.lean) | `C59`–`C62` | **Theorem VIII**: XPBD numerical damping monotonicity & non-negativity across single steps and traces (`C59`), carcass-to-detritus 100% ecosystem mass conservation on organism death (`C60`), maternal yolk cleavage exact enthalpy conservation `sum + rem + heat = Y` (`C61`), and biotensegrity quadratic elastic strain energy non-negativity `k * dx * dx ≥ 0` (`C62`) | `[propext, Quot.sound]` |
+| **Spec** | [`CellulogonicProofs/Spec.lean`](CellulogonicProofs/Spec.lean) | Pure definitions | 8 species, 4 solvents, 19 reactions, Canham–Helfrich, bioenergetics, COVI, 7-organ budget, Fröhlich ODE, GRN/Hippo/CPG, continuum biomechanics |
+| **I** | [`CellulogonicProofs/StoichiometryThermo.lean`](CellulogonicProofs/StoichiometryThermo.lean) | `T01`–`T10` | 4-solvent 19-rxn exact mass (`0 amu`), 1st-Law (`0 uq`), strict 2nd-Law (`q_r > 0`, Titan `e_pmf=8`), ATP coupling, 4× respiration yield, no perpetual cycles |
+| **II** | [`CellulogonicProofs/MembraneGeometry.lean`](CellulogonicProofs/MembraneGeometry.lean) | `T11`–`T19` | Canham–Helfrich $Q \le 1/2$ symmetric threshold, interphase window, constructive exosome escape, sextic **Global Minimax Theorem** (`T16`), osmotic lysis |
+| **III** | [`CellulogonicProofs/BioenergeticsEndosymbiosis.lean`](CellulogonicProofs/BioenergeticsEndosymbiosis.lean) | `T20`–`T27` | Lane $1/R$ ceiling, endosymbiotic $O(1)$ liberation, $R/r$ amplification, secondary chimeras, heteroplasmy purifying selection, EGT |
+| **IV** | [`CellulogonicProofs/ChemiosmosisAutopoiesis.lean`](CellulogonicProofs/ChemiosmosisAutopoiesis.lean) | `T28`–`T36` | Strict 2nd-Law c-ring floors (Terran $\ge 3$, Venus $\ge 2$, Titan $\ge 4$), Levin gap-junction Dirichlet dissipation, crystal/noise `COVI = 0`, Markov blanket |
+| **V** | [`CellulogonicProofs/EutelicOrganogenesis.lean`](CellulogonicProofs/EutelicOrganogenesis.lean) | `T37`–`T44` | 3D hollow-tube lumen $\ge 3L$, 7-organ budget ($\ge 355$, 800-cell witness), syncytial compression, hydrostatic skeleton, TDP bioglass anhydrobiosis |
+| **VI** | [`CellulogonicProofs/CytoskeletonNanomechanics.lean`](CellulogonicProofs/CytoskeletonNanomechanics.lean) | `T45`–`T50` | Stokes dissipation, 3D Hertz momentum, prolate area excess, stateful Fröhlich–Pokorný GHz relaxation ODE (`T48`), standing-wave scaling, ATP work bound |
+| **VII** | [`CellulogonicProofs/MorphogeneticGRN.lean`](CellulogonicProofs/MorphogeneticGRN.lean) | `T51`–`T58` | Wolpert French-Flag, Steinberg sorting, apical wedge, eutelic tree invariant (`T54`), Hippo TF7 hysteresis (`T55`), Hebbian pruning, CPG phase (`T57`), `R8` zero-drift (`T58`) |
+| **VIII** | [`CellulogonicProofs/ContinuumBiomechanics.lean`](CellulogonicProofs/ContinuumBiomechanics.lean) | `C59`–`C62` | XPBD numerical damping monotonicity (`C59`), 100% carcass-to-detritus conservation (`C60`), maternal yolk cleavage enthalpy (`C61`), biotensegrity elasticity (`C62`) |
+| **IX** | [`CellulogonicProofs/NonVacuity.lean`](CellulogonicProofs/NonVacuity.lean) | `NV01`–`NV08` | Concrete inhabitants & sharp negative-boundary falsifiers proving non-vacuity of every hypothesis bundle across Groups I–VIII |

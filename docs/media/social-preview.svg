@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="CELLULOGONIC MECHA v1.5.0 Social Preview">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07111F"/>
+      <stop offset="55%" stop-color="#0D1F36"/>
+      <stop offset="100%" stop-color="#091926"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#10B981"/>
+      <stop offset="50%" stop-color="#0EA5E9"/>
+      <stop offset="100%" stop-color="#8B5CF6"/>
+    </linearGradient>
+    <radialGradient id="cellGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.35"/>
+      <stop offset="65%" stop-color="#0EA5E9" stop-opacity="0.14"/>
+      <stop offset="100%" stop-color="#07111F" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <circle cx="1010" cy="310" r="245" fill="url(#cellGlow)"/>
+  <!-- Stylized dividing eukaryotic vesicle with nested organelles -->
+  <g transform="translate(1010,310)" fill="none">
+    <ellipse cx="0" cy="0" rx="158" ry="126" stroke="#10B981" stroke-width="4" stroke-opacity="0.9"/>
+    <ellipse cx="0" cy="0" rx="146" ry="114" stroke="#38BDF8" stroke-width="2" stroke-dasharray="6 5" stroke-opacity="0.7"/>
+    <!-- Nucleus -->
+    <circle cx="-18" cy="-8" r="48" fill="#8B5CF6" fill-opacity="0.22" stroke="#A78BFA" stroke-width="3"/>
+    <circle cx="-18" cy="-8" r="22" fill="#C4B5FD" fill-opacity="0.35"/>
+    <!-- Endosymbiont mitochondria & chloroplasts -->
+    <ellipse cx="74" cy="-42" rx="28" ry="14" transform="rotate(-24 74 -42)" fill="#F59E0B" fill-opacity="0.25" stroke="#FBBF24" stroke-width="2.5"/>
+    <ellipse cx="66" cy="48" rx="26" ry="13" transform="rotate(28 66 48)" fill="#10B981" fill-opacity="0.28" stroke="#34D399" stroke-width="2.5"/>
+    <ellipse cx="-82" cy="44" rx="24" ry="12" transform="rotate(-32 -82 44)" fill="#0EA5E9" fill-opacity="0.25" stroke="#38BDF8" stroke-width="2.5"/>
+    <!-- Bioelectric & axon filaments -->
+    <path d="M -155,-12 C -210,-52 -220,40 -170,74" stroke="#38BDF8" stroke-width="2" stroke-opacity="0.65"/>
+    <path d="M 155,6 C 205,-28 214,52 162,88" stroke="#A78BFA" stroke-width="2" stroke-opacity="0.65"/>
+  </g>
+  <!-- Top accent bar -->
+  <rect x="64" y="54" width="1152" height="5" rx="2.5" fill="url(#accent)"/>
+  <!-- Header badge -->
+  <rect x="64" y="88" width="320" height="34" rx="17" fill="#0F2942" stroke="#10B981" stroke-width="1.5"/>
+  <text x="224" y="110" text-anchor="middle" fill="#6EE7B7" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.4">BUILD 2 · CELLULAR ALIFE ENGINE · v1.5.0</text>
+  <!-- Title -->
+  <text x="64" y="192" fill="#F8FAFC" font-family="Segoe UI, Arial, sans-serif" font-size="56" font-weight="800" letter-spacing="1">CELLULOGONIC MECHA</text>
+  <text x="64" y="240" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="400">Clean-Room 3D Off-Lattice Embryogenesis, Chemiosmotic,</text>
+  <text x="64" y="274" fill="#94A3B8" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="400">Endosymbiotic &amp; Xenocellular Artificial Life Laboratory</text>
+  <!-- Metric cards -->
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <rect x="64" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
+    <text x="84" y="362" fill="#A78BFA" font-size="30" font-weight="800">70 / 70</text>
+    <text x="84" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Pure Lean 4.35.0 Proofs</text>
+    <text x="84" y="408" fill="#94A3B8" font-size="12">6-Kernel Palomar · 0 sorry</text>
+
+    <rect x="308" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
+    <text x="328" y="362" fill="#34D399" font-size="30" font-weight="800">26/26 · 8/8</text>
+    <text x="328" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Gates &amp; Planted Mutants</text>
+    <text x="328" y="408" fill="#94A3B8" font-size="12">0 amu · 0 uq · 0-Bit SHA Diff</text>
+
+    <rect x="552" y="320" width="224" height="104" rx="10" fill="#0C1C30" stroke="#1E3A5F" stroke-width="1.5"/>
+    <text x="572" y="362" fill="#38BDF8" font-size="30" font-weight="800">96 / 96</text>
+    <text x="572" y="388" fill="#E2E8F0" font-size="14" font-weight="600">Unanimous N=24 Wins</text>
+    <text x="572" y="408" fill="#94A3B8" font-size="12">p_Holm = 0.00040 · 5 Fates</text>
+  </g>
+  <!-- Footer -->
+  <line x1="64" y1="538" x2="1216" y2="538" stroke="#1E3A5F" stroke-width="1"/>
+  <text x="64" y="576" fill="#CBD5E1" font-family="Segoe UI, Arial, sans-serif" font-size="16" font-weight="600">Alexander Stephen Donahue · Independent Researcher, Spokane, WA · ORCID 0009-0006-8168-9648</text>
+  <text x="64" y="604" fill="#64748B" font-family="Segoe UI, Arial, sans-serif" font-size="14">Code: Apache-2.0 · Preprint &amp; Docs: CC-BY-4.0 · 36/36 Verified DOIs · 0/1,900 Mega-Atlas Problems Retired</text>
+</svg>

@@ -1,0 +1,117 @@
+# yaml-language-server: $schema=./repo-standard.schema.json
+# Project manifest for the Build Standard for LLMs v1.2.0. Read by scripts/audit-repo.sh and Audit-Repo.ps1.
+standard: "1.2.0"
+name: "cellulogonic-mecha"
+description: "Clean-room 3D developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic & xenocellular artificial life engine in C11+AVX2 with 70 six-kernel Pure Lean 4.35.0 formal proofs"
+owner: "Alexander Stephen Donahue (Independent Researcher)"
+year: "2026"
+project_type: research
+stack: [c11, lean4, latex, node, python]
+flags:
+  public: true
+  package: false
+  visual: true
+  ui: true
+  native: true
+  ai: false
+  personal_data: false
+  service: true
+  deployed: false
+  api: true
+  perf: true
+  concurrent: false
+  numeric: true
+  experimental: true
+  ml: false
+  formal: true
+items:
+  A01: {status: done}  # README with a one-line purpose [core]
+  A02: {status: done}  # Badge ribbon [recommended]
+  A03: {status: done}  # Quickstart that works from a clean clone [core]
+  A04: {status: done}  # Usage examples [core]
+  A05: {status: done}  # Demo media (docs/media/social-preview.svg in README.md) [recommended]
+  A06: {status: done}  # Dual open LICENSE (Apache-2.0) + LICENSE-DOCS (CC-BY-4.0) [core]
+  A07: {status: done}  # CHANGELOG.md (Keep a Changelog with 1.5.0) [core]
+  A08: {status: done}  # Semantic version 1.5.0 consistent across VERSION, CHANGELOG, CITATION.cff [core]
+  A09: {status: done}  # Automated tests that pass (test/test_falsification.c + scripts/prop_check.py) [core]
+  A10: {status: done}  # Informational CI (.github/workflows/ci.yml on push to main) [core]
+  A11: {status: done}  # Releases (tags: v* in .github/workflows/ci.yml) [recommended]
+  A12: {status: done}  # .gitignore [core]
+  A13: {status: done}  # .gitattributes and .editorconfig [recommended]
+  A14: {status: done}  # CONTRIBUTING.md [recommended]
+  A15: {status: done}  # CODE_OF_CONDUCT.md [recommended]
+  A16: {status: done}  # SECURITY.md [core]
+  A17: {status: done}  # SUPPORT.md [recommended]
+  A18: {status: done}  # Issue templates (.github/ISSUE_TEMPLATE/{bug,feature,question,config}.yml; zero PR templates) [recommended]
+  A19: {status: done, note: "GitHub About description & topics updated via gh repo edit (zero 0thernes LLC, v1.5.0, 70 Lean proofs)."}
+  A20: {status: done}  # docs/ folder (docs/architecture.md + full docs suite) [recommended]
+  A21: {status: done}  # Architecture Decision Records (docs/adr/0001-architecture-and-verification-boundaries.md) [recommended]
+  A22: {status: done}  # CITATION.cff (1.5.0, Apache-2.0, Independent Researcher) + CITATION.bib + .zenodo.json [advanced]
+  A23: {status: done}  # Clean history and correct identity on main [core]
+  A24: {status: done}  # No secrets, build output or huge files (>5MB) committed [core]
+  A25: {status: done}  # Cross-platform CI (ubuntu-latest + windows-latest) [recommended]
+  A26: {status: done}  # Social preview image (docs/media/social-preview.svg) [recommended]
+  A27: {status: n/a, note: "Native C11+AVX2 engine with local 127.0.0.1 WebGL2 bridge requires local binary execution rather than static GitHub Pages."}
+  A28: {status: n/a, note: "Standalone zero-dependency C11 + Lean 4.35.0 repository (package: false)."}
+  A29: {status: done}  # ROADMAP.md [recommended]
+  A30: {status: done}  # .github/labels.tsv with all 10 finding classes including blindspot [recommended]
+  A31: {status: done}  # justfile with one-word commands (build, test, lean, paper, audit, reproduce) [core]
+  A32: {status: done}  # Agent entry points: AGENTS.md (<32 KiB), CLAUDE.md, GEMINI.md, Cursor rules, llms.txt, llms-full.txt [core]
+  A33: {status: done}  # .env.example and docs/configuration.md [core]
+  A34: {status: done, note: "Local Observatory server (web/server.mjs) exposes read-only GET /api/state health/status probe, strict HTTP 400/405/413/429 error logging, and native C11 stderr/ledger diagnostics."}
+  A35: {status: done}  # docs/operations.md documenting git bundle backup, archive pin, and offsite Software Heritage mirror [recommended]
+  A36: {status: n/a, note: "Local desktop/HPC research engine with no hosted production deployment (deployed: false)."}
+  A37: {status: done, note: "docs/benchmarks.md establishes throughput, 0-alloc, and 60 FPS frame budgets verified across Win64 & Linux."}
+  A38: {status: done, note: "WebGL2 Observatory UI (web/index.html, web/styles.css) uses semantic HTML controls, clear high-contrast labels, keyboard-accessible buttons/tabs, and explicit numeric telemetry readouts."}
+  A39: {status: done}  # NOTICE + THIRD_PARTY_NOTICES.md [recommended]
+  A40: {status: n/a, note: "Zero runtime AI SDKs or model APIs shipped (ai: false; development AI assistance transparently disclosed in docs/AI_DISCLOSURE.md)."}
+  A41: {status: n/a, note: "No external package registry distribution (package: false); ABI stability & migration notes documented in CHANGELOG.md and DEVIATIONS.md."}
+  A42: {status: done}  # Maintenance status: active declared in README.md and ROADMAP.md [recommended]
+  A43: {status: done}  # examples/ directory with runnable 01_embryogenesis_demo.py [recommended]
+  A44: {status: done}  # docs/faq.md and docs/glossary.md [recommended]
+  A45: {status: n/a, note: "Zero personal data collected, stored, or transmitted (personal_data: false)."}
+  B01: {status: done}  # justfile reproduce target for clean-clone rebuild [core]
+  B02: {status: done}  # Pinned lean/lean-toolchain (v4.35.0) & lean/lake-manifest.json; zero runtime package dependencies [core]
+  B03: {status: done, note: "4-way cross-OS/cross-compiler/cross-ISA 0-bit SHA-256 parity (681a9747...519eceff) verified in G07 & results/02_bench_*.txt."}
+  B04: {status: done}  # CLAIMS.md numbered ledger [core]
+  B05: {status: done, note: "Every claim C1-C8 in CLAIMS.md maps to executable gates G01-G24, 70 Lean theorems, or scripts/prop_check.py."}
+  B06: {status: done, note: "Negative tests cover tampered/trailing-EOF .cmbin (G06), inert crystal & white-noise COVI=0 (G12/M5/M6), TDP KO (G16/M7), Titan nH=3 boundary (NV01/NV04), and mutating GET 405 rejections."}
+  B07: {status: done, note: "Regression checks in G03/G06/G12/G14/G19/G23 lock every fixed v1.2.1-v1.5.0 defect (Titan strict 2nd Law, GRN Wnt de-collision, Z-translation invariance, Lipschitz 128B decode, CMB4 validation)."}
+  B08: {status: done, note: "Golden SHA-256 digests pinned in test_falsification.c (G01 NIST SHA-256, G07/G09 dual-kernel parity) and archived in CHECKSUMS.sha256 & results/."}
+  B09: {status: done, note: "Flat C11 ABI contract (cellulogonic_abi.h 0x00010500, _Static_assert padding, G01/G19/G25 bridges) and HTTP POST /api/cmd JSON API contract."}
+  B10: {status: done}  # Property-based tests (scripts/prop_check.py — 2,700 randomized seeded trials) [core]
+  B11: {status: done, note: "Differential testing between 256-bit SIMD_AVX2 diffusion kernel and scalar C11 reference oracle (G07, 0-bit diff) plus Win64 clang vs Linux gcc parity."}
+  B12: {status: done, note: "SCALAR_REF kernel in src/cellular_world.c serves as exact reference oracle for SIMD_AVX2; scripts/prop_check.py checks Python exact integer arithmetic against C11/Lean tables."}
+  B13: {status: done}  # Mutation testing (8/8 planted negative mutants M1-M8 caught in test/test_falsification.c) [recommended]
+  B14: {status: done, note: "Metamorphic checks: exact Z-translation invariance in 3D embryogenesis (G23), strict observer independence (G08/P9), and cross-kernel save/resume invariance (G09)."}
+  B15: {status: done}  # Fuzzing harness test/fuzz_cmbin.c (libFuzzer for binary CMB4 .cmbin snapshot parser) [recommended]
+  B16: {status: done}  # Sanitizers (-fsanitize=address,undefined in justfile sanitize and .github/workflows/ci.yml) [core]
+  B17: {status: done}  # Static analysis & linters report-only (cppcheck, clang-tidy, ruff in justfile and CI) [recommended]
+  B18: {status: done}  # Strict compiler flags (-Wall -Wextra) & Lean 4.35.0 dependent type checker (autoImplicit=false) [recommended]
+  B19: {status: n/a, note: "Deterministic single-threaded C11 simulation core with serialized FIFO worker queue in web/server.mjs (concurrent: false)."}
+  B20: {status: done, note: "All conserved mass/energy/stoichiometry uses exact int64_t integer arithmetic (0 rounding drift); floating-point 3D positions & [0,1]^112 projections are clamped and checked in G19/G21/G23."}
+  B21: {status: done, note: "Failure injection verified in G06 (tampered/truncated/trailing-EOF .cmbin), M1-M8 planted fault injections, and HTTP 400/405/413/429 handling in web/server.mjs."}
+  B22: {status: done}  # Formal specification & proof (lean/ — 70 audited theorems, Palomar Challenge/Solution, 6-kernel ready) [advanced]
+  B23: {status: n/a, note: "All finite-state and trace invariants (EutelicTrace, MorphStep, Hippo hysteresis, Chemoton cycles) are proved directly in 6-kernel Lean 4.35.0 (B22) rather than TLA+/Alloy."}
+  B24: {status: n/a, note: "Runtime targets zero-dependency portable C11 + AVX2; mathematical core is formalized and machine-checked in Lean 4.35.0 (B22) with full fidelity matrix in docs/statement-fidelity.md."}
+  B25: {status: n/a, note: "C11 memory/UB safety is verified via ASan/UBSan (B16), 1000-case fuzz_cmbin_abi + libFuzzer (B15), -Werror, zero-heap symbol audit, and 26-gate / 8-mutant harness rather than Kani/CBMC."}
+  B26: {status: done}  # Honest benchmarks (docs/benchmarks.md reporting both unloaded and loaded workstation timings) [core]
+  B27: {status: done, note: "Benchmarks run on every push in .github/workflows/ci.yml and historical v1.0.0-v1.5.0 numbers tracked in docs/benchmarks.md & docs/run-log.md."}
+  B28: {status: done, note: "24 locked paired seeds (5000..5023) with matched ablation controls (endosymbiosis OFF, bioelectricity OFF, TDP knockout, 70% castration) in results/09_paired_stats_n24.txt."}
+  B29: {status: done, note: "Deterministic 10,000-iteration two-sided paired sign-flip permutation significance test (p_raw = 0.00010 across H1-H4)."}
+  B30: {status: done, note: "Mean differences, 95% bootstrap CIs, Cohen's dz, win fractions (24/24 each), and fold-change effect sizes (9.39x volume, 69.1x TDP survival) reported in results/09_paired_stats_n24.txt and paper/main.tex."}
+  B31: {status: done, note: "True step-down Holm-Bonferroni FWER correction across all 4 primary hypotheses (p_Holm = 0.00040)."}
+  B32: {status: done}  # Pre-registration of hypotheses (docs/preregistration.md) [advanced]
+  B33: {status: n/a, note: "No ML model training or held-out dataset splits (ml: false)."}
+  B34: {status: n/a, note: "No runtime LLM or AI model inference (ai: false)."}
+  B35: {status: done}  # Security scanning report-only (gitleaks + cppcheck in .github/workflows/ci.yml) [recommended]
+  B36: {status: done}  # Threat model (docs/threat-model.md) [recommended]
+  B37: {status: done}  # Release hashes & checksums (SHA256SUMS in CI + CHECKSUMS.sha256) [core]
+  B38: {status: done}  # Build provenance & attestations (actions/attest-build-provenance@v2 in CI) [recommended]
+  B39: {status: done}  # Data checksums (data/MANIFEST.sha256 covering archived results/ logs) [recommended]
+  B40: {status: done}  # Audit trail (docs/run-log.md + HARDENING_LOG.md) [recommended]
+  B41: {status: done}  # Limitations and real-vs-metaphor boundary (LIMITATIONS.md) [core]
+  B42: {status: done}  # What would prove us wrong (CLAIMS.md explicit falsification column) [core]
+  B43: {status: done}  # Clean-clone replication protocol (REPLICATION.md) [core]
+  B44: {status: done}  # Dated replication log table in REPLICATION.md [advanced]
+  B45: {status: done}  # 10-pass red-team audit dossier (docs/reviews/2026-11-25-10-pass-red-team-audit.md) [recommended]

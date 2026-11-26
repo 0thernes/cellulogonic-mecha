@@ -1,0 +1,19 @@
+# CELLULOGONIC MECHA (v1.5.0)
+
+> Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in zero-dependency C11 + AVX2/Scalar kernels (`ABI 0x00010500`), paired with 70 six-kernel Pure Lean 4.35.0 formal proofs and a 26-gate / 8-mutant falsification + 1,000-case ABI fuzz harness.
+
+Author: Alexander Stephen Donahue (Independent Researcher, Spokane, WA, USA; ORCID 0009-0006-8168-9648).
+License: Apache-2.0 (code) / CC-BY-4.0 (papers & documentation).
+Status: active. Independent research preprint, not peer-reviewed. Zero (0/1,900) overarching Mega-Atlas open problems retired.
+
+## Key Entrypoints
+- [README.md](README.md): Overview, Quickstart, Usage, verbatim 70-theorem Lean 4.35.0 `#print axioms` audit
+- [AGENTS.md](AGENTS.md): Canonical engineering rules, commands, and verification baseline
+- [CLAIMS.md](CLAIMS.md): Numbered claims ledger with epistemic tiers and explicit falsifiers
+- [LIMITATIONS.md](LIMITATIONS.md): Threats to validity and literal-vs-metaphor boundary
+- [REPLICATION.md](REPLICATION.md): Clean-clone reproduction protocol and dated replication log
+- [paper/main.tex](paper/main.tex): AMS-LaTeX v1.5.0 white paper (`dist/Donahue_2026_cellulogonic_mecha.pdf`, 36 live-verified DOIs)
+- [lean/comparator.json](lean/comparator.json): Six-kernel Palomar Challenge/Solution specification (70 theorems)
+- [docs/statement-fidelity.md](docs/statement-fidelity.md): Lean 4 <-> C11 fidelity audit matrix
+- [docs/MEGA_ATLAS_CROSSCHECK.md](docs/MEGA_ATLAS_CROSSCHECK.md): Non-retirement cross-check (`0/1,900` retired)
+- [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md): Transparent AI-assistance disclosure and CRediT authorship

@@ -1,0 +1,11 @@
+# Errata & Historical Corrections Ledger (`ERRATA.md`)
+
+All substantive factual, legal, mathematical, or engineering corrections discovered across releases are logged transparently here:
+
+| Date | Release Fixed | Finding Class (R7) | Description of Defect / Inaccuracy | Resolution & Evidence |
+|---|---|---|---|---|
+| 2026-11-25 | `v1.5.0` | `problem` | Releases `v1.0.0`–`v1.4.0` attributed affiliation to `0thernes LLC` across 18+ files even though no LLC legal entity exists. | Replaced every active occurrence across `LICENSE`, `CITATION.cff`, `paper/main.tex`, `README.md`, `LEGAL.md`, `lean/`, `docs/`, and GitHub metadata with `Alexander Stephen Donahue` / `Independent Researcher, Spokane, WA, USA` (ORCID `0009-0006-8168-9648`). |
+| 2026-11-25 | `v1.5.0` | `conflict` | Releases `v1.0.0`–`v1.4.0` used a proprietary non-commercial "Cosmogonic License", conflicting with open scientific reuse and citation tooling. | Migrated all code/Lean/scripts to OSI-approved **Apache-2.0** (`LICENSE`) and all papers/docs/figures to **CC-BY-4.0** (`LICENSE-DOCS`). |
+| 2026-11-25 | `v1.5.0` | `error` | `VERSION` stayed at `1.3.0` and `paper/main.tex` stayed at `v1.3.0` (reporting 58 Lean proofs) even after `v1.4.0` added `ContinuumBiomechanics.lean` (`C59`–`C62`, 62 proofs). | Synchronized `VERSION` (`1.5.0`), `CHANGELOG.md`, `CITATION.cff`, `lean/lakefile.toml`, and `paper/main.tex` (`amsart`, 70 audited theorems including `C59`–`C62` and `NV01`–`NV08`). |
+| 2026-11-25 | `v1.5.0` | `gap` | Lean 4 suite lacked Palomar `module` / `Spec` / `Challenge` / `Solution` isolation, `autoImplicit = false`, explicit `NonVacuity` witnesses, and multi-kernel replay. | Upgraded all Lean modules to Lean 4.35.0 `module` system with `Spec.lean`, `Challenge.lean`, `Solution.lean`, `NonVacuity.lean` (`NV01`–`NV08`), `comparator.json`, `formalization.yaml`, local 5-kernel replay (`results/lean4-multi-kernel.txt`), and 6/6 CI bubblewrap verification. |
+| 2026-11-21 | `v1.3.0` | `bug` | Titan azotosome `e_pmf = 7` allowed `q = 0` boundary and GRN Wnt loci collided with bioelectric `genome[96..97]`. | Tightened Titan to `e_pmf = 8, r2 = 7, q = 6` (`q_r > 0` across all 4 solvents) and moved Wnt loci to `genome[102..103]`. |

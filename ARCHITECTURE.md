@@ -116,7 +116,7 @@ Spatial finite-volume diffusion updates all 8 conserved species across toroidal 
 - **Scalar kernel (`diffuse_fields_scalar`)**: standard C11 signed integer division `(a - b) / (1LL << s)`.
 - **AVX2 kernel (`diffuse_fields_avx2`)**: processes 4 × `int64_t` species simultaneously using GCC/Clang native 256-bit vector types (`v4i64`, lowering directly to YMM `vpaddq`/`vpsubq`/`vpcmpgtq`/`vpsrlq`/`vpor` with zero `<immintrin.h>` header dependency and explicit `shift <= 0` / `shift >= 63` guard) via exact truncation-toward-zero bias:
   $$\mathrm{sdiv}_{2^s}(v) = \mathrm{asr}\bigl(v + ((v < 0) \mathbin{\&} (2^s - 1)),\; s\bigr)$$
-- Because every intermediate bit is identically defined across signed 64-bit two's complement arithmetic, **Win64 Clang AVX2 == Win64 Clang Scalar == Linux GCC AVX2 == Linux GCC Scalar** with **0-bit SHA-256 diff** (`be46eceb5dcbfe1f401934e62b2b6816829c38f3d3c6ababf18803608f7422a1`).
+- Because every intermediate bit is identically defined across signed 64-bit two's complement arithmetic, **Win64 Clang AVX2 == Win64 Clang Scalar == Linux GCC AVX2 == Linux GCC Scalar** with **0-bit SHA-256 diff** (`681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff`).
 
 ---
 

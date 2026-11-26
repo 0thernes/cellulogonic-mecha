@@ -1,11 +1,11 @@
-# CELLULOGONIC MECHA v1.3.0 — Master Deep-Dive Treatise & Operational Report
+# CELLULOGONIC MECHA v1.5.0 — Master Deep-Dive Treatise & Operational Report
 
 **Comprehensive Technical, Mathematical, Scientific, Computational, Functional & Operational Analysis of 3D Cellular Life, Engineering Microbiology, GHz Cytoskeletal Nanomechanics, Translation-Invariant 5-Fate 3D Embryogenesis, the ≤1,000-Cell Eutelic Tardigrade Frontier, Xenocellular Biology, and the Cellular A-Life Singularity / Super A-Life / SUPER LIFE Trajectory**
 
-**Author:** Alexander S. Donahue (0thernes LLC, ORCID: `0009-0006-8168-9648`)  
-**Version:** `1.3.0` | **Date:** November 21, 2026 | **License:** 0thernes COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY  
-**Formal Proof Suite:** 58 / 58 Pure Lean 4 (`v4.35.0`) Theorems (`1,651` lines, `0 sorryAx`, `0` custom axioms, strictly `{propext, Classical.choice, Quot.sound}`, `0` warnings)  
-**Empirical Suite:** 24 / 24 Falsification Gates · 8 / 8 Planted Mutants Caught · 4-Way Cross-OS SHA-256 Bit-Exact Parity
+**Author:** Alexander Stephen Donahue (Independent Researcher, Spokane, WA, USA · ORCID: `0009-0006-8168-9648`)  
+**Version:** `1.5.0` | **Date:** November 25, 2026 | **License:** Code `Apache-2.0` (`LICENSE`) · Docs/Preprint `CC-BY-4.0` (`LICENSE-DOCS`)  
+**Formal Proof Suite:** 70 / 70 Pure Lean 4 (`v4.35.0`) Audited Theorems (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses; `0 sorryAx` in `Solution`, `0` custom axioms, strictly `{propext, Classical.choice, Quot.sound}`, `0` warnings; 6-kernel Palomar ready)  
+**Empirical Suite:** 26 / 26 Falsification Gates · 8 / 8 Planted Mutants Caught · 1,000 / 1,000 ABI Fuzz Cases · 4-Way Cross-OS SHA-256 Bit-Exact Parity
 
 ---
 
@@ -152,36 +152,36 @@ If **Artificial Intelligence (AI)** is the trajectory toward transcendent *cogni
 
 ---
 
-# Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.3.0
+# Part V — Technical, Mathematical, Scientific, Computational, Functional & Operational Architecture of CELLULOGONIC MECHA v1.5.0
 
 ## 5.1 Technical & Computational Summary
-- **Language & Dependencies**: Pure clean-room C11 (`include/`, `src/`, `ABI 0x00010300`), zero third-party runtime libraries, zero npm packages in `web/`, pure core Lean 4 (`v4.35.0`, zero Mathlib).
-- **Binary Artifacts**: Native Win64 PE64 (`cellulogonic.exe`, `cellulogonic.dll`, `libcellulogonic.dll.a`, `libcellulogonic.a`, `test_falsification.exe`) built via Clang 23.1.0 + LLD; Native Linux ELF64 (`cellulogonic_linux`, `libcellulogonic.so`, `libcellulogonic_linux.a`, `test_falsification_linux`) built via GCC 13.3.0.
-- **Measured Performance**: **`33.499 million conserved chemical reactions/second`** on Win64 (`1.765 M cell-steps/sec`, `1.37×` AVX2 speedup) and **`28.560 million reactions/second`** on Linux (`1.505 M cell-steps/sec`, `1.65×` AVX2 speedup) in continuous 3D off-lattice mode on Intel Core Ultra 9 275HX, with **`0` post-warmup heap allocations** (`HW02`/`P10`).
-- **4-Way Bit-Exact Determinism**: Identical complete-state canonical SHA-256 `be46eceb5dcbfe1f401934e62b2b6816829c38f3d3c6ababf18803608f7422a1` across Win64 AVX2, Win64 Scalar, Linux AVX2, and Linux Scalar (`0-bit diff`, `51,208` steps, `971,811` reactions, `0 amu`, `0 uq`, `0` Second-Law violations).
+- **Language & Dependencies**: Pure clean-room C11 (`include/`, `src/`, `ABI 0x00010500`, `-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror`, static zero-heap hot-loop audit), zero third-party runtime libraries, zero npm packages in `web/`, pure core Lean 4 (`v4.35.0`, zero Mathlib, `autoImplicit = false`).
+- **Binary Artifacts**: Native Win64 PE64 (`cellulogonic.exe`, `cellulogonic.dll`, `libcellulogonic.dll.a`, `libcellulogonic.a`, `test_falsification.exe`, `fuzz_cmbin_abi.exe`, `quickstart_c_abi.exe`) built via Clang 23.1.0 + LLD; Native Linux ELF64 (`cellulogonic_linux`, `libcellulogonic.so`, `libcellulogonic_linux.a`, `test_falsification_linux`, `fuzz_cmbin_abi_linux`, `quickstart_c_abi_linux`) built via GCC 13.3.0.
+- **Measured Performance (`v1.5.0`)**: **`22.643 million conserved chemical reactions/second`** on Win64 (`0.954 M cell-steps/sec`, `1.23×` AVX2 speedup) and **`15.752 million reactions/second`** on WSL2 Linux (`0.664 M cell-steps/sec`, `1.09×` AVX2 speedup) in continuous 3D off-lattice mode on Intel Core Ultra 9 275HX, with **`0` post-warmup heap allocations** (`HW02`/`P10`).
+- **4-Way Bit-Exact Determinism**: Identical complete-state canonical SHA-256 `681a9747e9f4caa110d88e3fe8995e685b397e3350f52ab1e8294c15519eceff` across Win64 AVX2, Win64 Scalar, Linux AVX2, and Linux Scalar (`0-bit diff`, `51,488` steps, `1,222,070` reactions, `0 amu`, `0 uq`, `0` Second-Law violations).
 
 ## 5.2 Mathematical & Scientific Verification Summary
-- **58 Machine-Checked Pure Lean 4 Theorems (`T01`–`T58`, `1,651` lines, `0 sorryAx`, `0` warnings, strictly `{propext, Classical.choice, Quot.sound}`)** spanning 7 theorem modules (`StoichiometryThermo` 4-solvent 19-rxn strict 2nd Law, `MembraneGeometry`, `BioenergeticsEndosymbiosis`, `ChemiosmosisAutopoiesis`, `EutelicOrganogenesis`, `CytoskeletonNanomechanics` stateful Fröhlich ODE, `MorphogeneticGRN` tree-invariant/Hippo hysteresis/coupled CPG/`StoichiometryThermo` 0-drift).
-- **24-Gate Falsification Suite + 8 Planted Negative Mutants (`M1`–`M8`)**: 24/24 PASSED on both Win64 (`0.444s`) and Linux (`0.512s`).
-- **Locked Paired Statistics (`N = 24`, Seeds `5000..5023`, 180 ep, True Step-Down Holm–Bonferroni FWER — Unanimous `96/96` Wins!)**:
-  - `H1` COVI (Feral vs. 70% Castrated): `86.341` vs. `38.353` (`+47.987`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H2` Max Cell Volume (Endosymbiosis ON vs. OFF): `1164.542` vs. `161.125` (`+1003.417`, `7.23×`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H3` Bioelectric $\sigma(V_m)$ (ON vs. OFF): `23.091` vs. `0.000 mV` (`+23.091`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
-  - `H4` Tardigrade TDP Survival (Intact vs. KO): `181.458` vs. `2.542` survivors (`71.4×`, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+- **70 Machine-Checked Six-Kernel Pure Lean 4.35.0 Theorems (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`, `0 sorryAx` in `Solution`, `0 native_decide`, `0` warnings, strictly `[propext, Classical.choice, Quot.sound]`):** Isolated `Spec.lean` / `Challenge.lean` / `Solution.lean` replayed locally across 5 checkers (`lean`, `leanchecker`, `leanchecker-paranoid`, `con-leche`, `con-ron`, `nanoda_bin`) and wired for 6/6 kernels under `bubblewrap` in CI.
+- **26-Gate Falsification Suite + 8 Planted Negative Mutants (`M1`–`M8`) + 1,000-Case ABI Fuzz + 2,700 Property Checks**: 26/26 PASSED on both Win64 (`0.866s`) and Linux (`0.902s`).
+- **Locked Paired Statistics (`N = 24`, Seeds `5000..5023`, 180 ep, True Step-Down Holm–Bonferroni FWER + 95% Bootstrap CIs & Cohen's $d_z$ — Unanimous `96/96` Wins!)**:
+  - `H1` COVI (Feral vs. 70% Castrated): `87.090` vs. `40.535` (`+46.555`, 95% CI `[+39.778, +53.153]`, $d_z = 2.675$, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H2` Max Cell Volume (Endosymbiosis ON vs. OFF): `1439.417` vs. `153.333` (`+1286.083`, `9.39×`, 95% CI `[+1075.542, +1495.875]`, $d_z = 2.305$, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H3` Bioelectric $\sigma(V_m)$ (ON vs. OFF): `23.130` vs. `0.000 mV` (`+23.130`, 95% CI `[+21.000, +25.277]`, $d_z = 4.214$, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
+  - `H4` Tardigrade TDP Survival (Intact vs. KO): `167.125` vs. `2.417` survivors (`69.1×`, 95% CI `[+122.792, +211.792]`, $d_z = 1.468$, `24/24` wins, $p_{\text{Holm}} = 0.00040$).
 
 ## 5.3 Functional & Operational Runbook
 
 | Operation | Exact Command | Expected Verified Output |
 |---|---|---|
-| Full Win64 build + 24-gate test + 58 Lean proofs & strict axiom allowlist | `.\build.ps1` | `24/24 PASSED`, `8/8 MUTANTS`, `58 theorems`, strictly `{propext, Classical.choice, Quot.sound}` |
-| Full Linux ELF64 build + 24-gate test | `./build_linux.sh` | `24/24 PASSED`, `8/8 MUTANTS` |
-| Dual-kernel parity benchmark | `.\bin\cellulogonic.exe bench --epochs 300 --size 32 --seed 5000` | `EXACT 0-BIT DIFF MATCH`, `SHA-256=be46eceb…`, `mass_res=0`, `energy_res=0` |
-| Zero-seed spontaneous abiogenesis | `.\bin\cellulogonic.exe abiogenesis --epochs 240 --size 32 --seed 5000` | `0 -> 610` peak alive, `123` peak orgs, `COVI 89.93 (S6)` peak, `MET 7/7` |
-| Serial endosymbiosis vs. prokaryotic ceiling | `.\bin\cellulogonic.exe endosymbiosis --epochs 240 --size 32 --seed 5000` | `maxVol 1046` vs `157` (`6.66×`), `926` captures, `259` secondary chimeras, `178` EGT |
-| De-novo 4-solvent evolution & Terran→Venus transplant | `.\bin\cellulogonic.exe xenocell --epochs 240 --size 32 --seed 5000` | De novo `89.9% / 73.3% / 91.4% / 97.5%` (Titan `c-ring 4.38 ≥ 4`); Terran→Venus **`56.8%`** |
-| Translation-invariant 5-fate 3D embryogenesis | `.\bin\cellulogonic.exe embryo --epochs 200 --size 32 --seed 5000` | `70` alive, **ALL 5 fates (`Gm=5`)**, `85.3%` peak sort, `347` wired axons, `636` CPG pulses |
-| Tardigrade TDP bioglass anhydrobiosis | `.\bin\cellulogonic.exe anhydrobiosis --epochs 120 --size 32 --seed 5000` | `109` vs `3` post-shock survivors (`36.3×`), `108` revived, `0` conservation error |
-| 13-Vector castration ablation sweep | `.\bin\cellulogonic.exe ablation --epochs 180 --size 32 --seed 5000` | `50%` Escape-Breeding Paradox (`93/427/178/2084`); `100%` `COVI=0.00` |
+| Full Win64 build + 26-gate test + 1,000-case fuzz + 70 Lean proofs | `.\build.ps1` | `26/26 PASSED`, `8/8 MUTANTS`, `1000/1000 FUZZ`, `70 theorems`, strictly `{propext, Classical.choice, Quot.sound}` |
+| Full Linux ELF64 build + 26-gate test + 1,000-case fuzz | `./build_linux.sh` | `26/26 PASSED`, `8/8 MUTANTS`, `1000/1000 FUZZ` |
+| Dual-kernel parity benchmark | `.\bin\cellulogonic.exe bench --epochs 300 --size 32 --seed 5000` | `EXACT 0-BIT DIFF MATCH`, `SHA-256=681a9747…`, `mass_res=0`, `energy_res=0` |
+| Zero-seed spontaneous abiogenesis | `.\bin\cellulogonic.exe abiogenesis --epochs 240 --size 32 --seed 5000` | `0 -> 598` peak alive, `105` peak orgs, `COVI 89.49 (S6)` peak, `MET 7/7` |
+| Serial endosymbiosis vs. prokaryotic ceiling | `.\bin\cellulogonic.exe endosymbiosis --epochs 240 --size 32 --seed 5000` | `maxVol 1305` vs `171` (`7.63×`), `821` captures, `262` secondary chimeras, `119` EGT |
+| De-novo 4-solvent evolution & Terran→Venus transplant | `.\bin\cellulogonic.exe xenocell --epochs 240 --size 32 --seed 5000` | De novo `90.8% / 66.7% / 94.5% / 87.1%` (Titan `c-ring 4.11 ≥ 4`); Terran→Venus **`59.7%`** |
+| Translation-invariant 5-fate 3D embryogenesis | `.\bin\cellulogonic.exe embryo --epochs 200 --size 32 --seed 5000` | `50` alive (`maxT 47`), **ALL 5 fates (`Gm=5`)**, `80.0%` peak sort, `328` wired axons, `725` CPG pulses |
+| Tardigrade TDP bioglass anhydrobiosis | `.\bin\cellulogonic.exe anhydrobiosis --epochs 120 --size 32 --seed 5000` | `232` vs `2` post-shock survivors (`116×`), `232` revived, `0` conservation error |
+| 13-Vector castration ablation sweep | `.\bin\cellulogonic.exe ablation --epochs 180 --size 32 --seed 5000` | `50%` Escape-Breeding Paradox (`96/394/167/1991`); `100%` `COVI=0.00` |
 | CSRF-Hardened 60 FPS WebGL2 Observatory UI | `node web\server.mjs` → `http://127.0.0.1:8788` | Live 3D WebGL2 microscope, 13-vector restraint matrix, 128B AUTOPHAGE hex injector (`POST /api/cmd`) |
 
 ---

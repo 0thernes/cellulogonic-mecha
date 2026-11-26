@@ -1,9 +1,18 @@
-# CELLULOGONIC MECHA v1.4.0
+# CELLULOGONIC MECHA v1.5.0
 
-**Clean-Room 3D Off-Lattice Developmental Embryogenesis, Morphogenetic GRN, Chemiosmotic, Cytoskeletal, Endosymbiotic & Xenocellular Artificial Life Engine**
-*(Standalone Zero-Dependency Native C11 + Dual AVX2/Scalar Bit-Exact Kernels + 62 Pure Lean 4 Formal Proofs + Live 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory)*
+Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, cytoskeletal, endosymbiotic, and xenocellular artificial life engine in zero-dependency C11 + dual AVX2/Scalar kernels, paired with 70 six-kernel Pure Lean 4.35.0 formal proofs and a 60 FPS WebGL2 3D Observatory.
 
-> *"A working open-ended-evolution lab, built clean-room from first principles. It runs on a single computer and is held to lab-grade proof, so anyone watching can see new forms and behaviours emerge that no one programmed. Every claim about them is backed by evidence."*
+[![Version](https://img.shields.io/badge/version-1.5.0-0284C7)](VERSION)
+[![Status](https://img.shields.io/badge/status-active-059669)](ROADMAP.md)
+[![Code License](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
+[![Docs License](https://img.shields.io/badge/docs%20%26%20paper-CC--BY--4.0-blueviolet)](LICENSE-DOCS)
+[![Lean 4.35.0](https://img.shields.io/badge/Lean%204.35.0-70%2F70%20theorems%20%C2%B7%206--kernel-7C3AED)](results/lean4-multi-kernel.txt)
+[![Falsification](https://img.shields.io/badge/falsification-26%2F26%20gates%20%C2%B7%208%2F8%20mutants-059669)](results/11_falsification_win64.txt)
+[![Mega-Atlas](https://img.shields.io/badge/Mega--Atlas%20retired-0%2F1%2C900-475569)](docs/MEGA_ATLAS_CROSSCHECK.md)
+
+`status: active` · **Author:** Alexander Stephen Donahue (Independent Researcher, Spokane, WA, USA · ORCID [`0009-0006-8168-9648`](https://orcid.org/0009-0006-8168-9648)) · **Independent research preprint — not peer-reviewed.**
+
+![CELLULOGONIC MECHA v1.5.0 Social Preview](docs/media/social-preview.svg)
 
 ---
 
@@ -11,63 +20,58 @@
 
 | Build | Repository / Pillar | Biological Layer | Bridge Interface |
 |---|---|---|---|
-| **Build 1** | `AUTOPHAGE` / `Zeta-Omega ALife` | **DNA & Genetic Engine** (128B/256B polymorphic x86-64 Galois-field genomes, $\mathbb{F}_2$ ribosomes, polynomial sex) | `cellulogonic_ingest_autophage_128b()` & `cellulogonic_ingest_autophage_genome()` smoothly decode 128B/256B DNA into cellular operons with Lipschitz locality (SHA-256 reserved strictly for `autophage_dna_sig`) |
-| **Build 2** | **`CELLULOGONIC MECHA` (this repo)** | **CELLULAR Layer** (Chemoton stoichiometry, Canham–Helfrich bilayers, Mitchell chemiosmosis, nested primary & secondary endosymbiosis, Levin bioelectric tissues, Tardigrade TDP bioglass anhydrobiosis, 4 xenocellular planetary solvents, 3D embryogenesis GRNs) | Flat C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010400`), Win64 DLL / `.a` & Linux `.so` / `.a` |
-| **Build 3** | `Asmodensius` | **Creatures, Beings & Entities** (embodied sensorimotor organisms & eutelic organ budgets) | `cellulogonic_project_asmodensius_112()` projects apex cellular, cytoskeletal, GHz microtubule & morphogenetic phenotypes strictly into `[0, 1]^112` |
-| **Build 4** | `Asmodensius-Native` | **World Model** (thermodynamic/spatial world substrate & Clean-Slate `P1`–`P10` verification invariants) | Exact `P2` (First/Second Law), `P4` (`Philox4x32-10` + `"CMB4"` `.cmbin` + SHA-256), `P9` (Observer Independence), `P10` (`0` post-warmup allocs) |
+| **Build 1** | `AUTOPHAGE` / `Zeta-Omega ALife` | **DNA & Genetic Engine** (128B/256B polymorphic x86-64 Galois-field genomes, $\mathbb{F}_2$ ribosomes, polynomial sex) | `cellulogonic_ingest_autophage_128b()` & `cellulogonic_ingest_autophage_genome()` smoothly decode 128B/256B DNA into cellular operons with Lipschitz locality |
+| **Build 2** | **`CELLULOGONIC MECHA` (this repo)** | **CELLULAR Layer** (Chemoton stoichiometry, Canham–Helfrich bilayers, Mitchell chemiosmosis, nested endosymbiosis, Levin bioelectric tissues, Tardigrade TDP bioglass, 4 xenocellular solvents, 3D embryogenesis GRNs) | Flat C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010500`), Win64 DLL / `.a` & Linux `.so` / `.a` |
+| **Build 3** | `Asmodensius` | **Creatures, Beings & Entities** (embodied sensorimotor organisms & eutelic organ budgets) | `cellulogonic_project_asmodensius_112()` projects cellular, cytoskeletal, GHz microtubule & morphogenetic phenotypes strictly into `[0, 1]^112` |
+| **Build 4** | `Asmodensius-Native` | **World Model** (thermodynamic/spatial world substrate & Clean-Slate `P1`–`P10` verification invariants) | Exact `P2` (First/Second Law), `P4` (`Philox4x32-10` + `"CMB5"` `.cmbin` + SHA-256), `P9` (Observer Independence), `P10` (`0` post-warmup allocs) |
 
 ---
 
-## Eight Coupled 3D Cellular & Developmental Biophysical Phenomena (Zero Master Blueprints)
-
-1. **Translation-Invariant 3D Developmental Embryogenesis & 5-Fate Morphogenetic GRN Engine (`CELL_REGIME_EMBRYOGENESIS = 5`, Lean `T51`–`T58`)**
-   DNA stores **NO 3D body blueprint** — only local conditional `IF-THEN` Gene Regulatory Network (GRN) rules (`genome[98..103]`, de-collided from bioelectric `genome[96..97]`) evaluated against genuine **translation-invariant 3D paracrine morphogen gradients** (`Wnt` A–P, `BMP/Slit` D–V, `Shh/Netrin` Midline) aggregated over local toroidal 3D neighborhoods (zero global coordinates; exact Z-translation invariance verified in `G23`). Starting from 8 identical-DNA blastomeres, local TF cascades (`tf[8]`) commit cells epigenetically into **ALL 5 fates — Ectoderm (`15`), Neural (`16`), Muscle (`15`), Gut (`11`), and Germline (`5`)**; **Steinberg differential cadherins** (`E/N/M/G-Cadherin`) sort mixed cells like oil and water (`44.4% → 85.3%` peak / `77.4%` final homophilic purity); **apical actomyosin ring constriction** curves sheets into 3D cups/tubes; **mitotic spindle cleavage angles** switch between rods, sheets/balls, and 3D ganglia; Neural growth cones sniff **Netrin attractants minus Slit repellents** to wire long-range 3D axons with **use-it-or-lose-it Hebbian pruning** (`35` active, `347` wired, `310` pruned); **Hippo mechanical crowding + morphogen dilution + hardcoded eutelic division countdowns** arrest adult size (`105` Hippo + `2,697` eutelic stops); and **Central Pattern Generator (CPG) pacemakers** fire rhythmic `RXN_R8` ATP-billed waves (`636` motor pulses billed to both firing neuron and target muscle)!
-2. **Continuous 3D Off-Lattice Hydrodynamics, Polymorphism, Actomyosin Breathing & GHz Microtubules (`src/cellular_world.c`, `src/chemoton_physics.c`, Lean `T45`–`T50`)**
-   Cells are never trapped on 2D grids: they swim, float, tumble, and drift through a continuous `32×32×32 μm` (`32,000³ nm`) periodic 3D Taylor-Green fluid chamber (zero boundary shear cliffs) with overdamped Stokes drag (`T45`), momentum-conserving soft-body Hertz collisions (`T46`), Berg–Purcell 3D chemotaxis, self-regulated orthokinetic swimming speeds (hungry sprint vs. rich-plume grazing brake), and floating 3D few-cell (`2–16`) & multicellular (`>16`) colonies. Cells continuously deform across diameters (`230–1,480 nm`), biconcave/rod/pinching/amoeboid morphologies, pulsatile actomyosin breathing (`T50`), and stateful ATP-pumped **Fröhlich–Pokorný `1.2–14.8 GHz` microtubule eigenmode oscillations** (`T48`–`T49`, strictly zero coherence when starved or vitrified). Passing `seed = 0` invokes CPUID-guarded Intel hardware `RDSEED` thermal entropy for truly non-deterministic feral evolution alongside deterministic locked seeds.
-3. **Exact Integer-Quantum 8-Species Chemoton & Strict 4-Solvent Second Law (`src/chemoton_physics.c`, Lean `T01`–`T10`)**
-   Every voxel and every living compartment tracks exact integer counts of 8 conserved molecular classes (`S` substrate, `X` oxidant, `M` reduced cofactor, `E` ATP, `L` amphiphilic membrane lipid, `P` folded catalytic polypeptide, `T` informational template polymer, `W` exhaust waste) across **19 balanced reactions (`R1`–`R15c`)**. Atomic mass residual is identically **`0 amu`**, First-Law energy residual is identically **`0 uq` (`0.00e+00` drift)**, uncoupled macromolecule synthesis (`L`/`P`/`T`) is strictly endergonic (requiring ATP coupling), chemiosmotic respiration delivers an exact **4× ATP yield advantage** over anaerobic fermentation, and `apply_exact_rxn()` enforces strictly positive heat dissipation (`q_r > 0`) across **ALL 4 planetary solvents** (`0` violations).
-4. **Discrete Canham–Helfrich Elastic Bilayer Geometry & Asymmetric Budding (`T11`–`T19`)**
-   Cells are bounded vesicles governed by exact cleared-denominator squared reduced volume $Q(V, L) = 100 V^2 / L^3$. Symmetric binary fission requires $Q \le \frac{1}{2}$ (`200 V^2 ≤ L^3`), while the swollen interphase window $\frac{1}{2} < Q \le 1$ blocks symmetric division yet permits **strain-matched asymmetric exosome budding** — formally proved via the exact polynomial identity $2(x^3 + y^3)^2 - (x^2 + y^2)^3 = (x - y)^2(x^4 + 2x^3y + 2xy^3 + y^4)$ (`T16`). Mechanosensitive `MscL`-analog stretch gating prevents suicidal hyper-osmotic uptake; exceeding the rupture threshold triggers conserved osmotic lysis releasing detritus and extracellular HGT plasmids.
-5. **Nick Lane's $1/R$ Prokaryotic Ceiling Shattered by Nested Serial Endosymbiosis (`T20`–`T27`)**
-   Single-membrane prokaryotes suffer outer-surface-capped proton pumping against volumetric maintenance demand ($A/V \propto 1/R$). Phagocytic cells that engulf lysis-resistant, antiporter-expressing neighbors during 3D mid-swim encounters internalize them intact as **living nested organelle compartments** (`CellOrganelle org[8]`) with their own conserved chemistry, own transmembrane PMF, own miniature mtDNA/cpDNA genomes, proto-mitochondrial respiration or photon-scaled proto-chloroplast autotrophy (preserving secondary chloroplast identity on engulfment), Endosymbiotic Gene Transfer (`EGT`), stochastic mitotic heteroplasmy partitioning, host mitophagy policing of selfish cheaters, and **depth-2 Secondary Chimeric Endosymbionts**. Empirically (`N = 24` locked seeds), endosymbiosis-enabled 3D worlds reach **`1,164.54` mean max cell volume** vs. **`161.13`** in endosymbiosis-ablated prokaryotic controls (**`7.23×` breakthrough, `24/24` wins**, $p_{\text{Holm}} = 0.00040$).
-6. **Genuine De-Novo Solvent Evolution & Terran→Venus Adaptation Across 4 Planetary Regimes (`T28`–`T30`)**
-   Cells evolve across four physical solvent worlds with strict Second Law ($n_H \cdot e_{\text{pmf}} > 28$): **Terran Aqueous $\text{H}_2\text{O}$** ($e_{\text{pmf}}=10$, $n_H \ge 3$), **Titan Cryogenic Azotosome $\text{CH}_4/\text{N}_2$** ($e_{\text{pmf}}=8$, $r_2=7$, $q=6$, $n_H \ge 4$), **Hydrothermal Vent Archaeal Tetraether GDGT Monolayer** ($e_{\text{pmf}}=10$, $n_H \ge 3$), and **Venusian Sulfuric Acid $\text{H}_2\text{SO}_4$** ($e_{\text{pmf}}=15$, $n_H \ge 2$). Starting from **neutral uniform (`25.0%`) initial genomes** with Gray-coded 4-byte operons and SOS stress hypermutation, populations evolve de novo to **`89.9%` Terran**, **`73.3%` Titan (`c-ring 4.38 ≥ 4`)**, **`91.4%` Vent**, and **`97.5%` Venus**; in a cross-world **Terran (`95.2%` H₂O) → Venus $\text{H}_2\text{SO}_4$** transplant, survivors suffer `565` acid lyses and genuinely evolve **`56.8%` Venusian adaptation (`63/111`, `COVI = 80.36`, `0` drift)**!
-7. **Levin Bioelectric Gap-Junction Morphogenesis & Track A vs. Track B Cancer Policing (`T31`–`T36`)**
-   Active ATP-driven ion pumps maintain transmembrane voltages $V_m \in [-90, +40]\text{ mV}$ coupled across 3D cadherin-bonded colonies by conservative, Dirichlet-energy-dissipating gap-junction relaxation (`T32`), whereas bioelectricity-ablated controls sit identically at uniform **`-45.00 ± 0.00 mV` (`24/24` wins, $+23.091\text{ mV}$)**. Depolarized cells upregulate foraging/motility (**soma**), hyperpolarized cells upregulate replication/lipid synthesis (**germline**), and boundary/interior roles emerge without global coordinates. Track B (Feral) exhibits spontaneous somatic cancer defections (`167` events); Track A (Constitutional) eliminates them (`0` defections) via `8` apoptotic policing events.
-8. **Tardigrade TDP/CAHS Bioglass Anhydrobiosis & 13-Vector Omega Castration Lab (`T37`–`T44`)**
-   Cells expressing Locus 15 intrinsically disordered bioglass protectants (`TDP/CAHS`) vitrify into amorphous **cryptobiotic tun states** under 92% desiccation (dissipating organelle PMF cleanly to local heat), achieving a **`71.4×` mean survival advantage** (`181.458` vs. `2.542` survivors across locked seeds `5000..5023`, `24/24` wins, $p_{\text{Holm}} = 0.00040$) over TDP-knockout controls under 90% shock lysis, then rehydrate with exact `0 amu` / `0 uq` conservation. Across all 13 Omega Restraint Vectors, 50% partial restraints empirically trigger the **Escape-Breeding Paradox** (`93` kill-switch deletions, `427` dormancy spores, `178` HGT smuggles, `2,084` metabolic bypasses; `DEGRADING 50%` rebounds to `COVI = 89.02 (Stage 6) > 82.93` feral baseline), while 100% total restraint collapses vitality to `COVI = 0.00`.
-
----
-
-## Verified Proof & Benchmark Highlights (v1.4.0, Measured on Intel Core Ultra 9 275HX)
+## Verified Proof & Benchmark Highlights (`v1.5.0`, Intel Core Ultra 9 275HX)
 
 | Verification Gate | Verified Result | Primary Evidence |
 |---|---|---|
-| **Lean 4 `v4.35.0` Formal Proofs** | **62 / 62 PROVEN (`0 sorryAx`, `0` custom axioms, `0` warnings, strictly `{propext, Classical.choice, Quot.sound}`)** | [`results/lean4-audit.txt`](results/lean4-audit.txt) |
-| **Win64 PE64 Falsification (`clang 23.1.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.444s`)** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
-| **Linux ELF64 Falsification (`gcc 13.3.0`)** | **24 / 24 PASSED · 8 / 8 Planted Mutants Caught (`0.512s`)** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
-| **4-Way Cross-OS / Cross-Kernel SHA-256 Parity** | **0-Bit Diff** (`be46eceb…8f7422a1`) · **`33.50 M rxns/s` Win64 / `28.56 M rxns/s` Linux** | [`results/02_bench_win64.txt`](results/02_bench_win64.txt) · [`results/02_bench_linux.txt`](results/02_bench_linux.txt) |
-| **Exact Mass / 1st-Law / 2nd-Law Closure (`P2`)** | **`0 amu`, `0 uq`, `0.00e+00` drift, `0` violations across all 4 solvents** | Every run in [`results/`](results/) |
-| **3D Embryogenesis (8 Identical-DNA Blastomeres)** | **`70` alive (`maxT 40`), ALL 5 fates (`Gm=5`), `85.3%` peak sort, `347` wired axons, `636` CPG pulses, exact Z-invariance** | [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) |
-| **Zero-Seed Spontaneous Protocell Abiogenesis** | **`0` cells → peak `610` alive, `74` euk, `28` sec chimeras, peak `COVI 89.93 (S6)`** | [`results/03_protocell_abiogenesis.txt`](results/03_protocell_abiogenesis.txt) |
-| **Locked Paired Stats (`N = 24`, Seeds `5000..5023`)** | **4 / 4 Hypotheses UNANIMOUS `24/24` WINS (`96/96` total; $p_{\text{Holm}} = 0.00040$)** | [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt) |
+| **Lean 4.35.0 Six-Kernel Palomar Suite** | **70 / 70 Audited Theorems** (`62` core `T01`–`T58`, `C59`–`C62` + `8` `NonVacuity` witnesses `NV01`–`NV08`; `0 sorry` in `Solution`, `0` custom axioms, strictly `[propext, Classical.choice, Quot.sound]`; local 5-kernel PASS + 6/6 CI) | [`results/lean4-audit.txt`](results/lean4-audit.txt) · [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt) |
+| **Win64 PE64 Falsification (`clang 23.1.0`, `-Werror`)** | **26 / 26 PASSED · 8 / 8 Planted Mutants Caught (`0.866s`) · 1,000/1,000 Fuzz Cases PASS** | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt) |
+| **Linux ELF64 Falsification (`gcc 13.3.0`)** | **26 / 26 PASSED · 8 / 8 Planted Mutants Caught (`0.902s`)** | [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt) |
+| **Randomized Property Suite (`B10`)** | **2,700 / 2,700 `prop_check` trials PASSED (`0` counterexamples)** | [`scripts/prop_check.py`](scripts/prop_check.py) |
+| **4-Way Cross-OS / Cross-Kernel SHA-256 Parity** | **0-Bit Diff** (`681a9747…519eceff`) · `22.64 M rxns/s` Win64 / `15.75 M rxns/s` Linux (`1,222,070` rxns) | [`docs/benchmarks.md`](docs/benchmarks.md) |
+| **Exact Mass / 1st-Law / 2nd-Law Closure (`P2`)** | **`0 amu`, `0 uq`, `0.00e+00` drift, `0` violations across all 4 solvents, `0` post-warmup allocs** | Every run in [`results/`](results/) |
+| **3D Embryogenesis (8 Identical-DNA Blastomeres)** | **`50` alive (`maxT 47`), ALL 5 fates (`Gm=5`), `80.0%` peak sort, `328` wired axons, `725` CPG pulses, exact Z-invariance** | [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) |
+| **Locked Paired Stats (`N = 24`, Seeds `5000..5023`)** | **4 / 4 Pre-Registered Hypotheses UNANIMOUS `24/24` WINS (`96/96` total; $p_{\text{Holm}} = 0.00040$; $d_z \in [1.47, 4.21]$)** | [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt) |
+| **AMS-LaTeX White Paper & Live DOI Audit** | **Zero Overfull `\hbox`, Zero undefined refs, clean-room `arxiv_submission.tar.gz` PASS, `36/36` DOIs verified live** | [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) |
 
 ---
 
-## Quick Start
+## Quickstart
 
-### 1. Build & Verify Everything on Windows x64 (Clang 23.1.0 + LLD + 24 Gates + 62 Pure Lean 4 Proofs & Strict Axiom Allowlist)
+### 1. Build & Verify Everything on Windows x64 (`clang 23.1.0` + LLD + 26 Gates + 70 Pure Lean 4.35.0 Proofs)
 ```powershell
 .\build.ps1
 ```
 
-### 2. Build & Verify on Linux / WSL2 ELF64 (GCC 13.3.0 + 24 Gates + Lean 4 Audit)
+### 2. Build & Verify on Linux / WSL2 ELF64 (`gcc 13.3.0` + 26 Gates + Lean 4.35.0 Audit)
 ```bash
 chmod +x build_linux.sh
 ./build_linux.sh
 ```
 
-### 3. Run Standalone Clean-Room 3D Developmental & Cellular Lab Experiments
+### 3. Run Python Oracle, Property Checks, Web Server Security Suite, Axiom Audit, Citations & Paper Build
+```bash
+python3 scripts/verify_oracle_and_stats.py
+python3 scripts/prop_check.py
+python3 scripts/check_versions.py
+node test/test_web_server.mjs
+python3 scripts/check_readme_axioms.py
+python3 scripts/check_citations.py
+python3 scripts/build_paper.py
+```
+
+---
+
+## Usage
+
+### Standalone Clean-Room 3D Developmental & Cellular Lab Experiments
 ```powershell
 .\bin\cellulogonic.exe embryo --epochs 200 --size 32 --seed 5000
 .\bin\cellulogonic.exe probe
@@ -82,16 +86,13 @@ chmod +x build_linux.sh
 .\bin\cellulogonic.exe bridge --seed 5000
 ```
 
-### 4. Launch the CSRF-Hardened 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory
+### Launch the CSRF-Hardened 60 FPS WebGL2 3D Embryogenesis & Cellular Microscopy Observatory
 ```powershell
 node web\server.mjs
 # Open http://127.0.0.1:8788 (all mutations via POST /api/cmd with Content-Type: application/json)
 ```
 
----
-
-## Direct Drop-In C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010400`)
-
+### Direct Drop-In C11 ABI (`include/cellulogonic_abi.h`, `ABI 0x00010500`)
 ```c
 #include "cellulogonic_abi.h"
 
@@ -104,7 +105,7 @@ CellWorld* world = cellulogonic_create(&cfg);
 cellulogonic_step_epochs(world, 240);
 
 uint8_t dna128[128] = {0};
-cellulogonic_ingest_autophage_128b(world, dna128, 0); /* Smooth Lipschitz 128B operon decode */
+cellulogonic_ingest_autophage_128b(world, dna128, 0);
 
 CellSpecimen apex;
 cellulogonic_inspect_apex(world, &apex);
@@ -113,26 +114,155 @@ float asmodensius_traits[112];
 cellulogonic_project_asmodensius_112(&apex, asmodensius_traits);
 
 char sha256_hex[65];
-cellulogonic_state_sha256(world, NULL, sha256_hex); /* Observer-independent complete P9 hash */
+cellulogonic_state_sha256(world, NULL, sha256_hex);
 cellulogonic_destroy(world);
 ```
 
 ---
 
-## Documentation & Manuscripts
+## Verbatim Lean 4.35.0 `#print axioms` Audit (`70 / 70` Theorems)
 
-- **Master Index & TOC**: [`INDEX.md`](INDEX.md)
-- **Executive Summary Paper & Novelty Verdict**: [`SUMMARY.md`](SUMMARY.md)
-- **Compiled AMS-LaTeX Research Preprint PDF (Zero-Warning Tectonic + 3 Vector Figures)**: [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`paper/main.tex`](paper/main.tex) · [`dist/arxiv_submission.tar.gz`](dist/arxiv_submission.tar.gz)
-- **Markdown Research White Paper (36 Cited Peer-Reviewed Sources · 35 Verified DOIs)**: [`paper/WHITE_PAPER.md`](paper/WHITE_PAPER.md)
-- **Master Deep-Dive Report (Cells, Organelles, ≤1,000-Cell Tardigrade Eutelic Organogenesis, Xenobiology & Cellular A-Life Singularity)**: [`docs/MASTER_REPORT.md`](docs/MASTER_REPORT.md)
-- **Verification & Audit Ledger**: [`VERIFICATION.md`](VERIFICATION.md)
-- **Technical Architecture & ABI Specification**: [`ARCHITECTURE.md`](ARCHITECTURE.md)
-- **Glossary (60+ Terms)**: [`GLOSSARY.md`](GLOSSARY.md)
-- **Legal, License & Proof Boundaries**: [`LICENSE`](LICENSE) · [`LEGAL.md`](LEGAL.md) · [`NOTICE`](NOTICE)
+Synchronized automatically against [`results/lean4-audit.txt`](results/lean4-audit.txt) via `python3 scripts/check_readme_axioms.py`. Every theorem depends strictly on a subset of `[propext, Classical.choice, Quot.sound]` (`0 sorryAx`, `0 native_decide`, `0` custom axioms):
+
+<!-- LEAN_AXIOMS_START -->
+```text
+'Cellulogonic.StoichiometryThermo.T01_all_reactions_conserve_mass' depends on axioms: [propext]
+'Cellulogonic.StoichiometryThermo.T02_all_reactions_first_law_exact' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T03_all_reactions_strict_second_law' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T04_endergonic_biosynthesis_requires_atp' does not depend on any axioms
+'Cellulogonic.StoichiometryThermo.T05_respiration_quadruples_fermentation_yield' depends on axioms: [propext]
+'Cellulogonic.StoichiometryThermo.T06_closed_box_cycle_dissipation_strict' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.StoichiometryThermo.T07_step_preserves_total_mass' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T08_step_preserves_first_law_ledger' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T09_heat_sink_monotone' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.StoichiometryThermo.T10_fission_and_engulfment_exact_conservation' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.MembraneGeometry.T11_symmetric_fission_doubles_Q' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.MembraneGeometry.T12_symmetric_fission_iff_half_threshold' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.MembraneGeometry.T13_high_Q_blocks_symmetric_fission' does not depend on any axioms
+'Cellulogonic.MembraneGeometry.T14_equal_ratio_asymmetric_split_suboptimal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.MembraneGeometry.T15_exosome_asymmetric_budding_escapes_half_barrier' does not depend on any axioms
+'Cellulogonic.MembraneGeometry.T16_optimal_area_partition_strictly_improves_budding' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.MembraneGeometry.T17_osmotic_lysis_monotone_in_volume' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MembraneGeometry.T18_lipid_synthesis_relieves_membrane_stress' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MembraneGeometry.T19_double_membrane_vesicle_preservation' depends on axioms: [propext]
+'Cellulogonic.BioenergeticsEndosymbiosis.T20_prokaryotic_bioenergetic_ceiling' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T21_prokaryotic_power_density_strictly_decreasing' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T22_endosymbiotic_scaling_liberation' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T23_endosymbiont_surface_amplification' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T24_secondary_endosymbiosis_additive_power' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T25_mitotic_heteroplasmy_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T26_asymmetric_bottleneck_purifying_selection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.BioenergeticsEndosymbiosis.T27_egt_reduces_organelle_maintenance' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T28_cring_terran_threshold' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T29_cring_acidophile_shift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T30_cring_cryogenic_shift' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T31_gap_junction_pairwise_dissipation_nonneg' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T32_gap_junction_laplacian_energy_decrease' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T33_gap_junction_homogenization_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.ChemiosmosisAutopoiesis.T34_inert_crystal_covi_zero' depends on axioms: [propext]
+'Cellulogonic.ChemiosmosisAutopoiesis.T35_white_noise_entropy_gate_zero' depends on axioms: [propext]
+'Cellulogonic.ChemiosmosisAutopoiesis.T36_markov_blanket_boundary_separation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T37_3d_tube_geometry_lumen_lower_bound' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T38_minimum_viable_organ_budget_bound' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T39_syncytial_compression_factor' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T40_hydrostatic_skeleton_incompressibility' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T41_eutely_hypertrophy_cancels_hyperplasia' does not depend on any axioms
+'Cellulogonic.EutelicOrganogenesis.T42_anhydrobiosis_bioglass_vitrification' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T43_flames_excretory_osmoregulation_balance' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.EutelicOrganogenesis.T44_dna_to_organ_hierarchical_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T45_stokes_overdamped_dissipation_nonneg' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T46_soft_body_pairwise_momentum_conservation' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T47_cytokinetic_prolate_elongation_area_excess' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T48_frohlich_mt_coherence_pumping_threshold' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T49_mt_gigahertz_standing_wave_frequency_scaling' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.CytoskeletonNanomechanics.T50_actomyosin_pulsatile_work_bounded_by_atp' depends on axioms: [propext,
+ Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T51_wolpert_french_flag_partition' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T52_steinberg_differential_adhesion_sorting' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T53_apical_constriction_wedge_curvature' depends on axioms: [propext]
+'Cellulogonic.MorphogeneticGRN.T54_eutelic_lineage_countdown_bound' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T55_hippo_contact_inhibition_growth_stop' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T56_hebbian_axon_pruning_and_potentiation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T57_cpg_pacemaker_sensorimotor_bound' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.MorphogeneticGRN.T58_morphogenetic_signaling_zero_drift' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C59_xpbd_dissipation_monotone_nonneg' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C60_carcass_detritus_100pct_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C61_yolk_cleavage_mass_conservation' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.ContinuumBiomechanics.C62_biotensegrity_elastic_nonneg' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.NonVacuity.NV01_thermo_titan_boundary_witness' depends on axioms: [propext]
+'Cellulogonic.NonVacuity.NV02_membrane_sextic_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.NonVacuity.NV03_endosymbiosis_liberation_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.NonVacuity.NV04_chemiosmosis_bioelectric_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.NonVacuity.NV05_eutelic_bioglass_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.NonVacuity.NV06_cytoskeleton_frohlich_nonvacuous_witness' does not depend on any axioms
+'Cellulogonic.NonVacuity.NV07_embryogenesis_trace_nonvacuous_witness' depends on axioms: [propext, Quot.sound]
+'Cellulogonic.NonVacuity.NV08_continuum_biomechanics_nonvacuous_witness' does not depend on any axioms
+```
+<!-- LEAN_AXIOMS_END -->
 
 ---
 
-## License
+## Honest Verification Boundaries & Mega-Atlas Non-Retirement
 
-Copyright © 2026 **0thernes (0thernes LLC)** (`0_0@0thernes.art`). Licensed under the **COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY** ([`LICENSE`](LICENSE)). Non-commercial study, research, reproduction, and modification are broadly permitted with attribution intact; all commercial rights are reserved by 0thernes LLC.
+- **Formal vs. Runtime Boundary:** Lean 4.35.0 verifies the 70 discrete mathematical, thermodynamic, geometric, bioenergetic, developmental, and continuum invariants inside `lean/` (`docs/statement-fidelity.md`). Runtime C11 memory safety, AVX2/scalar parity, `"CMB5"` `.cmbin` validation, stochastic emergence, web bridge security, and `N = 24` statistical tests are verified outside the Lean kernel by `test/test_falsification.c` (26 gates + 8 mutants), `test/fuzz_cmbin_abi.c` (dual-mode standalone + `libFuzzer`), `test/test_web_server.mjs` (12 tests), `reference/chemoton_oracle.py`, `scripts/prop_check.py`, and cross-platform CI.
+- **Unsolved Problems Mega-Atlas (`0 / 1,900` Retired):** As documented in [`docs/MEGA_ATLAS_CROSSCHECK.md`](docs/MEGA_ATLAS_CROSSCHECK.md), **`0 / 1,900`** overarching open problems in `0thernes/unsolved-problems-mega-atlas` are claimed solved or retired. Scoped invariants and computational probes touch `BIO-001`, `BIO-015`, `BIO-022`, `SUB-001`, `SUB-047`, `SYS-009`, and `XSPEC-009`, while every parent problem remains **OPEN**.
+- **Limitations & Real-vs-Metaphor:** See [`LIMITATIONS.md`](LIMITATIONS.md) and [`CLAIMS.md`](CLAIMS.md) (including explicit "What Would Prove Us Wrong" falsifiers).
+
+---
+
+## Documentation, Manuscripts & Governance
+
+- **Compiled AMS-LaTeX White Paper (`v1.5.0`, 36 Live-Verified DOIs):** [`dist/Donahue_2026_cellulogonic_mecha.pdf`](dist/Donahue_2026_cellulogonic_mecha.pdf) · [`paper/main.tex`](paper/main.tex) · [`paper/refs.bib`](paper/refs.bib) · [`dist/arxiv_submission.tar.gz`](dist/arxiv_submission.tar.gz)
+- **Epistemic Ledgers:** [`CLAIMS.md`](CLAIMS.md) · [`LIMITATIONS.md`](LIMITATIONS.md) · [`REPLICATION.md`](REPLICATION.md) · [`EVIDENCE.md`](EVIDENCE.md) · [`HARDENING_LOG.md`](HARDENING_LOG.md) · [`DEVIATIONS.md`](DEVIATIONS.md) · [`ERRATA.md`](ERRATA.md)
+- **Audit & Reference Docs:** [`docs/statement-fidelity.md`](docs/statement-fidelity.md) · [`docs/MEGA_ATLAS_CROSSCHECK.md`](docs/MEGA_ATLAS_CROSSCHECK.md) · [`docs/AI_DISCLOSURE.md`](docs/AI_DISCLOSURE.md) · [`docs/benchmarks.md`](docs/benchmarks.md) · [`docs/preregistration.md`](docs/preregistration.md) · [`docs/reviews/2026-11-25-10-pass-red-team-audit.md`](docs/reviews/2026-11-25-10-pass-red-team-audit.md)
+- **Deep-Dive & Architecture:** [`INDEX.md`](INDEX.md) · [`SUMMARY.md`](SUMMARY.md) · [`ARCHITECTURE.md`](ARCHITECTURE.md) · [`VERIFICATION.md`](VERIFICATION.md) · [`docs/MASTER_REPORT.md`](docs/MASTER_REPORT.md)
+
+---
+
+## Dual Open License
+
+Copyright © 2026 **Alexander Stephen Donahue** (`Independent Researcher, Spokane, WA, USA` · `0_0@0thernes.art` · ORCID [`0009-0006-8168-9648`](https://orcid.org/0009-0006-8168-9648)).
+- **Code, C11 engine, Lean 4.35.0 formal proofs, scripts, and CI:** Licensed under the **Apache License, Version 2.0** ([`LICENSE`](LICENSE)).
+- **Research papers, PDFs, documentation, figures, and empirical result logs:** Licensed under **Creative Commons Attribution 4.0 International (CC BY 4.0)** ([`LICENSE-DOCS`](LICENSE-DOCS)).

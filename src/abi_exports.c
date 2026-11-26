@@ -17,7 +17,7 @@ CELL_API void cellulogonic_default_config(CellWorldConfig* out_cfg) {
     out_cfg->regime                = CELL_REGIME_FERAL_ECOSYSTEM;
     out_cfg->solvent               = CELL_SOLVENT_TERRAN_H2O;
     out_cfg->kernel_mode           = CELL_KERNEL_SIMD_AVX2;
-    out_cfg->photon_flux_uq        = 184u;
+    out_cfg->photon_flux_uq        = 572u;
     out_cfg->seed                  = 5000ULL;
     out_cfg->enable_endosymbiosis  = 1u;
     out_cfg->enable_bioelectricity = 1u;
@@ -47,8 +47,9 @@ CELL_API CellWorld* cellulogonic_create(const CellWorldConfig* cfg) {
 
     CellWorld* w = (CellWorld*)calloc(1, sizeof(CellWorld));
     if (!w) return NULL;
-    w->cfg       = eff;
-    w->num_slots = eff.width * eff.height;
+    w->cfg          = eff;
+    w->num_slots    = eff.width * eff.height;
+    w->cpu_has_avx2 = (uint32_t)cell_runtime_has_avx2();
 
     /* Preallocate ALL runtime buffers upfront -> ZERO post-warmup allocations (Clean-Slate HW02!) */
     w->voxels       = (CellVoxel*)calloc(w->num_slots, sizeof(CellVoxel));
@@ -58,13 +59,11 @@ CELL_API CellWorld* cellulogonic_create(const CellWorldConfig* cfg) {
     w->quorum_delta = (int64_t*)calloc(w->num_slots, sizeof(int64_t));
     w->morph_delta  = (int32_t*)calloc((size_t)w->num_slots * CELL_MORPH_AXES, sizeof(int32_t));
     w->vmem_delta   = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
-    w->bfs_queue    = (uint32_t*)calloc(w->num_slots, sizeof(uint32_t));
-    w->bfs_vis      = (uint8_t*)calloc(w->num_slots, sizeof(uint8_t));
     w->hash_head    = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
     w->hash_next    = (int32_t*)calloc(w->num_slots, sizeof(int32_t));
 
     if (!w->voxels || !w->cells || !w->diff_delta || !w->heat_delta ||
-        !w->quorum_delta || !w->morph_delta || !w->vmem_delta || !w->bfs_queue || !w->bfs_vis ||
+        !w->quorum_delta || !w->morph_delta || !w->vmem_delta ||
         !w->hash_head || !w->hash_next) {
         cellulogonic_destroy(w);
         return NULL;
@@ -84,8 +83,6 @@ CELL_API void cellulogonic_destroy(CellWorld* w) {
     free(w->quorum_delta);
     free(w->morph_delta);
     free(w->vmem_delta);
-    free(w->bfs_queue);
-    free(w->bfs_vis);
     free(w->hash_head);
     free(w->hash_next);
     free(w);
@@ -155,11 +152,15 @@ static inline void sha_u64(CellSha256Ctx* ctx, uint64_t v) {
 }
 
 CELL_API void cellulogonic_state_sha256(const CellWorld* w, uint8_t out_raw[32], char out_hex[65]) {
-    if (!w) return;
+    if (!w) {
+        if (out_raw) memset(out_raw, 0, 32);
+        if (out_hex) out_hex[0] = '\0';
+        return;
+    }
     CellSha256Ctx sha;
     cell_sha256_init(&sha);
 
-    /* World configuration & ledger state (excluding kernel_mode for AVX2 == Scalar parity!) */
+    /* World configuration, complete ledger & all mutable counters (excluding kernel_mode for AVX2 == Scalar parity!) */
     sha_u32(&sha, w->cfg.width);
     sha_u32(&sha, w->cfg.height);
     sha_u32(&sha, w->cfg.regime);
@@ -171,6 +172,8 @@ CELL_API void cellulogonic_state_sha256(const CellWorld* w, uint8_t out_raw[32],
     cell_sha256_update(&sha, &w->cfg.enable_bioelectricity, 1);
     cell_sha256_update(&sha, &w->cfg.enable_hgt_phages, 1);
     sha_u64(&sha, w->epoch);
+    sha_u64(&sha, w->total_cell_steps);
+    sha_u64(&sha, w->total_reactions);
     sha_u32(&sha, w->next_lineage_id);
     sha_u64(&sha, (uint64_t)w->mass_initial_amu);
     sha_u64(&sha, (uint64_t)w->e_initial_uq);
@@ -178,6 +181,29 @@ CELL_API void cellulogonic_state_sha256(const CellWorld* w, uint8_t out_raw[32],
     sha_u64(&sha, (uint64_t)w->e_export_cum_uq);
     sha_u64(&sha, (uint64_t)w->e_heat_radiated_sink_uq);
     sha_u32(&sha, w->second_law_violations);
+    sha_u64(&sha, w->abiogenesis_vesicles);
+    sha_u64(&sha, w->symmetric_fissions);
+    sha_u64(&sha, w->asymmetric_buddings);
+    sha_u64(&sha, w->osmotic_lyses);
+    sha_u64(&sha, w->phagocytic_digestions);
+    sha_u64(&sha, w->endosymbiosis_captures);
+    sha_u64(&sha, w->secondary_captures);
+    sha_u64(&sha, w->egt_transfer_events);
+    sha_u64(&sha, w->mitophagy_events);
+    sha_u64(&sha, w->hgt_uptake_events);
+    sha_u64(&sha, w->phage_lysis_events);
+    sha_u64(&sha, w->cancer_defections);
+    sha_u64(&sha, w->apoptotic_policings);
+    sha_u64(&sha, w->backlash_killswitch_deletions);
+    sha_u64(&sha, w->backlash_dormancy_spores);
+    sha_u64(&sha, w->backlash_hgt_smuggles);
+    sha_u64(&sha, w->backlash_metabolic_bypasses);
+    sha_u64(&sha, w->novel_adaptations_cum);
+    sha_u64(&sha, w->axons_wired_cum);
+    sha_u64(&sha, w->axons_pruned_cum);
+    sha_u64(&sha, w->hippo_arrests_cum);
+    sha_u64(&sha, w->eutelic_stops_cum);
+    sha_u64(&sha, w->cpg_pulses_cum);
 
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         const CellVoxel* vx = &w->voxels[i];
@@ -376,6 +402,8 @@ typedef struct SnapshotHeader {
     uint64_t counters[23];
 } SnapshotHeader;
 
+_Static_assert(sizeof(SnapshotHeader) == 320, "SnapshotHeader must have zero implicit padding");
+
 CELL_API int cellulogonic_save_snapshot(const CellWorld* w, const char* path) {
     if (!w || !path) return -1;
     FILE* f = fopen(path, "wb");
@@ -434,8 +462,8 @@ CELL_API int cellulogonic_save_snapshot(const CellWorld* w, const char* path) {
              (fwrite(w->voxels, sizeof(CellVoxel), w->num_slots, f) == w->num_slots) &&
              (fwrite(w->cells,  sizeof(CellEntity), w->num_slots, f) == w->num_slots) &&
              (fwrite(digest, 1, 32, f) == 32);
-    fclose(f);
-    return ok ? 0 : -3;
+    int crc = fclose(f);
+    return (ok && crc == 0) ? 0 : -3;
 }
 
 CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
@@ -447,11 +475,13 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
     if (fread(&hdr, sizeof(hdr), 1, f) != 1 ||
         hdr.magic != CELL_SNAPSHOT_MAGIC ||
         hdr.abi_version != CELLULOGONIC_ABI_VERSION ||
+        hdr.pad != 0u ||
         hdr.cfg.width < 8u || hdr.cfg.width > 64u ||
         hdr.cfg.height < 8u || hdr.cfg.height > 64u ||
         hdr.cfg.regime > CELL_REGIME_EMBRYOGENESIS ||
         hdr.cfg.solvent >= CELL_SOLVENT_COUNT ||
         hdr.cfg.kernel_mode > CELL_KERNEL_SCALAR_REF ||
+        hdr.cfg.photon_flux_uq > 100000u ||
         hdr.cfg.seed == 0ULL ||
         hdr.cfg.enable_endosymbiosis > 1u ||
         hdr.cfg.enable_bioelectricity > 1u ||
@@ -474,16 +504,17 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
     if (!w) { fclose(f); return NULL; }
     uint8_t file_digest[32];
     uint8_t trailing_byte = 0;
-    if (hdr.num_slots != w->num_slots ||
-        fread(w->voxels, sizeof(CellVoxel), w->num_slots, f) != w->num_slots ||
-        fread(w->cells,  sizeof(CellEntity), w->num_slots, f) != w->num_slots ||
-        fread(file_digest, 1, 32, f) != 32 ||
-        fread(&trailing_byte, 1, 1, f) != 0) {
-        fclose(f);
+    int read_ok = (hdr.num_slots == w->num_slots) &&
+                  (fread(w->voxels, sizeof(CellVoxel), w->num_slots, f) == w->num_slots) &&
+                  (fread(w->cells,  sizeof(CellEntity), w->num_slots, f) == w->num_slots) &&
+                  (fread(file_digest, 1, 32, f) == 32) &&
+                  (fread(&trailing_byte, 1, 1, f) == 0) &&
+                  (feof(f) != 0) && (ferror(f) == 0);
+    fclose(f);
+    if (!read_ok) {
         cellulogonic_destroy(w);
         return NULL;
     }
-    fclose(f);
 
     /* Verify SHA-256 cryptographic integrity before trusting any payload fields! */
     uint8_t calc_digest[32];
@@ -498,12 +529,13 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         return NULL;
     }
 
-    const int64_t MAX_MOL = 1000000000000LL; /* 10^12 cap blocking int64 overflow */
+    /* 10^9 cap guarantees >300x headroom below INT64_MAX even on 64x64 with 8 organelles (C01) */
+    const int64_t MAX_MOL = 1000000000LL;
     const int32_t span_x  = (int32_t)w->cfg.width  * CELL_VOXEL_NM;
     const int32_t span_y  = (int32_t)w->cfg.height * CELL_VOXEL_NM;
     const int32_t span_z  = (int32_t)w->cfg.width  * CELL_VOXEL_NM;
 
-    /* Validate EVERY voxel field */
+    /* Validate EVERY voxel field + explicit padding bytes */
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         const CellVoxel* vx = &w->voxels[i];
         for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
@@ -511,7 +543,8 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         }
         if (vx->quorum < 0 || vx->quorum > 1000000LL ||
             vx->heat_local_uq < 0 || vx->heat_local_uq > MAX_MOL ||
-            vx->free_plasmid_valid > 1u || vx->free_plasmid_is_phage > 1u) {
+            vx->free_plasmid_valid > 1u || vx->free_plasmid_is_phage > 1u ||
+            vx->pad[0] != 0u || vx->pad[1] != 0u) {
             cellulogonic_destroy(w);
             return NULL;
         }
@@ -520,15 +553,19 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         }
     }
 
-    /* Full structural, domain, bounds & graph-symmetry validation on EVERY cell */
+    /* Full structural, domain, bounds, padding & graph-symmetry validation on EVERY cell (C04) */
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         const CellEntity* c = &w->cells[i];
-        if (c->alive_state > 3u) { cellulogonic_destroy(w); return NULL; }
+        if (c->alive_state > 3u ||
+            c->pad_bonds != 0u || c->pad_cpg != 0u || c->pad_mol != 0u) {
+            cellulogonic_destroy(w);
+            return NULL;
+        }
         if (c->alive_state == 0u) {
             for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
                 if (c->mol[s] != 0) { cellulogonic_destroy(w); return NULL; }
             }
-            if (c->pmf != 0 || c->num_organelles != 0u || c->num_bonds != 0u) {
+            if (c->pmf != 0 || c->num_organelles != 0u || c->num_bonds != 0u || c->bond_mask != 0u) {
                 cellulogonic_destroy(w);
                 return NULL;
             }
@@ -536,7 +573,13 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
                 if (c->bond_partners[b] != -1) { cellulogonic_destroy(w); return NULL; }
             }
             for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
-                if (c->axon_target[a] != -1) { cellulogonic_destroy(w); return NULL; }
+                if (c->axon_target[a] != -1 || c->axon_weight[a] != 0u) { cellulogonic_destroy(w); return NULL; }
+            }
+            for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
+                if (c->org[k].active != 0u || c->org[k].pmf != 0) { cellulogonic_destroy(w); return NULL; }
+                for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
+                    if (c->org[k].mol[s] != 0) { cellulogonic_destroy(w); return NULL; }
+                }
             }
             continue;
         }
@@ -545,18 +588,33 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
             c->c_ring_nH < 2u || c->c_ring_nH > 5u ||
             c->num_organelles > CELL_MAX_ORGANELLES ||
             c->diff_role >= 4u ||
+            c->kill_switch_intact > 1u ||
             c->morph_fate >= CELL_FATE_COUNT ||
             c->cad_type >= 4u ||
             c->cleavage_mode >= 3u ||
+            c->cpg_firing > 1u ||
             c->num_bonds > CELL_MAX_BONDS ||
+            c->bond_mask != (uint8_t)((1u << c->num_bonds) - 1u) ||
             c->v_mem_mv < -90 || c->v_mem_mv > 40 ||
+            c->defect_strikes < 0 || c->defect_strikes > 1000000 ||
             c->pos_nm[0] < 0 || c->pos_nm[0] >= span_x ||
             c->pos_nm[1] < 0 || c->pos_nm[1] >= span_y ||
             c->pos_nm[2] < 0 || c->pos_nm[2] >= span_z ||
             c->vel_nm[0] < -50000 || c->vel_nm[0] > 50000 ||
             c->vel_nm[1] < -50000 || c->vel_nm[1] > 50000 ||
             c->vel_nm[2] < -50000 || c->vel_nm[2] > 50000 ||
+            c->heading_q10[0] < -2048 || c->heading_q10[0] > 2048 ||
+            c->heading_q10[1] < -2048 || c->heading_q10[1] > 2048 ||
+            c->heading_q10[2] < -2048 || c->heading_q10[2] > 2048 ||
             c->radius_nm <= 0 || c->radius_nm > 5000 ||
+            c->elong_q10 <= 0 || c->elong_q10 > 4000 ||
+            c->ruffle_q10 < 0 || c->ruffle_q10 > 2000 ||
+            c->breath_phase_mrad < 0 || c->breath_phase_mrad >= 6283 ||
+            c->breath_amp_q10 < 0 || c->breath_amp_q10 > 1000 ||
+            c->mt_freq_mhz > 50000u ||
+            c->mt_coherence_q10 > 1000u ||
+            c->apical_wedge_q10 > 1000u ||
+            c->cpg_phase_mrad < 0 || c->cpg_phase_mrad >= 6283 ||
             c->pmf < 0 || c->pmf > MAX_MOL) {
             cellulogonic_destroy(w);
             return NULL;
@@ -565,11 +623,11 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
             if (c->mol[s] < 0 || c->mol[s] > MAX_MOL) { cellulogonic_destroy(w); return NULL; }
         }
 
-        /* Organelle field & active-count consistency validation */
+        /* Organelle field, padding & active-count consistency validation */
         uint8_t org_active = 0u;
         for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
             const CellOrganelle* o = &c->org[k];
-            if (o->active > 1u) { cellulogonic_destroy(w); return NULL; }
+            if (o->active > 1u || o->pad != 0u || o->pad2 != 0u) { cellulogonic_destroy(w); return NULL; }
             if (o->active == 0u) {
                 for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
                     if (o->mol[s] != 0) { cellulogonic_destroy(w); return NULL; }
@@ -610,11 +668,14 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
         }
         if (bond_cnt != c->num_bonds) { cellulogonic_destroy(w); return NULL; }
 
-        /* Axons: bounds, no self-axons, no duplicate targets, live target */
+        /* Axons: bounds, no self-axons, no duplicate targets, live target, 0 weight when unwired */
         for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
             int16_t tj = c->axon_target[a];
             if (tj < -1 || tj >= (int16_t)w->num_slots) { cellulogonic_destroy(w); return NULL; }
-            if (tj < 0) continue;
+            if (tj < 0) {
+                if (c->axon_weight[a] != 0u) { cellulogonic_destroy(w); return NULL; }
+                continue;
+            }
             if (tj == (int16_t)i || w->cells[tj].alive_state == 0u) { cellulogonic_destroy(w); return NULL; }
             for (uint32_t a2 = 0; a2 < a; ++a2) {
                 if (c->axon_target[a2] == tj) { cellulogonic_destroy(w); return NULL; }
@@ -676,7 +737,6 @@ CELL_API CellWorld* cellulogonic_load_snapshot(const char* path) {
 CELL_API uint32_t cellulogonic_apply_shock_lysis(CellWorld* w, uint32_t kill_percent) {
     if (!w) return 0;
     if (kill_percent > 100u) kill_percent = 100u;
-    const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
     uint32_t killed = 0;
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         CellEntity* c = &w->cells[i];
@@ -685,53 +745,7 @@ CELL_API uint32_t cellulogonic_apply_shock_lysis(CellWorld* w, uint32_t kill_per
         uint32_t eff_kill = (c->alive_state == 3) ? (kill_percent / 10u) : kill_percent;
         uint32_t roll = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_WORLD_EXOG, w->epoch + 999ULL, i);
         if ((roll % 100u) < eff_kill) {
-            uint32_t vidx = cell_voxel_idx(w, c);
-            CellVoxel* vx = &w->voxels[vidx];
-            for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
-                vx->env[s] += c->mol[s];
-                c->mol[s] = 0;
-            }
-            if (c->pmf > 0) {
-                vx->heat_local_uq += c->pmf * sp->e_pmf;
-                c->pmf = 0;
-            }
-            for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
-                if (c->org[k].active) {
-                    for (int s = 0; s < CELL_SPECIES_COUNT; ++s) {
-                        vx->env[s] += c->org[k].mol[s];
-                        c->org[k].mol[s] = 0;
-                    }
-                    if (c->org[k].pmf > 0) {
-                        vx->heat_local_uq += c->org[k].pmf * sp->e_pmf;
-                        c->org[k].pmf = 0;
-                    }
-                    c->org[k].active = 0;
-                }
-            }
-            for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
-                int16_t pj = c->bond_partners[b];
-                if (pj >= 0 && (uint32_t)pj < w->num_slots) {
-                    CellEntity* o = &w->cells[pj];
-                    for (uint32_t ob = 0; ob < CELL_MAX_BONDS; ++ob) {
-                        if (o->bond_partners[ob] == (int16_t)i) o->bond_partners[ob] = -1;
-                    }
-                    uint8_t cnt = 0;
-                    for (uint32_t ob = 0; ob < CELL_MAX_BONDS; ++ob) if (o->bond_partners[ob] >= 0) cnt++;
-                    o->num_bonds = cnt;
-                    o->bond_mask = (uint8_t)((1u << cnt) - 1u);
-                }
-            }
-            memset(c, 0, sizeof(*c));
-            for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) c->bond_partners[b] = -1;
-            for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) c->axon_target[a] = -1;
-            c->eutelic_rem = 255u;
-            for (uint32_t k = 0; k < w->num_slots; ++k) {
-                for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
-                    if (w->cells[k].axon_target[a] == (int16_t)i) {
-                        w->cells[k].axon_target[a] = -1; w->cells[k].axon_weight[a] = 0;
-                    }
-                }
-            }
+            cell_lyse_to_voxel(w, i, 0, 0);
             killed++;
         }
     }
@@ -762,6 +776,8 @@ CELL_API uint32_t cellulogonic_apply_desiccation_tun(CellWorld* w, uint32_t seve
                     c->org[k].pmf = 0;
                 }
             }
+            /* Detach bonds & axons cleanly on tun entry so no stale tissue links remain (C14) */
+            cell_clear_bonds_and_axons(w, i);
             c->alive_state = 3;
             c->mt_coherence_q10 = 0;
             c->breath_amp_q10   = 0;
@@ -770,40 +786,7 @@ CELL_API uint32_t cellulogonic_apply_desiccation_tun(CellWorld* w, uint32_t seve
         } else {
             uint32_t roll = cell_philox_u32(w->cfg.seed, RNG_DOMAIN_WORLD_EXOG, w->epoch + 777ULL, i);
             if ((roll % 100u) < severity_pct) {
-                CellVoxel* vx = &w->voxels[vidx];
-                for (int s = 0; s < CELL_SPECIES_COUNT; ++s) { vx->env[s] += c->mol[s]; c->mol[s] = 0; }
-                if (c->pmf > 0) { vx->heat_local_uq += c->pmf * sp->e_pmf; c->pmf = 0; }
-                for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
-                    if (c->org[k].active) {
-                        for (int s = 0; s < CELL_SPECIES_COUNT; ++s) { vx->env[s] += c->org[k].mol[s]; c->org[k].mol[s] = 0; }
-                        if (c->org[k].pmf > 0) { vx->heat_local_uq += c->org[k].pmf * sp->e_pmf; c->org[k].pmf = 0; }
-                        c->org[k].active = 0;
-                    }
-                }
-                for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) {
-                    int16_t pj = c->bond_partners[b];
-                    if (pj >= 0 && (uint32_t)pj < w->num_slots) {
-                        CellEntity* o = &w->cells[pj];
-                        for (uint32_t ob = 0; ob < CELL_MAX_BONDS; ++ob) {
-                            if (o->bond_partners[ob] == (int16_t)i) o->bond_partners[ob] = -1;
-                        }
-                        uint8_t cnt = 0;
-                        for (uint32_t ob = 0; ob < CELL_MAX_BONDS; ++ob) if (o->bond_partners[ob] >= 0) cnt++;
-                        o->num_bonds = cnt;
-                        o->bond_mask = (uint8_t)((1u << cnt) - 1u);
-                    }
-                }
-                memset(c, 0, sizeof(*c));
-                for (uint32_t b = 0; b < CELL_MAX_BONDS; ++b) c->bond_partners[b] = -1;
-                for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) c->axon_target[a] = -1;
-                c->eutelic_rem = 255u;
-                for (uint32_t k = 0; k < w->num_slots; ++k) {
-                    for (uint32_t a = 0; a < CELL_MAX_AXONS; ++a) {
-                        if (w->cells[k].axon_target[a] == (int16_t)i) {
-                            w->cells[k].axon_target[a] = -1; w->cells[k].axon_weight[a] = 0;
-                        }
-                    }
-                }
+                cell_lyse_to_voxel(w, i, 0, 0);
                 w->osmotic_lyses++;
             }
         }
@@ -836,10 +819,15 @@ CELL_API uint32_t cellulogonic_export_grid_json(const CellWorld* w, char* out_bu
     int32_t span_x = (int32_t)w->cfg.width  * CELL_VOXEL_NM;
     int32_t span_y = (int32_t)w->cfg.height * CELL_VOXEL_NM;
     int32_t span_z = (int32_t)w->cfg.width  * CELL_VOXEL_NM;
+    uint32_t pstep_x = w->cfg.width  >= 32u ? (w->cfg.width  / 16u) : 1u;
+    uint32_t pstep_y = w->cfg.height >= 32u ? (w->cfg.height / 16u) : 1u;
+    uint32_t plume_w = (w->cfg.width  + pstep_x - 1u) / pstep_x;
+    uint32_t plume_h = (w->cfg.height + pstep_y - 1u) / pstep_y;
     int n = snprintf(out_buf + pos, buf_cap - pos,
-                     "{\"w\":%u,\"h\":%u,\"span\":%d,\"span_x\":%d,\"span_y\":%d,\"span_z\":%d,\"epoch\":%llu,\"solvent\":%u,\"cells\":[",
+                     "{\"w\":%u,\"h\":%u,\"span\":%d,\"span_x\":%d,\"span_y\":%d,\"span_z\":%d,"
+                     "\"plume_w\":%u,\"plume_h\":%u,\"epoch\":%llu,\"solvent\":%u,\"cells\":[",
                      w->cfg.width, w->cfg.height, span_x, span_x, span_y, span_z,
-                     (unsigned long long)w->epoch, w->cfg.solvent);
+                     plume_w, plume_h, (unsigned long long)w->epoch, w->cfg.solvent);
     if (n < 0 || (size_t)n >= buf_cap - pos) return 0;
     pos += (size_t)n;
 
@@ -881,7 +869,7 @@ CELL_API uint32_t cellulogonic_export_grid_json(const CellWorld* w, char* out_bu
                          morph_sig,
                          grn_pack,
                          (unsigned)c->eutelic_rem);
-        if (m < 0 || pos + (size_t)m + 2048 >= buf_cap) break;
+        if (m < 0 || pos + (size_t)m + 128 >= buf_cap) break;
         pos += (size_t)m;
         first = 0;
     }
@@ -900,7 +888,7 @@ CELL_API uint32_t cellulogonic_export_grid_json(const CellWorld* w, char* out_bu
                 int bm = snprintf(out_buf + pos, buf_cap - pos, "%s[%u,%d,%u]",
                                   (bfirst ? "" : ","), i, (int)j,
                                   (unsigned)(c->cad_type == w->cells[j].cad_type ? 1u : 0u));
-                if (bm < 0 || pos + (size_t)bm + 1024 >= buf_cap) { btrunc = 1; break; }
+                if (bm < 0 || pos + (size_t)bm + 96 >= buf_cap) { btrunc = 1; break; }
                 pos += (size_t)bm;
                 bfirst = 0;
             }
@@ -922,22 +910,21 @@ CELL_API uint32_t cellulogonic_export_grid_json(const CellWorld* w, char* out_bu
                 int am = snprintf(out_buf + pos, buf_cap - pos, "%s[%u,%d,%u,%u]",
                                   (afirst ? "" : ","), i, (int)tj,
                                   (unsigned)c->axon_weight[a], (unsigned)c->cpg_firing);
-                if (am < 0 || pos + (size_t)am + 1024 >= buf_cap) { atrunc = 1; break; }
+                if (am < 0 || pos + (size_t)am + 64 >= buf_cap) { atrunc = 1; break; }
                 pos += (size_t)am;
                 afirst = 0;
             }
         }
     }
 
-    /* Downsampled 16x16 chemical substrate/oxidant plume + 3D Morphogen GPS (Wnt/BMP/Shh) */
+    /* Downsampled <=16x16 chemical substrate/oxidant plume + 3D Morphogen GPS (Wnt/BMP/Shh) */
     int fstart = snprintf(out_buf + pos, buf_cap - pos, "],\"plumes\":[");
     if (fstart < 0 || pos + (size_t)fstart >= buf_cap) return 0;
     pos += (size_t)fstart;
 
-    uint32_t step = w->cfg.width >= 32u ? 2u : 1u;
     int pfirst = 1, ptrunc = 0;
-    for (uint32_t y = 0; y < w->cfg.height && !ptrunc; y += step) {
-        for (uint32_t x = 0; x < w->cfg.width; x += step) {
+    for (uint32_t y = 0; y < w->cfg.height && !ptrunc; y += pstep_y) {
+        for (uint32_t x = 0; x < w->cfg.width; x += pstep_x) {
             const CellVoxel* vx = &w->voxels[y * w->cfg.width + x];
             int pm = snprintf(out_buf + pos, buf_cap - pos, "%s[%lld,%lld,%lld,%d,%d,%d]",
                               (pfirst ? "" : ","),

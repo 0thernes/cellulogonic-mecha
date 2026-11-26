@@ -68,22 +68,32 @@ uint64_t cell_hw_rdseed_u64(void) {
     if (has_rdseed) {
         for (int tries = 0; tries < 32; ++tries) {
             __asm__ __volatile__("rdseed %0; setc %1" : "=r"(val), "=qm"(ok));
-            if (ok && val != 0) return val;
+            if (ok && val != 0ULL && val != ~0ULL) return val;
         }
     }
     if (has_rdrand) {
         for (int tries = 0; tries < 32; ++tries) {
             __asm__ __volatile__("rdrand %0; setc %1" : "=r"(val), "=qm"(ok));
-            if (ok && val != 0) return val;
+            if (ok && val != 0ULL && val != ~0ULL) return val;
         }
     }
     uint32_t lo = 0, hi = 0;
     __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
     val = (((uint64_t)hi << 32) | lo) ^ 0x9E3779B97F4A7C15ULL;
 #else
-    val = (uint64_t)(cell_wall_seconds() * 1e9) ^ 0xD1B54A32D192ED03ULL;
+    FILE* ur = fopen("/dev/urandom", "rb");
+    if (ur) {
+        uint8_t buf[8];
+        if (fread(buf, 1, 8, ur) == 8) {
+            val = cell_load_le64(buf);
+        }
+        fclose(ur);
+    }
+    if (val == 0ULL || val == ~0ULL) {
+        val = (uint64_t)(cell_wall_seconds() * 1e9) ^ 0xD1B54A32D192ED03ULL;
+    }
 #endif
-    return val ? val : 0xCAFEBABE12345678ULL;
+    return (val != 0ULL && val != ~0ULL) ? val : 0xCAFEBABE12345678ULL;
 }
 
 /* ============================================================================
@@ -119,7 +129,8 @@ static const uint32_t SHA256_K[64] = {
 };
 
 static inline uint32_t rotr32(uint32_t x, uint32_t n) {
-    return (x >> n) | (x << (32u - n));
+    n &= 31u;
+    return (x >> n) | (x << ((32u - n) & 31u));
 }
 
 static void sha256_transform(CellSha256Ctx* ctx, const uint8_t blk[64]) {
@@ -219,6 +230,34 @@ static void run_cpuid(uint32_t leaf, uint32_t subleaf, uint32_t out[4]) {
 #endif
 }
 
+static uint64_t run_xgetbv0(void) {
+#if defined(__x86_64__) || defined(_M_X64)
+    uint32_t lo = 0, hi = 0;
+    __asm__ __volatile__("xgetbv" : "=a"(lo), "=d"(hi) : "c"(0u));
+    return ((uint64_t)hi << 32) | (uint64_t)lo;
+#else
+    return 0ULL;
+#endif
+}
+
+int cell_runtime_has_avx2(void) {
+#if defined(__x86_64__) || defined(_M_X64)
+    uint32_t r[4] = {0};
+    run_cpuid(0, 0, r);
+    uint32_t max_leaf = r[0];
+    if (max_leaf < 7u) return 0;
+    run_cpuid(1, 0, r);
+    uint32_t has_osxsave = (r[2] >> 27) & 1u;
+    if (!has_osxsave) return 0;
+    uint64_t xcr0 = run_xgetbv0();
+    if ((xcr0 & 0x6ULL) != 0x6ULL) return 0; /* Both XMM (bit 1) & YMM (bit 2) OS-enabled */
+    run_cpuid(7, 0, r);
+    return (int)((r[1] >> 5) & 1u);
+#else
+    return 0;
+#endif
+}
+
 CELL_API void cellulogonic_probe_hw(CellHwCaps* out_caps) {
     if (!out_caps) return;
     memset(out_caps, 0, sizeof(*out_caps));
@@ -230,14 +269,18 @@ CELL_API void cellulogonic_probe_hw(CellHwCaps* out_caps) {
     memcpy(out_caps->vendor + 8, &r[2], 4);
     out_caps->vendor[12] = '\0';
 
+    uint32_t os_avx_ok = 0u;
     if (max_leaf >= 1) {
         run_cpuid(1, 0, r);
         out_caps->has_popcnt = (r[2] >> 23) & 1u;
+        if (((r[2] >> 27) & 1u) != 0u) {
+            os_avx_ok = ((run_xgetbv0() & 0x6ULL) == 0x6ULL) ? 1u : 0u;
+        }
     }
     if (max_leaf >= 7) {
         run_cpuid(7, 0, r);
         out_caps->has_bmi1   = (r[1] >> 3) & 1u;
-        out_caps->has_avx2   = (r[1] >> 5) & 1u;
+        out_caps->has_avx2   = os_avx_ok ? ((r[1] >> 5) & 1u) : 0u;
         out_caps->has_bmi2   = (r[1] >> 8) & 1u;
         out_caps->has_rdseed = (r[1] >> 18) & 1u;
     }

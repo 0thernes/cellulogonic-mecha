@@ -3,10 +3,13 @@
 
 /*
  * ============================================================================
- * CELLULOGONIC MECHA v1.4.0
+ * CELLULOGONIC MECHA v1.5.0
  * Clean-Room Non-Equilibrium Chemiosmotic, Morphogenetic & Endosymbiotic
  * Cellular Artificial Life Engine — Flat C11 Public ABI
  * ============================================================================
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
  *
  * Ecosystem Role:
  *   Pillar 1: Asmodensius        (World & Creatures / Entities / Beings)
@@ -14,7 +17,7 @@
  *   Pillar 3: Cellulogonic Mecha (CELLS — Chemoton, Membranes, Organelles, Bioelectricity)
  *
  * Clean-Slate Lab-Grade Invariants Honored:
- *   - P2: Exact int64 Atomic Mass + First-Law (0 uq residual) & one-way Second-Law sink
+ *   - P2: Exact int64/int128 Atomic Mass + First-Law (0 uq residual) & one-way Second-Law sink
  *   - P4: Domain-isolated Philox4x32-10 PRNG, .cmbin binary snapshot & SHA-256 verification
  *   - P9: Strict Observer Independence (UI/telemetry hash == headless hash, 0-bit diff)
  *   - P10: Zero post-warmup heap allocations in step(), flat cache-friendly arrays
@@ -39,7 +42,7 @@ extern "C" {
   #define CELL_API __attribute__((visibility("default")))
 #endif
 
-#define CELLULOGONIC_ABI_VERSION 0x00010400u
+#define CELLULOGONIC_ABI_VERSION 0x00010500u
 
 /* 8 Conserved Molecular Species */
 typedef enum CellSpecies {
@@ -123,20 +126,20 @@ typedef struct CellHwCaps {
 
 /* World Creation Configuration */
 typedef struct CellWorldConfig {
-    uint32_t width;              /* Torus width (power of 2: 16, 32, or 64) */
-    uint32_t height;             /* Torus height (power of 2: 16, 32, or 64) */
+    uint32_t width;              /* Torus width in voxels (8..64, e.g. 16, 24, 32, or 64) */
+    uint32_t height;             /* Torus height in voxels (8..64, e.g. 16, 24, 32, or 64) */
     uint32_t regime;             /* CellOperatingRegime */
     uint32_t solvent;            /* CellSolventRegime (0..3) */
     uint32_t kernel_mode;        /* CellKernelMode (SIMD_AVX2 or SCALAR_REF) */
-    uint32_t photon_flux_uq;     /* External photosynthetic/hydrothermal flux budget per voxel/epoch */
-    uint64_t seed;               /* Deterministic Philox4x32-10 master seed */
-    uint8_t  restraints[13];     /* Initial 13-vector restraint percentages (0..100) */
+    uint32_t photon_flux_uq;     /* External photosynthetic/hydrothermal flux budget per voxel/epoch (default 572 uq) */
+    uint64_t seed;               /* Deterministic Philox4x32-10 master seed (0 = hardware RDSEED) */
+    uint8_t  restraints[CELL_RESTRAINT_COUNT]; /* Initial 13-vector restraint percentages (0..100) */
     uint8_t  enable_endosymbiosis;
     uint8_t  enable_bioelectricity;
     uint8_t  enable_hgt_phages;
 } CellWorldConfig;
 
-/* Exact Integer + Compensated FP64 Mass & Thermodynamic Ledger */
+/* Exact Integer Mass & Thermodynamic First/Second-Law Ledger */
 typedef struct CellLedgerSnapshot {
     int64_t  mass_initial_amu;
     int64_t  mass_current_amu;
@@ -223,7 +226,7 @@ typedef struct CellTelemetry {
     uint32_t multicell_colonies;       /* Count of floating >16 cell multicellular clusters */
 
     /* 3D Developmental Embryogenesis, Morphogen GPS, GRN Fates, Axons & CPG Telemetry */
-    uint32_t fate_counts[6];           /* PLURI, ECTO, NEURAL, MUSCLE, GUT, GERM */
+    uint32_t fate_counts[CELL_FATE_COUNT]; /* PLURI, ECTO, NEURAL, MUSCLE, GUT, GERM */
     uint32_t active_axons;             /* Currently live wired 3D Neural->Target axons */
     uint64_t axons_wired_cum;          /* Total Netrin/Slit growth-cone synaptogenesis events */
     uint64_t axons_pruned_cum;         /* Total use-it-or-lose-it Hebbian axon prunings */
@@ -260,7 +263,7 @@ typedef struct CellSpecimen {
     uint32_t x, y;
     uint32_t lineage_id;
     uint32_t generation;
-    uint32_t alive_state;              /* 0=empty, 1=alive, 2=spore */
+    uint32_t alive_state;              /* 0=empty, 1=alive, 2=spore, 3=vitrified tun */
     uint8_t  lipid_class;              /* 0=H2O, 1=Titan, 2=Vent, 3=Venus */
     uint8_t  c_ring_nH;                /* Evolved ATP-synthase H+/ATP stoichiometry (2..5) */
     uint8_t  num_organelles;
@@ -276,7 +279,7 @@ typedef struct CellSpecimen {
     int32_t  elong_q10;                /* Canham-Helfrich prolate elongation (1000=sphere) */
     uint32_t mt_freq_mhz;              /* Microtubule/FtsZ GHz frequency in MHz (1200..14800) */
     uint32_t mt_coherence_q10;         /* Fröhlich-Pokorný coherent GHz mode [0..1000] */
-    int64_t  mol[8];
+    int64_t  mol[CELL_SPECIES_COUNT];
     int64_t  pmf;
     int64_t  total_volume;
     double   reduced_Q;

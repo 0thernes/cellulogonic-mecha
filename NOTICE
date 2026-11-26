@@ -1,19 +1,29 @@
 CELLULOGONIC MECHA
-Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
-All commercial rights reserved. Licensed under the COSMOGONIC LICENSE — NON-COMMERCIAL RESEARCH & PLAY (see LICENSE).
+Copyright 2026 Alexander Stephen Donahue <0_0@0thernes.art>
+ORCID: 0009-0006-8168-9648
+Affiliation: Independent Researcher, Spokane, WA, USA
+Repository: https://github.com/0thernes/cellulogonic-mecha
+
+Dual Open License:
+  - Code, C11 engine, Lean 4.35.0 formal proof modules, scripts, and CI:
+    Apache License, Version 2.0 (see LICENSE).
+  - Papers, PDFs, documentation, figures, and empirical result logs:
+    Creative Commons Attribution 4.0 International (CC BY 4.0; see LICENSE-DOCS).
 
 Third-Party Runtime Dependencies:
-  NONE. The Cellulogonic Mecha C11 cellular engine, AVX2/SIMD and scalar kernels,
-  Philox4x32-10 PRNG, SHA-256 hasher, Kahan-Neumaier thermodynamic ledger,
-  20-gate falsification suite, interactive HTML5 Canvas Cellular Observatory,
-  and local Node.js HTTP server contain ZERO third-party npm packages or vendored libraries.
+  NONE. The CELLULOGONIC MECHA C11 cellular engine, AVX2/SIMD and scalar kernels,
+  Philox4x32-10 PRNG, NIST FIPS 180-4 SHA-256 hasher, exact integer thermodynamic
+  ledger, 24-gate falsification suite, WebGL2 3D Cellular Observatory, and local
+  Node.js HTTP server contain ZERO third-party npm packages or vendored libraries.
 
-External Toolchains Used for Compilation, Execution & Formal Proof Checking (not vendored):
+External Toolchains Used for Compilation, Formal Checking & Typesetting (not vendored):
   - Clang / LLD (Apache License 2.0 with LLVM Exception) — builds Win64 PE64 binaries and DLLs.
   - GCC (GPLv3 with GCC Runtime Library Exception) — builds Linux ELF64 binaries and .so libraries.
-  - Lean 4 v4.35.0 & Lake (Apache License 2.0) — machine-checks all formal proofs in lean/
-    using core Lean 4 only (no Mathlib dependency).
+  - Lean 4 v4.35.0, Lake, leanchecker, lean4lean, nanoda_bin, con-leche, con-ron (Apache-2.0) —
+    machine-checks all formal proofs in lean/ using core Lean 4 only (zero Mathlib).
+  - Tectonic TeX Engine (MIT License) — compiles paper/main.tex into dist/ PDF and arXiv bundle.
   - Node.js (MIT License) — executes the optional local Cellular Observatory HTTP server (web/server.mjs).
+  - Python 3.11+ standard library (PSF License) — runs paper build, citation verifier, and axiom drift checks.
 
-Mention of Clang, GCC, Lean, Node.js, or any cited academic authors does not imply
-institutional sponsorship, endorsement, or relicensing of this work.
+Mention of Clang, GCC, Lean, Tectonic, Node.js, Python, or any cited academic authors
+does not imply institutional sponsorship, endorsement, or relicensing of this work.

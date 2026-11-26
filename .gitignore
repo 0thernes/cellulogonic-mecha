@@ -21,6 +21,13 @@ lean/.lake/packages/
 # LaTeX build intermediates (dist/ release PDFs & arXiv tarballs remain tracked)
 paper/build/
 
+# Python caches & local env
+__pycache__/
+*.pyc
+*.pyo
+.env
+!.env.example
+
 # OS & editor clutter
 .DS_Store
 Thumbs.db

@@ -28,10 +28,18 @@ static void print_telemetry_line(const CellTelemetry* t) {
            t->ledger.second_law_violations);
 }
 
+static CellWorld* create_world_checked(const CellWorldConfig* cfg) {
+    CellWorld* w = cellulogonic_create(cfg);
+    if (!w) {
+        fprintf(stderr, "FATAL: cellulogonic_create() failed (out of memory)\n");
+    }
+    return w;
+}
+
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.4.0 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.5.0 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -40,7 +48,8 @@ static int cmd_probe(void) {
            caps.has_rdseed, caps.has_rdtscp);
     printf("Compiled Kernels : SIMD_AVX2=%s | SCALAR_REF=ENABLED\n",
 #if defined(__AVX2__)
-           "ENABLED (256-bit int64 finite-volume diffusion)"
+           caps.has_avx2 ? "ENABLED (256-bit int64 finite-volume diffusion, OSXSAVE verified)"
+                         : "COMPILED_BUT_RUNTIME_DISABLED (OSXSAVE/AVX2 absent)"
 #else
            "FALLBACK_SCALAR"
 #endif
@@ -49,7 +58,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.4.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.5.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -66,7 +75,8 @@ static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
         cfg.regime      = CELL_REGIME_ENDOSYMBIOSIS_LAB;
         cfg.kernel_mode = (k == 0) ? CELL_KERNEL_SIMD_AVX2 : CELL_KERNEL_SCALAR_REF;
 
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         double t0 = cell_wall_seconds();
         cellulogonic_step_epochs(w, epochs);
         double dt = cell_wall_seconds() - t0;
@@ -116,14 +126,18 @@ static int cmd_abiogenesis(uint32_t epochs, uint32_t size, uint64_t seed) {
     cfg.seed   = seed;
     cfg.regime = CELL_REGIME_ABIOGENESIS_ZERO_SEED;
 
-    CellWorld* w = cellulogonic_create(&cfg);
+    CellWorld* w = create_world_checked(&cfg);
+    if (!w) return 2;
     CellTelemetry t;
     cellulogonic_get_telemetry(w, &t);
     print_telemetry_line(&t);
 
-    uint32_t step = epochs >= 10 ? epochs / 10 : 1;
-    for (uint32_t e = step; e <= epochs; e += step) {
-        cellulogonic_step_epochs(w, step);
+    uint32_t step = epochs >= 10u ? epochs / 10u : 1u;
+    uint32_t done = 0u;
+    while (done < epochs) {
+        uint32_t chunk = (epochs - done < step) ? (epochs - done) : step;
+        cellulogonic_step_epochs(w, chunk);
+        done += chunk;
         cellulogonic_get_telemetry(w, &t);
         print_telemetry_line(&t);
     }
@@ -151,7 +165,8 @@ static int cmd_endosymbiosis(uint32_t epochs, uint32_t size, uint64_t seed) {
         cfg.regime               = CELL_REGIME_ENDOSYMBIOSIS_LAB;
         cfg.enable_endosymbiosis = (uint8_t)(arm == 0 ? 1 : 0);
 
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         cellulogonic_step_epochs(w, epochs);
         CellTelemetry t;
         cellulogonic_get_telemetry(w, &t);
@@ -185,7 +200,8 @@ static int cmd_xenocell(uint32_t epochs, uint32_t size, uint64_t seed) {
         cfg.seed    = seed + s;
         cfg.solvent = s;
         cfg.regime  = CELL_REGIME_FERAL_ECOSYSTEM;
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         /* Neutralize ALL seeded cells to uniform random lipid_class (0..3) & c_ring_nH (2..5)
          * so solvent adaptation MUST emerge purely via Darwinian mutation & selection! */
         uint32_t k_idx = 0;
@@ -219,7 +235,8 @@ static int cmd_xenocell(uint32_t epochs, uint32_t size, uint64_t seed) {
     cfg.height  = size;
     cfg.seed    = seed;
     cfg.solvent = CELL_SOLVENT_TERRAN_H2O;
-    CellWorld* w = cellulogonic_create(&cfg);
+    CellWorld* w = create_world_checked(&cfg);
+    if (!w) return 2;
     cellulogonic_step_epochs(w, 100);
     CellTelemetry t0, t1, t2;
     cellulogonic_get_telemetry(w, &t0);
@@ -267,7 +284,8 @@ static int cmd_bioelectric(uint32_t epochs, uint32_t size, uint64_t seed) {
             cfg.regime = CELL_REGIME_FERAL_ECOSYSTEM;
             cfg.enable_bioelectricity = 0;
         }
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         cellulogonic_step_epochs(w, epochs);
         CellTelemetry t;
         cellulogonic_get_telemetry(w, &t);
@@ -297,7 +315,8 @@ static int cmd_anhydrobiosis(uint32_t epochs, uint32_t size, uint64_t seed) {
         cfg.height = size;
         cfg.seed   = seed;
         cfg.regime = CELL_REGIME_FERAL_ECOSYSTEM;
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         cellulogonic_step_epochs(w, epochs);
 
         if (arm == 1) {
@@ -352,7 +371,8 @@ static int cmd_ablation(uint32_t epochs, uint32_t size, uint64_t seed, const cha
         cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
         for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cfg.restraints[r] = global_pcts[g];
 
-        CellWorld* w = cellulogonic_create(&cfg);
+        CellWorld* w = create_world_checked(&cfg);
+        if (!w) return 2;
         cellulogonic_step_epochs(w, epochs);
         CellTelemetry t;
         cellulogonic_get_telemetry(w, &t);
@@ -392,7 +412,11 @@ static int cmd_ablation(uint32_t epochs, uint32_t size, uint64_t seed, const cha
             cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
             cfg.restraints[r] = levels[li];
 
-            CellWorld* w = cellulogonic_create(&cfg);
+            CellWorld* w = create_world_checked(&cfg);
+            if (!w) {
+                if (f) fclose(f);
+                return 2;
+            }
             cellulogonic_step_epochs(w, epochs);
             CellTelemetry t;
             cellulogonic_get_telemetry(w, &t);
@@ -425,7 +449,7 @@ static int cmd_ablation(uint32_t epochs, uint32_t size, uint64_t seed, const cha
     return 0;
 }
 
-/* Exact Paired Wilcoxon Signed-Rank + Deterministic Monte-Carlo Sign-Flip + Holm-Bonferroni */
+/* Deterministic Monte-Carlo Sign-Flip Permutation Test + Bootstrap 95% CI + Cohen's dz + Holm-Bonferroni */
 static double paired_signflip_p(const double* diffs, int n) {
     double obs = 0.0;
     for (int i = 0; i < n; ++i) obs += diffs[i];
@@ -433,9 +457,12 @@ static double paired_signflip_p(const double* diffs, int n) {
     int ge = 0;
     const int M = 10000;
     for (int m = 0; m < M; ++m) {
-        uint64_t bits = cell_philox_u64(0x57A75ULL, 0x9999u, (uint64_t)m, 0ULL);
         double s = 0.0;
+        uint64_t bits = 0ULL;
         for (int i = 0; i < n; ++i) {
+            if ((i & 63) == 0) {
+                bits = cell_philox_u64(0x57A75ULL, 0x9999u, (uint64_t)m, (uint64_t)(i >> 6));
+            }
             s += ((bits >> (i & 63)) & 1ULL) ? diffs[i] : -diffs[i];
         }
         if (fabs(s) >= obs - 1e-12) ge++;
@@ -443,31 +470,61 @@ static double paired_signflip_p(const double* diffs, int n) {
     return (double)(ge + 1) / (double)(M + 1);
 }
 
+static void sort_doubles(double* a, int n) {
+    for (int i = 1; i < n; ++i) {
+        double key = a[i];
+        int j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+        a[j + 1] = key;
+    }
+}
+
+static void paired_bootstrap_ci95(const double* diffs, int n, uint32_t tag, double* ci_lo, double* ci_hi) {
+    enum { B = 2000 };
+    double means[B];
+    for (int b = 0; b < B; ++b) {
+        double s = 0.0;
+        for (int i = 0; i < n; ++i) {
+            uint32_t r = cell_philox_u32(0xB00757A7ULL, 0x999Au + tag, (uint64_t)b, (uint64_t)i);
+            s += diffs[r % (uint32_t)n];
+        }
+        means[b] = s / (double)n;
+    }
+    sort_doubles(means, B);
+    *ci_lo = means[(int)(0.025 * (double)B)];
+    *ci_hi = means[(int)(0.975 * (double)B)];
+}
+
 static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
     if (n_pairs < 4) n_pairs = 4;
     if (n_pairs > 48) n_pairs = 48;
     printf("=== EXPERIMENT 7: LOCKED PAIRED STATISTICAL SUITE (N=%d, Seeds 5000..%d, %u epochs) ===\n",
            n_pairs, 5000 + n_pairs - 1, epochs);
-    printf("Multiple-testing correction: Holm-Bonferroni FWER across 4 pre-registered hypotheses.\n\n");
+    printf("Inference: 10,000-iter sign-flip permutation, step-down Holm-Bonferroni FWER (m=4), Cohen's dz & 95%% bootstrap CI.\n\n");
 
     double h_a[4][48], h_b[4][48], h_d[4][48];
     int wins[4] = {0, 0, 0, 0};
 
-    for (int p = 0; p < n_pairs; ++p) {
-        uint64_t seed = 5000ULL + (uint64_t)p;
+    for (uint32_t p = 0u; p < (uint32_t)n_pairs; ++p) {
+        uint64_t seed = UINT64_C(5000) + (uint64_t)p;
         CellWorldConfig cfg;
         CellTelemetry tA, tB;
 
         /* H1: COVI — Feral Endosymbiotic vs. 70% Castrated */
         cellulogonic_default_config(&cfg);
         cfg.width = size; cfg.height = size; cfg.seed = seed; cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
-        CellWorld* wA = cellulogonic_create(&cfg);
+        CellWorld* wA = create_world_checked(&cfg);
+        if (!wA) return 2;
         cellulogonic_step_epochs(wA, epochs);
         cellulogonic_get_telemetry(wA, &tA);
         cellulogonic_destroy(wA);
 
         for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cfg.restraints[r] = 70;
-        CellWorld* wB = cellulogonic_create(&cfg);
+        CellWorld* wB = create_world_checked(&cfg);
+        if (!wB) return 2;
         cellulogonic_step_epochs(wB, epochs);
         cellulogonic_get_telemetry(wB, &tB);
         cellulogonic_destroy(wB);
@@ -479,13 +536,15 @@ static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
         cellulogonic_default_config(&cfg);
         cfg.width = size; cfg.height = size; cfg.seed = seed; cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
         cfg.enable_endosymbiosis = 1;
-        wA = cellulogonic_create(&cfg);
+        wA = create_world_checked(&cfg);
+        if (!wA) return 2;
         cellulogonic_step_epochs(wA, epochs);
         cellulogonic_get_telemetry(wA, &tA);
         cellulogonic_destroy(wA);
 
         cfg.enable_endosymbiosis = 0;
-        wB = cellulogonic_create(&cfg);
+        wB = create_world_checked(&cfg);
+        if (!wB) return 2;
         cellulogonic_step_epochs(wB, epochs);
         cellulogonic_get_telemetry(wB, &tB);
         cellulogonic_destroy(wB);
@@ -497,13 +556,15 @@ static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
         cellulogonic_default_config(&cfg);
         cfg.width = size; cfg.height = size; cfg.seed = seed; cfg.regime = CELL_REGIME_FERAL_ECOSYSTEM;
         cfg.enable_bioelectricity = 1;
-        wA = cellulogonic_create(&cfg);
+        wA = create_world_checked(&cfg);
+        if (!wA) return 2;
         cellulogonic_step_epochs(wA, epochs);
         cellulogonic_get_telemetry(wA, &tA);
         cellulogonic_destroy(wA);
 
         cfg.enable_bioelectricity = 0;
-        wB = cellulogonic_create(&cfg);
+        wB = create_world_checked(&cfg);
+        if (!wB) return 2;
         cellulogonic_step_epochs(wB, epochs);
         cellulogonic_get_telemetry(wB, &tB);
         cellulogonic_destroy(wB);
@@ -514,19 +575,21 @@ static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
         /* H4: Tardigrade TDP Bioglass Post-Shock Survival (Intact TDP vs. TDP Knockout) */
         cellulogonic_default_config(&cfg);
         cfg.width = size; cfg.height = size; cfg.seed = seed; cfg.regime = CELL_REGIME_FERAL_ECOSYSTEM;
-        wA = cellulogonic_create(&cfg);
-        cellulogonic_step_epochs(wA, epochs / 2);
-        cellulogonic_apply_desiccation_tun(wA, 92);
-        cellulogonic_apply_shock_lysis(wA, 90);
+        wA = create_world_checked(&cfg);
+        if (!wA) return 2;
+        cellulogonic_step_epochs(wA, epochs / 2u);
+        cellulogonic_apply_desiccation_tun(wA, 92u);
+        cellulogonic_apply_shock_lysis(wA, 90u);
         cellulogonic_rehydrate_tun(wA);
         cellulogonic_get_telemetry(wA, &tA);
         cellulogonic_destroy(wA);
 
-        wB = cellulogonic_create(&cfg);
-        cellulogonic_step_epochs(wB, epochs / 2);
+        wB = create_world_checked(&cfg);
+        if (!wB) return 2;
+        cellulogonic_step_epochs(wB, epochs / 2u);
         for (uint32_t i = 0; i < wB->num_slots; ++i) wB->cells[i].genome[122] = 0;
-        cellulogonic_apply_desiccation_tun(wB, 92);
-        cellulogonic_apply_shock_lysis(wB, 90);
+        cellulogonic_apply_desiccation_tun(wB, 92u);
+        cellulogonic_apply_shock_lysis(wB, 90u);
         cellulogonic_rehydrate_tun(wB);
         cellulogonic_get_telemetry(wB, &tB);
         cellulogonic_destroy(wB);
@@ -563,14 +626,23 @@ static int cmd_stats(int n_pairs, uint32_t epochs, uint32_t size) {
         p_holm[order[k]] = adj;
     }
 
-    printf("%-44s | Mean A   | Mean B   | Diff     | Wins   | p_raw   | p_Holm\n", "Hypothesis");
-    printf("-----------------------------------------------------------------------------------------------------\n");
+    printf("%-44s | Mean A   | Mean B   | Diff     | 95%% Bootstrap CI       | Cohen dz | Wins  | p_raw   | p_Holm\n", "Hypothesis");
+    printf("---------------------------------------------------------------------------------------------------------------------------------------\n");
     for (int h = 0; h < 4; ++h) {
         double ma = 0.0, mb = 0.0, md = 0.0;
         for (int p = 0; p < n_pairs; ++p) { ma += h_a[h][p]; mb += h_b[h][p]; md += h_d[h][p]; }
-        ma /= n_pairs; mb /= n_pairs; md /= n_pairs;
-        printf("%-44s | %8.3f | %8.3f | %+8.3f | %2d/%-2d  | %.5f | %.5f\n",
-               hnames[h], ma, mb, md, wins[h], n_pairs, p_raw[h], p_holm[h]);
+        ma /= (double)n_pairs; mb /= (double)n_pairs; md /= (double)n_pairs;
+        double ss = 0.0;
+        for (int p = 0; p < n_pairs; ++p) {
+            double dv = h_d[h][p] - md;
+            ss += dv * dv;
+        }
+        double sd = (n_pairs > 1) ? sqrt(ss / (double)(n_pairs - 1)) : 0.0;
+        double dz = (sd > 1e-12) ? (md / sd) : 0.0;
+        double ci_lo = 0.0, ci_hi = 0.0;
+        paired_bootstrap_ci95(h_d[h], n_pairs, (uint32_t)h, &ci_lo, &ci_hi);
+        printf("%-44s | %8.3f | %8.3f | %+8.3f | [%+8.3f, %+8.3f] | %8.3f | %2d/%-2d | %.5f | %.5f\n",
+               hnames[h], ma, mb, md, ci_lo, ci_hi, dz, wins[h], n_pairs, p_raw[h], p_holm[h]);
     }
     return 0;
 }
@@ -583,28 +655,35 @@ static int cmd_bridge(uint64_t seed) {
     cfg.height = 32;
     cfg.seed   = seed;
     cfg.regime = CELL_REGIME_ENDOSYMBIOSIS_LAB;
-    CellWorld* w = cellulogonic_create(&cfg);
+    CellWorld* w = create_world_checked(&cfg);
+    if (!w) return 2;
 
     /* Synthesize a canonical deterministic 256-byte AUTOPHAGE dual-strand plasmid */
     uint8_t autophage_dna[256];
     for (int i = 0; i < 256; i += 8) {
         uint64_t v = cell_philox_u64(0xA070F46EULL, 0x1111u, (uint64_t)i, seed);
-        memcpy(&autophage_dna[i], &v, 8);
+        cell_store_le64(&autophage_dna[i], v);
     }
     int rc = cellulogonic_ingest_autophage_genome(w, 0, autophage_dna);
     cellulogonic_step_epochs(w, 120);
 
     CellSpecimen apex;
-    cellulogonic_inspect_apex(w, &apex);
+    int apex_rc = cellulogonic_inspect_apex(w, &apex);
+    if (apex_rc != 0) {
+        fprintf(stderr, "No living apex specimen found in bridge experiment\n");
+        cellulogonic_destroy(w);
+        return 1;
+    }
     float traits[112];
     cellulogonic_project_asmodensius_112(&apex, traits);
 
     double tmin = 1e9, tmax = -1e9, tsum = 0.0, tsum2 = 0.0;
     for (int i = 0; i < 112; ++i) {
-        if (traits[i] < tmin) tmin = traits[i];
-        if (traits[i] > tmax) tmax = traits[i];
-        tsum  += traits[i];
-        tsum2 += traits[i] * traits[i];
+        double tv = (double)traits[i];
+        if (tv < tmin) tmin = tv;
+        if (tv > tmax) tmax = tv;
+        tsum  += tv;
+        tsum2 += tv * tv;
     }
     double tmean = tsum / 112.0;
     double tstd  = sqrt(fabs(tsum2 / 112.0 - tmean * tmean));
@@ -619,7 +698,7 @@ static int cmd_bridge(uint64_t seed) {
     printf("Asmodensius 112-Trait Vec   : min=%.4f max=%.4f mean=%.4f std=%.4f (all strictly in [0,1])\n",
            tmin, tmax, tmean, tstd);
     printf("First 16 Physiological      : ");
-    for (int i = 0; i < 16; ++i) printf("%.3f%s", traits[i], i < 15 ? "," : "\n");
+    for (int i = 0; i < 16; ++i) printf("%.3f%s", (double)traits[i], i < 15 ? "," : "\n");
     printf("Ledger Closure              : mRes=%lld amu | eRes=%lld uq | SHA=%s\n",
            (long long)tel.ledger.mass_residual_amu,
            (long long)tel.ledger.int_ledger_residual_uq,
@@ -638,11 +717,26 @@ static int cmd_embryo(uint32_t epochs, uint32_t size, uint64_t seed) {
     cfg.seed   = seed;
     cfg.regime = CELL_REGIME_EMBRYOGENESIS;
 
-    CellWorld* w = cellulogonic_create(&cfg);
+    CellWorld* w = create_world_checked(&cfg);
+    if (!w) return 2;
     CellTelemetry t;
-    uint32_t step = epochs >= 8 ? epochs / 8 : 1;
-    for (uint32_t e = 0; e <= epochs; e += step) {
-        if (e > 0) cellulogonic_step_epochs(w, step);
+    cellulogonic_get_telemetry(w, &t);
+    printf("t=%3u | alive=%3u (maxT=%3u) | Fates[P=%2u Ec=%2u N=%2u M=%2u G=%2u Gm=%2u] | "
+           "HomoCad=%5.1f%% | Axons=%2u(w=%llu/p=%llu) | CPG=%4llu | Hippo=%3llu Eut=%3llu | mRes=%lld eRes=%lld\n",
+           (unsigned)t.epoch, t.alive_cells, t.max_tissue_size,
+           t.fate_counts[0], t.fate_counts[1], t.fate_counts[2],
+           t.fate_counts[3], t.fate_counts[4], t.fate_counts[5],
+           t.homophilic_bond_pct, t.active_axons,
+           (unsigned long long)t.axons_wired_cum, (unsigned long long)t.axons_pruned_cum,
+           (unsigned long long)t.cpg_pulses_cum,
+           (unsigned long long)t.hippo_arrests_cum, (unsigned long long)t.eutelic_stops_cum,
+           (long long)t.ledger.mass_residual_amu, (long long)t.ledger.int_ledger_residual_uq);
+    uint32_t step = epochs >= 8u ? epochs / 8u : 1u;
+    uint32_t done = 0u;
+    while (done < epochs) {
+        uint32_t chunk = (epochs - done < step) ? (epochs - done) : step;
+        cellulogonic_step_epochs(w, chunk);
+        done += chunk;
         cellulogonic_get_telemetry(w, &t);
         printf("t=%3u | alive=%3u (maxT=%3u) | Fates[P=%2u Ec=%2u N=%2u M=%2u G=%2u Gm=%2u] | "
                "HomoCad=%5.1f%% | Axons=%2u(w=%llu/p=%llu) | CPG=%4llu | Hippo=%3llu Eut=%3llu | mRes=%lld eRes=%lld\n",
@@ -668,19 +762,23 @@ static int cmd_embryo(uint32_t epochs, uint32_t size, uint64_t seed) {
 static uint32_t parse_u32_clamped(const char* s, uint32_t def_v, uint32_t min_v, uint32_t max_v) {
     if (!s || *s == '\0') return def_v;
     char* ep = NULL;
-    long v = strtol(s, &ep, 10);
+    long long v = strtoll(s, &ep, 10);
     if (ep == s) return def_v;
-    if (v < (long)min_v) return min_v;
-    if (v > (long)max_v) return max_v;
+    if (v < (long long)min_v) return min_v;
+    if (v > (long long)max_v) return max_v;
     return (uint32_t)v;
 }
 
 static void emit_world_json(const CellWorld* w) {
     CellTelemetry t;
     cellulogonic_get_telemetry(w, &t);
-    size_t gcap = (size_t)w->num_slots * 220 + 65536;
+    size_t gcap = (size_t)w->num_slots * 260u + 65536u;
     char* gbuf = (char*)malloc(gcap);
-    if (!gbuf) return;
+    if (!gbuf) {
+        printf("{\"error\":\"oom\"}\n");
+        fflush(stdout);
+        return;
+    }
     uint32_t gn = cellulogonic_export_grid_json(w, gbuf, gcap);
     if (gn == 0u) {
         memcpy(gbuf, "{}", 3);
@@ -775,7 +873,7 @@ static void emit_world_json(const CellWorld* w) {
            (unsigned long long)apex.autophage_dna_sig, ap_carriers,
            tmin, tmax, tmean, tstd);
     for (int i = 0; i < 112; ++i) {
-        printf("%s%.3f", i == 0 ? "" : ",", traits[i]);
+        printf("%s%.3f", i == 0 ? "" : ",", (double)traits[i]);
     }
     printf("]},\"grid\":%s}\n", gbuf);
     fflush(stdout);
@@ -807,7 +905,8 @@ static int cmd_json_snap(uint32_t epochs, uint32_t size, uint64_t seed,
         }
     }
 
-    CellWorld* w = cellulogonic_create(&cfg);
+    CellWorld* w = create_world_checked(&cfg);
+    if (!w) return 2;
     if (epochs > 0) cellulogonic_step_epochs(w, epochs);
     if (do_tun == 1) cellulogonic_apply_desiccation_tun(w, 92);
     if (do_tun == 2) {
@@ -854,6 +953,7 @@ static int cmd_stream(void) {
             seed = strtoull(p, &ep, 10);           p = ep;
             rest = (uint32_t)strtoull(p, &ep, 10); p = ep;
             warm = (uint32_t)strtoull(p, &ep, 10);
+            if (warm > 400u) warm = 400u;
             if (w) cellulogonic_destroy(w);
             CellWorldConfig cfg;
             cellulogonic_default_config(&cfg);
@@ -863,8 +963,9 @@ static int cmd_stream(void) {
             cfg.solvent = solv < CELL_SOLVENT_COUNT ? solv : 0u;
             cfg.seed    = seed; /* seed == 0 triggers live hardware Intel RDSEED thermal entropy! */
             for (int r = 0; r < CELL_RESTRAINT_COUNT; ++r) cfg.restraints[r] = (uint8_t)(rest > 100u ? 100u : rest);
-            w = cellulogonic_create(&cfg);
-            if (warm > 0 && warm <= 400u) cellulogonic_step_epochs(w, warm);
+            w = create_world_checked(&cfg);
+            if (!w) { printf("{\"error\":\"oom\"}\n"); fflush(stdout); continue; }
+            if (warm > 0u) cellulogonic_step_epochs(w, warm);
             emit_world_json(w);
             continue;
         }
@@ -873,7 +974,8 @@ static int cmd_stream(void) {
             CellWorldConfig cfg;
             cellulogonic_default_config(&cfg);
             cfg.width = 32; cfg.height = 32; cfg.regime = 5; cfg.seed = 5000ULL;
-            w = cellulogonic_create(&cfg);
+            w = create_world_checked(&cfg);
+            if (!w) { printf("{\"error\":\"oom\"}\n"); fflush(stdout); continue; }
         }
         if (strncmp(line, "state", 5) == 0) {
             /* Strictly read-only P9 observer snapshot (for GET /api/state!) */
@@ -914,18 +1016,20 @@ static int cmd_stream(void) {
             cellulogonic_rehydrate_tun(w);
             emit_world_json(w);
         } else if (strncmp(line, "plume ", 6) == 0) {
-            /* Conservation-exact photochemical nutrient pulse around (cx, cy)! */
+            /* Conservation-exact photochemical nutrient pulse around (cx, cy) with int64 overflow safety! */
             const char* p = line + 6;
             char* ep = NULL;
-            int cx = (int)strtol(p, &ep, 10); p = ep;
-            int cy = (int)strtol(p, &ep, 10);
-            int W = (int)w->cfg.width, H = (int)w->cfg.height;
-            for (int dy = -3; dy <= 3; ++dy) {
-                for (int dx = -3; dx <= 3; ++dx) {
+            int64_t cx = (int64_t)strtoll(p, &ep, 10); p = ep;
+            int64_t cy = (int64_t)strtoll(p, &ep, 10);
+            int64_t W = (int64_t)w->cfg.width, H = (int64_t)w->cfg.height;
+            int64_t cx_w = ((cx % W) + W) % W;
+            int64_t cy_w = ((cy % H) + H) % H;
+            for (int64_t dy = -3; dy <= 3; ++dy) {
+                for (int64_t dx = -3; dx <= 3; ++dx) {
                     if (dx * dx + dy * dy > 10) continue;
-                    int x = ((cx + dx) % W + W) % W;
-                    int y = ((cy + dy) % H + H) % H;
-                    CellVoxel* vx = &w->voxels[y * W + x];
+                    int64_t x = ((cx_w + dx) % W + W) % W;
+                    int64_t y = ((cy_w + dy) % H + H) % H;
+                    CellVoxel* vx = &w->voxels[(uint32_t)(y * W + x)];
                     int64_t ks = vx->env[CELL_SP_W] / 4;
                     if (ks > 35) ks = 35;
                     if (ks > 0) {
@@ -933,6 +1037,7 @@ static int cmd_stream(void) {
                         vx->env[CELL_SP_S] += ks;
                         w->e_inflow_cum_uq += 46 * ks;
                         vx->heat_local_uq  += 10 * ks;
+                        w->total_reactions += (uint64_t)ks;
                     }
                     int64_t kx = vx->env[CELL_SP_W] / 3;
                     if (kx > 25) kx = 25;
@@ -941,22 +1046,26 @@ static int cmd_stream(void) {
                         vx->env[CELL_SP_X] += kx;
                         w->e_inflow_cum_uq += 34 * kx;
                         vx->heat_local_uq  += 4 * kx;
+                        w->total_reactions += (uint64_t)kx;
                     }
                 }
             }
             emit_world_json(w);
         } else if (strncmp(line, "autophage_dna ", 14) == 0) {
-            /* REAL 128-byte (256 hex char) evolved AUTOPHAGE DNA transfection (0 synthetic bytes!) */
+            /* REAL 128-byte (256 hex char) evolved AUTOPHAGE DNA transfection (even-length validated!) */
             const char* hx = line + 14;
+            size_t hlen = 0u;
+            while (hex_nibble(hx[hlen]) >= 0 && hlen < 257u) hlen++;
             uint8_t dna128[128];
             memset(dna128, 0, sizeof(dna128));
             int parsed = 0;
-            for (int b = 0; b < 128; ++b) {
-                int hi = hex_nibble(hx[b * 2]);
-                int lo = (hi >= 0) ? hex_nibble(hx[b * 2 + 1]) : -1;
-                if (hi < 0 || lo < 0) break;
-                dna128[b] = (uint8_t)((hi << 4) | lo);
-                parsed++;
+            if ((hlen & 1u) == 0u && hlen >= 64u && hlen <= 256u) {
+                for (size_t b = 0; b < hlen / 2u; ++b) {
+                    int hi = hex_nibble(hx[b * 2u]);
+                    int lo = hex_nibble(hx[b * 2u + 1u]);
+                    dna128[b] = (uint8_t)((hi << 4) | lo);
+                    parsed++;
+                }
             }
             if (parsed >= 32) {
                 CellSpecimen apex;
@@ -981,7 +1090,7 @@ static int cmd_stream(void) {
             uint8_t autophage_dna[256];
             for (int b = 0; b < 256; b += 8) {
                 uint64_t v = cell_philox_u64(0xA070F46EULL, 0x2026u, (uint64_t)b, ap_seed);
-                memcpy(&autophage_dna[b], &v, 8);
+                cell_store_le64(&autophage_dna[b], v);
             }
             CellSpecimen apex;
             if (cellulogonic_inspect_apex(w, &apex) == 0) {
@@ -1009,11 +1118,17 @@ static int cmd_stream(void) {
 }
 
 int main(int argc, char** argv) {
-    if (argc < 2) {
-        printf("CELLULOGONIC MECHA v1.4.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
+    if (argc < 2 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "help") == 0) {
+        printf("CELLULOGONIC MECHA v1.5.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
         printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");
+        printf("Flags:    --epochs N --size N --seed N --pairs N --regime N --solvent N --out PATH --restraints CSV --tun 0|1|2\n");
+        printf("Meta:     --version | -V | --help | -h\n");
+        return 0;
+    }
+    if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
+        printf("cellulogonic 1.5.0 (ABI 0x%08x)\n", cellulogonic_abi_version());
         return 0;
     }
 

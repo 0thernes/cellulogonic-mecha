@@ -1,32 +1,22 @@
-/-
-  CELLULOGONIC MECHA v1.3.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
+module
+
+public import CellulogonicProofs.Spec
+
+/-!
+  CELLULOGONIC MECHA v1.5.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
   Endosymbiotic O(1) Power-Density Liberation, & Mitotic Heteroplasmy Purifying Selection.
 
-  Pure Lean 4 (v4.35.0, zero Mathlib, zero sorry, zero custom axioms).
-  Copyright (c) 2026 0thernes (0thernes LLC) <0_0@0thernes.art>.
+  Pure Lean 4.35.0 `module` (zero Mathlib, zero sorry, zero custom axioms).
+  Copyright (c) 2026 Alexander Stephen Donahue <0_0@0thernes.art>.
+  SPDX-License-Identifier: Apache-2.0
 -/
 
 namespace Cellulogonic.BioenergeticsEndosymbiosis
 
-/-- Discrete spherical surface area proxy A(R) = 3 R^2 and volume proxy V(R) = R^3,
-    preserving the exact Euclidean surface-to-volume ratio A(R)/V(R) = 3/R. -/
-def surfProxy (R : Nat) : Nat := 3 * R * R
-def volProxy  (R : Nat) : Nat := R * R * R
-
-/-- Prokaryotic ATP generation power bounded by outer membrane area. -/
-def prokPower (cA R : Nat) : Nat := cA * surfProxy R
-
-/-- Volumetric cytoplasmic maintenance demand scaling as R^3. -/
-def maintCost (cV R : Nat) : Nat := cV * volProxy R
-
-/-- Eukaryotic ATP power with K internalized respiratory endosymbionts of radius r. -/
-def eukPower (cA cEndo R K r : Nat) : Nat :=
-  cA * surfProxy R + K * (cEndo * surfProxy r)
-
 /-- T20: Exact Prokaryotic Bioenergetic Ceiling (Nick Lane Surface-to-Volume Wall).
     A single-membrane prokaryote of radius R > 0 has strictly positive net surplus power
     iff cV * R < 3 * cA. Beyond R_crit = 3 cA / cV, starvation is mathematically forced. -/
-theorem T20_prokaryotic_bioenergetic_ceiling (cA cV R : Nat) (hR : R > 0) :
+public theorem T20_prokaryotic_bioenergetic_ceiling (cA cV R : Nat) (hR : R > 0) :
     prokPower cA R > maintCost cV R ↔ cV * R < 3 * cA := by
   unfold prokPower maintCost surfProxy volProxy
   have hR2 : 0 < R * R := Nat.mul_pos hR hR
@@ -41,7 +31,7 @@ theorem T20_prokaryotic_bioenergetic_ceiling (cA cV R : Nat) (hR : R > 0) :
 
 /-- T21: Prokaryotic specific power density (power per unit volume) strictly decreases with R.
     Cleared-denominator form: P(R2)/V(R2) < P(R1)/V(R1) for 0 < R1 < R2. -/
-theorem T21_prokaryotic_power_density_strictly_decreasing (cA R1 R2 : Nat)
+public theorem T21_prokaryotic_power_density_strictly_decreasing (cA R1 R2 : Nat)
     (hcA : cA > 0) (hR1 : R1 > 0) (hLt : R1 < R2) :
     prokPower cA R2 * volProxy R1 < prokPower cA R1 * volProxy R2 := by
   unfold prokPower surfProxy volProxy
@@ -63,7 +53,7 @@ theorem T21_prokaryotic_power_density_strictly_decreasing (cA R1 R2 : Nat)
     Even when host radius R strictly exceeds the prokaryotic wall (cV * R ≥ 3 * cA),
     packing K endosymbionts of radius r achieves strictly positive net surplus power for
     ARBITRARILY LARGE host radius R whenever K * (cEndo * surfProxy r) ≥ maintCost cV R. -/
-theorem T22_endosymbiotic_scaling_liberation
+public theorem T22_endosymbiotic_scaling_liberation
     (cA cEndo cV R K r : Nat)
     (hcA : cA > 0) (hR : R > 0)
     (hWall : cV * R ≥ 3 * cA)
@@ -86,7 +76,7 @@ theorem T22_endosymbiotic_scaling_liberation
 /-- T23: Organelle Surface Amplification Factor.
     Splitting a fraction of host volume into smaller spheres of radius r < R multiplies
     available respiratory membrane area per unit volume by exact factor R / r > 1. -/
-theorem T23_endosymbiont_surface_amplification (R r : Nat) (hr : r > 0) (hLt : r < R) :
+public theorem T23_endosymbiont_surface_amplification (R r : Nat) (hr : r > 0) (hLt : r < R) :
     surfProxy R * volProxy r < surfProxy r * volProxy R := by
   unfold surfProxy volProxy
   have hFactor : 0 < 3 * R * R * r * r := by
@@ -104,7 +94,7 @@ theorem T23_endosymbiont_surface_amplification (R r : Nat) (hr : r > 0) (hLt : r
 
 /-- T24: Secondary Endosymbiosis (Chimeric Megacells) strictly adds internal ATP capacity
     without violating lumen volume packing. -/
-theorem T24_secondary_endosymbiosis_additive_power
+public theorem T24_secondary_endosymbiosis_additive_power
     (cA c1 c2 R K1 r1 K2 r2 : Nat)
     (hc2 : c2 > 0) (hK2 : K2 > 0) (hr2 : r2 > 0) :
     eukPower cA c1 R K1 r1 + K2 * (c2 * surfProxy r2) > eukPower cA c1 R K1 r1 := by
@@ -114,7 +104,7 @@ theorem T24_secondary_endosymbiosis_additive_power
   omega
 
 /-- T25: Mitotic organelle partitioning strictly conserves cooperative and selfish counts. -/
-theorem T25_mitotic_heteroplasmy_conservation (c1 c2 s1 s2 : Nat) :
+public theorem T25_mitotic_heteroplasmy_conservation (c1 c2 s1 s2 : Nat) :
     (c1 + s1) + (c2 + s2) = (c1 + c2) + (s1 + s2) := by
   omega
 
@@ -123,7 +113,7 @@ theorem T25_mitotic_heteroplasmy_conservation (c1 c2 s1 s2 : Nat) :
     partitions organelles unevenly (c1 * s2 ≠ c2 * s1), strictly ONE daughter inherits a
     higher cooperative fraction than the parent while the other inherits a lower fraction —
     exposing selfish mitochondria to host-level purifying selection. -/
-theorem T26_asymmetric_bottleneck_purifying_selection (c1 c2 s1 s2 : Nat)
+public theorem T26_asymmetric_bottleneck_purifying_selection (c1 c2 s1 s2 : Nat)
     (hUnequal : c1 * s2 ≠ c2 * s1) :
     (c1 * ((c1 + c2) + (s1 + s2)) > (c1 + c2) * (c1 + s1) ∧
      c2 * ((c1 + c2) + (s1 + s2)) < (c1 + c2) * (c2 + s2)) ∨
@@ -143,7 +133,7 @@ theorem T26_asymmetric_bottleneck_purifying_selection (c1 c2 s1 s2 : Nat)
 /-- T27: Endosymbiotic Gene Transfer (EGT) Genome Economy Theorem.
     Migrating g housekeeping loci from K ≥ 2 organelles to a single host nuclear copy
     strictly reduces total cellular DNA replication burden by (K - 1) * g > 0. -/
-theorem T27_egt_reduces_organelle_maintenance (K g : Nat) (hK : K ≥ 2) (hg : g > 0) :
+public theorem T27_egt_reduces_organelle_maintenance (K g : Nat) (hK : K ≥ 2) (hg : g > 0) :
     K * g > g ∧ K * g - g = (K - 1) * g := by
   constructor
   · have h2g : 2 * g ≤ K * g := Nat.mul_le_mul_right g hK

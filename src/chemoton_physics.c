@@ -2,7 +2,8 @@
 
 /* ============================================================================
  * Exact Integer Stoichiometry, Canham-Helfrich Membrane Geometry,
- * Mitchell Chemiosmosis & Organelle Bioenergetics (Matches Lean 4 T01-T36)
+ * Mitchell Chemiosmosis & Organelle Bioenergetics (Matches Lean 4 T01-T58, C59-C62)
+ * SPDX-License-Identifier: Apache-2.0
  * ============================================================================ */
 
 int64_t cell_species_mass(const int64_t mol[CELL_SPECIES_COUNT]) {
@@ -48,6 +49,15 @@ double cell_reduced_Q(int64_t vol, int64_t lipid) {
     double dv = (double)vol;
     double dl = (double)lipid;
     return (100.0 * dv * dv) / (dl * dl * dl);
+}
+
+/* Exact integer reduced-volume comparison: Q(V, L) > pct / 100 <=> 10000 * V^2 > pct * L^3
+ * Eliminates all FP64 branching from the deterministic simulation step loop! */
+static inline int cell_q_gt_pct(int64_t vol, int64_t lipid, int64_t pct) {
+    if (lipid <= 0) return 1;
+    __int128 lhs = (__int128)10000 * (__int128)vol * (__int128)vol;
+    __int128 rhs = (__int128)pct * (__int128)lipid * (__int128)lipid * (__int128)lipid;
+    return lhs > rhs;
 }
 
 /* Exact Lean Theorem T12 check: 2 * C0 * V^2 <= L^3 (no division, 128-bit safe!) */
@@ -134,10 +144,10 @@ void cell_mutate_genome(CellEntity* c, uint64_t seed, uint64_t epoch, uint32_t s
     for (uint32_t f = 0; f < n_flips; ++f) {
         uint64_t rf = cell_philox_u64(seed, RNG_DOMAIN_CELL_MUT, epoch, (uint64_t)slot * 7ULL + 2ULL + f);
         uint32_t byte_idx = (uint32_t)(rf & 127u);
-        /* DELIMITING clamps structural transitions (lipid_class operon 64..71, c-ring 16/18..23, phago 80) */
+        /* DELIMITING clamps structural transitions (lipid_class operon 64..67, c-ring 16/18..20, phago 80) */
         if (delimit_pct >= 50u &&
-            ((byte_idx >= 64u && byte_idx < 72u) || byte_idx == 16u ||
-             (byte_idx >= 18u && byte_idx < 24u) || byte_idx == 80u)) {
+            ((byte_idx >= 64u && byte_idx <= 67u) || byte_idx == 16u ||
+             (byte_idx >= 18u && byte_idx <= 20u) || byte_idx == 80u)) {
             continue;
         }
         uint8_t bit = (uint8_t)(1u << ((rf >> 8) & 7u));
@@ -269,11 +279,13 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     /* Check voluntary spore dormancy (evolved Locus 11 OR escape-backlash under SPEEDBUMPING) */
     uint8_t spore_gene = c->genome[90];
     if (r_speed >= 30 && r_speed < 95 && (w->epoch % 16) < 3 && spore_gene > 96) {
+        cell_clear_bonds_and_axons(w, idx);
         c->alive_state = 2;
         w->backlash_dormancy_spores++;
         return;
     }
     if (c->mol[CELL_SP_S] == 0 && c->mol[CELL_SP_E] <= 1 && vx->env[CELL_SP_S] < 4 && spore_gene > 170) {
+        cell_clear_bonds_and_axons(w, idx);
         c->alive_state = 2;
         return;
     }
@@ -336,9 +348,11 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         vx->env[CELL_SP_W] += dump_w;
     }
 
-    /* Check current osmotic strain Q: gate active import down if turgor is already high (MscL channel!) */
+    /* Check current osmotic strain Q using exact 128-bit integer arithmetic (0 FP64 nondeterminism!) */
     int64_t cur_vol = cell_internal_volume(c);
-    double cur_Q = cell_reduced_Q(cur_vol, lipid_area);
+    int cur_q_gt_72 = cell_q_gt_pct(cur_vol, lipid_area, 72);
+    int cur_q_gt_65 = cell_q_gt_pct(cur_vol, lipid_area, 65);
+    int cur_q_gt_55 = cell_q_gt_pct(cur_vol, lipid_area, 55);
 
     /* Permease rates from Locus 9 (bytes 72..79) */
     int64_t import_s_cap = 2 + ((int64_t)c->genome[72] * (1 + lipid_area / 18)) / 96;
@@ -354,7 +368,7 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         import_x_cap = (import_x_cap * 125) / 100;
     }
     /* MscL mechanosensitive stretch-gating prevents suicidal hyper-osmotic uptake */
-    if (cur_Q > 0.72) {
+    if (cur_q_gt_72) {
         import_s_cap = (c->mol[CELL_SP_S] < 4) ? 2 : 0;
         import_x_cap = (c->mol[CELL_SP_X] < 2) ? 1 : 0;
         /* Emergency MscL pressure-relief vent of excess cytosolic waste W */
@@ -363,7 +377,7 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
             c->mol[CELL_SP_W] -= vent;
             vx->env[CELL_SP_W] += vent;
         }
-    } else if (cur_Q > 0.55) {
+    } else if (cur_q_gt_55) {
         import_s_cap = import_s_cap / 2 + 1;
         import_x_cap = import_x_cap / 2 + 1;
     }
@@ -390,7 +404,7 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
 
     /* Autotrophs also import waste W as carbon/oxidant feedstock for R14 */
     uint8_t photo_gene = c->genome[56];
-    if (photo_gene > 110 && r_box < 90 && cur_Q < 0.72 && c->mol[CELL_SP_W] < 8) {
+    if (photo_gene > 110 && r_box < 90 && !cur_q_gt_72 && c->mol[CELL_SP_W] < 8) {
         int64_t take_w = vx->env[CELL_SP_W] < 6 ? vx->env[CELL_SP_W] : 6;
         if (take_w > 0) { vx->env[CELL_SP_W] -= take_w; c->mol[CELL_SP_W] += take_w; }
     }
@@ -604,10 +618,10 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
 
     /* R5: Lipid bilayer synthesis (2S + E -> L + 2W) — drives reduced volume Q down toward fission! */
     int64_t r5_base = 1 + ((int64_t)c->genome[32] * enzyme_cap) / 128;
-    if (cur_Q > 0.55) r5_base += 2; /* Osmotic stretch accelerates bilayer lipid repair */
+    if (cur_q_gt_55) r5_base += 2; /* Osmotic stretch accelerates bilayer lipid repair */
     if (r5_base > 6) r5_base = 6;
     int64_t r5_req = (r5_base * slow_scale * v_mod_anabolic + 5000) / 10000;
-    if (r5_req < 1 && r_slow < 90 && (cur_Q > 0.65 || r_slow < 75)) r5_req = 1;
+    if (r5_req < 1 && r_slow < 90 && (cur_q_gt_65 || r_slow < 75)) r5_req = 1;
     /* Excitable CPG neurons reserve minimal ATP for action potentials once membrane L >= 76 */
     if (c->morph_fate == CELL_FATE_NEURAL && c->mol[CELL_SP_L] >= 76 && c->mol[CELL_SP_E] <= 3) {
         r5_req = 0;
@@ -746,20 +760,26 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
     /* --- 11. Continuous 3D Polymorphic Morphology, Actomyosin Expansion/Contraction
      *         & Fröhlich-Pokorný Gigahertz Microtubule Resonance (Lean T47-T50!) --- */
     {
-        /* Physical 3D vesicle radius spectrum: 230 nm tiny cocci -> 1,450 nm eukaryotic megacells! */
+        /* Physical 3D vesicle radius spectrum: 230 nm tiny cocci -> 1,480 nm eukaryotic megacells!
+         * Pure integer sqrt(biomass * 52^2) guarantees 0-bit cross-ISA / cross-libm determinism! */
         int64_t biomass = vol + c->mol[CELL_SP_L] / 2;
-        int32_t r_nm = 230 + (int32_t)(sqrt((double)(biomass > 1 ? biomass : 1)) * 52.0);
+        int64_t bm_clamp = (biomass > 1) ? (biomass < 1000000LL ? biomass : 1000000LL) : 1LL;
+        int32_t r_nm = 230 + cell_isqrt32(bm_clamp * 2704LL);
         if (c->num_organelles > 0) r_nm += (int32_t)c->num_organelles * 55;
         if (r_nm > 1480) r_nm = 1480;
         c->radius_nm = r_nm;
 
         /* Continuous shape spectrum: oblate/discocyte (<850), sphere (~1000), rod/bacillus &
-         * prolate pre-fission dumbbell (1300..2150) coupled to genome[89] + reduced volume Q! */
-        double q_now = cell_reduced_Q(vol, c->mol[CELL_SP_L]);
+         * prolate pre-fission dumbbell (1300..2150) coupled to genome[89] + exact integer reduced Q! */
         int32_t base_shape = 680 + (int32_t)((c->genome[89] * 1100) / 255); /* 680 (disc) .. 1780 (rod) */
-        if (q_now <= 0.55) {
-            /* Approaching Canham-Helfrich binary fission -> prolate cytokinetic dumbbell stretching! */
-            base_shape += (int32_t)((0.55 - q_now) * 850.0);
+        int64_t l_now = c->mol[CELL_SP_L];
+        if (l_now > 0) {
+            __int128 l3 = (__int128)l_now * (__int128)l_now * (__int128)l_now;
+            __int128 q_milli = ((__int128)100000 * (__int128)vol * (__int128)vol) / l3;
+            if (q_milli <= 550) {
+                /* Approaching Canham-Helfrich binary fission -> prolate cytokinetic dumbbell stretching! */
+                base_shape += (int32_t)(((550 - (int64_t)q_milli) * 850LL) / 1000LL);
+            }
         }
         if (c->num_organelles >= 2 && base_shape < 920) base_shape = 920;
         if (base_shape > 2150) base_shape = 2150;
@@ -775,14 +795,15 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         /* Actomyosin radial expansion-contraction oscillator (strictly bounded by ATP work, Lean T50!) */
         int32_t atp_avail = (int32_t)(c->mol[CELL_SP_E] > 20 ? 20 : c->mol[CELL_SP_E]);
         int32_t step_mrad = 260 + atp_avail * 42 + ((c->v_mem_mv + 90) * 3);
-        c->breath_phase_mrad = (c->breath_phase_mrad + step_mrad) % 6283;
+        c->breath_phase_mrad = (int32_t)(((int64_t)c->breath_phase_mrad + (int64_t)step_mrad) % 6283LL);
+        if (c->breath_phase_mrad < 0) c->breath_phase_mrad += 6283;
         c->breath_amp_q10    = (paid > 0 && atp_avail > 0) ? (55 + atp_avail * 11 + (c->num_organelles * 18)) : 0;
         if (c->breath_amp_q10 > 340) c->breath_amp_q10 = 340;
 
         /* Flagellar / ciliary motility vigor (requires ATP + motility locus genome[74]) */
-        c->flagella_q10 = (paid > 0 && c->mol[CELL_SP_E] > 0)
-                          ? (uint8_t)((c->genome[74] * (c->diff_role == 1 ? 125 : 95)) / 128)
-                          : 0;
+        c->flagella_q10 = (uint8_t)((paid > 0 && c->mol[CELL_SP_E] > 0)
+                          ? ((c->genome[74] * (c->diff_role == 1 ? 125 : 95)) / 128)
+                          : 0);
 
         /* Fröhlich-Pokorný Gigahertz Microtubule / FtsZ Resonator (Lean T48 & T49!):
          * Wave speed c_MT scales with solvent stiffness; shorter polymers oscillate faster in GHz! */
@@ -797,10 +818,14 @@ void cell_step_chemoton(CellWorld* w, uint32_t idx) {
         if (c->mt_filaments > 18u) c->mt_filaments = 18u;
 
         /* Stateful Fröhlich condensation relaxation ODE (Lean T48):
-         * Integrates metabolic ATP/GTP pumping against local voxel thermal damping over time! */
-        int32_t s_pump = (int32_t)paid * 120 + atp_avail * 35 + (int32_t)c->num_organelles * 90;
-        int32_t thermal_damp = (int32_t)(vx->heat_local_uq > 0 ? (vx->heat_local_uq / 800) : 0);
-        if (thermal_damp > 180) thermal_damp = 180;
+         * Clamp in int64_t BEFORE narrowing to int32_t so extreme heat/ATP never wraps! */
+        int64_t paid_c = paid > 1000LL ? 1000LL : (paid > 0LL ? paid : 0LL);
+        int64_t s_pump64 = paid_c * 120LL + (int64_t)atp_avail * 35LL + (int64_t)c->num_organelles * 90LL;
+        if (s_pump64 > 10000LL) s_pump64 = 10000LL;
+        int32_t s_pump = (int32_t)s_pump64;
+        int64_t td64 = (vx->heat_local_uq > 0LL) ? (vx->heat_local_uq / 800LL) : 0LL;
+        if (td64 > 180LL) td64 = 180LL;
+        int32_t thermal_damp = (int32_t)td64;
         int32_t s_crit = ((w->cfg.solvent == CELL_SOLVENT_VENT_TETRAETHER) ? 260 :
                           (w->cfg.solvent == CELL_SOLVENT_TITAN_AZOTOSOME ? 90 : 160)) + thermal_damp;
         if (paid > 0 && c->mol[CELL_SP_E] > 0 && s_pump > s_crit) {
@@ -836,54 +861,61 @@ int64_t cell_hydrolyze_atp_exact(CellWorld* w, uint32_t idx, int64_t k_req) {
 
 /* ============================================================================
  * Exact World Mass & Thermodynamic First/Second-Law Ledger Audit (P2)
+ * Accumulated in 128-bit signed integers so int64 overflow is impossible!
  * ============================================================================ */
 
 void cell_compute_ledger(const CellWorld* w, CellLedgerSnapshot* out) {
     memset(out, 0, sizeof(*out));
     const SolventParams* sp = &SOLVENT_TABLE[w->cfg.solvent];
 
-    int64_t m_tot = 0;
-    int64_t e_env = 0, e_cell = 0, e_org = 0, e_pmf = 0, e_hloc = 0;
+    __int128 m_tot = 0;
+    __int128 e_env = 0, e_cell = 0, e_org = 0, e_pmf = 0, e_hloc = 0;
 
     for (uint32_t i = 0; i < w->num_slots; ++i) {
         const CellVoxel* vx = &w->voxels[i];
-        m_tot  += cell_species_mass(vx->env);
-        e_env  += cell_species_energy(vx->env);
-        e_hloc += vx->heat_local_uq;
+        m_tot  += (__int128)cell_species_mass(vx->env);
+        e_env  += (__int128)cell_species_energy(vx->env);
+        e_hloc += (__int128)vx->heat_local_uq;
 
         const CellEntity* c = &w->cells[i];
         if (c->alive_state != 0) {
-            m_tot  += cell_species_mass(c->mol);
-            e_cell += cell_species_energy(c->mol);
-            e_pmf  += c->pmf * sp->e_pmf;
+            m_tot  += (__int128)cell_species_mass(c->mol);
+            e_cell += (__int128)cell_species_energy(c->mol);
+            e_pmf  += (__int128)c->pmf * (__int128)sp->e_pmf;
             for (uint32_t k = 0; k < CELL_MAX_ORGANELLES; ++k) {
                 if (c->org[k].active) {
-                    m_tot += cell_species_mass(c->org[k].mol);
-                    e_org += cell_species_energy(c->org[k].mol);
-                    e_pmf += c->org[k].pmf * sp->e_pmf;
+                    m_tot += (__int128)cell_species_mass(c->org[k].mol);
+                    e_org += (__int128)cell_species_energy(c->org[k].mol);
+                    e_pmf += (__int128)c->org[k].pmf * (__int128)sp->e_pmf;
                 }
             }
         }
     }
 
-    int64_t e_pools = e_env + e_cell + e_org + e_pmf + e_hloc + w->e_heat_radiated_sink_uq;
-    int64_t e_expected = w->e_initial_uq + w->e_inflow_cum_uq - w->e_export_cum_uq;
-    int64_t e_res = e_pools - e_expected;
+    __int128 e_pools = e_env + e_cell + e_org + e_pmf + e_hloc + (__int128)w->e_heat_radiated_sink_uq;
+    __int128 e_expected = (__int128)w->e_initial_uq + (__int128)w->e_inflow_cum_uq - (__int128)w->e_export_cum_uq;
+    __int128 e_res128 = e_pools - e_expected;
+    __int128 m_res128 = m_tot - (__int128)w->mass_initial_amu;
+
+    int64_t e_res = (e_res128 > (__int128)INT64_MAX) ? INT64_MAX :
+                    (e_res128 < (__int128)INT64_MIN ? INT64_MIN : (int64_t)e_res128);
+    int64_t m_res = (m_res128 > (__int128)INT64_MAX) ? INT64_MAX :
+                    (m_res128 < (__int128)INT64_MIN ? INT64_MIN : (int64_t)m_res128);
 
     out->mass_initial_amu        = w->mass_initial_amu;
-    out->mass_current_amu        = m_tot;
-    out->mass_residual_amu       = m_tot - w->mass_initial_amu;
+    out->mass_current_amu        = (int64_t)m_tot;
+    out->mass_residual_amu       = m_res;
     out->e_initial_uq            = w->e_initial_uq;
     out->e_inflow_cum_uq         = w->e_inflow_cum_uq;
     out->e_export_cum_uq         = w->e_export_cum_uq;
-    out->e_chem_env_uq           = e_env;
-    out->e_chem_cells_uq         = e_cell;
-    out->e_chem_organelles_uq    = e_org;
-    out->e_pmf_total_uq          = e_pmf;
-    out->e_heat_local_uq         = e_hloc;
+    out->e_chem_env_uq           = (int64_t)e_env;
+    out->e_chem_cells_uq         = (int64_t)e_cell;
+    out->e_chem_organelles_uq    = (int64_t)e_org;
+    out->e_pmf_total_uq          = (int64_t)e_pmf;
+    out->e_heat_local_uq         = (int64_t)e_hloc;
     out->e_heat_radiated_sink_uq = w->e_heat_radiated_sink_uq;
     out->int_ledger_residual_uq  = e_res;
-    double denom = (double)(w->e_initial_uq + w->e_inflow_cum_uq);
-    out->relative_drift          = (denom > 0.0) ? (fabs((double)e_res) / denom) : 0.0;
+    double denom = (double)w->e_initial_uq + (double)w->e_inflow_cum_uq;
+    out->relative_drift          = (denom > 0.0) ? (fabs((double)e_res128) / denom) : 0.0;
     out->second_law_violations   = w->second_law_violations;
 }
