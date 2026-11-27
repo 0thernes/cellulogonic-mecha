@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.5.0 — Technical Architecture & ABI Specification
+# CELLULOGONIC MECHA v1.7.0 — Technical Architecture & ABI Specification
 
 ## 1. Four-Build Ecosystem Architecture
 
@@ -16,7 +16,7 @@
 └───────────────────────────────▲────────────────────────────────────────────┘
                                 │ cellulogonic_project_asmodensius_112()
 ┌───────────────────────────────┴────────────────────────────────────────────┐
-│ Build 2 · 3D CELLULAR ENGINE (CELLULOGONIC MECHA v1.5.0 — THIS REPOSITORY) │
+│ Build 2 · 3D CELLULAR ENGINE (CELLULOGONIC MECHA v1.7.0 — THIS REPOSITORY) │
 │ Continuous 3D Off-Lattice Fluid · Polymorphic Breathing · GHz Microtubules │
 │ 8-Species 19-Rxn Chemoton · Canham-Helfrich Bilayers · Mitchell Chemiosm.  │
 │ Nested Primary/Secondary Endosymbiosis · Levin Bioelectric 3D Colonies     │
