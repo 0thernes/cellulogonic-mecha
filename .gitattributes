@@ -19,6 +19,8 @@ justfile text eol=lf
 *.mp4 binary
 *.woff binary
 *.woff2 binary
+*.tsr binary
+*.ots binary
 
 # Generated or vendored files: hide from language stats and collapse in diffs
 llms-full.txt linguist-generated=true

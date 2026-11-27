@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem VI: 3D Off-Lattice Cytoskeletal Nanomechanics,
+  CELLULOGONIC MECHA v1.7.0 — Theorem VI: 3D Off-Lattice Cytoskeletal Nanomechanics,
   Overdamped Stokes Hydrodynamics, Soft-Body Momentum Conservation, Actomyosin
   Expansion-Contraction Work Bounds, & Stateful Fröhlich–Pokorný GHz Microtubule Coherence.
 

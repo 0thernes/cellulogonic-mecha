@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Pure Lean 4.35.0 Formal Verification (Zero Mathlib)
+  CELLULOGONIC MECHA v1.7.0 — Pure Lean 4.35.0 Formal Verification (Zero Mathlib)
   Module 8: Continuum Biomechanics, XPBD Numerical Dissipation, Carcass-to-Detritus
   100% Mass Conservation, Maternal Yolk Cleavage Enthalpy Conservation, &
   Biotensegrity Quadratic Elastic Strain Energy Non-Negativity (C59–C62)
@@ -89,12 +89,12 @@ private theorem int_sq_nonneg (x : Int) : x * x ≥ 0 := by
     rw [heq]
     exact Int.mul_nonneg hn hn
 
-/-- C62 (Biotensegrity Quadratic Elastic Strain Energy Non-Negativity). -/
+/-- C62 (Biotensegrity Quadratic Elastic Strain Energy Non-Negativity — literal-only
+    `k * 0 * 0 = 0` conjunct removed in v1.7.0). -/
 public theorem C62_biotensegrity_elastic_nonneg
     (k dx dy dz : Int) (hk : k ≥ 0) :
     k * dx * dx ≥ 0 ∧
-    k * (dx * dx + dy * dy + dz * dz) ≥ 0 ∧
-    k * 0 * 0 = 0 := by
+    k * (dx * dx + dy * dy + dz * dz) ≥ 0 := by
   have hdx : dx * dx ≥ 0 := int_sq_nonneg dx
   have hdy : dy * dy ≥ 0 := int_sq_nonneg dy
   have hdz : dz * dz ≥ 0 := int_sq_nonneg dz
@@ -102,7 +102,7 @@ public theorem C62_biotensegrity_elastic_nonneg
   have hAssoc : k * dx * dx = k * (dx * dx) := Int.mul_assoc k dx dx
   have hSum : dx * dx + dy * dy + dz * dz ≥ 0 := by omega
   have h3 : k * (dx * dx + dy * dy + dz * dz) ≥ 0 := Int.mul_nonneg hk hSum
-  refine ⟨?_, h3, by simp⟩
+  refine ⟨?_, h3⟩
   rw [hAssoc]
   exact h1
 

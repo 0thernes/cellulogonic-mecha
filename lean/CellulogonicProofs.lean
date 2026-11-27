@@ -13,12 +13,12 @@ public import CellulogonicProofs.NonVacuity
 public import CellulogonicProofs.AdversarialTests
 
 /-!
-# CELLULOGONIC MECHA v1.6.0 — Root Formal Verification Library (`CellulogonicProofs.lean`)
+# CELLULOGONIC MECHA v1.7.0 — Root Formal Verification Library (`CellulogonicProofs.lean`)
 
-Aggregates all 11 pure Lean 4.35.0 `module` files (`Spec` + 8 core theorem modules +
-`NonVacuity` + `AdversarialTests`, totaling 78 machine-checked theorems: `T01`–`T58`,
-`C59`–`C62`, `NV01`–`NV08`, `AT01`–`AT08`), with zero Mathlib dependencies, zero `sorry`,
-zero `native_decide`, `autoImplicit = false`, and `relaxedAutoImplicit = false`.
+Aggregates all 10 proof modules + `Spec.lean` (15 `.lean` files in `lean/`, totaling 78
+machine-checked theorems about `Spec.lean`: `T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`, `AT01`–`AT08`),
+with zero Mathlib dependencies, zero `sorry`, zero `native_decide`, `autoImplicit = false`,
+and `relaxedAutoImplicit = false`.
 
 Axiom auditing (`#print axioms`) is run exclusively via standalone `VerifyAxioms.lean`
 (`lake env lean VerifyAxioms.lean`) so library builds emit zero stdout noise while every

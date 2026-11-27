@@ -43,9 +43,9 @@ def prop_check(name: str, trials: int, fn) -> None:
 
 
 def main() -> None:
-    print("=== CELLULOGONIC MECHA v1.6.0 — Property-Based Invariant & Native C11 Differential Suite (B10) ===")
+    print("=== CELLULOGONIC MECHA v1.7.0 — Property-Based Invariant & Native C11 Differential Suite (B10) ===")
 
-    # 1. Canham-Helfrich Sextic Minimax Polynomial Identity (Lean T16)
+    # 1. Elementary Sextic Polynomial Identity for Cube/Square Vesicle Splits (Lean T16)
     def check_sextic(rng: random.Random) -> bool:
         x = rng.randint(1, 500)
         y = rng.randint(1, 500)
@@ -53,7 +53,7 @@ def main() -> None:
         rhs = (x - y) ** 2 * (x**4 + 2 * x**3 * y + 2 * x * y**3 + y**4)
         return lhs == rhs and (lhs > 0 if x != y else lhs == 0)
 
-    prop_check("canham_helfrich_sextic_minimax_T16", 600, check_sextic)
+    prop_check("canham_helfrich_sextic_T16", 600, check_sextic)
 
     # 2. 4-Solvent 19-Reaction Exact Mass, 1st-Law & Strict 2nd-Law Closure (Lean T01-T03)
     MASS = (4, 2, 6, 4, 8, 12, 16, 2)

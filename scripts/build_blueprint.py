@@ -21,16 +21,16 @@ REPO_URL = "https://github.com/0thernes/cellulogonic-mecha"
 
 MODULES = [
     ("Spec", "lean/CellulogonicProofs/Spec.lean", "Shared Definitions", "§2–§7", 0, "#38e8c6"),
-    ("StoichiometryThermo", "lean/CellulogonicProofs/StoichiometryThermo.lean", "Group I: Mass, 1st & Strict 2nd Law", "§2 (Thm I)", 10, "#56ccf2"),
-    ("MembraneGeometry", "lean/CellulogonicProofs/MembraneGeometry.lean", "Group II: Canham-Helfrich Sextic", "§3 (Thm II)", 8, "#6ee7b7"),
-    ("BioenergeticsEndosymbiosis", "lean/CellulogonicProofs/BioenergeticsEndosymbiosis.lean", "Group III: Lane 1/R & EGT", "§4 (Thm III)", 9, "#a78bfa"),
-    ("ChemiosmosisAutopoiesis", "lean/CellulogonicProofs/ChemiosmosisAutopoiesis.lean", "Group IV: c-Ring, Bioelectric, COVI", "§4–§5 (Thm IV)", 9, "#fbbf24"),
-    ("EutelicOrganogenesis", "lean/CellulogonicProofs/EutelicOrganogenesis.lean", "Group V: 3D Lumen, Bioglass, Eutely", "§5 (Thm V)", 8, "#fb7185"),
-    ("CytoskeletonNanomechanics", "lean/CellulogonicProofs/CytoskeletonNanomechanics.lean", "Group VI: Stokes, Prolate, Fröhlich", "§5 (Thm VI)", 6, "#34d399"),
-    ("MorphogeneticGRN", "lean/CellulogonicProofs/MorphogeneticGRN.lean", "Group VII: French-Flag, Hippo, CPG", "§6 (Thm VII)", 8, "#60a5fa"),
-    ("ContinuumBiomechanics", "lean/CellulogonicProofs/ContinuumBiomechanics.lean", "Group VIII: XPBD, Carcass, Yolk", "§7 (Thm VIII)", 4, "#f472b6"),
-    ("NonVacuity", "lean/CellulogonicProofs/NonVacuity.lean", "Non-Vacuity Witnesses (NV01–NV08)", "§8.1", 8, "#f59e0b"),
-    ("AdversarialTests", "lean/CellulogonicProofs/AdversarialTests.lean", "Adversarial Refutations (AT01–AT08)", "§8.2", 8, "#f87171"),
+    ("StoichiometryThermo", "lean/CellulogonicProofs/StoichiometryThermo.lean", "Group I: Mass, 1st & Strict 2nd Law", "§3 (Thm I)", 10, "#56ccf2"),
+    ("MembraneGeometry", "lean/CellulogonicProofs/MembraneGeometry.lean", "Group II: Canham-Helfrich Sextic", "§3 (Thm II)", 9, "#6ee7b7"),
+    ("BioenergeticsEndosymbiosis", "lean/CellulogonicProofs/BioenergeticsEndosymbiosis.lean", "Group III: Lane 1/R & Bookkeeping", "§3 (Thm III)", 8, "#a78bfa"),
+    ("ChemiosmosisAutopoiesis", "lean/CellulogonicProofs/ChemiosmosisAutopoiesis.lean", "Group IV: c-Ring, Bioelectric, COVI", "§3 (Thm IV)", 9, "#fbbf24"),
+    ("EutelicOrganogenesis", "lean/CellulogonicProofs/EutelicOrganogenesis.lean", "Group V: 3D Lumen, Bioglass & Helpers", "§3 (Thm V)", 8, "#fb7185"),
+    ("CytoskeletonNanomechanics", "lean/CellulogonicProofs/CytoskeletonNanomechanics.lean", "Group VI: Stokes, Prolate, Fröhlich", "§3 (Thm VI)", 6, "#34d399"),
+    ("MorphogeneticGRN", "lean/CellulogonicProofs/MorphogeneticGRN.lean", "Group VII: French-Flag, Hippo, CPG", "§3 (Thm VII)", 8, "#60a5fa"),
+    ("ContinuumBiomechanics", "lean/CellulogonicProofs/ContinuumBiomechanics.lean", "Group VIII: XPBD, Carcass, Yolk", "§3 (Thm VIII)", 4, "#f472b6"),
+    ("NonVacuity", "lean/CellulogonicProofs/NonVacuity.lean", "Non-Vacuity Witnesses (NV01–NV08)", "§3 (Thm IX)", 8, "#f59e0b"),
+    ("AdversarialTests", "lean/CellulogonicProofs/AdversarialTests.lean", "Adversarial Refutations (AT01–AT08)", "§3 (Thm X)", 8, "#f87171"),
 ]
 
 NAMESPACE_TO_MODULE = {
@@ -159,7 +159,7 @@ def main() -> None:
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     theorems = parse_axioms()
     comp = json.loads((ROOT / "lean" / "comparator.json").read_text(encoding="utf-8"))
-    comp_count = len(comp.get("theorems", []))
+    comp_count = len(comp.get("theorem_names", []))
     def_count = len(comp.get("definition_names", []))
 
     SITE.mkdir(parents=True, exist_ok=True)
@@ -277,12 +277,13 @@ applyFilter();
   <main class="wrap">
     <header class="hero">
       <h1>CELLULOGONIC MECHA <span>v{html.escape(version)} · Interactive Proof Blueprint &amp; Research Portal</span></h1>
-      <p>Clean-room 3D developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable C11 + runtime-dispatched AVX2 (Linux x86-64, Windows x86-64, macOS ARM64), paired with <strong>{len(theorems)} Pure Lean 4.35.0 formal theorems</strong> verified across six independent proof kernels under the Palomar Challenge/Solution contract.</p>
+      <p>Clean-room 3D developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable C11 + runtime-dispatched AVX2 (Linux x86-64, Windows x86-64, macOS ARM64), paired with <strong>{len(theorems)} Pure Lean 4.35.0 theorems about its integer specification model</strong> (<code>Spec.lean</code>, in 10 proof modules + <code>Spec.lean</code>, 15 <code>.lean</code> files; including 5 explicitly annotated bookkeeping arithmetic helpers) checked in CI under 6 kernel checks (Lean default &amp; paranoid modes + 4 independent checkers: <code>lean4lean</code>, <code>nanoda_bin</code>, <code>con-leche</code>, <code>con-ron</code>) under the Palomar Challenge/Solution contract.</p>
       <div class="pills">
         <span class="pill">Lean 4.35.0 · 0 Mathlib · 0 sorry</span>
         <span class="pill">{comp_count} Comparator Theorems · {def_count} Pinned Defs</span>
         <span class="pill">26 C11 Gates · 8/8 Mutants · 3-OS Parity</span>
         <span class="pill">0/1,900 Mega-Atlas v2.6.0 Problems Retired (Honest Scope)</span>
+        <span class="pill">RFC 3161 + Bitcoin OTS · FAIR / Croissant / RO-Crate</span>
       </div>
       <div class="cta-row">
         <a class="btn primary" href="{REPO_URL}">GitHub Repository</a>
@@ -320,8 +321,8 @@ applyFilter();
       <h2 id="art-h">Verification Architecture &amp; Honest Scientific Boundaries</h2>
       <div class="grid2">
         <article class="mini">
-          <h3>6-Kernel Palomar Verification</h3>
-          <p>Isolated <code>Challenge.lean</code> (importing only <code>Spec.lean</code>) is matched strictly against sorry-free <code>Solution.lean</code> via <code>lake comparator --paranoid</code>, plus live negative kernel tamper rejection in CI.</p>
+          <h3>6 Kernel Checks (Palomar Contract)</h3>
+          <p>Isolated <code>Challenge.lean</code> (importing only <code>Spec.lean</code>) is matched strictly against sorry-free <code>Solution.lean</code> via <code>lake comparator --paranoid</code> across Lean default &amp; paranoid modes plus <code>lean4lean</code>, <code>nanoda_bin</code>, <code>con-leche</code>, and <code>con-ron</code>, with live negative kernel tamper rejection in CI. These proofs verify <code>Spec.lean</code> only, not <code>src/*.c</code>.</p>
         </article>
         <article class="mini">
           <h3>Cross-OS Bit-Exact C11 Engine</h3>

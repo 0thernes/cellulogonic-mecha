@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 Alexander Stephen Donahue
-"""Runnable Example 01: Zero-Blueprint 5-Fate 3D Clonal Embryogenesis Verification (v1.6.0)."""
+"""Runnable Example 01: Zero-Blueprint 5-Fate 3D Clonal Embryogenesis Verification (v1.7.0)."""
 
 from __future__ import annotations
 

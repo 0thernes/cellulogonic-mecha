@@ -1,47 +1,51 @@
-# CELLULOGONIC MECHA v1.6.0 — Complete Agent & Reviewer Context Bundle (llms-full.txt)
+# CELLULOGONIC MECHA v1.7.0 — Complete LLM Reference Bundle (llms-full.txt)
 
 
 ---
 
-<!-- SOURCE: llms.txt (Overview) -->
+<!-- SOURCE: llms.txt -->
 
-# CELLULOGONIC MECHA (v1.6.0)
+# CELLULOGONIC MECHA (v1.7.0)
 
-> Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels (`ABI 0x00010600`), paired with 78 six-kernel Pure Lean 4.35.0 formal proofs (`AT01`–`AT08` + live tamper rejection) and a 26-gate / 8-mutant falsification + 1,000-case ABI fuzz harness.
+> Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels (`ABI 0x00010700`), paired with 78 Pure Lean 4.35.0 theorems about its integer specification model (`Spec.lean`, in 10 proof modules + `Spec.lean`, 15 `.lean` files; 6 kernel checks + `6/6` live elaboration & `sorry`-tamper rejection) and a 26-gate / 8-mutant falsification + 1,000-case ABI fuzz harness.
 
 Author: Alexander Stephen Donahue (Independent Researcher, Spokane, WA, USA; ORCID 0009-0006-8168-9648).
 License: Apache-2.0 (code) / CC-BY-4.0 (papers & documentation; REUSE 3.x / SPDX).
 Status: active. Independent research preprint, not peer-reviewed. Zero (0/1,900) overarching Mega-Atlas v2.6.0 open problems retired.
+Software Heritage SWHID: swh:1:snp:8c1696436104a888897ce3b97867eda983d56160
 Blueprint Portal: https://0thernes.github.io/cellulogonic-mecha/
 
 ## Key Entrypoints
-- [README.md](README.md): Overview, Quickstart, Usage, verbatim 78-theorem Lean 4.35.0 `#print axioms` audit
+- [README.md](README.md): Overview, Quickstart, Usage, verbatim 78-theorem Lean 4.35.0 `#print axioms` audit, AI-Contribution Disclosure & CRediT
 - [AGENTS.md](AGENTS.md): Canonical engineering rules, commands, and verification baseline
 - [CLAIMS.md](CLAIMS.md): Numbered claims ledger with epistemic tiers and explicit falsifiers
 - [SUBMISSION_READINESS.md](SUBMISSION_READINESS.md): 43-item Defensible Independent AI Research Playbook v1.3 matrix
 - [LIMITATIONS.md](LIMITATIONS.md): Threats to validity and literal-vs-metaphor boundary
+- [ERRATA.md](ERRATA.md): Historical corrections ledger, 2026-11-26 external statement audit, and `v1.7.0` resolutions
 - [REPLICATION.md](REPLICATION.md): Clean-clone reproduction protocol and dated replication log
-- [paper/main.tex](paper/main.tex): AMS-LaTeX v1.6.0 white paper (`dist/Donahue_2026_cellulogonic_mecha.pdf`, 36 live Crossref retraction-free DOIs)
-- [lean/comparator.json](lean/comparator.json): Six-kernel Palomar Challenge/Solution specification (78 theorems + 12 pinned Spec definitions)
-- [docs/statement-fidelity.md](docs/statement-fidelity.md): Lean 4 <-> exact C11 symbol fidelity audit matrix
+- [paper/main.tex](paper/main.tex): AMS-LaTeX v1.7.0 white paper (`dist/Donahue_2026_cellulogonic_mecha.pdf`, 36/36 live Crossref title/author/retraction-audited DOIs)
+- [lean/comparator.json](lean/comparator.json): Palomar Challenge/Solution specification (78 `Spec.lean` theorems + 12 pinned `Spec` definitions, 6 kernel checks)
+- [docs/statement-fidelity.md](docs/statement-fidelity.md): Lean 4 <-> exact C11 symbol fidelity matrix & explicit bookkeeping helper catalog
 - [docs/MEGA_ATLAS_CROSSCHECK.md](docs/MEGA_ATLAS_CROSSCHECK.md): Non-retirement cross-check (`0/1,900` retired across 13 verbatim `v2.6.0` IDs)
-- [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md): Transparent AI-assistance disclosure and CRediT authorship
+- [docs/DATASHEET.md](docs/DATASHEET.md): Gebru et al. (2021) Datasheet for archived empirical datasets & logs
+- [croissant.json](croissant.json) · [ro-crate-metadata.json](ro-crate-metadata.json) · [codemeta.json](codemeta.json): Machine-readable FAIR metadata
+- [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md): Transparent AI-Contribution Disclosure, CRediT authorship, and COI statement
 
 
 ---
 
-<!-- SOURCE: CLAIMS.md (Claims Ledger) -->
+<!-- SOURCE: CLAIMS.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Numbered Claims Ledger (`CLAIMS.md`)
 
-Every headline claim made by **CELLULOGONIC MECHA `v1.6.0`** is indexed below with its epistemic tier, exact reproducible verification command, primary archived artifact, and explicit refutation condition (**what would prove us wrong** — Build Standard `B04` & `B42`).
+Every headline claim made by **CELLULOGONIC MECHA `v1.7.0`** is indexed below with its epistemic tier, exact reproducible verification command, primary archived artifact, and explicit refutation condition (**what would prove us wrong** — Build Standard `B04` & `B42`).
 
 | ID | Epistemic Tier | Exact Claim Statement | Verification Command | Primary Artifact | What Would Prove Us Wrong (Refutation Condition) |
 |---|---|---|---|---|---|
-| **C1** | `kernel-checked` | All **78 Pure Lean 4.35.0 theorems** (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`, `AT01`–`AT08`) across 11 `module` files compile with `0 sorry` in `Solution`, `0 native_decide`, `autoImplicit = false`, strictly within `[propext, Classical.choice, Quot.sound]`, pass independent 6-kernel replay (`12` pinned Spec definitions), and live negative tamper tests confirm kernel rejection of `sorry`, custom `axiom`, and `native_decide`. | `cd lean && lake build && lake build Challenge && lake env lean VerifyAxioms.lean` + `python3 scripts/check_readme_axioms.py` + `python3 scripts/test_lean_negative.py` | [`results/lean4-audit.txt`](results/lean4-audit.txt), [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt), [`lean/comparator.json`](lean/comparator.json) | Any of the 6 kernels rejects `Solution`, `lake comparator` rejects `Challenge`↔`Solution`, any unpermitted axiom appears, `test_lean_negative.py` fails to reject an exploit, or `check_readme_axioms.py` fails. |
+| **C1** | `kernel-checked` | **78 Lean 4.35.0 theorems** (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`, `AT01`–`AT08`) about the integer model in `lean/CellulogonicProofs/Spec.lean`, in **10 proof modules + `Spec.lean` (15 `.lean` files)**, compile with `0 sorry` in `Solution`, `0 native_decide`, `autoImplicit = false`, with axioms within `[propext, Classical.choice, Quot.sound]`. They are kernel-checked by Lean (`lake build`, `leanchecker`, `leanchecker-paranoid`) and accepted in CI by **6 kernel checks** (Lean default & paranoid modes + 4 independent checkers: `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`; `12` pinned `Spec` definitions); live negative elaboration & `sorry`-tamper tests (`6/6`) confirm rejection of false claims, `sorry`, custom `axiom`, and `native_decide`. Scope: the theorems concern `Spec.lean` only, not `src/*.c`. Five statements (`T25`, `T27`, `T40`, `T41`, `T44`) are explicitly annotated arithmetic bookkeeping helpers; literal-only conjuncts previously in `T41`, `T54`, `C62`, `NV08` were removed in `v1.7.0`; `T16` is the elementary polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for $x, y > 0$, strict for $x \ne y$, with explicit equality iff $x = y$; `T39`/`T43` document `Nat` clamping and prove non-underflow conservation (plus a signed `Int` companion in `T43`). | `cd lean && lake build && lake build Challenge && lake env lean VerifyAxioms.lean` + `python3 scripts/check_readme_axioms.py` + `python3 scripts/test_lean_negative.py` | [`results/lean4-audit.txt`](results/lean4-audit.txt), [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt), [`lean/comparator.json`](lean/comparator.json) | Any of the 6 kernel checks rejects `Solution`, `lake comparator` rejects `Challenge`↔`Solution`, any unpermitted axiom appears, `test_lean_negative.py` fails to reject any of 6 exploits, or `check_readme_axioms.py` fails. |
 | **C2** | `program-audited` | Native C11 builds (portable `-march=x86-64` + isolated runtime AVX2 target on Win64 `clang 23.1.0 -Werror` & Linux `gcc 13.3.0`, plus macOS ARM64 in CI) pass **26 / 26 falsification gates** (`G01`–`G26`), catch **8 / 8 planted negative mutants** (`M1`–`M8`, incl. simulation-level `M3`), pass 3-module zero-heap symbol audit, survive **1,000 / 1,000 adversarial ABI/CMBIN fuzz cases** + `libFuzzer` + ASan/UBSan, maintain `0 amu` / `0 uq` / `0` 2nd-law / `0` post-warmup allocs, and pass `2,720 / 2,720` randomized property & native C11 checks. | `.\build.ps1` (Win64) or `./build_linux.sh` (Linux/macOS) + `python3 scripts/prop_check.py` | [`results/11_falsification_win64.txt`](results/11_falsification_win64.txt), [`results/11_falsification_linux.txt`](results/11_falsification_linux.txt), [`test/fuzz_cmbin_abi.c`](test/fuzz_cmbin_abi.c), [`scripts/prop_check.py`](scripts/prop_check.py) | Any gate (`G01`–`G26`) fails, any mutant (`M1`–`M8`) survives, fuzz/sanitizer crashes, any ledger residual is non-zero, `post_warmup_allocs > 0`, or any property trial falsifies an invariant. |
-| **C3** | `program-audited` | Cross-OS, cross-compiler, and cross-ISA executions (Win64 `clang 23.1.0` + Linux `gcc 13.3.0`, `SIMD_AVX2` vs. `SCALAR_REF`, plus macOS ARM64 `clang` in CI, `ABI 0x00010600`) produce **0-bit identical complete-state SHA-256** (`83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe`) over 300 epochs (`50,243` cell steps, `1,224,310` reactions, seed `5000`). | `.\bin\cellulogonic.exe bench --epochs 300 --size 32 --seed 5000` | [`results/02_bench_win64.txt`](results/02_bench_win64.txt), [`results/02_bench_linux.txt`](results/02_bench_linux.txt), [`docs/benchmarks.md`](docs/benchmarks.md) | Any single hex nibble differs between `SIMD_AVX2` and `SCALAR_REF` or across Windows x86-64, Linux x86-64, and macOS ARM64 on the same seed. |
+| **C3** | `program-audited` | Cross-OS, cross-compiler, and cross-ISA executions (Win64 `clang 23.1.0` + Linux `gcc 13.3.0`, `SIMD_AVX2` vs. `SCALAR_REF`, plus macOS ARM64 `clang` in CI, `ABI 0x00010700`) produce **0-bit identical complete-state SHA-256** (`83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe`) over 300 epochs (`50,243` cell steps, `1,224,310` reactions, seed `5000`). | `.\bin\cellulogonic.exe bench --epochs 300 --size 32 --seed 5000` | [`results/02_bench_win64.txt`](results/02_bench_win64.txt), [`results/02_bench_linux.txt`](results/02_bench_linux.txt), [`docs/benchmarks.md`](docs/benchmarks.md) | Any single hex nibble differs between `SIMD_AVX2` and `SCALAR_REF` or across Windows x86-64, Linux x86-64, and macOS ARM64 on the same seed. |
 | **C4** | `empirical` | Starting from `0` cells (`seed 5000`), abiotic soup condenses `1,707` vesicles peaking at `603` living cells, `107` organelles, and `COVI = 88.92 (S6)`; starting from `8` identical-DNA blastomeres, 3D embryogenesis forms `47` cells spanning **all 5 fates** (`P=4, Ec=8, N=18, M=5, G=6, Gm=6`), `81.1%` peak Steinberg sort, `288` wired / `254` pruned axons, `674` CPG pulses, and exact Z-translation invariance (`G23`). | `.\bin\cellulogonic.exe abiogenesis --epochs 240 --size 32 --seed 5000` & `.\bin\cellulogonic.exe embryo --epochs 200 --size 32 --seed 5000` | [`results/03_protocell_abiogenesis.txt`](results/03_protocell_abiogenesis.txt), [`results/12_embryogenesis_grn_3d.txt`](results/12_embryogenesis_grn_3d.txt) | Deterministic replay diverges from SHA `343a893d...` / `cafc83d0...`, any fate count drops to `0`, or Z-shifted embryogenesis yields a different lineage/fate trajectory. |
 | **C5** | `empirical` | Across `N = 24` locked paired seeds (`5000..5023`, 180 epochs), all four pre-registered hypotheses (`H1`–`H4`) win **24 / 24 unanimously** (`96 / 96` total, $p_{\mathrm{Holm}} = 0.00040 \le 0.05$, Cohen's $d_z \in [1.468, 3.560]$ with positive 95% bootstrap CIs; `9.90×` endosymbiotic max volume, `73.5×` TDP survival). | `.\bin\cellulogonic.exe stats --pairs 24 --epochs 180 --size 32` | [`results/09_paired_stats_n24.txt`](results/09_paired_stats_n24.txt), [`docs/preregistration.md`](docs/preregistration.md) | Replay produces any $p_{\mathrm{Holm}} > 0.05$ or loses directionality (`Mean A <= Mean B`) on any pre-registered arm. |
 | **C6** | `empirical` | From neutral uniform (`25.0%`) initial genomes under unified per-voxel `photon_flux_uq = 800 uq`, de-novo solvent evolution adapts to `84.2%` Terran, `77.0%` Titan (`c-ring 4.17 >= 4`), `87.1%` Vent, and `77.5%` Venus; Terran (`92.2%`) → Venus transplant sweeps from `12.4%` (`+20 ep`) to `31.6%` (`+220 ep`, `COVI = 77.14`, `0` drift). | `.\bin\cellulogonic.exe xenocell --epochs 240 --size 32 --seed 5000` | [`results/05_xenocellular_transplants.txt`](results/05_xenocellular_transplants.txt) | Neutral-genome replay fails to exceed `50%` adaptation, Titan mean c-ring falls below `4.0`, or Terran→Venus transplant fails to adapt above shock baseline. |
@@ -51,15 +55,15 @@ Every headline claim made by **CELLULOGONIC MECHA `v1.6.0`** is indexed below wi
 
 ---
 
-<!-- SOURCE: SUBMISSION_READINESS.md (Playbook v1.3 Readiness) -->
+<!-- SOURCE: SUBMISSION_READINESS.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Submission Readiness Matrix — Defensible Independent AI Research Playbook v1.3
 
-**Repository:** `0thernes/cellulogonic-mecha` (`v1.6.0`)  
+**Repository:** `0thernes/cellulogonic-mecha` (`v1.7.0`)  
 **Author:** Alexander Stephen Donahue — Independent Researcher, Spokane, WA, USA · ORCID [`0009-0006-8168-9648`](https://orcid.org/0009-0006-8168-9648)  
 **Assessment Date:** 2026-11-26  
-**Scope Statement:** Independent research preprint and executable simulation + formal-proof artifact. **Not peer-reviewed.** Zero (`0 / 1,900`) overarching [Mega-Atlas v2.6.0](docs/MEGA_ATLAS_CROSSCHECK.md) open problems are claimed solved or retired.
+**Scope Statement:** Independent research preprint and executable simulation + formal-proof artifact. **Not peer-reviewed.** Zero (`0 / 1,900`) overarching [Mega-Atlas v2.6.0](docs/MEGA_ATLAS_CROSSCHECK.md) open problems are claimed solved or retired. **Software Heritage SWHID:** `swh:1:snp:8c1696436104a888897ce3b97867eda983d56160`.
 
 ---
 
@@ -70,18 +74,18 @@ Every headline claim made by **CELLULOGONIC MECHA `v1.6.0`** is indexed below wi
 | 1 | Dedicated public repository with clean git history on `main` | **DONE** | `https://github.com/0thernes/cellulogonic-mecha`, branch `main` |
 | 2 | Dual open license (code + docs/preprint) & REUSE/SPDX | **DONE** | `LICENSE` (Apache-2.0), `LICENSE-DOCS` (CC-BY-4.0), `LICENSES/`, `REUSE.toml`, SPDX headers |
 | 3 | Persistent author identity & ORCID | **DONE** | Alexander Stephen Donahue, Independent Researcher, ORCID `0009-0006-8168-9648` |
-| 4 | Machine-readable citation metadata | **DONE** | `CITATION.cff` (`v1.6.0`), `CITATION.bib`, `.zenodo.json` |
-| 5 | Transparent AI-assistance disclosure (code, proofs, prose) | **DONE** | `docs/AI_DISCLOSURE.md`, `paper/main.tex` Acknowledgments, `.zenodo.json` |
-| 6 | Honest claim-boundary & real-vs-metaphor limitations | **DONE** | `LIMITATIONS.md`, `CLAIMS.md` (C1–C8), `docs/statement-fidelity.md` |
+| 4 | Machine-readable citation & FAIR metadata + Gebru Datasheet | **DONE** | `CITATION.cff` (`v1.7.0`), `CITATION.bib`, `.zenodo.json`, `codemeta.json`, `croissant.json`, `ro-crate-metadata.json`, `docs/DATASHEET.md` |
+| 5 | Transparent AI-assistance disclosure, CRediT & COI (code, proofs, prose) | **DONE** | `README.md`, `docs/AI_DISCLOSURE.md`, `paper/main.tex` §7, `paper/WHITE_PAPER.md`, `.zenodo.json` |
+| 6 | Honest claim-boundary & real-vs-metaphor limitations | **DONE** | `LIMITATIONS.md`, `CLAIMS.md` (C1–C8), `docs/statement-fidelity.md`, `ERRATA.md` |
 | 7 | Explicit falsification criteria ("what would prove us wrong") | **DONE** | `CLAIMS.md` falsification column + 8 planted mutants `M1`–`M8` |
-| 8 | Zero-sorry, zero-custom-axiom machine-checked proofs | **DONE** | `lean/` — **78/78** Pure Lean 4.35.0 declarations strictly within `{propext, Classical.choice, Quot.sound}` |
+| 8 | Zero-sorry, zero-custom-axiom machine-checked proofs (`Spec.lean`) | **DONE** | `lean/` — **78/78** Pure Lean 4.35.0 declarations (10 proof modules + `Spec.lean`, 15 `.lean` files; 5 annotated bookkeeping helpers) strictly within `{propext, Classical.choice, Quot.sound}` |
 | 9 | Pinned toolchain & manifest (`lean-toolchain`, `lake-manifest.json`) | **DONE** | `lean/lean-toolchain` (`v4.35.0`), `lean/lake-manifest.json`, zero Mathlib |
 | 10 | Statement-only Challenge vs Solution separation (Palomar) | **DONE** | `lean/Challenge.lean` (imports ONLY `Spec.lean`) vs `lean/Solution.lean` |
-| 11 | Multi-kernel verification (`lean4lean`, `nanoda`, `comparator`, `leanchecker`) | **DONE** | `.github/workflows/ci.yml` (`lean4-six-kernel`) + `results/lean4-multi-kernel.txt` |
+| 11 | Multi-kernel checks (Lean default/paranoid + 4 independent checkers) | **DONE** | `.github/workflows/ci.yml` (`lean4-six-kernel`: Lean default & paranoid + `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`) + `results/lean4-multi-kernel.txt` |
 | 12 | Adversarial false-variant refutations (`¬P`) inside formal proofs | **DONE** | `lean/CellulogonicProofs/AdversarialTests.lean` (`AT01`–`AT08` across Groups I–VIII) |
 | 13 | Non-vacuity witnesses for every quantified theorem group | **DONE** | `lean/CellulogonicProofs/NonVacuity.lean` (`NV01`–`NV08`) |
-| 14 | Live negative kernel rejection test (proves gate catches `sorry`/axioms) | **DONE** | `scripts/test_lean_negative.py` + CI tampered-`Solution` `lake comparator --paranoid` failure gate |
-| 15 | Statement-fidelity matrix mapping formal defs <-> C11 <-> paper prose | **DONE** | `docs/statement-fidelity.md` + `lean/formalization.yaml` (v0.4 schema-validated) |
+| 14 | Live negative elaboration & kernel tamper rejection tests | **DONE** | `scripts/test_lean_negative.py` (`6/6` elaboration + `Spec` `sorry`-tamper + axiom checks) + CI tampered-`Solution` `lake comparator --paranoid` failure gate |
+| 15 | Statement-fidelity matrix mapping formal defs <-> C11 <-> paper prose | **DONE** | `docs/statement-fidelity.md` (with explicit bookkeeping helper table §2) + `lean/formalization.yaml` (v0.4 schema-validated) |
 | 16 | Verbatim `#print axioms` output reproduced in `README.md` & CI-diffed | **DONE** | `results/lean4-audit.txt`, `scripts/check_readme_axioms.py`, `diff -u` in CI |
 | 17 | Independent exact-arithmetic reference oracle (different language) | **DONE** | `reference/chemoton_oracle.py` (6,270 exact `fractions.Fraction` checks) |
 | 18 | Deterministic property-based testing across randomized inputs | **DONE** | `scripts/prop_check.py` (2,720 trials incl. randomized native C11 binary runs) |
@@ -93,14 +97,14 @@ Every headline claim made by **CELLULOGONIC MECHA `v1.6.0`** is indexed below wi
 | 24 | Zero post-warmup heap allocation audit (hot loop) | **DONE** | `G10` + 3-module `nm -u` audit (`chemoton_physics.o`, `cellular_world.o`, `metrology_covi.o`) |
 | 25 | Pre-registered quantitative hypotheses & ablation controls | **DONE** | `docs/preregistration.md` (H1–H4) + `results/09_paired_stats_n24.txt` |
 | 26 | Non-parametric permutation p-values, 95% CIs, effect sizes, FWER | **DONE** | 10,000 sign-flip permutations, 95% bootstrap CIs, Cohen's `dz`, Holm-Bonferroni (`p_Holm <= 0.05` asserted) |
-| 27 | Live Crossref citation & retraction audit (`0` fabricated, `0` retracted) | **DONE** | `scripts/check_citations.py` + `results/citation-audit.json` (all DOIs & URLs live-verified) |
-| 28 | Publication-quality AMS-LaTeX preprint PDF (0 overfull, 0 undef refs) | **DONE** | `paper/main.tex` -> `dist/Donahue_2026_cellulogonic_mecha.pdf` via Tectonic + visual page inspection |
+| 27 | Live Crossref citation reachability, title/author & retraction audit | **DONE** | `scripts/check_citations.py` (`v2`) + `results/citation-audit.json` (`36/36` DOIs live-verified, `36/36` title & author aligned, `0` retractions) |
+| 28 | Publication-quality AMS-LaTeX preprint PDF (0 overfull, 0 undef refs) | **DONE** | `paper/main.tex` -> `dist/Donahue_2026_cellulogonic_mecha.pdf` via Tectonic (`0` Overfull `\hbox`/`\vbox`) |
 | 29 | Clean-room deterministic arXiv source tarball (`mtime=0`, USTAR) | **DONE** | `dist/arxiv_submission.tar.gz` verified by clean-room Tectonic rebuild |
-| 30 | Interactive static proof blueprint / research portal (GitHub Pages) | **DONE** | `scripts/build_blueprint.py` + `.github/workflows/pages.yml` (`_site/`) |
-| 31 | Cryptographic SHA-256 manifests for all deliverables & data | **DONE** | `CHECKSUMS.sha256`, `data/MANIFEST.sha256`, CI `SHA256SUMS` |
-| 32 | Independent RFC 3161 Trusted Timestamp (TSA) of checksum manifest | **DONE** | `data/timestamps/CHECKSUMS.sha256.tsr` (DigiCert TSA, OpenSSL verified) |
+| 30 | Interactive static proof blueprint / research portal (GitHub Pages) | **DONE** | `scripts/build_blueprint.py` + `scripts/check_blueprint.py` + `.github/workflows/pages.yml` (`_site/`) |
+| 31 | Cryptographic SHA-256 manifests for all deliverables & data | **DONE** | `CHECKSUMS.sha256` (LF-normalized), `data/MANIFEST.sha256`, CI `SHA256SUMS` |
+| 32 | Dual Independent Timestamps: DigiCert RFC 3161 + Bitcoin OTS | **DONE** | `scripts/stamp_timestamps.py`, `data/timestamps/CHECKSUMS.sha256.tsr` (DigiCert TSA) + `data/timestamps/CHECKSUMS.sha256.ots` (3-calendar Bitcoin OTS), verified in CI |
 | 33 | SLSA build provenance attestation (`attest-build-provenance@v4`) | **DONE** | `.github/workflows/ci.yml` & `.github/workflows/release.yml` (Sigstore Rekor) |
-| 34 | Offsite archival registration (`0thernes-research-archive` + SWH note) | **DONE** | Registered as `0TH-BUILD-001` in `0thernes/0thernes-research-archive`; SWH Save Code Now URL documented |
+| 34 | Offsite archival registration (`0thernes-research-archive` + SWHID) | **DONE** | Registered as `0TH-BUILD-001` in `0thernes/0thernes-research-archive`; SWHID `swh:1:snp:8c1696436104a888897ce3b97867eda983d56160` |
 | 35 | Clean-clone replication protocol & dated replication log | **DONE** | `REPLICATION.md` (`just reproduce`, dated Win64/WSL2/3-OS CI log; external human replication invited) |
 | 36 | Red-team adversarial audit dossier & multi-cycle hardening log | **DONE** | `docs/reviews/2026-11-25-10-pass-red-team-audit.md` + `HARDENING_LOG.md` |
 | 37 | Security threat model & SHA-256-verified secret/vuln scanners | **DONE** | `docs/threat-model.md`, `SECURITY.md`, CI `gitleaks 8.30.1` + `osv-scanner 2.7.1` + `cppcheck` |
@@ -122,19 +126,19 @@ Every headline claim made by **CELLULOGONIC MECHA `v1.6.0`** is indexed below wi
 
 ---
 
-<!-- SOURCE: LIMITATIONS.md (Limitations & Real-vs-Metaphor) -->
+<!-- SOURCE: LIMITATIONS.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Limitations, Threats to Validity & Real-vs-Metaphor Boundary (`LIMITATIONS.md`)
 
-This document states clearly what **CELLULOGONIC MECHA `v1.6.0`** does **not** prove, where its abstractions diverge from physical wet-lab biology, and how its terminology maps to literal computation (Build Standard `B41`).
+This document states clearly what **CELLULOGONIC MECHA `v1.7.0`** does **not** prove, where its abstractions diverge from physical wet-lab biology, and how its terminology maps to literal computation (Build Standard `B41`).
 
 ## 1. Literal-vs-Metaphor Boundary Table
 
 | Term Used in Code / Paper | Literal Computational Reality Inside `cellulogonic-mecha` | What It Is **NOT** |
 |---|---|---|
 | **Chemoton (`S, X, M, E, L, P, T, W`)** | Exact `int64_t` counts of 8 coarse-grained molecular classes obeying 19 integer stoichiometric reactions (`R1`–`R15c`) with `0 amu` / `0 uq` residual, strict `q_r > 0`, and unified per-voxel `photon_rem_uq[i]`. | Not atomistic molecular dynamics, quantum chemistry, or wet-lab reaction kinetics. |
-| **Canham–Helfrich Bilayer (`Q = 100 V^2 / L^3`)** | Cleared-denominator integer squared reduced-volume inequality governing symmetric fission, asymmetric budding, and osmotic lysis. | Not a continuous Helfrich curvature-elasticity PDE mesh solver. |
+| **Canham–Helfrich Bilayer (`Q = 100 V^2 / L^3`)** | Cleared-denominator integer squared reduced-volume inequality governing symmetric fission, asymmetric budding, and osmotic lysis (inspired by, not derived from, the Canham–Helfrich model; `T16` is an elementary polynomial inequality). | Not a continuous Helfrich curvature-elasticity PDE mesh solver. |
 | **Endosymbiosis / Organelles (`org[8]`)** | Up to 8 nested internal `CellOrganelle` structs carrying independent integer chemistry, PMF, and miniature operon copies. | Not a full genomic reconstruction of mitochondrial/chloroplast endosymbiosis. |
 | **Levin Bioelectricity (`V_m`)** | Integer/fixed-range compartment transmembrane potential `[-90, +40] mV` coupled across cadherin neighbors by conservative discrete gap-junction relaxation. | Not a Hodgkin–Huxley ion-channel electrophysiology model or proof of biological anatomical memory. |
 | **Fröhlich–Pokorný GHz Microtubules** | Classical deterministic integer relaxation ODE (`frohlichStep`, Lean `T48`) gated on metabolic ATP pumping (`sPump > sCrit`) with inverse-length frequency scaling (`T49`). | **Strictly NOT a quantum-consciousness, Orch-OR, or Bose–Einstein condensate claim.** |
@@ -144,9 +148,16 @@ This document states clearly what **CELLULOGONIC MECHA `v1.6.0`** does **not** p
 
 ## 2. Threats to Validity
 
-1. **Formal-vs-C11 Implementation Boundary:** Lean 4.35.0 (`lean/`) proves **78** exact mathematical theorems over the discrete specification (`Spec.lean`), **not** a machine-checked compiler verification of `src/*.c`. Runtime C11 safety and bit-exactness rest on `-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror`, portable `-march=x86-64` + isolated `target("avx2")` (plus macOS ARM64 in CI), 3-module static zero-heap hot-loop symbol audits, ASan/UBSan sanitizers, dual-mode standalone+`libFuzzer` `test/fuzz_cmbin_abi.c` (1,000 cases), clean-room `reference/chemoton_oracle.py` (`6,586` checks), `test/test_web_server.mjs` (13 tests), 26/26 falsification gates, 8/8 caught mutants, and 2,720 property checks.
+1. **Formal-vs-C11 Implementation Boundary:** Lean 4.35.0 (`lean/`, 10 proof modules + `Spec.lean`, 15 `.lean` files) proves **78** theorems over the discrete specification (`Spec.lean`), **not** a machine-checked compiler verification of `src/*.c`; no theorem links `Spec.lean` to the C code. Within the 78:
+   - Five of the 62 core statements (`T25`, `T27`, `T40`, `T41`, `T44`) are explicitly annotated elementary arithmetic bookkeeping helpers (`docs/statement-fidelity.md` §2), so raw theorem count should not be mistaken for 78 distinct biophysical derivations. (Literal-only conjuncts previously in `T41`, `T54`, `C62`, `NV08` were removed in `v1.7.0`.)
+   - Statements over hard-coded constant tables (reaction stoichiometry, solvent c-ring thresholds, organ budgets) hold only for those constants.
+   - `T16` is the elementary polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$, with exact equality $2(x^3+y^3)^2 = (x^2+y^2)^3 \iff x = y$ added in `v1.7.0`, on a cube/square proxy model; no mathematical originality is claimed for it.
+   - `T39` and `T43` use truncated natural-number subtraction (clamping at `0` on underflow), which is now explicitly documented in their docstrings alongside exact non-underflow conservation conjuncts (and an unclamped signed `Int` companion in `T43`).
+   - The **6 kernel checks** include the Lean reference kernel twice (default and paranoid modes) plus 4 independent checkers (`lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`).
+   - CI security scans (cppcheck, gitleaks, osv-scanner) and the Build Standard self-audit are report-only; a green run does not show that they found nothing. Runtime C11 safety and bit-exactness rest on `-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror`, portable `-march=x86-64` + isolated `target("avx2")` (plus macOS ARM64 in CI), 3-module static zero-heap hot-loop symbol audits, ASan/UBSan sanitizers, dual-mode standalone+`libFuzzer` `test/fuzz_cmbin_abi.c` (1,000 cases), clean-room `reference/chemoton_oracle.py` (`6,586` checks), `test/test_web_server.mjs` (13 tests), 26/26 falsification gates, 8/8 caught mutants, and 2,720 property checks.
+   The runtime checks below were run by the author; the 2026-11-26 external statement audit rebuilt the Lean library only.
 2. **Spatial, Fluid-Coupling & Engineered-Control Disclosures:** The canonical benchmark chamber couples a **2.5D column-averaged $W\times H$ voxel fluid grid** (`1024` spatial columns) to **continuous 3D `int32_t pos_nm[3]` off-lattice cells** (`[0, 32 μm)³`, up to `4096` cell slots); thus Z-translation is strictly invariant (`G23`) while X/Y shifts couple to voxel stoichiometry. We also explicitly disclose the prokaryotic maintenance surcharge above volume 85 without organelles (`src/chemoton_physics.c`) and the explicit restraint-response gates (`<95%`/`<98%`) in the 13-vector castration workbench. Scaling to macroscopic tissues (>100,000 cells) or geological epochs is outside the current single-workstation scope.
-3. **Observed Empirical Tradeoffs (`v1.6.0`):**
+3. **Observed Empirical Tradeoffs (`v1.7.0`):**
    - Endosymbiosis concentrates biomass into larger megacells (`5.64×` max volume on seed `5000`; `9.90×` across `N = 24`), reducing single-seed headcount (`81` vs. `517`) relative to high-headcount prokaryotic controls (`results/04_endosymbiosis_eukaryogenesis.txt`).
    - Titan cryogenic `n_H >= 4` gearing (yielding `3.5×` respiratory advantage vs. `4×` in Terran/Hydrothermal/Venus) lowers carrying capacity (`122` vs. `256–405`), and enforcing the unified per-voxel `photon_rem_uq[i]` cap slows Terran→Venus transplant adaptation to `31.6%` (`30/95`, up from `12.4%` post-shock, `results/05_xenocellular_transplants.txt`).
    - Host CPU frequency and background load vary wall-clock throughput (`23.68`–`27.67 M rxns/s`), though deterministic SHA-256 digests remain 0-bit invariant (`83317026...532c9bbe`).
@@ -155,55 +166,127 @@ This document states clearly what **CELLULOGONIC MECHA `v1.6.0`** does **not** p
 
 ---
 
-<!-- SOURCE: docs/statement-fidelity.md (Statement-Fidelity Matrix) -->
+<!-- SOURCE: ERRATA.md -->
+
+# Errata & Historical Corrections Ledger (`ERRATA.md`)
+
+All substantive factual, legal, mathematical, or engineering corrections discovered across releases are logged transparently here:
+
+| Date | Release Fixed | Finding Class (R7) | Description of Defect / Inaccuracy | Resolution & Evidence |
+|---|---|---|---|---|
+| 2026-11-25 | `v1.5.0` | `problem` | Releases `v1.0.0`–`v1.4.0` attributed affiliation to `0thernes LLC` across 18+ files even though no LLC legal entity exists. | Replaced every active occurrence across `LICENSE`, `CITATION.cff`, `paper/main.tex`, `README.md`, `LEGAL.md`, `lean/`, `docs/`, and GitHub metadata with `Alexander Stephen Donahue` / `Independent Researcher, Spokane, WA, USA` (ORCID `0009-0006-8168-9648`). |
+| 2026-11-25 | `v1.5.0` | `conflict` | Releases `v1.0.0`–`v1.4.0` used a proprietary non-commercial "Cosmogonic License", conflicting with open scientific reuse and citation tooling. | Migrated all code/Lean/scripts to OSI-approved **Apache-2.0** (`LICENSE`) and all papers/docs/figures to **CC-BY-4.0** (`LICENSE-DOCS`). |
+| 2026-11-25 | `v1.5.0` | `error` | `VERSION` stayed at `1.3.0` and `paper/main.tex` stayed at `v1.3.0` (reporting 58 Lean proofs) even after `v1.4.0` added `ContinuumBiomechanics.lean` (`C59`–`C62`, 62 proofs). | Synchronized `VERSION` (`1.5.0`), `CHANGELOG.md`, `CITATION.cff`, `lean/lakefile.toml`, and `paper/main.tex` (`amsart`, 70 audited theorems including `C59`–`C62` and `NV01`–`NV08`). |
+| 2026-11-25 | `v1.5.0` | `gap` | Lean 4 suite lacked Palomar `module` / `Spec` / `Challenge` / `Solution` isolation, `autoImplicit = false`, explicit `NonVacuity` witnesses, and multi-kernel replay. | Upgraded all Lean modules to Lean 4.35.0 `module` system with `Spec.lean`, `Challenge.lean`, `Solution.lean`, `NonVacuity.lean` (`NV01`–`NV08`), `comparator.json`, `formalization.yaml`, local 5-kernel replay (`results/lean4-multi-kernel.txt`), and 6/6 CI bubblewrap verification. |
+| 2026-11-21 | `v1.3.0` | `bug` | Titan azotosome `e_pmf = 7` allowed `q = 0` boundary and GRN Wnt loci collided with bioelectric `genome[96..97]`. | Tightened Titan to `e_pmf = 8, r2 = 7, q = 6` (`q_r > 0` across all 4 solvents) and moved Wnt loci to `genome[102..103]`. |
+
+## 2026-11-26 statement audit
+
+An external statement audit of commit `d033ab0` rebuilt the Lean library (`lake build`, `VerifyAxioms.lean`: 78 theorems, axioms within `[propext, Classical.choice, Quot.sound]`, no `sorryAx`) and compared the public claims with the Lean statements. Audit log: <https://github.com/0thernes/0thernes-research-archive/blob/main/docs/reviews/2026-11-26-statement-audit.md>.
+
+The repository documents (`README.md`, `CLAIMS.md`, `LIMITATIONS.md`, `CITATION.cff`, `lean/formalization.yaml`, `docs/`) were corrected in this pass. The items below sit in the frozen paper or in the Lean sources and are recorded here instead of being changed in place. None of them makes a Lean theorem false.
+
+### Paper (frozen `paper/main.tex`, `dist/Donahue_2026_cellulogonic_mecha.pdf`, `paper/WHITE_PAPER.md`)
+
+| Where | What is wrong | Correction | Affects a theorem statement? |
+|---|---|---|---|
+| `paper/main.tex` lines 196, 199, 205, 280 (Section "Theorem II", theorem environment `thm:minimax`, Table of modules); `paper/WHITE_PAPER.md` lines 63, 72 | `T16` is called the "Global Minimax Theorem of Vesicle Division" / "Global Minimax Law". | `T16` is the elementary polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$, on the cube/square proxy model, proved from the factorisation $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4+2x^3y+2xy^3+y^4)$. | No (label only). |
+| `paper/WHITE_PAPER.md` line 213 | Lists the `T16` proof as a "Genuine Original Contribution". | The factorisation is elementary; no originality claim is made for it. | No. |
+| `paper/main.tex` line 72 (abstract) and line 290 (module table) | Presents all 78 theorems as core biophysical invariants and counts "11 Modules". | The 78 theorems concern `Spec.lean` only; several are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`). They live in 10 proof modules + `Spec.lean` (15 `.lean` files in `lean/`). | No. |
+| `paper/main.tex` line 290, Section "Six-Kernel Lean 4.35.0 Architecture" | "6/6 Kernels" reads as six independent kernels. | Six kernel checks: Lean default and paranoid modes, `lean4lean`, `nanoda`, `con-leche`, `con-ron`; two of them use the Lean reference kernel. | No. |
+
+### Known issues in the formal code (not yet fixed)
+
+| Where | What is wrong | Correction | Affects a theorem statement? |
+|---|---|---|---|
+| `lean/CellulogonicProofs/MembraneGeometry.lean` lines 127-131 (docstring of `T16`) | Docstring says "Global Minimax Theorem" and "equality iff V1 = V2", but the statement proves only `≤` and strict `<` for `x ≠ y`. | Remove the "Global Minimax" label and the unstated "iff", or add the equality case to the statement. | No (docstring only). |
+| `lean/Challenge.lean` line 139 (`T25`), line 228 (`T44`), line 208 (`T40`), line 149 (`T27`); same statements in `lean/CellulogonicProofs/*.lean` | These are arithmetic identities (`T25`: $(c_1+s_1)+(c_2+s_2) = (c_1+c_2)+(s_1+s_2)$ over `Nat`; `T44`: a ring identity; `T40`: $A_1L_1 = A_2L_2, A_2 < A_1 \Rightarrow L_1 < L_2$; `T27`: $Kg > g \wedge Kg - g = (K-1)g$) presented under biological names. | Relabel as bookkeeping lemmas, or report them separately from the model theorems. | No. |
+| `lean/Challenge.lean` lines 214-216 (`T41`), 290-296 (`T54`), 369-373 (`C62`), 441-446 (`NV08`) | Literal-only conjuncts: `N0 - N0 = 0`; `8 * 2 ^ 5 = 256 ∧ 2 ^ 9 = 512`; `k * 0 * 0 = 0`; `(5 : Int) * (-3) * (-3) = 45`. | Drop the literal-only conjuncts. | Yes, if fixed (the statements would become shorter; the remaining content is unchanged). |
+| `lean/Challenge.lean` line 203 (`T39`), line 224 (`T43`) | Statements use truncated `Nat` subtraction (`(E + M_musc) - M_shared`, `V + J_in - J_excr ≤ V`), so excess efflux clamps volume at 0. | Note the clamping in the docstrings or state over `Int`. | Yes, if restated over `Int`. |
+| `results/lean4-multi-kernel.txt` lines 3-4 | The six-kernel transcript was recorded at parent commit `40e995b` (CI run `45810469384`), not at `d033ab0`. `lean/` is unchanged between the two commits, and CI run `45812871840` at `d033ab0` also passed. | Regenerate the transcript from CI run `45812871840`. | No. |
+
+## `v1.7.0` Cycle-1 Resolutions (2026-11-26)
+
+Every paper item and every formal-code item logged in the `2026-11-26 statement audit` above has now been directly resolved in `v1.7.0` while preserving all prior audit disclosures verbatim:
+
+| Audit Target | Resolution in `v1.7.0` | Verification Evidence |
+|---|---|---|
+| `paper/main.tex` & `paper/WHITE_PAPER.md` (`T16` "Global Minimax" & "Genuine Original Contribution") | Removed "Global Minimax Theorem" / "Global Minimax Law" / "Genuine Original Contribution" across `paper/main.tex`, `paper/WHITE_PAPER.md`, `lean/`, and active docs; described `T16` accurately as an elementary sextic polynomial inequality on the cube/square proxy model with zero originality claimed. | Recompiled `dist/Donahue_2026_cellulogonic_mecha.pdf` (`0` Overfull `\hbox`/`\vbox`) + clean-room `dist/arxiv_submission.tar.gz`. |
+| `paper/main.tex` abstract & module table (`Spec.lean` scope, bookkeeping helpers, module count, kernel count) | Scoped all 78 theorems explicitly to `lean/CellulogonicProofs/Spec.lean` (not `src/*.c`), listed the 5 bookkeeping helpers transparently (`T25`, `T27`, `T40`, `T41`, `T44`), corrected module count to **10 proof modules + `Spec.lean` (15 `.lean` files)**, and replaced "6/6 independent kernels" with **6 kernel checks (Lean default & paranoid modes + 4 independent checkers: `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`)**. | `paper/main.tex` §§1–4 & `docs/statement-fidelity.md`. |
+| `MembraneGeometry.lean` & `Challenge.lean` (`T16`) | Removed "Global Minimax" from docstring and strengthened `T16_optimal_area_partition_strictly_improves_budding` to explicitly prove the equality iff characterization `2 * (x^3 + y^3)^2 = (x^2 + y^2)^3 ↔ x = y` alongside `≤` and strict `<` for `x ≠ y`. | `lake build`, `lake build Challenge`, `VerifyAxioms.lean`, `leanchecker-paranoid`, CI `lake comparator --paranoid`. |
+| `BioenergeticsEndosymbiosis.lean`, `EutelicOrganogenesis.lean`, `docs/statement-fidelity.md` (`T25`, `T27`, `T40`, `T41`, `T44`) | Explicitly annotated all 5 arithmetic bookkeeping helpers in Lean docstrings (`[Bookkeeping arithmetic identity/helper]`) and separated them transparently in `docs/statement-fidelity.md` §2. | `lean/CellulogonicProofs/*.lean`, `docs/statement-fidelity.md`. |
+| `EutelicOrganogenesis.lean`, `MorphogeneticGRN.lean`, `ContinuumBiomechanics.lean`, `NonVacuity.lean`, `Challenge.lean`, `AdversarialTests.lean` (`T41`, `T54`, `C62`, `NV08`) | Removed all four trivial literal-only conjuncts (`N0 - N0 = 0`, `8 * 2^5 = 256 ∧ 2^9 = 512`, `k * 0 * 0 = 0`, `(5 : Int) * (-3) * (-3) = 45`) while keeping every substantive statement and `AT07` proof intact. | `lake build`, `lake build Challenge`, `results/lean4-audit.txt`, CI 6-kernel-check replay. |
+| `EutelicOrganogenesis.lean` & `Challenge.lean` (`T39`, `T43`) | Documented truncated `Nat` subtraction clamping explicitly in both docstrings, added exact non-underflow conservation conjuncts `((E + M_musc) - M_shared) + M_shared = E + M_musc` (`T39`) and `J_excr ≤ V + J_in → (V + J_in - J_excr) + J_excr = V + J_in` (`T43`), plus an unclamped signed `Int` companion `(V : Int) + (J_in : Int) - (J_excr : Int) ≤ (V : Int)` in `T43`. | `lake build`, `lake build Challenge`, `VerifyAxioms.lean`. |
+| `results/lean4-multi-kernel.txt` & `scripts/test_lean_negative.py` | Upgraded `scripts/test_lean_negative.py` to test 6/6 negative exploits (2 Lean elaboration rejections of false claims + live `Spec` `sorry`-tamper + standalone `sorry`, custom `axiom`, `native_decide`), and regenerated `results/lean4-multi-kernel.txt` from the live green `v1.7.0` Ubuntu CI 6-kernel-check run. | `scripts/test_lean_negative.py` (`6/6` caught) + live `v1.7.0` CI run. |
+
+
+---
+
+<!-- SOURCE: docs/statement-fidelity.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Statement-Fidelity Audit Matrix (Lean 4.35.0 ↔ C11 Runtime ↔ Paper)
 
-This document audits the exact correspondence—and every intentional divergence—between the **78 machine-checked Pure Lean 4.35.0 theorems** (`lean/`), the **native C11 simulation engine** (`include/`, `src/`, `test/`), and the **AMS-LaTeX white paper** (`paper/main.tex`) in `CELLULOGONIC MECHA v1.6.0`.
+This document audits the exact correspondence—and every intentional divergence—between the **78 machine-checked Pure Lean 4.35.0 theorems about `Spec.lean`** (`lean/`, **10 proof modules + `Spec.lean`, 15 `.lean` files**), the **native C11 simulation engine** (`include/`, `src/`, `test/`), and the **AMS-LaTeX white paper** (`paper/main.tex`) in `CELLULOGONIC MECHA v1.7.0`.
+
+> **Core Scope Boundary:** No Lean theorem connects `lean/CellulogonicProofs/Spec.lean` to `src/*.c`. All 78 theorems prove properties of the discrete integer specification in `Spec.lean` only; C11 runtime safety, AVX2/scalar parity, and empirical trajectories are audited outside Lean.
 
 ## 1. Module-by-Module Fidelity Table
 
 | Group | Lean 4.35.0 Declarations | C11 Runtime Counterpart (Exact Symbols) | Exact Match Verified | Explicit Scope Divergence (Not Proved in Lean) |
 |---|---|---|---|---|
 | **I. Stoichiometry & Thermo** | `T01`–`T10`, `NV01`, `AT01` (`StoichiometryThermo.lean`, `Spec.lean`) | `SOLVENT_TABLE`, `RXN_TABLE`, `apply_exact_rxn()` in `include/cellulogonic_internal.h` & `src/chemoton_physics.c` | Exact 8-species mass weights `(4,2,6,4,8,12,16,2)`, potentials `(48,36,80,40,104,156,212,6)`, all 19 reactions `R1`–`R15c`, all 4 solvent `e_pmf` (`10, 8, 10, 15`), `r2_pmf_yield` (`6, 7, 6, 4`), `minCRing` (`3, 4, 3, 2`), 4× respiration across Terran/Hydrothermal/Venus (`T05`), strict `q_r > 0`, and Titan `nH=3` refutation (`AT01`). | Lean uses unbounded `Int`; C11 uses `int64_t` with explicit positivity/reactant availability guards, unified per-voxel `photon_rem_uq[i]` budgeting, and spatial finite-volume diffusion verified by `G02`, `G03`, `G05`, `G07`, `G26`. |
-| **II. Canham–Helfrich Bilayers** | `T11`–`T19`, `NV02`, `AT02` (`MembraneGeometry.lean`) | `step_membrane_mechanics_and_division()` in `src/cellular_world.c` & `cell_q_gt_pct()` in `include/cellulogonic_internal.h` | Exact cleared-denominator integer scale `C0 = 100`, intact inequality `100 * V^2 <= L^3`, symmetric threshold `200 * V^2 <= L^3`, constructive exosome witness `(47,72)->(6,16)+(41,56)`, sextic identity `T16`, and universal-fission refutation `AT02`. | Lean proves algebraic vesicle-split geometry; C11 also handles 3D polar division axis selection, organelle partitioning, and membrane rupture plasmid release (`G04`, `G18`). |
-| **III. Bioenergetics & Endosymbiosis** | `T20`–`T27`, `NV03`, `AT03` (`BioenergeticsEndosymbiosis.lean`) | `CellOrganelle org[8]`, `cell_organelle_volume()`, `born_org_mask` single-step guard in `src/chemoton_physics.c` & `src/cellular_world.c` | Exact discrete scaling proxies `A(R)=3R^2`, `V(R)=R^3`, prokaryotic wall `cV*R < 3*cA` (refuted at `R=3` in `AT03`), endosymbiotic additive power, heteroplasmy conservation & uneven bottleneck selection (`T26`), EGT savings (`T27`). | Lean models arbitrary integer `R, K, r`; C11 caps explicit organelle slots at `8` per cell and uses `Philox4x32-10` stochastic partitioning (`G13`, `H2`). |
+| **II. Canham–Helfrich-Inspired Bilayers** | `T11`–`T19`, `NV02`, `AT02` (`MembraneGeometry.lean`) | `step_membrane_mechanics_and_division()` in `src/cellular_world.c` & `cell_q_gt_pct()` in `include/cellulogonic_internal.h` | Exact cleared-denominator integer scale `C0 = 100`, intact inequality `100 * V^2 <= L^3`, symmetric threshold `200 * V^2 <= L^3`, constructive exosome witness `(47,72)->(6,16)+(41,56)`, elementary sextic polynomial inequality + equality iff `2*(x^3+y^3)^2 = (x^2+y^2)^3 ↔ x = y` (`T16`, strengthened in `v1.7.0`), and universal-fission refutation `AT02`. | `T16` is an elementary polynomial inequality on the cube/square proxy model (no mathematical originality claimed); C11 also handles 3D polar division axis selection, organelle partitioning, and membrane rupture plasmid release (`G04`, `G18`). |
+| **III. Bioenergetics & Endosymbiosis** | `T20`–`T27`, `NV03`, `AT03` (`BioenergeticsEndosymbiosis.lean`) | `CellOrganelle org[8]`, `cell_organelle_volume()`, `born_org_mask` single-step guard in `src/chemoton_physics.c` & `src/cellular_world.c` | Exact discrete scaling proxies `A(R)=3R^2`, `V(R)=R^3`, prokaryotic wall `cV*R < 3*cA` (refuted at `R=3` in `AT03`), endosymbiotic additive power, heteroplasmy uneven bottleneck selection (`T26`), plus explicitly labeled arithmetic bookkeeping helpers (`T25`, `T27`). | Lean models arbitrary integer `R, K, r`; C11 caps explicit organelle slots at `8` per cell and uses `Philox4x32-10` stochastic partitioning (`G13`, `H2`). `T25` and `T27` are arithmetic bookkeeping helpers (Section 2). |
 | **IV. Chemiosmosis, Bioelectricity & COVI** | `T28`–`T36`, `NV04`, `AT04` (`ChemiosmosisAutopoiesis.lean`) | `SOLVENT_TABLE`, gap-junction relaxation in `src/cellular_world.c`, `cell_compute_telemetry()` in `src/metrology_covi.c` | Exact phosphorylation threshold `dG_ATP = 28`, strict solvent c-ring floors (`3, 2, 4`), pairwise charge conservation and Dirichlet dissipation (`T31`–`T33`, passive energy increase refuted in `AT04`), zero-COVI bounds on zero metabolism/template/catalyst (`T34`–`T35`). | C11 computes 8 floating-point weighted COVI pillars and multi-neighbor 3D colony graphs; Lean proves the pairwise Laplacian contraction and multiplicative zero-gates (`G12`, `G15`). |
-| **V. Eutelic 7-Organ & Bioglass** | `T37`–`T44`, `NV05`, `AT05` (`EutelicOrganogenesis.lean`) | `cellulogonic_apply_desiccation_tun()`, `cellulogonic_apply_shock_lysis()`, `cellulogonic_rehydrate_tun()` in `src/abi_exports.c` | Exact 3-cell lumen floor (`T37`, 2-cell refuted in `AT05`), 7-organ lower bound `>= 355` and 800-cell witness (`T38`), hydrostatic incompressibility (`T40`), vitrification decay suppression `D_glass >= 10` (`T42`, unvitrified drop refuted in `AT05`) and conserved water drying/rehydration. | 7-organ metazoan budget (`T37`–`T41`, `T43`–`T44`) is an analytical design specification for the Build 2 → Build 3 transition; C11 directly simulates cellular TDP vitrification (`G16`, `H4`). |
+| **V. Eutelic 7-Organ & Bioglass** | `T37`–`T44`, `NV05`, `AT05` (`EutelicOrganogenesis.lean`) | `cellulogonic_apply_desiccation_tun()`, `cellulogonic_apply_shock_lysis()`, `cellulogonic_rehydrate_tun()` in `src/abi_exports.c` | Exact 3-cell lumen floor (`T37`, 2-cell refuted in `AT05`), 7-organ lower bound `>= 355` and 800-cell witness (`T38`), vitrification decay suppression `D_glass >= 10` (`T42`, unvitrified drop refuted in `AT05`), explicit `Nat` non-underflow conservation in `T39` & `T43` (plus unclamped `Int` companion in `T43`), and annotated bookkeeping helpers (`T40`, `T41`, `T44`). | 7-organ metazoan budget (`T37`–`T41`, `T43`–`T44`) is an analytical design specification for the Build 2 → Build 3 transition; C11 directly simulates cellular TDP vitrification (`G16`, `H4`). Truncated `Nat` subtraction clamping is explicitly documented in `T39`/`T43` docstrings. |
 | **VI. Cytoskeleton & GHz Microtubules** | `T45`–`T50`, `NV06`, `AT06` (`CytoskeletonNanomechanics.lean`) | 3D off-lattice Stokes/Hertz step (`int32_t pos_nm[3]`, `vel_nm[3]`) & Fröhlich ODE in `src/cellular_world.c` & `src/chemoton_physics.c` | Exact C11 integer relaxation recurrence `frohlichStep` (`(coh * 3 + target + 2) / 4` capped at `1000`, `coh / 4` below threshold) in `T48` (starved growth refuted in `AT06`); Stokes/Hertz/prolate/ATP bounds (`T45`–`T50`). | Lean uses integer velocities/impulses; C11 executes exact `int32_t pos_nm[3]` / `vel_nm[3]` nanometer coordinates inside a periodic `32,000 nm` cube verified by `G21` and `G22`. |
-| **VII. Developmental GRN Embryogenesis** | `T51`–`T58`, `NV07`, `AT07` (`MorphogeneticGRN.lean`) | `step_developmental_morphogenesis()` (`CELL_REGIME_EMBRYOGENESIS = 5`) in `src/cellular_world.c` | Exact C11 Hippo TF7 leaky integrator `(tf7 * 30) / 32 + 64` saturating at `255` and arresting at `>= 165` (`T55`), exact C11 CPG phase bounds `540 + bias + couple ∈ [280, 1360]` (`T57`), eutelic tree potential `∑ 2^{rem}` (`T54`, over-budget population refuted in `AT07`), and `R8_atp_hyd` conservation (`T58`). | Spatial 3D paracrine diffusion, Netrin/Slit gradient vector steering, and exact Z-translation invariance are verified in executable gates `G23` and `G24`. |
-| **VIII. Continuum Biomechanics** | `C59`–`C62`, `NV08`, `AT08` (`ContinuumBiomechanics.lean`) | Compiled checks in `G18` (carcass), `G21` (XPBD & biotensegrity), `G23` (yolk cleavage) in `test/test_falsification.c` | Exact integer damping trace (`C59`), 100% carcass-to-detritus transfer (`C60`, mass loss refuted in `AT08`), Euclidean division yolk cleavage enthalpy `k*q + rem + heat = Y` (`C61`), and quadratic elastic strain `k * dx^2 >= 0` (`C62`, negative strain refuted in `AT08`). | Full continuum soft-body finite-element mechanics are delegated to downstream Build 3/4 layers; Build 2 checks the discrete mass/energy/strain conservation contracts. |
+| **VII. Developmental GRN Embryogenesis** | `T51`–`T58`, `NV07`, `AT07` (`MorphogeneticGRN.lean`) | `step_developmental_morphogenesis()` (`CELL_REGIME_EMBRYOGENESIS = 5`) in `src/cellular_world.c` | Exact C11 Hippo TF7 leaky integrator `(tf7 * 30) / 32 + 64` saturating at `255` and arresting at `>= 165` (`T55`), exact C11 CPG phase bounds `540 + bias + couple ∈ [280, 1360]` (`T57`), eutelic tree potential `∑ 2^{rem}` (`T54`, literal-only conjuncts removed in `v1.7.0`; over-budget population refuted in `AT07`), and `R8_atp_hyd` conservation (`T58`). | Spatial 3D paracrine diffusion, Netrin/Slit gradient vector steering, and exact Z-translation invariance are verified in executable gates `G23` and `G24`. |
+| **VIII. Continuum Biomechanics** | `C59`–`C62`, `NV08`, `AT08` (`ContinuumBiomechanics.lean`) | Compiled checks in `G18` (carcass), `G21` (XPBD & biotensegrity), `G23` (yolk cleavage) in `test/test_falsification.c` | Exact integer damping trace (`C59`), 100% carcass-to-detritus transfer (`C60`, mass loss refuted in `AT08`), Euclidean division yolk cleavage enthalpy `k*q + rem + heat = Y` (`C61`), and quadratic elastic strain `k * dx^2 >= 0` (`C62`, literal-only zero conjunct removed in `v1.7.0`; negative strain refuted in `AT08`). | Full continuum soft-body finite-element mechanics are delegated to downstream Build 3/4 layers; Build 2 checks the discrete mass/energy/strain conservation contracts. |
 
-## 2. Non-Vacuity & Adversarial Refutation Guarantees
+## 2. Explicit Separation of Bookkeeping Arithmetic Helpers vs. Model Theorems
+
+Following the 2026-11-26 external statement audit (`ERRATA.md`), **5 of the 62 core statements** are transparently tagged as elementary arithmetic bookkeeping identities/helpers in their Lean docstrings rather than substantive biophysical derivations:
+
+| Declaration | Module | Classification | Exact Mathematical Content |
+|---|---|---|---|
+| `T25_mitotic_heteroplasmy_conservation` | `BioenergeticsEndosymbiosis.lean` | Bookkeeping arithmetic identity | `(c1 + s1) + (c2 + s2) = (c1 + c2) + (s1 + s2)` over `Nat` |
+| `T27_egt_reduces_organelle_maintenance` | `BioenergeticsEndosymbiosis.lean` | Bookkeeping arithmetic helper | `K ≥ 2, g > 0 → K * g > g ∧ K * g - g = (K - 1) * g` over `Nat` |
+| `T40_hydrostatic_skeleton_incompressibility` | `EutelicOrganogenesis.lean` | Bookkeeping arithmetic helper | `A1 * L1 = A2 * L2, A2 < A1, L1 > 0 → L1 < L2` over `Nat` |
+| `T41_eutely_hypertrophy_cancels_hyperplasia` | `EutelicOrganogenesis.lean` | Bookkeeping arithmetic helper | `N0 > 0, m1 < m2 → N0 * m1 < N0 * m2` over `Nat` (literal `N0 - N0 = 0` removed in `v1.7.0`) |
+| `T44_dna_to_organ_hierarchical_conservation` | `EutelicOrganogenesis.lean` | Bookkeeping arithmetic identity | 8-term `Int` ring cancellation `((mEnv - delta) + (mEpi + delta) + ...)` |
+
+Additionally, all four trivial literal-only conjuncts logged in the 2026-11-26 audit (`N0 - N0 = 0` in `T41`; `8 * 2^5 = 256 ∧ 2^9 = 512` in `T54`; `k * 0 * 0 = 0` in `C62`; `(5 : Int) * (-3) * (-3) = 45` in `NV08`) were **removed in `v1.7.0`** across `CellulogonicProofs/*.lean` and `Challenge.lean`.
+
+## 3. Non-Vacuity, Adversarial Refutations & Six-Kernel-Check Palomar Contract
 
 - **Non-Vacuity (`NonVacuity.lean`, `NV01`–`NV08`):** Every universally quantified hypothesis bundle across Groups I–VIII is paired with an explicit concrete inhabitant so no theorem can pass vacuously from contradictory assumptions.
-- **Adversarial False-Variant Refutations (`AdversarialTests.lean`, `AT01`–`AT08`):** Eight machine-checked negations (`¬P`) prove that weakening key physical hypotheses (e.g., dropping Titan's `nH >= 4` floor, assuming universal intact vesicle fission, unbounded prokaryotic radius, passive bioelectric energy amplification, 2-cell lumen enclosure, starved Fröhlich growth, over-budget eutelic hyperplasia, or negative strain / mass-losing death) renders the claims provably **false**.
-- **Pinned Spec Definitions (`lean/comparator.json`):** `12` core mathematical definitions in `Spec.lean` (`stoich`, `massW`, `muPot`, `pmfPotS`, `r2PmfYield`, `minCRing`, `qHeat`, `C0`, `dG_ATP`, `frohlichStep`, `hippoUpdate`, `carcassDeathTransfer`) are pinned alongside all `78` theorem signatures under `lake comparator --paranoid` and guarded by live negative tamper rejection in CI (`scripts/test_lean_negative.py`).
+- **Adversarial False-Variant Refutations (`AdversarialTests.lean`, `AT01`–`AT08`):** Eight machine-checked negations (`¬P`) prove that weakening key model hypotheses (e.g., dropping Titan's `nH >= 4` floor, assuming universal intact vesicle fission, unbounded prokaryotic radius, passive bioelectric energy amplification, 2-cell lumen enclosure, starved Fröhlich growth, over-budget eutelic hyperplasia, or negative strain / mass-losing death) renders the claims provably **false**.
+- **Pinned `Spec.lean` Definitions (`lean/comparator.json`):** `12` core mathematical definitions in `Spec.lean` (`rxnMassDelta`, `qHeat`, `applyRxn`, `IsIntact`, `CanSymmetricFission`, `prokPower`, `eukPower`, `coviGated`, `MeetsMinimal7Organ`, `frohlichStep`, `runMorphTrace`, `carcassDeathTransfer`) are pinned alongside all `78` theorem signatures under `lake comparator --config comparator.json --paranoid`, verified in CI across **6 kernel checks** (Lean default & paranoid modes + 4 independent checkers: `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`) and guarded by live negative elaboration & `sorry`-tamper rejection (`scripts/test_lean_negative.py` + CI tampered-`Solution` check).
 
 
 ---
 
-<!-- SOURCE: docs/MEGA_ATLAS_CROSSCHECK.md (Mega-Atlas v2.6.0 Non-Retirement Cross-Check) -->
+<!-- SOURCE: docs/MEGA_ATLAS_CROSSCHECK.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Unsolved Problems Mega-Atlas Non-Retirement Cross-Check (`v2.6.0`)
 
 **Companion Registry:** [`0thernes/unsolved-problems-mega-atlas`](https://github.com/0thernes/unsolved-problems-mega-atlas) (**`v2.6.0`**, commit `d23b4d7`, `1,900` cataloged open scientific and mathematical problems verified against `outputs/MegaAtlas_Unsolved_Problems_V2.json.gz`)  
-**Repository:** `0thernes/cellulogonic-mecha` (`v1.6.0`)  
+**Repository:** `0thernes/cellulogonic-mecha` (`v1.7.0`)  
 **Audit Date:** 2026-11-26  
 
-> **Headline Epistemic Verdict:** **`0 / 1,900` overarching Mega-Atlas `v2.6.0` open problems are solved or retired by `CELLULOGONIC MECHA v1.6.0`.** Every overarching biological, neurobiological, artificial-life, cybernetic, and geochemical problem listed below remains strictly **OPEN**.
+> **Headline Epistemic Verdict:** **`0 / 1,900` overarching Mega-Atlas `v2.6.0` open problems are solved or retired by `CELLULOGONIC MECHA v1.7.0`.** Every overarching biological, neurobiological, artificial-life, cybernetic, and geochemical problem listed below remains strictly **OPEN**.
 
 ---
 
 ## Scoped Sub-Hypothesis & Formal Invariant Cross-Map (13 Directly Adjacent Atlas IDs)
 
-While retiring zero overarching open problems, `CELLULOGONIC MECHA v1.6.0` constructs machine-checked discrete mathematical invariants (**78 Pure Lean 4.35.0 theorems** across 6 kernels, including 8 non-vacuity witnesses `NV01`–`NV08` and 8 adversarial false-variant refutations `AT01`–`AT08`) and controlled, conservation-exact computational probes touching **13 directly adjacent cataloged Mega-Atlas IDs** (titles, pillars, superdomains, and `status_2026` verified verbatim from `MegaAtlas_Unsolved_Problems_V2.json.gz`):
+While retiring zero overarching open problems, `CELLULOGONIC MECHA v1.7.0` constructs machine-checked statements about its discrete `Spec.lean` model (**78 Lean 4.35.0 theorems** under 6 kernel checks, including 5 annotated bookkeeping helpers, 8 non-vacuity witnesses `NV01`–`NV08`, and 8 adversarial false-variant refutations `AT01`–`AT08`) and controlled, conservation-exact computational probes touching **13 directly adjacent cataloged Mega-Atlas IDs** (titles, pillars, superdomains, and `status_2026` verified verbatim from `MegaAtlas_Unsolved_Problems_V2.json.gz`):
 
-| Atlas ID | Overarching Mega-Atlas `v2.6.0` Problem Title (Verbatim) | Macro-Pillar / Superdomain | `status_2026` | Scoped Construction in `cellulogonic-mecha v1.6.0` | Parent Problem Status |
+| Atlas ID | Overarching Mega-Atlas `v2.6.0` Problem Title (Verbatim) | Macro-Pillar / Superdomain | `status_2026` | Scoped Construction in `cellulogonic-mecha v1.7.0` | Parent Problem Status |
 |---|---|---|---|---|---|
-| **`BIO-001`** | *Abiogenesis: Origin of Life & RNA-to-Ribosome Genetic Code Transition* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Exact 8-species 19-reaction Chemoton closure (`T01`–`T10`, `NV01`, `AT01`), Canham–Helfrich sextic minimax budding (`T11`–`T19`, `NV02`, `AT02`), zero-seed spontaneous CMC vesicle condensation (`G11`, `results/03`) | **OPEN (0% retired)** — coarse-grained discrete quanta; does not establish wet-lab prebiotic RNA-to-ribosome origin |
+| **`BIO-001`** | *Abiogenesis: Origin of Life & RNA-to-Ribosome Genetic Code Transition* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Exact 8-species 19-reaction Chemoton closure (`T01`–`T10`, `NV01`, `AT01`), Canham–Helfrich-inspired integer fission and budding inequalities (`T11`–`T19`, `NV02`, `AT02`), zero-seed spontaneous CMC vesicle condensation (`G11`, `results/03`) | **OPEN (0% retired)** — coarse-grained discrete quanta; does not establish wet-lab prebiotic RNA-to-ribosome origin |
 | **`BIO-006`** | *Origin of Eukaryogenesis (Asgard Archaea to Complex Nucleated Cells)* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Lane $1/R$ prokaryotic power ceiling & endosymbiotic $O(1)$ scaling liberation (`T20`–`T27`, `NV03`, `AT03`), primary + secondary nested chimera capture, EGT, and heteroplasmy purifying selection (`G13`, `H2`: `9.90×` max volume across `24/24` pairs) | **OPEN (0% retired)** — abstract organelle-compartment model; does not resolve historical Asgard–alphaproteobacterial symbiogenesis |
 | **`BIO-015`** | *Evolutionary Origins of Multicellularity, Germline–Soma Division & Cheater Suppression* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | 3D cadherin-bonded colonies, Track A constitutional apoptotic cancer policing vs. Track B feral defections (`G15`, `results/06`), 5-fate clonal germline (`Gm=6`) isolation (`G23`), and 7-organ eutelic cell budget (`T37`–`T41`) | **OPEN (0% retired)** — computational testbed; does not resolve empirical historical evolution of metazoans |
 | **`BIO-022`** | *Morphogenesis, Developmental Pattern Formation & Bioelectric Anatomical Target Memory* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Passive gap-junction Dirichlet dissipation (`T31`–`T33`, `AT04`), translation-invariant 5-fate clonal 3D embryogenesis (`Wnt/BMP/Shh`), Steinberg adhesion, apical constriction, Hippo/eutelic arrest & CPG waves (`T51`–`T58`, `G23`–`G24`) | **OPEN (0% retired)** — discrete GRN/bioelectric model; does not decode wet-lab anatomical target memory |
@@ -226,7 +309,7 @@ No theorem in `lean/`, no benchmark in `results/`, and no claim in `paper/main.t
 
 ---
 
-<!-- SOURCE: REPLICATION.md (Clean-Clone Replication Protocol) -->
+<!-- SOURCE: REPLICATION.md -->
 
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Clean-Clone Replication Protocol & Verification Log (`REPLICATION.md`)
@@ -287,14 +370,16 @@ python3 scripts/test_lean_negative.py
 ```
 - **Expected:** `78/78` audited theorems, `0 sorryAx` in `Solution`, `0` warnings, strictly within `[propext, Classical.choice, Quot.sound]`, `check_readme_axioms.py` and `test_lean_negative.py` exit `0`.
 
-### D. White Paper, Clean-Room arXiv Tarball, Blueprint & Live Crossref Citation Audit
+### D. White Paper, Clean-Room arXiv Tarball, Blueprint, Timestamps & Live Crossref Citation Audit
 ```bash
 python3 scripts/check_citations.py --write-json results/citation-audit.json
 python3 scripts/build_blueprint.py
+python3 scripts/check_blueprint.py
+python3 scripts/stamp_timestamps.py --verify
 python3 scripts/build_paper.py
 pwsh -NoProfile -File scripts/Audit-Repo.ps1
 ```
-- **Expected:** `36/36` DOIs `OK (Crossref)` with `0` retractions, `0` Overfull `\hbox`/`\vbox`, `0` undefined refs/citations, clean-room `dist/arxiv_submission.tar.gz` compiles cleanly, `_site/` Blueprint generated, `Audit-Repo.ps1` reports `100.0%` Structure / `100.0%` Completion / `100.0%` Core.
+- **Expected:** `36/36` DOIs `OK (Crossref)` with `36/36` title & author alignment and `0` retractions, `0` Overfull `\hbox`/`\vbox`, `0` undefined refs/citations, clean-room `dist/arxiv_submission.tar.gz` compiles cleanly, `_site/` Blueprint generated and verified, dual RFC 3161 `.tsr` + Bitcoin OTS `.ots` verified, `Audit-Repo.ps1` reports `100.0%` Structure / `100.0%` Completion / `100.0%` Core.
 
 ## 3. Replication Log (Build Standard `B44`)
 
@@ -306,3 +391,55 @@ pwsh -NoProfile -File scripts/Audit-Repo.ps1
 | 2026-11-22 | Author (Win64 `clang 23.1.0` ThinLTO + Linux `gcc 13.3.0`) | `v1.4.0` (`3b85b15`) | 24/24 gates, 8/8 mutants, 62 Lean proofs (`C59`–`C62`) | PASS | Bit-exact match preserved with ThinLTO |
 | 2026-11-25 | Author + GitHub CI (`ubuntu-latest` + `windows-latest`, 6-kernel Lean) | `v1.5.0` (`1b64580`) | 26/26 gates, 8/8 mutants, 70 Lean proofs (6/6 CI kernels GREEN `#45752503579`), 36/36 DOIs, PDF + SLSA `#72484229` | PASS | 4-way exact SHA `681a9747...519eceff`, `96/96` stats wins |
 | 2026-11-26 | Author (Win64 `clang 23.1.0` + WSL2 Linux `gcc 13.3.0` + ASan/UBSan + clean-clone verified) + 3-OS GitHub CI (`ubuntu-latest`, `windows-latest`, `macos-latest` ARM64) | `v1.6.0` | **26/26 gates**, 8/8 mutants (incl. sim `M3`), 1,000-case fuzz + `libFuzzer`, 3-module zero-heap `nm`, 6,586 Python oracle, **2,720 `prop_check`**, **13/13 Web tests**, **78/78 Lean proofs (`AT01`–`AT08`) + 6/6 CI kernels + live tamper rejection**, **36/36 Crossref retraction-free DOIs**, zero-overflow AMS-LaTeX PDF + clean-room arXiv, GitHub Pages Blueprint, DigiCert RFC 3161 `.tsr`, `100.0%` `audit-repo.sh` | PASS | 3-OS/2-ISA exact SHA `83317026...532c9bbe` (`bench`), `cafc83d0...15bad443` (`embryo`), `96/96` wins (`stats`, `H2=9.90×`, `H4=73.5×`); external human third-party replication openly invited |
+
+
+---
+
+<!-- SOURCE: docs/DATASHEET.md -->
+
+<!-- SPDX-License-Identifier: CC-BY-4.0 -->
+# Datasheet for CELLULOGONIC MECHA Empirical Artifacts (`v1.7.0`)
+
+> Structured according to Gebru et al. (2021), *"Datasheets for Datasets"*, Communications of the ACM 64(12).
+
+---
+
+## 1. Motivation
+
+- **For what purpose was this dataset / benchmark archive created?** To provide deterministic, bit-reproducible empirical outputs, multi-arm paired statistical logs (`N = 24`, seeds `5000..5023`), 13-vector restraint ablation tables (`results/08_castration_ablation_13vec.csv`), cross-OS SHA-256 parity benchmarks, Lean 4.35.0 `#print axioms` and multi-kernel audit transcripts, and a live Crossref bibliographic audit (`results/citation-audit.json`) supporting **CELLULOGONIC MECHA `v1.7.0`** — an independent computational artificial-life laboratory (not peer-reviewed).
+- **Who created and funded the dataset?** Independent researcher **Alexander Stephen Donahue** (`Independent Researcher, Spokane, WA, USA`; ORCID [`0009-0006-8168-9648`](https://orcid.org/0009-0006-8168-9648); `0_0@0thernes.art`), self-funded with zero external grants and zero commercial conflicts of interest, utilizing disclosed AI engineering assistance (Google DeepMind / Antigravity coding & formal-verification agents under human direction, detailed in [`docs/AI_DISCLOSURE.md`](AI_DISCLOSURE.md)).
+
+## 2. Composition
+
+- **What do the archived files represent?** Every file in [`results/`](../results/) is a deterministic, machine-generated output of the clean-room C11 simulation engine (`bin/cellulogonic`), the Lean 4.35.0 formal verification pipeline (`lean/`), or the live Crossref citation audit (`scripts/check_citations.py`):
+  - **Tabular Ablation Dataset (`results/08_castration_ablation_13vec.csv`):** 29 experimental conditions × 15 typed columns (`condition`, `restraint_pct`, `alive`, `eukaryotes`, `multicellular`, `covi`, `stage`, `met`, `kill_del`, `dorm_spores`, `hgt_smug`, `met_bypass`, `mass_res`, `energy_res`, `second_law_viol`) measuring baseline (`0%`), intermediate (`50%`), and maximal (`100%`) perturbations across all 13 Omega restraint vectors on locked seed `5000`.
+  - **Paired Statistical Suite (`results/09_paired_stats_n24.txt`):** Locked paired runs across 24 seeds (`5000..5023`, 180 epochs) for four pre-registered hypotheses (`H1`–`H4`, [`docs/preregistration.md`](preregistration.md)), reporting paired differences, 95% bootstrap CIs, Cohen's $d_z$, win counts, and 10,000-permutation step-down Holm–Bonferroni $p$-values.
+  - **Deterministic Trajectory & Parity Logs (`results/01..07`, `10..12`):** Hardware probe, Win64/Linux AVX2-vs-Scalar 300-epoch parity (`83317026…532c9bbe`), zero-seed abiogenesis, endosymbiosis ablation, 4-solvent de-novo adaptation & Terran→Venus transplant, bioelectric cancer policing, tardigrade TDP anhydrobiosis, 4-build ABI bridge, 26-gate/8-mutant falsification logs, and 5-fate clonal 3D embryogenesis.
+  - **Formal & Bibliographic Audit Artifacts (`results/lean4-audit.txt`, `results/lean4-multi-kernel.txt`, `results/citation-audit.json`):** Verbatim `#print axioms` output for all 78 `Spec.lean` theorems, 6-kernel-check CI transcript, and JSON Crossref audit (`36/36` DOIs, `title_aligned=36/36`, `author_aligned=36/36`, `0` retractions).
+- **Does the dataset contain confidential, personally identifiable, or sensitive human data?** **No.** All simulation records are synthetic outputs of a deterministic integer-quantum physics engine; citation records reference only public published scientific literature.
+- **Are there missing values?** Zero missing or NaN values in any archived CSV, JSON, or simulation log (enforced by `G01`–`G26`, `scripts/verify_oracle_and_stats.py`, and `scripts/check_citations.py`).
+
+## 3. Collection & Generation Process
+
+- **How were the data generated?** Exclusively by compiling and executing the portable zero-dependency C11 source code in [`src/`](../src/) and [`include/`](../include/) using deterministic counter-based `Philox4x32-10` PRNG streams (`seed = 5000` for single-seed logs; `seeds = 5000..5023` for `N = 24` paired statistics), and by running `lake env lean VerifyAxioms.lean` (`leanprover/lean4:v4.35.0`) and `scripts/check_citations.py` (`api.crossref.org`).
+- **Pre-registration & Anti-Cherry-Picking:** The four primary hypotheses (`H1`–`H4`), sample size (`N = 24`), seed range (`5000..5023`), and Holm–Bonferroni $\alpha = 0.05$ threshold are documented in [`docs/preregistration.md`](preregistration.md).
+
+## 4. Preprocessing, Integrity & Verification
+
+- **Cryptographic Integrity:** Every archived file in `results/` is hashed in [`data/MANIFEST.sha256`](../data/MANIFEST.sha256); top-level deliverables (`dist/`, `lean/`, `paper/`, `results/lean4-audit.txt`, `results/citation-audit.json`, `VERSION`) are hashed in LF-normalized [`CHECKSUMS.sha256`](../CHECKSUMS.sha256) and anchored by dual independent timestamps: DigiCert RFC 3161 ([`data/timestamps/CHECKSUMS.sha256.tsr`](../data/timestamps/CHECKSUMS.sha256.tsr)) and 3-calendar Bitcoin OpenTimestamps ([`data/timestamps/CHECKSUMS.sha256.ots`](../data/timestamps/CHECKSUMS.sha256.ots)), verified on every CI run via `scripts/stamp_timestamps.py --verify`.
+- **Cross-Platform Determinism:** Native C11 execution achieves 0-bit SHA-256 parity across Windows x86-64 (`clang 23.1.0`), Ubuntu Linux x86-64 (`gcc 13.3.0`), AVX2 vs. Scalar modes, and macOS Apple Silicon ARM64 CI.
+- **Independent External Audit Note:** The 2026-11-26 external statement audit rebuilt the Lean library only (`ERRATA.md`); it did not independently re-run the C11 benchmarks or statistical scripts. Third-party clean-clone replication is openly invited ([`REPLICATION.md`](../REPLICATION.md)).
+
+## 5. Uses & Explicit Out-of-Scope Warnings
+
+- **Recommended Uses:** Reproducible ALife benchmarking, studying conservation-exact discrete cellular models, formal-verification workflow benchmarking (Lean 4.35.0 Palomar `Spec`/`Challenge`/`Solution`), deterministic cross-ISA simulation testing, and educational exploration.
+- **Explicit Out-of-Scope / Prohibited Misuses:**
+  - Do **NOT** interpret coarse-grained integer simulation logs as wet-lab biochemical proof of abiogenesis, astrobiological habitability (Titan/Venus), tardigrade radioprotection, or biological consciousness.
+  - Do **NOT** present the 78 Lean 4.35.0 theorems about `Spec.lean` as a formal verification of the C11 source files (`src/*.c`) or as a solution to any open problem in `0thernes/unsolved-problems-mega-atlas` (`0 / 1,900` retired; [`docs/MEGA_ATLAS_CROSSCHECK.md`](MEGA_ATLAS_CROSSCHECK.md)).
+  - Do **NOT** represent this preprint or dataset as externally peer-reviewed.
+
+## 6. Distribution & Maintenance
+
+- **Distribution:** GitHub (`https://github.com/0thernes/cellulogonic-mecha`), GitHub Pages Blueprint (`https://0thernes.github.io/cellulogonic-mecha/`), Software Heritage (`swh:1:snp:8c1696436104a888897ce3b97867eda983d56160`), Master Research Archive (`0TH-BUILD-001` in `0thernes/0thernes-research-archive`), FAIR manifests (`croissant.json`, `ro-crate-metadata.json`, `codemeta.json`), and Zenodo-ready `.zenodo.json`.
+- **Licensing:** Dual-licensed — Code, Lean 4 proofs, scripts, and CI under **Apache-2.0** ([`LICENSE`](../LICENSE)); papers, documentation, figures, and archived empirical datasets/logs under **CC-BY-4.0** ([`LICENSE-DOCS`](../LICENSE-DOCS), [`REUSE.toml`](../REUSE.toml)).
+- **Maintenance:** Maintained by Alexander Stephen Donahue (`0_0@0thernes.art`) with semantic versioning ([`CHANGELOG.md`](../CHANGELOG.md)), errata logging ([`ERRATA.md`](../ERRATA.md)), and structured 10-class GitHub Issue templates.

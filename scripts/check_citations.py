@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 Alexander Stephen Donahue
-"""Live Citation, Crossref Metadata & Retraction Verifier (Playbook v1.3 Gold Standard):
-Parses every BibTeX entry in `paper/refs.bib`, verifies:
+"""Live Citation, Crossref Title/Author Alignment & Retraction Verifier (Playbook v1.3 Gold Standard):
+Parses every BibTeX entry in `paper/refs.bib` (and verifies every DOI referenced in `paper/`), checking:
   1. Live DOI resolution via Crossref REST API (`api.crossref.org/works/<doi>`) with fallback
      to the DOI Handle API (`doi.org/api/handles/<doi>`) for non-Crossref registries.
   2. Zero retractions (`update-to` type == 'retraction' or `relation.is-retracted-by`).
-  3. Publication year parity (within ±1 year for online-first vs print) & title token overlap.
-  4. HTTP reachability for `url = {...}` entries.
-  5. Writes machine-verifiable `results/citation-audit.json` when `--write-json` is passed.
-Zero fabricated citations, zero broken DOIs, zero retracted works."""
+  3. Publication year parity (within +/-1 year for online-first vs print).
+  4. Title token overlap (`>= 0.45`) against authoritative Crossref title metadata.
+  5. Author surname alignment (BibTeX authors vs Crossref `author`/`editor` family names).
+  6. HTTP reachability for `url = {...}` entries.
+  7. Writes machine-verifiable `results/citation-audit.json` when `--write-json` is passed.
+Zero fabricated citations, zero broken DOIs, zero mismatched authors/titles, zero retracted works."""
 
 from __future__ import annotations
 
@@ -19,15 +21,18 @@ import json
 import re
 import sys
 import time
+import unicodedata
 import urllib.error
 import urllib.parse
 import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-BIB_PATH = ROOT / "paper" / "refs.bib"
+PAPER_DIR = ROOT / "paper"
+BIB_PATH = PAPER_DIR / "refs.bib"
 DEFAULT_JSON = ROOT / "results" / "citation-audit.json"
-UA = "CellulogonicMecha-CitationVerifier/1.6 (mailto:0_0@0thernes.art; +https://github.com/0thernes/cellulogonic-mecha)"
+VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip() if (ROOT / "VERSION").exists() else "1.7.0"
+UA = f"CellulogonicMecha-CitationVerifier/{VERSION} (mailto:0_0@0thernes.art; +https://github.com/0thernes/cellulogonic-mecha)"
 
 STOPWORDS = {
     "a", "an", "and", "as", "at", "by", "for", "from", "in", "into", "is", "its",
@@ -35,12 +40,57 @@ STOPWORDS = {
 }
 
 
-def norm_tokens(text: str) -> set[str]:
-    clean = re.sub(r"\\[a-zA-Z]+\{([^}]*)\}", r"\1", text)
+def strip_latex_and_diacritics(text: str) -> str:
+    # Unwrap LaTeX accent macros such as {\'a}, {\"o}, {\v{s}}, {\'{\i}}, etc.
+    clean = re.sub(r"\\['\"`^~=.uvHcHkbrtd]\{?\\?([A-Za-z])\}?", r"\1", text)
+    clean = re.sub(r"\\[a-zA-Z]+\{([^}]*)\}", r"\1", clean)
     clean = re.sub(r"[{}\\]", "", clean)
+    clean = unicodedata.normalize("NFKD", clean)
+    clean = "".join(ch for ch in clean if not unicodedata.combining(ch))
+    return clean
+
+
+def norm_tokens(text: str) -> set[str]:
+    clean = strip_latex_and_diacritics(text)
     clean = clean.replace("--", " ").replace("-", " ")
     toks = re.findall(r"[a-z0-9]{3,}", clean.lower())
     return {t for t in toks if t not in STOPWORDS}
+
+
+def extract_bib_surnames(author_field: str) -> list[str]:
+    surnames: list[str] = []
+    if not author_field:
+        return surnames
+    parts = re.split(r"\s+and\s+", author_field, flags=re.I)
+    for p in parts:
+        raw = strip_latex_and_diacritics(p).strip()
+        if not raw or raw.lower() == "others":
+            continue
+        if "," in raw:
+            last = raw.split(",", 1)[0].strip()
+        else:
+            tokens = raw.split()
+            last = tokens[-1] if tokens else ""
+        # Extract meaningful surname tokens (handles hyphenated or multi-word surnames like "de Moura")
+        toks = re.findall(r"[a-z]{2,}", last.lower())
+        if toks:
+            surnames.append(toks[-1])
+            if len(toks) > 1:
+                surnames.append(" ".join(toks))
+    return list(dict.fromkeys(surnames))
+
+
+def extract_crossref_surnames(msg: dict) -> list[str]:
+    surnames: list[str] = []
+    people = (msg.get("author") or []) + (msg.get("editor") or [])
+    for person in people:
+        fam = strip_latex_and_diacritics(str(person.get("family") or person.get("name") or "")).strip()
+        toks = re.findall(r"[a-z]{2,}", fam.lower())
+        if toks:
+            surnames.append(toks[-1])
+            if len(toks) > 1:
+                surnames.append(" ".join(toks))
+    return list(dict.fromkeys(surnames))
 
 
 def parse_bibtex_entries(raw: str) -> list[dict[str, str]]:
@@ -54,15 +104,15 @@ def parse_bibtex_entries(raw: str) -> list[dict[str, str]]:
         if not m_head:
             continue
         rec: dict[str, str] = {"type": m_head.group(1).lower(), "key": m_head.group(2).strip()}
-        for field in ("title", "year", "doi", "url", "journal", "booktitle"):
-            fm = re.search(rf"\b{field}\s*=\s*\{{((?:[^{{}}]|\{{[^{{}}]*\}})*)\}}", ch, re.I | re.S)
+        for field in ("author", "editor", "title", "year", "doi", "url", "journal", "booktitle"):
+            fm = re.search(rf"\b{field}\s*=\s*\{{((?:[^{{}}]|\{{(?:[^{{}}]|\{{[^{{}}]*\}})*\}})*)\}}", ch, re.I | re.S)
             if fm:
                 rec[field] = re.sub(r"\s+", " ", fm.group(1)).strip()
         entries.append(rec)
     return entries
 
 
-def check_doi_crossref(doi: str, bib_title: str, bib_year: str, timeout: int = 20) -> dict:
+def check_doi_crossref(doi: str, bib_title: str, bib_author: str, bib_year: str, timeout: int = 20) -> dict:
     doi_clean = doi.strip()
     cr_url = f"https://api.crossref.org/works/{urllib.parse.quote(doi_clean, safe='/')}"
     req = urllib.request.Request(cr_url, headers={"User-Agent": UA, "Accept": "application/json"}, method="GET")
@@ -95,9 +145,23 @@ def check_doi_crossref(doi: str, bib_title: str, bib_year: str, timeout: int = 2
                     t_bib = norm_tokens(bib_title)
                     t_cr = norm_tokens(cr_title)
                     overlap = (len(t_bib & t_cr) / max(1, min(len(t_bib), len(t_cr)))) if (t_bib and t_cr) else 1.0
-                    title_ok = (overlap >= 0.45)
+                    title_ok = overlap >= 0.45
 
-                    ok = (not retracted) and year_ok and title_ok
+                    bib_surnames = extract_bib_surnames(bib_author)
+                    cr_surnames = extract_crossref_surnames(msg)
+                    if bib_surnames and cr_surnames:
+                        bib_set = set(bib_surnames)
+                        cr_set = set(cr_surnames)
+                        matched_authors = sorted(bib_set & cr_set)
+                        author_overlap = len(matched_authors) / max(1, min(len(bib_set), len(cr_set)))
+                        first_ok = bib_surnames[0] in cr_set
+                        author_ok = first_ok or (author_overlap >= 0.5)
+                    else:
+                        matched_authors = []
+                        author_overlap = 1.0 if not cr_surnames else 0.0
+                        author_ok = (len(cr_surnames) == 0)
+
+                    ok = (not retracted) and year_ok and title_ok and author_ok
                     notes = []
                     if retracted:
                         notes.append("RETRACTED")
@@ -105,13 +169,20 @@ def check_doi_crossref(doi: str, bib_title: str, bib_year: str, timeout: int = 2
                         notes.append(f"year_mismatch(bib={bib_year},cr={sorted(cr_years)})")
                     if not title_ok:
                         notes.append(f"title_overlap={overlap:.2f}")
+                    if not author_ok:
+                        notes.append(f"author_mismatch(bib={bib_surnames[:3]},cr={cr_surnames[:3]})")
                     return {
                         "target": f"doi:{doi_clean}",
                         "source": "crossref",
                         "ok": ok,
                         "retracted": retracted,
                         "year_ok": year_ok,
+                        "title_ok": title_ok,
                         "title_overlap": round(overlap, 3),
+                        "author_ok": author_ok,
+                        "author_overlap": round(author_overlap, 3),
+                        "bib_surnames": bib_surnames[:5],
+                        "crossref_surnames": cr_surnames[:5],
                         "crossref_title": cr_title,
                         "crossref_years": sorted(cr_years),
                         "status": "OK (Crossref)" if ok else "; ".join(notes),
@@ -145,7 +216,10 @@ def check_doi_crossref(doi: str, bib_title: str, bib_year: str, timeout: int = 2
                         "ok": True,
                         "retracted": False,
                         "year_ok": True,
+                        "title_ok": True,
                         "title_overlap": None,
+                        "author_ok": True,
+                        "author_overlap": None,
                         "status": "OK (DOI Handle)",
                     }
             return {"target": f"doi:{doi_clean}", "source": "doi_handle", "ok": False, "retracted": False, "status": f"HTTP {resp.getcode()}"}
@@ -173,8 +247,18 @@ def check_url(url: str, timeout: int = 15) -> dict:
     return {"target": url, "source": "http", "ok": False, "retracted": False, "status": "unreachable"}
 
 
+def verify_paper_markdown_dois(bib_dois: set[str]) -> list[str]:
+    """Check that every DOI linked in paper/WHITE_PAPER.md is also present in paper/refs.bib."""
+    wp = PAPER_DIR / "WHITE_PAPER.md"
+    if not wp.exists():
+        return []
+    txt = wp.read_text(encoding="utf-8")
+    found = {d.lower().rstrip(".)]") for d in re.findall(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9]+", txt)}
+    return sorted(found - {b.lower() for b in bib_dois})
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Verify citations, Crossref metadata, and zero retractions in paper/refs.bib.")
+    parser = argparse.ArgumentParser(description="Verify citations, Crossref title/author alignment, and zero retractions in paper/refs.bib.")
     parser.add_argument("--offline", action="store_true", help="Only validate BibTeX syntax & non-empty fields without network calls")
     parser.add_argument("--write-json", nargs="?", const=str(DEFAULT_JSON), help="Write machine-readable audit report JSON")
     args = parser.parse_args()
@@ -185,23 +269,31 @@ def main() -> None:
 
     raw = BIB_PATH.read_text(encoding="utf-8")
     entries = parse_bibtex_entries(raw)
-    dois = [(e["key"], e["doi"], e.get("title", ""), e.get("year", "")) for e in entries if "doi" in e]
+    dois = [
+        (e["key"], e["doi"], e.get("title", ""), e.get("author", e.get("editor", "")), e.get("year", ""))
+        for e in entries if "doi" in e
+    ]
     urls = [(e["key"], e["url"]) for e in entries if "url" in e and "doi" not in e]
     extra_urls = [(e["key"], e["url"]) for e in entries if "url" in e and "doi" in e]
     all_urls = list({u: k for k, u in (urls + extra_urls)}.items())
 
     print(f"Parsed {len(entries)} BibTeX entries ({len(dois)} DOIs + {len(all_urls)} URLs) from {BIB_PATH.name}.")
-    if len(entries) < 30:
-        print("FAIL: expected at least 30 verified citations in paper/refs.bib", file=sys.stderr)
+    if len(entries) < 36 or len(dois) < 36:
+        print(f"FAIL: expected at least 36 verified DOI citations in paper/refs.bib (got {len(dois)})", file=sys.stderr)
         sys.exit(1)
 
     for e in entries:
-        if not e.get("title") or not e.get("year"):
-            print(f"FAIL: BibTeX entry '{e['key']}' missing title or year", file=sys.stderr)
+        if not e.get("title") or not e.get("year") or not (e.get("author") or e.get("editor")):
+            print(f"FAIL: BibTeX entry '{e['key']}' missing author, title, or year", file=sys.stderr)
             sys.exit(1)
 
+    orphan_wp_dois = verify_paper_markdown_dois({d for _, d, _, _, _ in dois})
+    if orphan_wp_dois:
+        print(f"FAIL: paper/WHITE_PAPER.md contains DOI(s) absent from paper/refs.bib: {orphan_wp_dois}", file=sys.stderr)
+        sys.exit(1)
+
     if args.offline:
-        print("PASS (offline BibTeX syntax & required-field check).")
+        print("PASS (offline BibTeX syntax, required-field & paper/WHITE_PAPER.md DOI parity check).")
         return
 
     records: list[dict] = []
@@ -215,21 +307,28 @@ def main() -> None:
         if not rec["ok"]:
             failures.append(rec)
 
-    for key, doi, title, year in dois:
-        rec = check_doi_crossref(doi, title, year)
+    for key, doi, title, author, year in dois:
+        rec = check_doi_crossref(doi, title, author, year)
         rec["key"] = key
         records.append(rec)
-        print(f"  [{'OK  ' if rec['ok'] else 'FAIL'}] {rec['status']:<18} {key:<18} doi:{doi}")
+        print(
+            f"  [{'OK  ' if rec['ok'] else 'FAIL'}] {rec['status']:<18} {key:<18} "
+            f"t={rec.get('title_overlap')} a={rec.get('author_overlap')} doi:{doi}"
+        )
         if not rec["ok"]:
             failures.append(rec)
 
     retractions = sum(1 for r in records if r.get("retracted"))
+    title_aligned = sum(1 for r in records if r.get("title_ok", True))
+    author_aligned = sum(1 for r in records if r.get("author_ok", True))
     report = {
-        "schema": "cellulogonic-citation-audit/v1",
+        "schema": "cellulogonic-citation-audit/v2",
         "generated_utc": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "bib_entries": len(entries),
         "targets_checked": len(records),
         "targets_passed": len(records) - len(failures),
+        "title_aligned": title_aligned,
+        "author_aligned": author_aligned,
         "retractions_found": retractions,
         "records": records,
     }
@@ -241,9 +340,17 @@ def main() -> None:
         print(f"Wrote machine-verifiable citation audit -> {out_path}")
 
     if failures or retractions > 0:
-        print(f"\nFAIL: {len(failures)}/{len(records)} citation target(s) failed verification ({retractions} retractions)!", file=sys.stderr)
+        print(
+            f"\nFAIL: {len(failures)}/{len(records)} citation target(s) failed verification "
+            f"({retractions} retractions)!",
+            file=sys.stderr,
+        )
         sys.exit(1)
-    print(f"\nPASS: All {len(records)}/{len(records)} citation URLs & DOIs verified live via Crossref/HTTP (0 retractions, 0 mismatches)!")
+    print(
+        f"\nPASS: All {len(records)}/{len(records)} citation DOIs verified live via Crossref "
+        f"(title_aligned={title_aligned}/{len(records)}, author_aligned={author_aligned}/{len(records)}, "
+        f"retractions=0)!"
+    )
 
 
 if __name__ == "__main__":

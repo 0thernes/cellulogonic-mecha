@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
- * CELLULOGONIC MECHA v1.6.0 — Observatory Controller (Serialized Queue, Zero Unsafe-Inline, WebGL2 Fallback)
+ * CELLULOGONIC MECHA v1.7.0 — Observatory Controller (Serialized Queue, Zero Unsafe-Inline, WebGL2 Fallback)
  */
 import { CellMicroscope3D } from "./renderer3d.js";
 

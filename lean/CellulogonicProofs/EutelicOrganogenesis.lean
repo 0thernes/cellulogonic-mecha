@@ -3,10 +3,10 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem V: 3D Hollow-Tube Geometry Bottleneck, Minimum Viable
+  CELLULOGONIC MECHA v1.7.0 — Theorem V: 3D Hollow-Tube Geometry Bottleneck, Minimum Viable
   7-Organ Eutelic Metazoan Budget (≤1,000 Cells — Tardigrade / C. elegans / Rotifer Scale),
-  Syncytial & Myoepithelial Compression, Hydrostatic Skeleton Incompressibility,
-  Eutely Hypertrophy, & Tardigrade TDP/CAHS Bioglass Anhydrobiosis.
+  Syncytial & Myoepithelial Cell-Count Reduction, Constant-Product Helper, Hypertrophy,
+  & Tardigrade TDP/CAHS Bioglass Anhydrobiosis.
 
   Pure Lean 4.35.0 `module` (zero Mathlib, zero sorry, zero custom axioms).
   Copyright (c) 2026 Alexander Stephen Donahue <0_0@0thernes.art>.
@@ -52,17 +52,23 @@ public theorem T38_minimum_viable_organ_budget_bound (b : OrganBudget) :
     · unfold MeetsStandardEutelic totalCells; decide
     · unfold totalCells; rfl
 
-/-- T39: Syncytial & Myoepithelial Compression Theorem (Sub-500-Cell A-Life Trick). -/
+/-- T39: Syncytial & Myoepithelial Cell-Count Reduction Helper.
+    Note on truncated `Nat` subtraction: Lean's `Nat` subtraction clamps at `0` on underflow,
+    so `hShLe : M_shared ≤ M_musc` acts as an explicit non-underflow precondition guaranteeing
+    both strict reduction `(E + M_musc) - M_shared < E + M_musc` and exact unclamped
+    conservation `((E + M_musc) - M_shared) + M_shared = E + M_musc`. -/
 public theorem T39_syncytial_compression_factor (S k E M_musc M_shared : Nat)
     (hS : S ≥ 1) (hk : k ≥ 2) (hShPos : M_shared > 0) (hShLe : M_shared ≤ M_musc) :
     S < S * k ∧
-    (E + M_musc) - M_shared < E + M_musc := by
-  constructor
-  · have h2 : S * 2 ≤ S * k := Nat.mul_le_mul_left S hk
-    omega
-  · omega
+    (E + M_musc) - M_shared < E + M_musc ∧
+    ((E + M_musc) - M_shared) + M_shared = E + M_musc := by
+  refine ⟨?_, by omega, by omega⟩
+  have h2 : S * 2 ≤ S * k := Nat.mul_le_mul_left S hk
+  omega
 
-/-- T40: Hydrostatic Skeleton Incompressibility Theorem. -/
+/-- T40 [Bookkeeping arithmetic helper]: Elementary multiplicative monotonicity lemma
+    `A1 * L1 = A2 * L2 → A2 < A1 → L1 < L2` (for `L1 > 0`), used to model constant-product
+    cross-section vs. length coupling. -/
 public theorem T40_hydrostatic_skeleton_incompressibility (A1 L1 A2 L2 : Nat)
     (_hA2 : A2 > 0) (hL1 : L1 > 0)
     (hContract : A2 < A1)
@@ -75,11 +81,12 @@ public theorem T40_hydrostatic_skeleton_incompressibility (A1 L1 A2 L2 : Nat)
     have hMul2 : A2 * L1 < A1 * L1 := Nat.mul_lt_mul_of_pos_right hContract hL1
     omega
 
-/-- T41: Eutely Hypertrophy Theorem (Tardigrade / C. elegans Fixed Adult Cell Count). -/
+/-- T41 [Bookkeeping arithmetic helper]: Strict multiplicative monotonicity `N0 * m1 < N0 * m2`
+    for fixed `N0 > 0` and `m1 < m2` (literal-only `N0 - N0 = 0` conjunct removed in v1.7.0). -/
 public theorem T41_eutely_hypertrophy_cancels_hyperplasia (N0 m1 m2 : Nat)
     (hN0 : N0 > 0) (hGrow : m1 < m2) :
-    N0 * m1 < N0 * m2 ∧ N0 - N0 = 0 := by
-  exact ⟨Nat.mul_lt_mul_of_pos_left hGrow hN0, Nat.sub_self N0⟩
+    N0 * m1 < N0 * m2 := by
+  exact Nat.mul_lt_mul_of_pos_left hGrow hN0
 
 /-- T42: Tardigrade TDP/CAHS Bioglass Anhydrobiosis Protection & Mass Conservation. -/
 public theorem T42_anhydrobiosis_bioglass_vitrification
@@ -93,13 +100,25 @@ public theorem T42_anhydrobiosis_bioglass_vitrification
   · exact Nat.div_lt_self (by omega) (by omega)
   · omega
 
-/-- T43: Protonephridial / Flame-Cell Excretory Osmoregulation Balance Theorem. -/
+/-- T43: Excretory Osmoregulation Balance (explicit `Nat` clamping note & `Int` companion).
+    Over `Nat`, `V + J_in - J_excr` uses truncated subtraction (clamping at `0` whenever
+    `J_excr > V + J_in`). To make the non-underflow and signed semantics explicit, we prove:
+    (1) `J_excr ≥ J_in → V + J_in - J_excr ≤ V` (clamped `Nat` non-swelling bound),
+    (2) `J_excr < J_in → V + J_in - J_excr > V` (strict swelling when influx exceeds efflux),
+    (3) `J_excr ≤ V + J_in → (V + J_in - J_excr) + J_excr = V + J_in` (exact non-underflow
+        conservation when efflux does not exceed total volume `V + J_in`), and
+    (4) `J_excr ≥ J_in → (V : Int) + (J_in : Int) - (J_excr : Int) ≤ (V : Int)`
+        (unclamped signed `Int` companion inequality). -/
 public theorem T43_flames_excretory_osmoregulation_balance (V J_in J_excr : Nat) :
     (J_excr ≥ J_in → V + J_in - J_excr ≤ V) ∧
-    (J_excr < J_in → V + J_in - J_excr > V) := by
-  constructor <;> omega
+    (J_excr < J_in → V + J_in - J_excr > V) ∧
+    (J_excr ≤ V + J_in → (V + J_in - J_excr) + J_excr = V + J_in) ∧
+    (J_excr ≥ J_in → (V : Int) + (J_in : Int) - (J_excr : Int) ≤ (V : Int)) := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> omega
 
-/-- T44: End-to-End 5-Tier Hierarchical Mass Conservation (DNA → Organelle → Cell → Organ → Organism). -/
+/-- T44 [Bookkeeping arithmetic identity]: Elementary `Int` ring cancellation identity
+    verifying that subtracting `delta` from one compartment and adding `delta` to another
+    preserves the 8-compartment sum. -/
 public theorem T44_dna_to_organ_hierarchical_conservation
     (mEnv mEpi mNerv mMusc mGut mExcr mRepro mHydro delta : Int) :
     ((mEnv - delta) + (mEpi + delta) + mNerv + mMusc + mGut + mExcr + mRepro + mHydro) =

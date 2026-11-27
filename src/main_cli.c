@@ -42,7 +42,7 @@ static CellWorld* create_world_checked(const CellWorldConfig* cfg) {
 static int cmd_probe(void) {
     CellHwCaps caps;
     cellulogonic_probe_hw(&caps);
-    printf("=== CELLULOGONIC MECHA v1.6.0 SILICON PROBE ===\n");
+    printf("=== CELLULOGONIC MECHA v1.7.0 SILICON PROBE ===\n");
     printf("ABI Version : 0x%08x\n", cellulogonic_abi_version());
     printf("CPU Vendor  : %s\n", caps.vendor);
     printf("CPU Brand   : %s\n", caps.brand);
@@ -61,7 +61,7 @@ static int cmd_probe(void) {
 }
 
 static int cmd_bench(uint32_t epochs, uint32_t size, uint64_t seed) {
-    printf("=== CELLULOGONIC MECHA v1.6.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
+    printf("=== CELLULOGONIC MECHA v1.7.0 DUAL-KERNEL BENCHMARK & PARITY ===\n");
     printf("Grid: %ux%u (%u voxels) | Epochs: %u | Seed: %llu\n\n",
            size, size, size * size, epochs, (unsigned long long)seed);
 
@@ -1132,7 +1132,7 @@ static int parse_u64_strict(const char* s, uint64_t* out) {
 
 int main(int argc, char** argv) {
     if (argc < 2 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "help") == 0) {
-        printf("CELLULOGONIC MECHA v1.6.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
+        printf("CELLULOGONIC MECHA v1.7.0 — Clean-Room 3D Developmental & Cellular A-Life CLI\n");
         printf("Usage: cellulogonic <command> [options]\n");
         printf("Commands: probe | bench | abiogenesis | endosymbiosis | xenocell |\n");
         printf("          bioelectric | anhydrobiosis | ablation | stats | bridge | embryo | json | stream\n");
@@ -1141,7 +1141,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     if (strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "-V") == 0) {
-        printf("cellulogonic 1.6.0 (ABI 0x%08x)\n", cellulogonic_abi_version());
+        printf("cellulogonic 1.7.0 (ABI 0x%08x)\n", cellulogonic_abi_version());
         return 0;
     }
 

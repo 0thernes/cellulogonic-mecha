@@ -1,14 +1,14 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # System Architecture (`docs/architecture.md`)
 
-**CELLULOGONIC MECHA `v1.6.0`** operates as **Build 2 (CELLULAR)** in a clean-room four-build Artificial Life architecture, combining a portable zero-dependency native C11 simulation core (Windows x86-64, Linux x86-64, macOS ARM64) with a 78-theorem 6-kernel Pure Lean 4.35.0 formal specification suite, a static GitHub Pages Proof Blueprint, and a local 60 FPS WebGL2 3D Observatory.
+**CELLULOGONIC MECHA `v1.7.0`** operates as **Build 2 (CELLULAR)** in a clean-room four-build Artificial Life architecture, combining a portable zero-dependency native C11 simulation core (Windows x86-64, Linux x86-64, macOS ARM64) with a 78-theorem Pure Lean 4.35.0 `Spec.lean` formal specification suite (10 proof modules + `Spec.lean`, 15 `.lean` files, 6 kernel checks), a static GitHub Pages Proof Blueprint, and a local 60 FPS WebGL2 3D Observatory.
 
 ```mermaid
 flowchart LR
-  B1["Build 1: AUTOPHAGE\n128B/256B GF(2^8) DNA"] -->|ingest_autophage_128b| B2["Build 2: CELLULOGONIC MECHA\nC11 + Portable AVX2/Scalar/ARM64\nABI 0x00010600"]
+  B1["Build 1: AUTOPHAGE\n128B/256B GF(2^8) DNA"] -->|ingest_autophage_128b| B2["Build 2: CELLULOGONIC MECHA\nC11 + Portable AVX2/Scalar/ARM64\nABI 0x00010700"]
   B2 -->|project_asmodensius_112| B3["Build 3: Asmodensius\nEmbodied [0,1]^112 Creatures"]
   B3 -->|embodied| B4["Build 4: Asmodensius-Native\nWorld Substrate (P2/P4/P9/P10)"]
-  L["Lean 4.35.0 (78 Theorems)\nSpec / Challenge / Solution\n6 Kernel Checks + Tamper Reject"] -.->|Formal Invariants| B2
+  L["Lean 4.35.0 (78 Spec.lean Theorems)\nSpec / Challenge / Solution\n6 Kernel Checks + Tamper Reject"] -.->|Formal Invariants| B2
   T["26 Gates + 8 Mutants + 1,000 Fuzz\n+ libFuzzer + 2,720 prop_check\n+ Python Oracle + 13 Web Tests"] -.->|Executable Audit| B2
   B2 -->|JSON stream (const CellWorld*)| W["web/server.mjs (127.0.0.1:8788)\nCSRF-Hardened WebGL2 3D Observatory"]
 ```
@@ -17,7 +17,7 @@ flowchart LR
 
 | File | Responsibility | Key Invariant |
 |---|---|---|
-| `include/cellulogonic_abi.h` | Flat public C11 ABI (`0x00010600`), enums (`CellSpecies`, `CellSolventRegime`, `CellOperatingRegime`, `CellMorphFate`, `CellRestraint`), structs, and `CELL_API` signatures | Zero third-party deps; negative-bounds hardened (`G25`) |
+| `include/cellulogonic_abi.h` | Flat public C11 ABI (`0x00010700`), enums (`CellSpecies`, `CellSolventRegime`, `CellOperatingRegime`, `CellMorphFate`, `CellRestraint`), structs, and `CELL_API` signatures | Zero third-party deps; negative-bounds hardened (`G25`) |
 | `include/cellulogonic_internal.h` | Internal structs (`_Static_assert` explicit padding, `__SIZEOF_INT128__` guard), 19-reaction matrix, 4-solvent `SOLVENT_TABLE`, `photon_rem_uq`, RNG domains | Exact match to `lean/CellulogonicProofs/Spec.lean` |
 | `src/crypto_rng.c` | Domain-isolated `Philox4x32-10` PRNG, CPUID + OSXSAVE/XGETBV AVX2 & ARM64 hardware detection, Zen-2-safe `RDSEED` + portable entropy, NIST FIPS 180-4 SHA-256 | Bit-exact across Windows x86-64, Linux x86-64 & macOS ARM64 |
 | `src/chemoton_physics.c` | 19-reaction integer Chemoton (`apply_exact_rxn`), unified `photon_rem_uq[i]` deduction, `born_org_mask`, Gray-coded 4-byte operons, chemiosmosis | `0 amu` mass, `0 uq` First-Law, strict `q_r > 0`, `0` heap imports |

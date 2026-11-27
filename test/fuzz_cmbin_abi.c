@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
  *
- * CELLULOGONIC MECHA v1.6.0 — Structured Fuzzing Harness (Build Standard B15)
+ * CELLULOGONIC MECHA v1.7.0 — Structured Fuzzing Harness (Build Standard B15)
  * Dual-mode:
  *   1. libFuzzer target: compile with `-fsanitize=fuzzer,address,undefined -DCELL_LIBFUZZER`
  *   2. Standalone deterministic adversarial corpus runner (`./fuzz_cmbin_abi [N_CASES]`) under ASan+UBSan

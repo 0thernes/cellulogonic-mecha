@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue
  * ============================================================================
- * CELLULOGONIC MECHA v1.6.0 — Zero-Dependency Bare-Metal WebGL2 3D Organic
+ * CELLULOGONIC MECHA v1.7.0 — Zero-Dependency Bare-Metal WebGL2 3D Organic
  * Deformable Cellular Microscopy Engine (GLSL ES 3.00)
  * ============================================================================ */
 

@@ -11,7 +11,7 @@ public import CellulogonicProofs.MorphogeneticGRN
 public import CellulogonicProofs.ContinuumBiomechanics
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Module 9: Explicit Non-Vacuity & Sharp Boundary Witnesses (NV01–NV08)
+  CELLULOGONIC MECHA v1.7.0 — Module 9: Explicit Non-Vacuity & Sharp Boundary Witnesses (NV01–NV08)
 
   Constructs concrete mathematical inhabitants proving that EVERY hypothesis bundle across
   Theorem Groups I–VIII (`T01`–`T58`, `C59`–`C62`) is genuinely satisfiable (non-vacuous),
@@ -47,7 +47,7 @@ public theorem NV01_thermo_titan_boundary_witness :
     qHeat .Titan 3 .R3_atp_synth = -4 := by
   decide
 
-/-- NV02 (Theorem Group II Non-Vacuity & Sharp Sextic Minimax Equality Boundary):
+/-- NV02 (Theorem Group II Non-Vacuity & Sharp Sextic Polynomial Equality Boundary):
     Concrete asymmetric radii `(x = 2, y = 5)` strictly satisfy `(x^2 + y^2)^3 < 2 * (x^3 + y^3)^2`,
     while symmetric radii `(x = 3, y = 3)` achieve exact equality, and `(V = 47, L = 72)` inhabits
     the swollen interphase window `IsIntact ∧ ¬ CanSymmetricFission`. -/
@@ -135,15 +135,15 @@ public theorem NV07_embryogenesis_trace_nonvacuous_witness :
   · decide
   · decide
 
-/-- NV08 (Theorem Group VIII Non-Vacuity — Concrete XPBD Trace, Carcass Transfer, Yolk & Strain):
+/-- NV08 (Theorem Group VIII Non-Vacuity — Concrete XPBD Trace, Carcass Transfer & Yolk):
     Concrete witnesses inhabit `C59` (`10 → 25`), `C60` (`totalMass = 170`, `massDetritus = 70`),
-    `C61` (`Y = 100, k = 8, heat = 12 → 8 * 11 + 0 + 12 = 100`), and `C62` (`5 * (-3) * (-3) = 45 > 0`). -/
+    and `C61` (`Y = 100, k = 8, heat = 12 → 8 * 11 + 0 + 12 = 100`). Literal-only arithmetic
+    conjunct `(5 : Int) * (-3) * (-3) = 45` removed in v1.7.0. -/
 public theorem NV08_continuum_biomechanics_nonvacuous_witness :
     xpbdDissipateTrace 10 [3, 5, 7] = 25 ∧
     (carcassDeathTransfer ⟨40, 20, 10, 100⟩).totalMass = 170 ∧
     (carcassDeathTransfer ⟨40, 20, 10, 100⟩).massDetritus = 70 ∧
-    listSum (List.replicate 8 11) + 0 + 12 = 100 ∧
-    (5 : Int) * (-3) * (-3) = 45 := by
+    listSum (List.replicate 8 11) + 0 + 12 = 100 := by
   unfold xpbdDissipateTrace xpbdDissipateStep carcassDeathTransfer EcoMassLedger.totalMass listSum
   decide
 

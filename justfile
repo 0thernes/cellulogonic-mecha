@@ -1,4 +1,4 @@
-# CELLULOGONIC MECHA v1.6.0 — One-Word Task Runner (Build Standard A31, B01)
+# CELLULOGONIC MECHA v1.7.0 — One-Word Task Runner (Build Standard A31, B01)
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2026 Alexander Stephen Donahue
 
@@ -76,18 +76,24 @@ lean:
 lean-multi:
     cd lean && lake env leanchecker --fresh Solution && lake env leanchecker-paranoid --fresh Solution && lake check --paranoid && lake comparator --config comparator.json --paranoid
 
-# Build static interactive Lean 4 Proof Blueprint & Research Portal into _site/
+# Build and verify static interactive Lean 4 Proof Blueprint & Research Portal into _site/
 [unix]
 site:
     python3 scripts/build_blueprint.py
+    python3 scripts/check_blueprint.py
 
 [windows]
 site:
     python scripts/build_blueprint.py
+    python scripts/check_blueprint.py
 
-# Verify live DOIs in paper/refs.bib
+# Verify live DOIs (reachability + title/author alignment + zero retractions) in paper/refs.bib
 citations:
-    python3 scripts/check_citations.py
+    python3 scripts/check_citations.py --write-json results/citation-audit.json
+
+# Verify dual cryptographic timestamps (DigiCert RFC 3161 .tsr + Bitcoin OpenTimestamps .ots)
+timestamps:
+    python3 scripts/stamp_timestamps.py --verify
 
 # Compile AMS-LaTeX white paper, check 0 overfull hboxes, package & verify clean-room arXiv tarball
 paper:

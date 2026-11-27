@@ -1,0 +1,79 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "CELLULOGONIC MECHA",
+  "version": "1.7.0",
+  "description": "Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels, paired with a 78-theorem zero-Mathlib Lean 4.35.0 specification model (Spec.lean, in 10 proof modules + Spec.lean, 15 .lean files; verified in CI by 6 kernel checks: Lean default & paranoid modes + lean4lean, nanoda_bin, con-leche, con-ron) and a 26-gate / 8-mutant falsification harness.",
+  "identifier": "swh:1:snp:8c1696436104a888897ce3b97867eda983d56160",
+  "codeRepository": "https://github.com/0thernes/cellulogonic-mecha",
+  "url": "https://0thernes.github.io/cellulogonic-mecha/",
+  "issueTracker": "https://github.com/0thernes/cellulogonic-mecha/issues",
+  "license": "https://spdx.org/licenses/Apache-2.0",
+  "dateCreated": "2026-11-19",
+  "dateModified": "2026-11-26",
+  "datePublished": "2026-11-26",
+  "developmentStatus": "active",
+  "isPartOf": "https://github.com/0thernes/0thernes-research-archive",
+  "author": [
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0009-0006-8168-9648",
+      "givenName": "Alexander Stephen",
+      "familyName": "Donahue",
+      "email": "0_0@0thernes.art",
+      "url": "https://0thernes.art",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Independent Researcher, Spokane, WA, USA"
+      }
+    }
+  ],
+  "programmingLanguage": [
+    "C11",
+    "Lean 4",
+    "Python",
+    "JavaScript",
+    "GLSL"
+  ],
+  "operatingSystem": [
+    "Linux",
+    "Windows",
+    "macOS"
+  ],
+  "runtimePlatform": [
+    "x86-64 (portable + runtime AVX2 dispatch)",
+    "ARM64 (Apple Silicon)"
+  ],
+  "softwareRequirements": [
+    "C11 compiler (clang or gcc)",
+    "Lean 4 v4.35.0 (leanprover/lean4:v4.35.0, zero Mathlib)",
+    "Python 3.11+ (stdlib only)",
+    "Node.js 20+ (optional, for WebGL2 Observatory)"
+  ],
+  "keywords": [
+    "artificial-life",
+    "chemoton",
+    "autopoiesis",
+    "canham-helfrich",
+    "endosymbiosis",
+    "bioelectricity",
+    "embryogenesis",
+    "xenobiology",
+    "lean4",
+    "formal-verification",
+    "deterministic-simulation",
+    "c11"
+  ],
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "CELLULOGONIC MECHA (v1.7.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Laboratory with a 78-Theorem Lean 4.35.0 Specification Model",
+    "author": {
+      "@type": "Person",
+      "@id": "https://orcid.org/0009-0006-8168-9648",
+      "name": "Alexander Stephen Donahue"
+    },
+    "datePublished": "2026-11-26",
+    "url": "https://github.com/0thernes/cellulogonic-mecha/blob/main/dist/Donahue_2026_cellulogonic_mecha.pdf",
+    "license": "https://creativecommons.org/licenses/by/4.0/"
+  }
+}

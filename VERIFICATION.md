@@ -1,24 +1,24 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
-# CELLULOGONIC MECHA v1.6.0 — Formal Verification & Empirical Proof Ledger
+# CELLULOGONIC MECHA v1.7.0 — Formal Verification & Empirical Proof Ledger
 
-Every theorem, gate, SHA-256 digest, runtime, and statistical test below was produced directly by compiling and executing **CELLULOGONIC MECHA v1.6.0** (`ABI 0x00010600`) on live hardware (**Intel Core Ultra 9 275HX**, AVX2 + BMI1/2 + POPCNT + RDSEED + RDTSCP; **Windows 11 x64 PE64** via `clang 23.1.0 + lld`, **Ubuntu Linux ELF64** via `gcc 13.3.0`, **macOS ARM64** in CI, and **Lean 4 `v4.35.0`**).
+Every theorem, gate, SHA-256 digest, runtime, and statistical test below was produced directly by compiling and executing **CELLULOGONIC MECHA v1.7.0** (`ABI 0x00010700`) on live hardware (**Intel Core Ultra 9 275HX**, AVX2 + BMI1/2 + POPCNT + RDSEED + RDTSCP; **Windows 11 x64 PE64** via `clang 23.1.0 + lld`, **Ubuntu Linux ELF64** via `gcc 13.3.0`, **macOS ARM64** in CI, and **Lean 4 `v4.35.0`**).
 
-> **v1.6.0 Six-Kernel Palomar Lean 4.35.0 (`78/78`) & 3-OS C11 Hardening Receipts (`2026-11-26`):** Expanded Pure Lean 4.35.0 to **11 `module` files (`78 / 78` audited theorems)** adding **Module 10 (`AdversarialTests.lean`, `AT01`–`AT08`)**, 3-solvent `T05`, `12` pinned `Spec` defs in `comparator.json`, `v0.4`-schema-validated `formalization.yaml`, and live negative kernel tamper rejection (`scripts/test_lean_negative.py` + CI sorry-tampered comparator check). Hardened C11 to portable `-march=x86-64` + isolated `target("avx2")` + macOS ARM64, 3-module zero-heap `nm` audit, unified per-voxel `photon_rem_uq[i]`, `"CMB5"` overflow/desync guards, **26 / 26 gates + 8 / 8 mutants** (`0.692s` Win64, `0.802s` Linux, ASan/UBSan clean), cross-OS 0-bit SHA-256 parity `83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe`, and `N = 24` paired stats (`96/96` wins, $p_{\mathrm{Holm}} = 0.00040 \le 0.05$, Cohen's $d_z \in [1.468, 3.560]$).
+> **v1.7.0 Lean 4.35.0 (`78/78` `Spec.lean` theorems, 6 kernel checks) & 3-OS C11 Hardening Receipts (`2026-11-26`):** All 78 theorems live in **10 proof modules + `Spec.lean` (15 `.lean` files)** and concern `Spec.lean` only (not `src/*.c`), with 5 annotated bookkeeping helpers (`T25, T27, T40, T41, T44`), all literal-only conjuncts removed (`T41, T54, C62, NV08`), `T16` strengthened with equality iff `x = y`, `T39`/`T43` equipped with explicit non-underflow conservation (+ `Int` companion in `T43`), `12` pinned `Spec` defs in `comparator.json`, and `6/6` live negative elaboration & `sorry`-tamper rejections (`scripts/test_lean_negative.py` + CI sorry-tampered comparator check). Hardened C11 to portable `-march=x86-64` + isolated `target("avx2")` + macOS ARM64, 3-module zero-heap `nm` audit, unified per-voxel `photon_rem_uq[i]`, `"CMB5"` overflow/desync guards, **26 / 26 gates + 8 / 8 mutants** (`0.692s` Win64, `0.802s` Linux, ASan/UBSan clean), cross-OS 0-bit SHA-256 parity `83317026b088e005eda739e0c7180b40d15ef9ac4bf9be2c32b690c6532c9bbe`, and `N = 24` paired stats (`96/96` wins, $p_{\mathrm{Holm}} = 0.00040 \le 0.05$, Cohen's $d_z \in [1.468, 3.560]$).
 
 ---
 
-## 1. Provable: 78 / 78 Six-Kernel Pure Lean 4.35.0 Formal Proofs (`0 sorryAx`, `0 native_decide`, `0` Warnings)
+## 1. Provable: 78 / 78 Pure Lean 4.35.0 `Spec.lean` Theorems (6 Kernel Checks, `0 sorryAx`, `0 native_decide`, `0` Warnings)
 
-Full kernel audit transcripts: [`results/lean4-audit.txt`](results/lean4-audit.txt) and [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt) (11 pure Lean 4 `module` files, zero Mathlib, strictly `[propext, Classical.choice, Quot.sound]`).
+Full kernel audit transcripts: [`results/lean4-audit.txt`](results/lean4-audit.txt) and [`results/lean4-multi-kernel.txt`](results/lean4-multi-kernel.txt) (10 proof modules + `Spec.lean`, 15 `.lean` files, zero Mathlib, strictly `[propext, Classical.choice, Quot.sound]`; verified in CI by Lean default & paranoid modes + 4 independent checkers `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`).
 
-| Theorem Group | File | Theorems | Machine-Checked Mathematical Invariants |
+| Theorem Group | File | Theorems | Machine-Checked `Spec.lean` Statements |
 |---|---|---|---|
 | **Spec (Isolated)** | [`Spec.lean`](lean/CellulogonicProofs/Spec.lean) | `12` Pinned Defs | Pure `@[expose] public` definitions only (`0` proofs, `0 sorry`) imported by `Challenge.lean` & `Solution.lean` |
 | **Theorem I** | [`StoichiometryThermo.lean`](lean/CellulogonicProofs/StoichiometryThermo.lean) | `T01`–`T10` | Exact 8-species atomic mass (`0 amu` on `R1`–`R15c`), First-Law (`0 uq`) & strict Second-Law (`q_r > 0`) across ALL 4 planetary solvents, ATP coupling, 3-solvent 4× respiration yield, no perpetual cycles |
-| **Theorem II** | [`MembraneGeometry.lean`](lean/CellulogonicProofs/MembraneGeometry.lean) | `T11`–`T19` | Exact $Q$ doubling, $Q \le 1/2$ threshold, constructive exosome escape `(47,72)->(6,16)+(41,56)`, exact sextic **Global Minimax Theorem** $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4+2x^3y+2xy^3+y^4)$ |
-| **Theorem III** | [`BioenergeticsEndosymbiosis.lean`](lean/CellulogonicProofs/BioenergeticsEndosymbiosis.lean) | `T20`–`T27` | Prokaryotic $1/R$ ceiling, **Endosymbiotic $O(1)$ Scaling Liberation**, $R/r$ amplification, secondary additivity, heteroplasmy purifying selection, EGT genome economy |
+| **Theorem II** | [`MembraneGeometry.lean`](lean/CellulogonicProofs/MembraneGeometry.lean) | `T11`–`T19` | Exact $Q$ doubling, $Q \le 1/2$ threshold, constructive exosome escape `(47,72)->(6,16)+(41,56)`, elementary sextic polynomial inequality + equality iff `x = y` (`T16`: $2(x^3+y^3)^2 - (x^2+y^2)^3 = (x-y)^2(x^4+2x^3y+2xy^3+y^4)$) |
+| **Theorem III** | [`BioenergeticsEndosymbiosis.lean`](lean/CellulogonicProofs/BioenergeticsEndosymbiosis.lean) | `T20`–`T27` | Prokaryotic $1/R$ ceiling, **Endosymbiotic $O(1)$ Scaling Liberation**, $R/r$ amplification, secondary additivity, heteroplasmy purifying selection (`T26`), plus annotated bookkeeping helpers (`T25`, `T27`) |
 | **Theorem IV** | [`ChemiosmosisAutopoiesis.lean`](lean/CellulogonicProofs/ChemiosmosisAutopoiesis.lean) | `T28`–`T36` | Strict Second-Law solvent c-ring floors ($n_H \ge 3$ Terran, $\ge 2$ Venus, $\ge 4$ Titan), gap-junction Dirichlet dissipation, crystal/noise `COVI = 0`, Markov blanket |
-| **Theorem V** | [`EutelicOrganogenesis.lean`](lean/CellulogonicProofs/EutelicOrganogenesis.lean) | `T37`–`T44` | 3D hollow-tube lumen $\ge 3L$, 7-organ metazoan budget ($\ge 355$ / 800-cell witness), syncytia, hydrostatic skeleton, Tardigrade TDP bioglass, protonephridia, 5-tier mass |
+| **Theorem V** | [`EutelicOrganogenesis.lean`](lean/CellulogonicProofs/EutelicOrganogenesis.lean) | `T37`–`T44` | 3D hollow-tube lumen $\ge 3L$, 7-organ metazoan budget ($\ge 355$ / 800-cell witness), non-underflow `T39`/`T43` (+ `Int` companion), Tardigrade TDP bioglass (`T42`), plus annotated bookkeeping helpers (`T40`, `T41`, `T44`) |
 | **Theorem VI** | [`CytoskeletonNanomechanics.lean`](lean/CellulogonicProofs/CytoskeletonNanomechanics.lean) | `T45`–`T50` | Stokes dissipation, 3D soft-body momentum, prolate area excess, classical stateful Fröhlich–Pokorný GHz relaxation ODE, GHz standing-wave scaling, ATP work bound |
 | **Theorem VII** | [`MorphogeneticGRN.lean`](lean/CellulogonicProofs/MorphogeneticGRN.lean) | `T51`–`T58` | Wolpert GPS, Steinberg sorting, apical wedge, eutelic tree invariant $\sum 2^{\text{rem}} \le N_0 \cdot 2^{d_0}$, exact C11 Hippo TF7 hysteresis, Hebbian pruning, coupled CPG bound, `R8` zero-drift |
 | **Theorem VIII** | [`ContinuumBiomechanics.lean`](lean/CellulogonicProofs/ContinuumBiomechanics.lean) | `C59`–`C62` | XPBD numerical damping monotonicity, 100% carcass-to-detritus mass, maternal yolk cleavage enthalpy, biotensegrity quadratic strain non-negativity |
@@ -42,7 +42,7 @@ Sources: [`test/test_falsification.c`](test/test_falsification.c), [`test/fuzz_c
 
 ---
 
-## 3. Verifiable & Authenticated: Cross-OS / Cross-ISA Bit-Exact SHA-256 Parity (`v1.6.0`)
+## 3. Verifiable & Authenticated: Cross-OS / Cross-ISA Bit-Exact SHA-256 Parity (`v1.7.0`)
 
 Benchmark (`32×32×32 μm` continuous 3D off-lattice fluid chamber, `300` epochs, `50,243` cell steps, `1,224,310` exact conserved reactions, seed `5000`; artifacts [`02_bench_win64.txt`](results/02_bench_win64.txt) & [`02_bench_linux.txt`](results/02_bench_linux.txt); macOS ARM64 parity verified in CI):
 

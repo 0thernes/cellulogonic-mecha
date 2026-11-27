@@ -2,7 +2,7 @@ cff-version: 1.2.0
 title: "CELLULOGONIC MECHA — Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic & Xenocellular Artificial Life Engine with a 78-Theorem Lean 4.35.0 Specification Model"
 message: "If you reference, verify, or build upon CELLULOGONIC MECHA in academic or independent research, please cite this software and preprint using the metadata below."
 type: software
-version: "1.6.0"
+version: "1.7.0"
 date-released: "2026-11-26"
 authors:
   - family-names: "Donahue"

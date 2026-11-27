@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2026 Alexander Stephen Donahue (Independent Researcher, 0thernes)
  *
- * Minimal runnable C11 ABI quickstart for CELLULOGONIC MECHA v1.6.0.
+ * Minimal runnable C11 ABI quickstart for CELLULOGONIC MECHA v1.7.0.
  * Demonstrates creating a deterministic 3D Embryogenesis chamber, stepping
  * 120 epochs, verifying 0-amu mass & 0-uq First-Law energy closure, and
  * projecting the apex specimen to the Asmodensius 112-trait vector.

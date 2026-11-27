@@ -57,14 +57,16 @@ python3 scripts/test_lean_negative.py
 ```
 - **Expected:** `78/78` audited theorems, `0 sorryAx` in `Solution`, `0` warnings, strictly within `[propext, Classical.choice, Quot.sound]`, `check_readme_axioms.py` and `test_lean_negative.py` exit `0`.
 
-### D. White Paper, Clean-Room arXiv Tarball, Blueprint & Live Crossref Citation Audit
+### D. White Paper, Clean-Room arXiv Tarball, Blueprint, Timestamps & Live Crossref Citation Audit
 ```bash
 python3 scripts/check_citations.py --write-json results/citation-audit.json
 python3 scripts/build_blueprint.py
+python3 scripts/check_blueprint.py
+python3 scripts/stamp_timestamps.py --verify
 python3 scripts/build_paper.py
 pwsh -NoProfile -File scripts/Audit-Repo.ps1
 ```
-- **Expected:** `36/36` DOIs `OK (Crossref)` with `0` retractions, `0` Overfull `\hbox`/`\vbox`, `0` undefined refs/citations, clean-room `dist/arxiv_submission.tar.gz` compiles cleanly, `_site/` Blueprint generated, `Audit-Repo.ps1` reports `100.0%` Structure / `100.0%` Completion / `100.0%` Core.
+- **Expected:** `36/36` DOIs `OK (Crossref)` with `36/36` title & author alignment and `0` retractions, `0` Overfull `\hbox`/`\vbox`, `0` undefined refs/citations, clean-room `dist/arxiv_submission.tar.gz` compiles cleanly, `_site/` Blueprint generated and verified, dual RFC 3161 `.tsr` + Bitcoin OTS `.ots` verified, `Audit-Repo.ps1` reports `100.0%` Structure / `100.0%` Completion / `100.0%` Core.
 
 ## 3. Replication Log (Build Standard `B44`)
 

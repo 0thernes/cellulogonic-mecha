@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Limitations, Threats to Validity & Real-vs-Metaphor Boundary (`LIMITATIONS.md`)
 
-This document states clearly what **CELLULOGONIC MECHA `v1.6.0`** does **not** prove, where its abstractions diverge from physical wet-lab biology, and how its terminology maps to literal computation (Build Standard `B41`).
+This document states clearly what **CELLULOGONIC MECHA `v1.7.0`** does **not** prove, where its abstractions diverge from physical wet-lab biology, and how its terminology maps to literal computation (Build Standard `B41`).
 
 ## 1. Literal-vs-Metaphor Boundary Table
 
@@ -18,16 +18,16 @@ This document states clearly what **CELLULOGONIC MECHA `v1.6.0`** does **not** p
 
 ## 2. Threats to Validity
 
-1. **Formal-vs-C11 Implementation Boundary:** Lean 4.35.0 (`lean/`) proves **78** theorems over the discrete specification (`Spec.lean`), **not** a machine-checked compiler verification of `src/*.c`; no theorem links `Spec.lean` to the C code. Within the 78:
-   - Several are elementary arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`), so the count overstates how much model content is checked.
+1. **Formal-vs-C11 Implementation Boundary:** Lean 4.35.0 (`lean/`, 10 proof modules + `Spec.lean`, 15 `.lean` files) proves **78** theorems over the discrete specification (`Spec.lean`), **not** a machine-checked compiler verification of `src/*.c`; no theorem links `Spec.lean` to the C code. Within the 78:
+   - Five of the 62 core statements (`T25`, `T27`, `T40`, `T41`, `T44`) are explicitly annotated elementary arithmetic bookkeeping helpers (`docs/statement-fidelity.md` §2), so raw theorem count should not be mistaken for 78 distinct biophysical derivations. (Literal-only conjuncts previously in `T41`, `T54`, `C62`, `NV08` were removed in `v1.7.0`.)
    - Statements over hard-coded constant tables (reaction stoichiometry, solvent c-ring thresholds, organ budgets) hold only for those constants.
-   - `T16` is the polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$, on a cube/square proxy model; the equality case is not part of the Lean statement.
-   - Some statements use truncated natural-number subtraction (`T39`, `T43`), so excess efflux clamps a volume at 0 instead of going negative.
-   - The six kernel checks include the Lean reference kernel twice (default and paranoid modes). The archived transcript `results/lean4-multi-kernel.txt` was recorded at parent commit `40e995b` (CI run `45810469384`); `lean/` is unchanged at `d033ab0`, whose CI run `45812871840` also passed.
+   - `T16` is the elementary polynomial inequality $(x^2+y^2)^3 \le 2(x^3+y^3)^2$ for integers $x, y > 0$, strict for $x \ne y$, with exact equality $2(x^3+y^3)^2 = (x^2+y^2)^3 \iff x = y$ added in `v1.7.0`, on a cube/square proxy model; no mathematical originality is claimed for it.
+   - `T39` and `T43` use truncated natural-number subtraction (clamping at `0` on underflow), which is now explicitly documented in their docstrings alongside exact non-underflow conservation conjuncts (and an unclamped signed `Int` companion in `T43`).
+   - The **6 kernel checks** include the Lean reference kernel twice (default and paranoid modes) plus 4 independent checkers (`lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`).
    - CI security scans (cppcheck, gitleaks, osv-scanner) and the Build Standard self-audit are report-only; a green run does not show that they found nothing. Runtime C11 safety and bit-exactness rest on `-Wall -Wextra -Wshadow -Wstrict-prototypes -Wconversion -Werror`, portable `-march=x86-64` + isolated `target("avx2")` (plus macOS ARM64 in CI), 3-module static zero-heap hot-loop symbol audits, ASan/UBSan sanitizers, dual-mode standalone+`libFuzzer` `test/fuzz_cmbin_abi.c` (1,000 cases), clean-room `reference/chemoton_oracle.py` (`6,586` checks), `test/test_web_server.mjs` (13 tests), 26/26 falsification gates, 8/8 caught mutants, and 2,720 property checks.
-   The runtime checks below were run by the author; the 2026-11-26 statement audit rebuilt the Lean library only.
+   The runtime checks below were run by the author; the 2026-11-26 external statement audit rebuilt the Lean library only.
 2. **Spatial, Fluid-Coupling & Engineered-Control Disclosures:** The canonical benchmark chamber couples a **2.5D column-averaged $W\times H$ voxel fluid grid** (`1024` spatial columns) to **continuous 3D `int32_t pos_nm[3]` off-lattice cells** (`[0, 32 μm)³`, up to `4096` cell slots); thus Z-translation is strictly invariant (`G23`) while X/Y shifts couple to voxel stoichiometry. We also explicitly disclose the prokaryotic maintenance surcharge above volume 85 without organelles (`src/chemoton_physics.c`) and the explicit restraint-response gates (`<95%`/`<98%`) in the 13-vector castration workbench. Scaling to macroscopic tissues (>100,000 cells) or geological epochs is outside the current single-workstation scope.
-3. **Observed Empirical Tradeoffs (`v1.6.0`):**
+3. **Observed Empirical Tradeoffs (`v1.7.0`):**
    - Endosymbiosis concentrates biomass into larger megacells (`5.64×` max volume on seed `5000`; `9.90×` across `N = 24`), reducing single-seed headcount (`81` vs. `517`) relative to high-headcount prokaryotic controls (`results/04_endosymbiosis_eukaryogenesis.txt`).
    - Titan cryogenic `n_H >= 4` gearing (yielding `3.5×` respiratory advantage vs. `4×` in Terran/Hydrothermal/Venus) lowers carrying capacity (`122` vs. `256–405`), and enforcing the unified per-voxel `photon_rem_uq[i]` cap slows Terran→Venus transplant adaptation to `31.6%` (`30/95`, up from `12.4%` post-shock, `results/05_xenocellular_transplants.txt`).
    - Host CPU frequency and background load vary wall-clock throughput (`23.68`–`27.67 M rxns/s`), though deterministic SHA-256 digests remain 0-bit invariant (`83317026...532c9bbe`).

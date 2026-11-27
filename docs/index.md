@@ -1,17 +1,18 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Documentation Hub (`docs/index.md`)
 
-Complete documentation index for **CELLULOGONIC MECHA `v1.6.0`** (`0thernes/cellulogonic-mecha`).
+Complete documentation index for **CELLULOGONIC MECHA `v1.7.0`** (`0thernes/cellulogonic-mecha`).
 
 ## Core Architecture & Specifications
 - [`architecture.md`](architecture.md) — 4-build ecosystem pipeline, portable C11 core layout, AVX2/Scalar/ARM64 parity, and 78-theorem Lean 4.35.0 module graph (also see root [`ARCHITECTURE.md`](../ARCHITECTURE.md))
 - [`configuration.md`](configuration.md) — CLI flags, `CellWorldConfig` fields, solvent/regime codes, and `.env.example` variables
-- [`operations.md`](operations.md) — Local operation, `git bundle` offline backup, archive pinning, DigiCert RFC 3161 TSA, and Software Heritage offsite mirror policy
+- [`operations.md`](operations.md) — Local operation, `git bundle` offline backup, archive pinning, DigiCert RFC 3161 TSA (`.tsr`), Bitcoin OpenTimestamps (`.ots`), and Software Heritage offsite mirror policy
 - [`threat-model.md`](threat-model.md) — STRIDE security analysis covering `"CMB5"` `.cmbin` binary parsing, CSRF & DNS-rebinding hardened Observatory API, and zero-dependency supply chain
 
-## Formal Verification & Scientific Rigor
-- [`verification.md`](verification.md) — End-to-end 6-kernel Lean 4.35.0 (`78/78` + live tamper reject), 26-gate / 8-mutant falsification, 1,000-case ABI fuzzing + `libFuzzer`, property checking, and 3-OS CI map
-- [`statement-fidelity.md`](statement-fidelity.md) — Row-by-row Lean 4 ↔ exact C11 symbol fidelity & divergence audit matrix
+## Formal Verification, FAIR Metadata & Scientific Rigor
+- [`verification.md`](verification.md) — End-to-end 6-kernel-check Lean 4.35.0 (`78/78` `Spec.lean` theorems + `6/6` live elaboration & `sorry`-tamper reject), 26-gate / 8-mutant falsification, 1,000-case ABI fuzzing + `libFuzzer`, property checking, and 3-OS CI map
+- [`statement-fidelity.md`](statement-fidelity.md) — Row-by-row Lean 4 (`Spec.lean`) ↔ exact C11 symbol fidelity, bookkeeping-helper annotation, and divergence audit matrix
+- [`DATASHEET.md`](DATASHEET.md) — Gebru et al. (2021) Datasheet for Datasets (paired with root `croissant.json`, `ro-crate-metadata.json`, and `codemeta.json`)
 - [`MEGA_ATLAS_CROSSCHECK.md`](MEGA_ATLAS_CROSSCHECK.md) — Unsolved Problems Mega-Atlas `v2.6.0` non-retirement cross-check (`0 / 1,900` retired across 13 verbatim IDs)
 - [`preregistration.md`](preregistration.md) — Locked `N = 24` paired ablation hypotheses (`H1`–`H4`) & Holm–Bonferroni protocol
 - [`benchmarks.md`](benchmarks.md) — Cross-OS throughput, unloaded vs. loaded timing transparency, and 0-alloc / 60 FPS resource budgets

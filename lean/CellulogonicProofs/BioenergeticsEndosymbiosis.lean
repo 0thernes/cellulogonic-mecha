@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
+  CELLULOGONIC MECHA v1.7.0 — Theorem III: The Prokaryotic 1/R Bioenergetic Ceiling,
   Endosymbiotic O(1) Power-Density Liberation, & Mitotic Heteroplasmy Purifying Selection.
 
   Pure Lean 4.35.0 `module` (zero Mathlib, zero sorry, zero custom axioms).
@@ -103,7 +103,9 @@ public theorem T24_secondary_endosymbiosis_additive_power
   have hTerm : 0 < K2 * (c2 * (3 * r2 * r2)) := Nat.mul_pos hK2 (Nat.mul_pos hc2 h3r)
   omega
 
-/-- T25: Mitotic organelle partitioning strictly conserves cooperative and selfish counts. -/
+/-- T25 [Bookkeeping arithmetic identity]: Commutativity/associativity of `Nat` addition
+    used to check that summing partitioned organelle counts by daughter `(c1 + s1) + (c2 + s2)`
+    equals summing by type `(c1 + c2) + (s1 + s2)`. -/
 public theorem T25_mitotic_heteroplasmy_conservation (c1 c2 s1 s2 : Nat) :
     (c1 + s1) + (c2 + s2) = (c1 + c2) + (s1 + s2) := by
   omega
@@ -130,9 +132,9 @@ public theorem T26_asymmetric_bottleneck_purifying_selection (c1 c2 s1 s2 : Nat)
     have hLt : c1 * s2 < c2 * s1 := by omega
     constructor <;> omega
 
-/-- T27: Endosymbiotic Gene Transfer (EGT) Genome Economy Theorem.
-    Migrating g housekeeping loci from K ≥ 2 organelles to a single host nuclear copy
-    strictly reduces total cellular DNA replication burden by (K - 1) * g > 0. -/
+/-- T27 [Bookkeeping arithmetic helper]: Elementary `Nat` multiplication/subtraction identity
+    `K * g > g ∧ K * g - g = (K - 1) * g` for `K ≥ 2, g > 0`, used as an accounting helper
+    for single-copy consolidation of `g` loci across `K` compartments. -/
 public theorem T27_egt_reduces_organelle_maintenance (K g : Nat) (hK : K ≥ 2) (hg : g > 0) :
     K * g > g ∧ K * g - g = (K - 1) * g := by
   constructor

@@ -6,7 +6,7 @@
 #endif
 
 /*
- * CELLULOGONIC MECHA v1.6.0 — Minimal Zero-Dependency CRT & OS Portability Layer
+ * CELLULOGONIC MECHA v1.7.0 — Minimal Zero-Dependency CRT & OS Portability Layer
  * SPDX-License-Identifier: Apache-2.0
  * Compiles cleanly under:
  *   1. Bundled LLVM/Clang targeting x86_64-w64-windows-gnu (no external SDK required)

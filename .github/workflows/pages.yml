@@ -20,8 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Generate static _site/ portal via scripts/build_blueprint.py
-        run: python3 scripts/build_blueprint.py
+      - name: Generate and verify static _site/ portal via scripts/build_blueprint.py & check_blueprint.py
+        run: |
+          python3 scripts/build_blueprint.py
+          python3 scripts/check_blueprint.py
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

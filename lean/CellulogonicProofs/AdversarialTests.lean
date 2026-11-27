@@ -7,7 +7,7 @@ public import CellulogonicProofs.MorphogeneticGRN
 public import CellulogonicProofs.ContinuumBiomechanics
 
 /-!
-  CELLULOGONIC MECHA v1.6.0 — Module 10: Adversarial False-Variant Refutations (AT01–AT08)
+  CELLULOGONIC MECHA v1.7.0 — Module 10: Adversarial False-Variant Refutations (AT01–AT08)
 
   Playbook v1.3 Gold Standard Item #12: Explicitly proves negations (`¬ P`) of falsified,
   dropped-hypothesis, or sign-flipped variants across ALL EIGHT Theorem Groups (I–VIII),
@@ -89,7 +89,7 @@ public theorem AT07_refute_overbudget_eutelic_population :
     ¬ (∃ pop : List Nat, EutelicTrace [3] pop ∧ pop.length > 8) := by
   intro h
   rcases h with ⟨pop, htr, hgt⟩
-  have hle := (T54_eutelic_lineage_countdown_bound 1 3 pop htr).2.1
+  have hle := (T54_eutelic_lineage_countdown_bound 1 3 pop htr).2
   omega
 
 /-- AT08 (Refutes Negative Biotensegrity Strain & Mass-Losing Carcass Transfer): Neither

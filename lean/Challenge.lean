@@ -3,13 +3,14 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-# CELLULOGONIC MECHA v1.6.0 — Isolated Statement-Only Challenge Specification (`Challenge.lean`)
+# CELLULOGONIC MECHA v1.7.0 — Isolated Statement-Only Challenge Specification (`Challenge.lean`)
 
 Imports ONLY `CellulogonicProofs.Spec` (pure mathematical definitions, ZERO proofs, ZERO `sorry`)
 and NONE of the ten proof modules.
 
 Every `sorry` in this file is intentional — matched strictly against sorry-free `Solution.lean`
-across all 6 independent Lean 4.35.0 kernels via:
+across all 6 Lean 4.35.0 kernel checks (Lean default & paranoid modes + 4 independent checkers:
+`lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`) via:
     lake comparator --config comparator.json --paranoid
 
 Copyright (c) 2026 Alexander Stephen Donahue <0_0@0thernes.art>.
@@ -96,7 +97,8 @@ public theorem T15_exosome_asymmetric_budding_escapes_half_barrier :
 public theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
     (hx : x > 0) (hy : y > 0) :
     (x^2 + y^2)^3 ≤ 2 * (x^3 + y^3)^2 ∧
-    (x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2) := by sorry
+    (x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2) ∧
+    (2 * (x^3 + y^3)^2 = (x^2 + y^2)^3 ↔ x = y) := by sorry
 
 public theorem T17_osmotic_lysis_monotone_in_volume (V1 V2 : Nat) (hLt : V1 < V2) :
     C0 * V1 * V1 < C0 * V2 * V2 := by sorry
@@ -203,7 +205,8 @@ public theorem T38_minimum_viable_organ_budget_bound (b : OrganBudget) :
 public theorem T39_syncytial_compression_factor (S k E M_musc M_shared : Nat)
     (hS : S ≥ 1) (hk : k ≥ 2) (hShPos : M_shared > 0) (hShLe : M_shared ≤ M_musc) :
     S < S * k ∧
-    (E + M_musc) - M_shared < E + M_musc := by sorry
+    (E + M_musc) - M_shared < E + M_musc ∧
+    ((E + M_musc) - M_shared) + M_shared = E + M_musc := by sorry
 
 public theorem T40_hydrostatic_skeleton_incompressibility (A1 L1 A2 L2 : Nat)
     (_hA2 : A2 > 0) (hL1 : L1 > 0)
@@ -213,7 +216,7 @@ public theorem T40_hydrostatic_skeleton_incompressibility (A1 L1 A2 L2 : Nat)
 
 public theorem T41_eutely_hypertrophy_cancels_hyperplasia (N0 m1 m2 : Nat)
     (hN0 : N0 > 0) (hGrow : m1 < m2) :
-    N0 * m1 < N0 * m2 ∧ N0 - N0 = 0 := by sorry
+    N0 * m1 < N0 * m2 := by sorry
 
 public theorem T42_anhydrobiosis_bioglass_vitrification
     (baseDecay glassFactor massL massP massT wCell wDry : Nat)
@@ -223,7 +226,9 @@ public theorem T42_anhydrobiosis_bioglass_vitrification
 
 public theorem T43_flames_excretory_osmoregulation_balance (V J_in J_excr : Nat) :
     (J_excr ≥ J_in → V + J_in - J_excr ≤ V) ∧
-    (J_excr < J_in → V + J_in - J_excr > V) := by sorry
+    (J_excr < J_in → V + J_in - J_excr > V) ∧
+    (J_excr ≤ V + J_in → (V + J_in - J_excr) + J_excr = V + J_in) ∧
+    (J_excr ≥ J_in → (V : Int) + (J_in : Int) - (J_excr : Int) ≤ (V : Int)) := by sorry
 
 public theorem T44_dna_to_organ_hierarchical_conservation
     (mEnv mEpi mNerv mMusc mGut mExcr mRepro mHydro delta : Int) :
@@ -291,9 +296,7 @@ public theorem T54_eutelic_lineage_countdown_bound
     (N0 d0 : Nat) (popN : List Nat)
     (hTrace : EutelicTrace (List.replicate N0 d0) popN) :
     eutelicBudget popN ≤ N0 * 2 ^ d0 ∧
-    popN.length ≤ N0 * 2 ^ d0 ∧
-    8 * 2 ^ 5 = 256 ∧
-    2 ^ 9 = 512 := by sorry
+    popN.length ≤ N0 * 2 ^ d0 := by sorry
 
 public theorem T55_hippo_contact_inhibition_growth_stop
     (tf7 pressure hippoLim eutelicRem : Nat) :
@@ -369,8 +372,7 @@ public theorem C61_yolk_cleavage_mass_conservation
 public theorem C62_biotensegrity_elastic_nonneg
     (k dx dy dz : Int) (hk : k ≥ 0) :
     k * dx * dx ≥ 0 ∧
-    k * (dx * dx + dy * dy + dz * dz) ≥ 0 ∧
-    k * 0 * 0 = 0 := by sorry
+    k * (dx * dx + dy * dy + dz * dz) ≥ 0 := by sorry
 
 end Cellulogonic.ContinuumBiomechanics
 
@@ -442,8 +444,7 @@ public theorem NV08_continuum_biomechanics_nonvacuous_witness :
     xpbdDissipateTrace 10 [3, 5, 7] = 25 ∧
     (carcassDeathTransfer ⟨40, 20, 10, 100⟩).totalMass = 170 ∧
     (carcassDeathTransfer ⟨40, 20, 10, 100⟩).massDetritus = 70 ∧
-    listSum (List.replicate 8 11) + 0 + 12 = 100 ∧
-    (5 : Int) * (-3) * (-3) = 45 := by sorry
+    listSum (List.replicate 8 11) + 0 + 12 = 100 := by sorry
 
 end Cellulogonic.NonVacuity
 

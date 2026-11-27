@@ -3,7 +3,7 @@
 # Copyright (c) 2026 Alexander Stephen Donahue
 """
 Independent Differential, Metamorphic, and Statistical Verification Script
-for CELLULOGONIC MECHA v1.6.0 (Build Standard B04, B08, B30).
+for CELLULOGONIC MECHA v1.7.0 (Build Standard B04, B08, B30).
 
 1. Runs the clean-room exact Python reference oracle (reference/chemoton_oracle.py).
 2. Runs the native C11 binary across metamorphic & differential checks:

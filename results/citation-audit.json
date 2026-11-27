@@ -1,9 +1,11 @@
 {
-  "schema": "cellulogonic-citation-audit/v1",
-  "generated_utc": "2026-11-26T11:08:03Z",
+  "schema": "cellulogonic-citation-audit/v2",
+  "generated_utc": "2026-11-26T23:35:24Z",
   "bib_entries": 36,
   "targets_checked": 36,
   "targets_passed": 36,
+  "title_aligned": 36,
+  "author_aligned": 36,
   "retractions_found": 0,
   "records": [
     {
@@ -12,7 +14,20 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "varela",
+        "maturana",
+        "uribe"
+      ],
+      "crossref_surnames": [
+        "varela",
+        "maturana",
+        "uribe"
+      ],
       "crossref_title": "Autopoiesis: The organization of living systems, its characterization and a model",
       "crossref_years": [
         1974,
@@ -27,7 +42,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "ganti"
+      ],
+      "crossref_surnames": [
+        "ganti"
+      ],
       "crossref_title": "Organization of chemical reactions into dividing and metabolizing units: The chemotons",
       "crossref_years": [
         1975,
@@ -42,7 +66,18 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "ganti"
+      ],
+      "crossref_surnames": [
+        "ganti",
+        "szathmary",
+        "griesemer"
+      ],
       "crossref_title": "The Principles of Life",
       "crossref_years": [
         2003,
@@ -57,7 +92,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "mitchell"
+      ],
+      "crossref_surnames": [
+        "mitchell"
+      ],
       "crossref_title": "Coupling of Phosphorylation to Electron and Hydrogen Transfer by a Chemi-Osmotic type of Mechanism",
       "crossref_years": [
         1961,
@@ -72,7 +116,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "canham"
+      ],
+      "crossref_surnames": [
+        "canham"
+      ],
       "crossref_title": "The minimum energy of bending as a possible explanation of the biconcave shape of the human red blood cell",
       "crossref_years": [
         1970,
@@ -87,7 +140,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "helfrich"
+      ],
+      "crossref_surnames": [
+        "helfrich"
+      ],
       "crossref_title": "Elastic Properties of Lipid Bilayers: Theory and Possible Experiments",
       "crossref_years": [
         1973,
@@ -103,7 +165,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "schnakenberg"
+      ],
+      "crossref_surnames": [
+        "schnakenberg"
+      ],
       "crossref_title": "Network theory of microscopic and macroscopic behavior of master equation systems",
       "crossref_years": [
         1976,
@@ -118,7 +189,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "sagan"
+      ],
+      "crossref_surnames": [
+        "sagan"
+      ],
       "crossref_title": "On the origin of mitosing cells",
       "crossref_years": [
         1967,
@@ -133,7 +213,18 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "lane",
+        "martin"
+      ],
+      "crossref_surnames": [
+        "lane",
+        "martin"
+      ],
       "crossref_title": "The energetics of genome complexity",
       "crossref_years": [
         2010
@@ -147,7 +238,18 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "zhu",
+        "szostak"
+      ],
+      "crossref_surnames": [
+        "zhu",
+        "szostak"
+      ],
       "crossref_title": "Coupled Growth and Division of Model Protocell Membranes",
       "crossref_years": [
         2009
@@ -161,7 +263,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "svetina"
+      ],
+      "crossref_surnames": [
+        "svetina"
+      ],
       "crossref_title": "Vesicle Budding and the Origin of Cellular Life",
       "crossref_years": [
         2009
@@ -175,7 +286,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "karr",
+        "sanghvi",
+        "macklin",
+        "gutschow",
+        "jacobs"
+      ],
+      "crossref_surnames": [
+        "karr",
+        "sanghvi",
+        "macklin",
+        "gutschow",
+        "jacobs"
+      ],
       "crossref_title": "A Whole-Cell Computational Model Predicts Phenotype from Genotype",
       "crossref_years": [
         2012
@@ -189,7 +317,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "hutchison",
+        "chuang",
+        "noskov",
+        "garcia",
+        "assad garcia"
+      ],
+      "crossref_surnames": [
+        "hutchison",
+        "chuang",
+        "noskov",
+        "garcia",
+        "assad garcia"
+      ],
       "crossref_title": "Design and synthesis of a minimal bacterial genome",
       "crossref_years": [
         2016
@@ -203,7 +348,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "breuer",
+        "earnest",
+        "merryman",
+        "wise",
+        "sun"
+      ],
+      "crossref_surnames": [
+        "breuer",
+        "earnest",
+        "merryman",
+        "wise",
+        "sun"
+      ],
       "crossref_title": "Essential metabolism for a minimal cell",
       "crossref_years": [
         2019
@@ -217,7 +379,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "pelletier",
+        "sun",
+        "wise",
+        "garcia",
+        "assad garcia"
+      ],
+      "crossref_surnames": [
+        "pelletier",
+        "sun",
+        "wise",
+        "garcia",
+        "assad garcia"
+      ],
       "crossref_title": "Genetic requirements for cell division in a genomically minimal cell",
       "crossref_years": [
         2021
@@ -231,7 +410,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "thornburg",
+        "bianchi",
+        "brier",
+        "gilbert",
+        "earnest"
+      ],
+      "crossref_surnames": [
+        "thornburg",
+        "bianchi",
+        "brier",
+        "gilbert",
+        "earnest"
+      ],
       "crossref_title": "Fundamental behaviors emerge from simulations of a living minimal cell",
       "crossref_years": [
         2022
@@ -245,7 +441,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "levin"
+      ],
+      "crossref_surnames": [
+        "levin"
+      ],
       "crossref_title": "Technological Approach to Mind Everywhere: An Experimentally-Grounded Framework for Understanding Diverse Bodies and Minds",
       "crossref_years": [
         2022
@@ -259,7 +464,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "wolpert"
+      ],
+      "crossref_surnames": [
+        "wolpert"
+      ],
       "crossref_title": "Positional information and the spatial pattern of cellular differentiation",
       "crossref_years": [
         1969,
@@ -274,7 +488,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "steinberg"
+      ],
+      "crossref_surnames": [
+        "steinberg"
+      ],
       "crossref_title": "Reconstruction of Tissues by Dissociated Cells",
       "crossref_years": [
         1963,
@@ -289,7 +512,18 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "marder",
+        "bucher"
+      ],
+      "crossref_surnames": [
+        "marder",
+        "bucher"
+      ],
       "crossref_title": "Central pattern generators and the control of rhythmic movements",
       "crossref_years": [
         2001,
@@ -304,7 +538,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "boothby",
+        "tapia",
+        "brozena",
+        "piszkiewicz",
+        "smith"
+      ],
+      "crossref_surnames": [
+        "boothby",
+        "tapia",
+        "brozena",
+        "piszkiewicz",
+        "smith"
+      ],
       "crossref_title": "Tardigrades Use Intrinsically Disordered Proteins to Survive Desiccation",
       "crossref_years": [
         2017
@@ -318,7 +569,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "hashimoto",
+        "horikawa",
+        "saito",
+        "kuwahara",
+        "hata"
+      ],
+      "crossref_surnames": [
+        "hashimoto",
+        "horikawa",
+        "saito",
+        "kuwahara",
+        "hata"
+      ],
       "crossref_title": "Extremotolerant tardigrade genome and improved radiotolerance of human cultured cells by tardigrade-unique protein",
       "crossref_years": [
         2016
@@ -332,7 +600,20 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "stevenson",
+        "lunine",
+        "clancy"
+      ],
+      "crossref_surnames": [
+        "stevenson",
+        "lunine",
+        "clancy"
+      ],
       "crossref_title": "Membrane alternatives in worlds without oxygen: Creation of an azotosome",
       "crossref_years": [
         2015
@@ -346,7 +627,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 0.857,
+      "bib_surnames": [
+        "seager",
+        "petkowski",
+        "grimes",
+        "zinsli",
+        "snarr"
+      ],
+      "crossref_surnames": [
+        "seager",
+        "petkowski",
+        "grimes",
+        "zinsli",
+        "snarr"
+      ],
       "crossref_title": "Stability of nucleic acid bases in concentrated sulfuric acid: Implications for the habitability of Venus\u2019 clouds",
       "crossref_years": [
         2023
@@ -360,7 +658,22 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "seager",
+        "petkowski",
+        "bains"
+      ],
+      "crossref_surnames": [
+        "seager",
+        "petkowski",
+        "grimes",
+        "zinsli",
+        "snarr"
+      ],
       "crossref_title": "Year-Long Stability of Nucleic Acid Bases in Concentrated Sulfuric Acid: Implications for the Persistence of Organic Chemistry in Venus\u2019 Clouds",
       "crossref_years": [
         2024
@@ -374,7 +687,18 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "caforio",
+        "driessen"
+      ],
+      "crossref_surnames": [
+        "caforio",
+        "driessen"
+      ],
       "crossref_title": "Archaeal phospholipids: Structural properties and biosynthesis",
       "crossref_years": [
         2016,
@@ -389,7 +713,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "sharma",
+        "czegel",
+        "lachmann",
+        "kempes",
+        "walker"
+      ],
+      "crossref_surnames": [
+        "sharma",
+        "czegel",
+        "lachmann",
+        "kempes",
+        "walker"
+      ],
       "crossref_title": "Assembly theory explains and quantifies selection and evolution",
       "crossref_years": [
         2023
@@ -403,7 +744,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "taylor",
+        "bedau",
+        "channon",
+        "ackley",
+        "banzhaf"
+      ],
+      "crossref_surnames": [
+        "taylor",
+        "bedau",
+        "channon",
+        "ackley",
+        "banzhaf"
+      ],
       "crossref_title": "Open-Ended Evolution: Perspectives from the OEE Workshop in York",
       "crossref_years": [
         2016
@@ -417,7 +775,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "krakauer",
+        "bertschinger",
+        "olbrich",
+        "flack",
+        "ay"
+      ],
+      "crossref_surnames": [
+        "krakauer",
+        "bertschinger",
+        "olbrich",
+        "flack",
+        "ay"
+      ],
       "crossref_title": "The information theory of individuality",
       "crossref_years": [
         2020
@@ -431,7 +806,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "frohlich"
+      ],
+      "crossref_surnames": [
+        "frohlich"
+      ],
       "crossref_title": "Long\u2010range coherence and energy storage in biological systems",
       "crossref_years": [
         1968,
@@ -446,7 +830,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "pokorny"
+      ],
+      "crossref_surnames": [
+        "pokorny"
+      ],
       "crossref_title": "Excitation of vibrations in microtubules in living cells",
       "crossref_years": [
         2004
@@ -460,7 +853,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "sahu",
+        "ghosh",
+        "hirata",
+        "fujita",
+        "bandyopadhyay"
+      ],
+      "crossref_surnames": [
+        "sahu",
+        "ghosh",
+        "aswani",
+        "hirata",
+        "fujita"
+      ],
       "crossref_title": "Atomic water channel controlling remarkable properties of a single brain microtubule: Correlating single protein to its supramolecular assembly",
       "crossref_years": [
         2013
@@ -474,7 +884,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "szigeti",
+        "gleeson",
+        "vella",
+        "khayrulin",
+        "palyanov"
+      ],
+      "crossref_surnames": [
+        "szigeti",
+        "gleeson",
+        "vella",
+        "khayrulin",
+        "palyanov"
+      ],
       "crossref_title": "OpenWorm: an open-science approach to modeling Caenorhabditis elegans",
       "crossref_years": [
         2014
@@ -488,7 +915,16 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "rosen"
+      ],
+      "crossref_surnames": [
+        "rosen"
+      ],
       "crossref_title": "A relational theory of biological systems",
       "crossref_years": [
         1958,
@@ -503,7 +939,24 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "hoshika",
+        "leal",
+        "kim",
+        "karalkar",
+        "bates"
+      ],
+      "crossref_surnames": [
+        "hoshika",
+        "leal",
+        "kim",
+        "karalkar",
+        "bates"
+      ],
       "crossref_title": "Hachimoji DNA and RNA: A genetic system with eight building blocks",
       "crossref_years": [
         2019
@@ -517,7 +970,19 @@
       "ok": true,
       "retracted": false,
       "year_ok": true,
+      "title_ok": true,
       "title_overlap": 1.0,
+      "author_ok": true,
+      "author_overlap": 1.0,
+      "bib_surnames": [
+        "moura",
+        "de moura",
+        "ullrich"
+      ],
+      "crossref_surnames": [
+        "moura",
+        "ullrich"
+      ],
       "crossref_title": "The Lean 4 Theorem Prover and Programming Language",
       "crossref_years": [
         2021

@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs
 
 /-!
-# CELLULOGONIC MECHA v1.6.0 Formal Solution Entrypoint (`Solution.lean`)
+# CELLULOGONIC MECHA v1.7.0 Formal Solution Entrypoint (`Solution.lean`)
 
 Exports all 78 machine-checked theorems from `CellulogonicProofs` (`T01`–`T58`, `C59`–`C62`,
 `NV01`–`NV08`, `AT01`–`AT08` across 10 proof modules + pure `Spec.lean`, with `autoImplicit = false`,

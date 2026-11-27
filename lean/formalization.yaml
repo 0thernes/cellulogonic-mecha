@@ -3,23 +3,26 @@
 version: "v0.4"
 
 project:
-  name: "CELLULOGONIC MECHA Formal Verification Suite (CellulogonicProofs v1.6.0)"
+  name: "CELLULOGONIC MECHA Formal Verification Suite (CellulogonicProofs v1.7.0)"
   description: >-
     Zero-Mathlib Lean 4.35.0 formalization of 78 theorems about the integer model in
     lean/CellulogonicProofs/Spec.lean (62 core statements T01-T58 & C59-C62 across 8
     modules, 8 NonVacuity witnesses NV01-NV08, and 8 false-variant refutations AT01-AT08),
-    in 10 proof modules + Spec.lean. They concern the Lean model only, not src/*.c, and
-    several are arithmetic bookkeeping identities or contain literal-only conjuncts (T25,
-    T27, T40, T41, T44, T54, C62, NV08). Topics: 4-solvent 19-reaction Chemoton mass,
-    first-law and positive-heat ledgers; Canham-Helfrich-inspired integer fission and
-    budding inequalities (T16 is the polynomial inequality (x^2+y^2)^3 <= 2(x^3+y^3)^2,
-    strict for x /= y); a 1/R prokaryotic power bound (after N. Lane) and an
-    endosymbiotic scaling model; solvent c-ring floors; Levin-style bioelectric
-    gap-junction Dirichlet dissipation, eutelic 7-organ metazoan budgets and
-    TDP bioglass anhydrobiosis, 3D cytoskeletal nanomechanics and stateful Frohlich-Pokorny
-    GHz relaxation, developmental GRN embryogenesis (Wolpert, Steinberg, eutelic binary-tree
-    invariant, Hippo hysteresis, Hebbian pruning, coupled CPG waves, R8 zero-drift), and
-    continuum biomechanics (XPBD damping, carcass-detritus, yolk cleavage, biotensegrity).
+    in 10 proof modules + Spec.lean (15 .lean files). They concern the Lean model only,
+    not src/*.c. Five arithmetic bookkeeping helpers (T25, T27, T40, T41, T44) are
+    explicitly annotated in docstrings and docs/statement-fidelity.md; literal-only
+    conjuncts previously in T41, T54, C62, and NV08 were removed in v1.7.0; T16 proves
+    the elementary polynomial inequality (x^2+y^2)^3 <= 2(x^3+y^3)^2 for x, y > 0, strict
+    for x /= y, with explicit equality iff x = y; and T39/T43 include explicit non-underflow
+    conservation and a signed Int companion for T43. Topics: 4-solvent 19-reaction Chemoton
+    mass, first-law and positive-heat ledgers; Canham-Helfrich-inspired integer fission and
+    budding inequalities; a 1/R prokaryotic power bound (after N. Lane) and an endosymbiotic
+    scaling model; solvent c-ring floors; Levin-style bioelectric gap-junction Dirichlet
+    dissipation, eutelic 7-organ metazoan budgets and TDP bioglass anhydrobiosis, 3D
+    cytoskeletal nanomechanics and stateful Frohlich-Pokorny GHz relaxation, developmental
+    GRN embryogenesis (Wolpert, Steinberg, eutelic binary-tree invariant, Hippo hysteresis,
+    Hebbian pruning, coupled CPG waves, R8 zero-drift), and continuum biomechanics (XPBD
+    damping, carcass-detritus, yolk cleavage, biotensegrity).
   authors:
     - "Alexander Stephen Donahue (ORCID 0009-0006-8168-9648, Independent Researcher, Spokane, WA, USA)"
   responsible_maintainers:
@@ -39,7 +42,7 @@ classification:
     - "80A30"
 
 sources:
-  - title: "CELLULOGONIC MECHA (v1.6.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with Six-Kernel Lean 4.35.0 Formal Proofs"
+  - title: "CELLULOGONIC MECHA (v1.7.0): Clean-Room 3D Developmental Embryogenesis, Chemiosmotic, Endosymbiotic, and Xenocellular Artificial Life Engine with a 78-Theorem Lean 4.35.0 Specification Model"
     authors:
       - "Alexander Stephen Donahue"
     id: "https://github.com/0thernes/cellulogonic-mecha"

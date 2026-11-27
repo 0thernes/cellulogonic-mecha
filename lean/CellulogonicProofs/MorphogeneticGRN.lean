@@ -4,7 +4,7 @@ public import CellulogonicProofs.Spec
 public import CellulogonicProofs.StoichiometryThermo
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Pure Lean 4.35.0 Formal Verification (Zero Mathlib)
+  CELLULOGONIC MECHA v1.7.0 — Pure Lean 4.35.0 Formal Verification (Zero Mathlib)
   Module 7: Developmental Embryogenesis, Morphogen GPS Gradients, Conditional GRNs,
   Steinberg Differential Cadherin Adhesion, Apical Constriction Folding,
   Eutelic Binary Tree-Invariant, Hippo Integrator Hysteresis, Hebbian Axon Pruning,
@@ -108,21 +108,20 @@ private theorem eutelicTrace_monotone {p0 pN : List Nat} (h : EutelicTrace p0 pN
   | refl _ => exact Nat.le_refl _
   | step hStep _ ih => exact Nat.le_trans ih (eutelicStep_monotone hStep)
 
-/-- T54 (Eutelic Binary Tree-Invariant & Hardcoded Adult Cell-Count Law). -/
+/-- T54 (Eutelic Binary Tree-Invariant & Population Bound — literal-only arithmetic conjuncts
+    `8 * 2^5 = 256` and `2^9 = 512` removed in v1.7.0). -/
 public theorem T54_eutelic_lineage_countdown_bound
     (N0 d0 : Nat) (popN : List Nat)
     (hTrace : EutelicTrace (List.replicate N0 d0) popN) :
     eutelicBudget popN ≤ N0 * 2 ^ d0 ∧
-    popN.length ≤ N0 * 2 ^ d0 ∧
-    8 * 2 ^ 5 = 256 ∧
-    2 ^ 9 = 512 := by
+    popN.length ≤ N0 * 2 ^ d0 := by
   have hBud : eutelicBudget popN ≤ N0 * 2 ^ d0 := by
     have h1 := eutelicTrace_monotone hTrace
     rw [eutelicBudget_replicate] at h1
     exact h1
   have hLen : popN.length ≤ N0 * 2 ^ d0 :=
     Nat.le_trans (length_le_eutelicBudget popN) hBud
-  exact ⟨hBud, hLen, by decide, by decide⟩
+  exact ⟨hBud, hLen⟩
 
 /-- T55 (Hippo Integrator Hysteresis, Finite-Time Crowding Arrest & Uncrowded Release). -/
 public theorem T55_hippo_contact_inhibition_growth_stop

@@ -1,4 +1,4 @@
-name: CELLULOGONIC MECHA CI — 3-OS C11, 78-Theorem 6-Kernel Lean 4.35, Web, Paper & Security
+name: CELLULOGONIC MECHA CI — 3-OS C11, 78-Theorem 6-Kernel-Check Lean 4.35, Web, Paper & Security
 
 on:
   push:
@@ -123,7 +123,7 @@ jobs:
           cd ..
           python3 scripts/check_readme_axioms.py
           python3 scripts/test_lean_negative.py
-      - name: Run All 6 Independent Proof Kernels (leanchecker-paranoid, lake check, lake comparator)
+      - name: Run 6 Kernel Checks (Lean default/paranoid + lean4lean, nanoda, con-leche, con-ron; lake check & comparator)
         working-directory: lean
         run: |
           lake env leanchecker --fresh Solution
@@ -159,11 +159,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - name: Verify paper/refs.bib syntax, citation-audit.json & Blueprint build
+      - name: Verify paper/refs.bib, citation-audit.json, Blueprint & Dual Cryptographic Timestamps (.tsr + .ots)
         run: |
           python3 scripts/check_citations.py --offline
-          python3 -c 'import json; d=json.load(open("results/citation-audit.json")); assert d["targets_checked"]>=30 and d["targets_passed"]==d["targets_checked"] and d["retractions_found"]==0, d; print("Citation audit JSON OK:", d["targets_passed"], "/", d["targets_checked"], "retractions=0")'
+          python3 -c 'import json; d=json.load(open("results/citation-audit.json")); assert d["targets_checked"]>=36 and d["targets_passed"]==d["targets_checked"] and d.get("title_aligned")==d["targets_checked"] and d.get("author_aligned")==d["targets_checked"] and d["retractions_found"]==0, d; print("Citation audit JSON OK:", d["targets_passed"], "/", d["targets_checked"], "title/author=100%, retractions=0")'
           python3 scripts/build_blueprint.py
+          python3 scripts/check_blueprint.py
+          sha256sum -c CHECKSUMS.sha256
+          python3 scripts/stamp_timestamps.py --verify
       - name: Install Tectonic TeX engine
         run: |
           curl --proto '=https' --tlsv1.2 -fsSL https://drop-sh.fullyjustified.net | sh

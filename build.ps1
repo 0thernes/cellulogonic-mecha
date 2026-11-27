@@ -147,4 +147,4 @@ if (-not $SkipLean -and (Test-Path -LiteralPath $lake)) {
     Write-Host "Lean 4.35.0 Formal Verification PASSED ($($theoremMatches.Count) audited theorems, 0 sorryAx, strictly within {propext, Classical.choice, Quot.sound}, 0 warnings)!"
 }
 
-Write-Host "`nCELLULOGONIC MECHA v1.6.0 BUILD & VERIFICATION COMPLETE."
+Write-Host "`nCELLULOGONIC MECHA v1.7.0 BUILD & VERIFICATION COMPLETE."

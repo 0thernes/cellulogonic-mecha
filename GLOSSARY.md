@@ -54,7 +54,7 @@ Alphabetical reference of **62 foundational terms** spanning cellular biology, b
 ### G
 - **Gap Junction (Connexin / Innexin)**: Direct intercellular transmembrane ion channel coupling cytoplasmic voltages ($V_m$) and small signaling molecules between adjacent cells in a multicellular tissue; passive relaxation conserves charge and dissipates Dirichlet energy (Lean `T31`–`T33`).
 - **GDGT (Glycerol Dialkyl Glycerol Tetraether)**: Membrane-spanning bipolar covalent archaeal lipid forming a rigid monolayer resistant to hyperthermophilic and extreme acid lysis.
-- **Global Minimax Theorem of Vesicle Division**: Machine-checked algebraic result (Lean `T16`) proving $2(x^3 + y^3)^2 - (x^2 + y^2)^3 = (x - y)^2(x^4 + 2x^3y + 2xy^3 + y^4) \ge 0$, establishing that symmetric binary fission maximizes pre-fission membrane area demand while every asymmetric split lowers the lipid requirement.
+- **Elementary Sextic Budding Inequality (`T16`)**: Machine-checked algebraic identity in `MembraneGeometry.lean` proving $2(x^3 + y^3)^2 - (x^2 + y^2)^3 = (x - y)^2(x^4 + 2x^3y + 2xy^3 + y^4) \ge 0$ for integers $x, y > 0$, with strict inequality for $x \neq y$ and equality iff $x = y$ on the cube/square vesicle proxy model. No mathematical originality is claimed for this elementary factorization.
 - **Great Oxidation Event (GOE)**: Planetary-scale geochemical transition driven by oxygenic phototrophs regenerating ambient terminal electron acceptor (`X` / $\text{O}_2$) from low-energy waste (`W`), unlocking high-yield aerobic respiration and eukaryogenesis.
 
 ### H

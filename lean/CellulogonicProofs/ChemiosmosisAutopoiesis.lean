@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem IV: Strict Second-Law Chemiosmotic c-Ring
+  CELLULOGONIC MECHA v1.7.0 — Theorem IV: Strict Second-Law Chemiosmotic c-Ring
   Stoichiometry Shifts Across Planetary Solvents, Levin Bioelectric Gap-Junction
   Laplacian Dissipation, Markov-Blanket Flux Positivity, & Anti-Gaming Vitality Zero-Bounds.
 

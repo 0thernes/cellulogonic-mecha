@@ -1,7 +1,7 @@
 <!-- SPDX-License-Identifier: CC-BY-4.0 -->
 # Configuration & CLI Reference (`docs/configuration.md`)
 
-All runtime parameters for **CELLULOGONIC MECHA `v1.6.0`** are configured through deterministic CLI flags, the C11 `CellWorldConfig` struct, or optional environment variables documented in [`.env.example`](../.env.example). **Zero secrets or external API keys are required.**
+All runtime parameters for **CELLULOGONIC MECHA `v1.7.0`** are configured through deterministic CLI flags, the C11 `CellWorldConfig` struct, or optional environment variables documented in [`.env.example`](../.env.example). **Zero secrets or external API keys are required.**
 
 ## 1. Environment Variables (`.env.example`)
 
@@ -18,7 +18,7 @@ All numeric CLI flags (`--seed`, `--epochs`, `--size`, `--solvent`, `--pairs`) a
 
 | Command | Canonical Example | Purpose |
 |---|---|---|
-| `probe` | `cellulogonic probe` | Prints ABI version (`0x00010600`), CPU vendor/brand (x86-64 CPUID or ARM64), ISA flags |
+| `probe` | `cellulogonic probe` | Prints ABI version (`0x00010700`), CPU vendor/brand (x86-64 CPUID or ARM64), ISA flags |
 | `bench` | `cellulogonic bench --epochs 300 --size 32 --seed 5000` | Runs `SIMD_AVX2` vs. `SCALAR_REF` parity and throughput benchmark |
 | `abiogenesis` | `cellulogonic abiogenesis --epochs 240 --size 32 --seed 5000` | Zero-seed spontaneous protocell condensation from abiotic soup |
 | `endosymbiosis` | `cellulogonic endosymbiosis --epochs 240 --size 32 --seed 5000` | Endosymbiosis ON vs. prokaryotic-only OFF comparison |

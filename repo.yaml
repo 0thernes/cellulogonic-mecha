@@ -2,7 +2,7 @@
 # Project manifest for the Build Standard for LLMs v1.2.0. Read by scripts/audit-repo.sh and Audit-Repo.ps1.
 standard: "1.2.0"
 name: "cellulogonic-mecha"
-description: "Clean-room 3D developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic & xenocellular artificial life engine in C11+AVX2 (v1.6.0, 3-OS) with 78 six-kernel Pure Lean 4.35.0 formal proofs"
+description: "Clean-room 3D developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic & xenocellular artificial life engine in C11+AVX2 (v1.7.0, 3-OS) with a 78-theorem Lean 4.35.0 specification model"
 owner: "Alexander Stephen Donahue (Independent Researcher)"
 year: "2026"
 project_type: research
@@ -31,8 +31,8 @@ items:
   A04: {status: done}  # Usage examples [core]
   A05: {status: done}  # Demo media (docs/media/social-preview.svg in README.md) [recommended]
   A06: {status: done}  # Dual open LICENSE (Apache-2.0) + LICENSE-DOCS (CC-BY-4.0) + REUSE.toml + LICENSES/ [core]
-  A07: {status: done}  # CHANGELOG.md (Keep a Changelog with 1.6.0) [core]
-  A08: {status: done}  # Semantic version 1.6.0 consistent across 17 tracked manifests, headers, Web, Lean & Paper [core]
+  A07: {status: done}  # CHANGELOG.md (Keep a Changelog with 1.7.0) [core]
+  A08: {status: done}  # Semantic version 1.7.0 consistent across 17 tracked manifests, headers, Web, Lean & Paper [core]
   A09: {status: done}  # Automated tests that pass (26-gate C11, 1000-case fuzz, Python oracle, 2720 prop_check, 13 Web tests, 78 Lean proofs + live negative Lean rejection) [core]
   A10: {status: done}  # Informational CI (.github/workflows/ci.yml on push to main) [core]
   A11: {status: done}  # Releases (.github/workflows/release.yml on tags: v*) [recommended]
@@ -43,15 +43,15 @@ items:
   A16: {status: done}  # SECURITY.md [core]
   A17: {status: done}  # SUPPORT.md [recommended]
   A18: {status: done}  # Issue templates (.github/ISSUE_TEMPLATE/{bug,feature,question,config}.yml; zero PR templates) [recommended]
-  A19: {status: done, note: "GitHub About description & topics updated via gh repo edit (v1.6.0, 78 Lean proofs, 3-OS, GitHub Pages Blueprint)."}
-  A20: {status: done}  # docs/ folder (docs/architecture.md + full docs suite) [recommended]
+  A19: {status: done, note: "GitHub About description & topics updated via gh repo edit (v1.7.0, 78 Lean Spec.lean theorems, 3-OS, GitHub Pages Blueprint)."}
+  A20: {status: done}  # docs/ folder (docs/architecture.md, docs/DATASHEET.md + full docs suite) [recommended]
   A21: {status: done}  # Architecture Decision Records (docs/adr/0001-architecture-and-verification-boundaries.md) [recommended]
-  A22: {status: done}  # CITATION.cff (1.6.0, Apache-2.0, Independent Researcher) + CITATION.bib + .zenodo.json [advanced]
+  A22: {status: done}  # CITATION.cff (1.7.0, Apache-2.0, Independent Researcher) + CITATION.bib + .zenodo.json + codemeta.json + croissant.json + ro-crate-metadata.json [advanced]
   A23: {status: done}  # Clean history and correct identity on main [core]
   A24: {status: done}  # No secrets, build output or huge files (>5MB) committed [core]
   A25: {status: done}  # Cross-platform 3-OS / 2-ISA CI (ubuntu-latest x86-64, windows-latest x86-64, macos-latest ARM64) [recommended]
   A26: {status: done}  # Social preview image (docs/media/social-preview.svg) [recommended]
-  A27: {status: done, note: "Static Research Portal & Interactive 78-Theorem Lean 4 Proof Blueprint Dependency Graph built by scripts/build_blueprint.py and published via .github/workflows/pages.yml."}
+  A27: {status: done, note: "Static Research Portal & Interactive 78-Theorem Lean 4 Proof Blueprint Dependency Graph built by scripts/build_blueprint.py, validated by scripts/check_blueprint.py, and published via .github/workflows/pages.yml."}
   A28: {status: n/a, note: "Standalone zero-dependency C11 + Lean 4.35.0 repository (package: false)."}
   A29: {status: done}  # ROADMAP.md [recommended]
   A30: {status: done}  # .github/labels.tsv with all 10 finding classes including blindspot [recommended]
@@ -78,7 +78,7 @@ items:
   B06: {status: done, note: "Negative tests cover tampered/re-signed/overflow/desync/trailing-EOF CMB5 .cmbin (G06/G25), NULL/extreme ABI bounds (G25), invalid CLI flags (--seed abc exit 2), inert crystal & white-noise COVI=0 (G12/M5/M6), TDP KO (G16/M7), 8 Lean adversarial false-variant refutations (AT01-AT08), live negative Lean kernel rejection (scripts/test_lean_negative.py + CI comparator tamper test), and Web CSRF/405/403/400/413 rejections."}
   B07: {status: done, note: "Regression checks in G03/G06/G12/G14/G19/G23/G25/G26 lock every fixed v1.2.1-v1.6.0 defect (Titan strict 2nd Law, GRN Wnt de-collision, Z-translation invariance, Lipschitz 128B decode, CMB5 zero-padding/overflow/desync validation, unified per-voxel photon_rem_uq cap, 8x8 stencil dedup, tun bond detach)."}
   B08: {status: done, note: "Golden SHA-256 digests pinned in test_falsification.c (G01 NIST SHA-256, G07/G09 dual-kernel parity) and archived in CHECKSUMS.sha256 & results/."}
-  B09: {status: done, note: "Flat C11 ABI contract (cellulogonic_abi.h 0x00010600, _Static_assert padding, G01/G19/G25 bridges) and HTTP GET /healthz + GET /api/state + POST /api/cmd JSON API contract (13/13 tests in test/test_web_server.mjs)."}
+  B09: {status: done, note: "Flat C11 ABI contract (cellulogonic_abi.h 0x00010700, _Static_assert padding, G01/G19/G25 bridges) and HTTP GET /healthz + GET /api/state + POST /api/cmd JSON API contract (13/13 tests in test/test_web_server.mjs)."}
   B10: {status: done}  # Property-based tests (scripts/prop_check.py — 2,720 trials incl. randomized native C11 runs + reference/chemoton_oracle.py — 6,270 rational checks) [core]
   B11: {status: done, note: "Differential testing between 256-bit SIMD_AVX2 diffusion kernel and scalar C11 reference oracle (G07, 0-bit diff), 3-OS Win64/Linux/macOS parity, and Python exact oracle (scripts/verify_oracle_and_stats.py)."}
   B12: {status: done, note: "SCALAR_REF kernel in src/cellular_world.c and clean-room arbitrary-precision reference/chemoton_oracle.py serve as independent exact reference oracles."}
@@ -106,7 +106,7 @@ items:
   B34: {status: n/a, note: "No runtime LLM or AI model inference (ai: false)."}
   B35: {status: done}  # Security scanning report-only (SHA-256-verified gitleaks 8.30.1 + osv-scanner 2.7.1 + cppcheck in .github/workflows/ci.yml) [recommended]
   B36: {status: done}  # Threat model (docs/threat-model.md) [recommended]
-  B37: {status: done}  # Release hashes & checksums (SHA256SUMS in CI + CHECKSUMS.sha256 + DigiCert RFC 3161 .tsr) [core]
+  B37: {status: done}  # Release hashes & dual timestamps (SHA256SUMS in CI + CHECKSUMS.sha256 + DigiCert RFC 3161 .tsr + 3-calendar Bitcoin OTS .ots) [core]
   B38: {status: done}  # Build provenance & attestations (actions/attest-build-provenance@v4 in CI & release) [recommended]
   B39: {status: done}  # Data checksums (data/MANIFEST.sha256 covering archived results/ logs & citation-audit.json) [recommended]
   B40: {status: done}  # Audit trail (docs/run-log.md + HARDENING_LOG.md + SUBMISSION_READINESS.md) [recommended]

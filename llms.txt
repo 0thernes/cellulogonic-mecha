@@ -1,21 +1,25 @@
-# CELLULOGONIC MECHA (v1.6.0)
+# CELLULOGONIC MECHA (v1.7.0)
 
-> Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels (`ABI 0x00010600`), paired with 78 six-kernel Pure Lean 4.35.0 formal proofs (`AT01`–`AT08` + live tamper rejection) and a 26-gate / 8-mutant falsification + 1,000-case ABI fuzz harness.
+> Clean-room 3D off-lattice developmental embryogenesis, morphogenetic GRN, chemiosmotic, endosymbiotic, and xenocellular artificial life engine in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels (`ABI 0x00010700`), paired with 78 Pure Lean 4.35.0 theorems about its integer specification model (`Spec.lean`, in 10 proof modules + `Spec.lean`, 15 `.lean` files; 6 kernel checks + `6/6` live elaboration & `sorry`-tamper rejection) and a 26-gate / 8-mutant falsification + 1,000-case ABI fuzz harness.
 
 Author: Alexander Stephen Donahue (Independent Researcher, Spokane, WA, USA; ORCID 0009-0006-8168-9648).
 License: Apache-2.0 (code) / CC-BY-4.0 (papers & documentation; REUSE 3.x / SPDX).
 Status: active. Independent research preprint, not peer-reviewed. Zero (0/1,900) overarching Mega-Atlas v2.6.0 open problems retired.
+Software Heritage SWHID: swh:1:snp:8c1696436104a888897ce3b97867eda983d56160
 Blueprint Portal: https://0thernes.github.io/cellulogonic-mecha/
 
 ## Key Entrypoints
-- [README.md](README.md): Overview, Quickstart, Usage, verbatim 78-theorem Lean 4.35.0 `#print axioms` audit
+- [README.md](README.md): Overview, Quickstart, Usage, verbatim 78-theorem Lean 4.35.0 `#print axioms` audit, AI-Contribution Disclosure & CRediT
 - [AGENTS.md](AGENTS.md): Canonical engineering rules, commands, and verification baseline
 - [CLAIMS.md](CLAIMS.md): Numbered claims ledger with epistemic tiers and explicit falsifiers
 - [SUBMISSION_READINESS.md](SUBMISSION_READINESS.md): 43-item Defensible Independent AI Research Playbook v1.3 matrix
 - [LIMITATIONS.md](LIMITATIONS.md): Threats to validity and literal-vs-metaphor boundary
+- [ERRATA.md](ERRATA.md): Historical corrections ledger, 2026-11-26 external statement audit, and `v1.7.0` resolutions
 - [REPLICATION.md](REPLICATION.md): Clean-clone reproduction protocol and dated replication log
-- [paper/main.tex](paper/main.tex): AMS-LaTeX v1.6.0 white paper (`dist/Donahue_2026_cellulogonic_mecha.pdf`, 36 live Crossref retraction-free DOIs)
-- [lean/comparator.json](lean/comparator.json): Six-kernel Palomar Challenge/Solution specification (78 theorems + 12 pinned Spec definitions)
-- [docs/statement-fidelity.md](docs/statement-fidelity.md): Lean 4 <-> exact C11 symbol fidelity audit matrix
+- [paper/main.tex](paper/main.tex): AMS-LaTeX v1.7.0 white paper (`dist/Donahue_2026_cellulogonic_mecha.pdf`, 36/36 live Crossref title/author/retraction-audited DOIs)
+- [lean/comparator.json](lean/comparator.json): Palomar Challenge/Solution specification (78 `Spec.lean` theorems + 12 pinned `Spec` definitions, 6 kernel checks)
+- [docs/statement-fidelity.md](docs/statement-fidelity.md): Lean 4 <-> exact C11 symbol fidelity matrix & explicit bookkeeping helper catalog
 - [docs/MEGA_ATLAS_CROSSCHECK.md](docs/MEGA_ATLAS_CROSSCHECK.md): Non-retirement cross-check (`0/1,900` retired across 13 verbatim `v2.6.0` IDs)
-- [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md): Transparent AI-assistance disclosure and CRediT authorship
+- [docs/DATASHEET.md](docs/DATASHEET.md): Gebru et al. (2021) Datasheet for archived empirical datasets & logs
+- [croissant.json](croissant.json) · [ro-crate-metadata.json](ro-crate-metadata.json) · [codemeta.json](codemeta.json): Machine-readable FAIR metadata
+- [docs/AI_DISCLOSURE.md](docs/AI_DISCLOSURE.md): Transparent AI-Contribution Disclosure, CRediT authorship, and COI statement

@@ -2,7 +2,26 @@
 
 All notable changes to **CELLULOGONIC MECHA** are documented in this file.
 
-## [Unreleased] — 2026-11-26 statement audit (documentation only)
+## [1.7.0] — 2026-11-26
+
+### Cycle-1 Deep Hardening: All 5 Lean & 4 Paper Audit Fixes Resolved, Crossref Title/Author Alignment, FAIR Metadata + Datasheet & Dual Cryptographic Timestamps
+- **All 5 Formal Lean 4.35.0 Issues Logged in `ERRATA.md` Resolved (`lean/`, `scripts/test_lean_negative.py`):**
+  - Strengthened `T16_optimal_area_partition_strictly_improves_budding` (`MembraneGeometry.lean` & `Challenge.lean`) with the explicit equality-iff characterization `2 * (x^3 + y^3)^2 = (x^2 + y^2)^3 ↔ x = y` for `x > 0, y > 0`, and removed all `"Global Minimax Theorem"` / `"Global Minimax Law"` hype from docstrings, headers, and comments.
+  - Explicitly annotated the 5 arithmetic bookkeeping helpers (`T25`, `T27`, `T40`, `T41`, `T44`) in Lean docstrings and separated them cleanly in `docs/statement-fidelity.md` §2.
+  - Removed all four trivial literal-only conjuncts from `T41` (`N0 - N0 = 0`), `T54` (`8 * 2^5 = 256 ∧ 2^9 = 512`), `C62` (`k * 0 * 0 = 0`), and `NV08` (`(5 : Int) * (-3) * (-3) = 45`) across `CellulogonicProofs/*.lean`, `Challenge.lean`, and `AdversarialTests.lean` (`AT07`).
+  - Documented truncated `Nat` subtraction clamping explicitly in `T39` and `T43` docstrings and added exact non-underflow conservation conjuncts (`T39`, `T43`) plus an unclamped signed `Int` companion inequality (`T43`).
+  - Upgraded `scripts/test_lean_negative.py` to verify **6/6** live negative Lean 4.35.0 rejections (both Lean elaboration rejection of false claims AND live `Spec.lean` `sorry`-tamper rejection + standalone `sorry`, custom `axiom`, `native_decide`).
+- **All 4 Frozen Paper Errors Logged in `ERRATA.md` Resolved & Upgraded Citation Audit (`paper/`, `dist/`, `scripts/check_citations.py`):**
+  - Replaced `"Global Minimax Theorem"` / `"Global Minimax Law"` / `"Genuine Original Contribution"` for `T16` in `paper/main.tex` and `paper/WHITE_PAPER.md` with accurate elementary sextic polynomial inequality phrasing; scoped all 78 theorems explicitly to `Spec.lean`, fixed module count to **10 proof modules + `Spec.lean` (15 `.lean` files)**, replaced `"6 independent kernels"` with **6 kernel checks (Lean default & paranoid modes + 4 independent checkers: `lean4lean`, `nanoda_bin`, `con-leche`, `con-ron`)**, and added Software Heritage SWHID (`swh:1:snp:8c1696436104a888897ce3b97867eda983d56160`), SLSA v4 / Rekor, dual RFC 3161 + Bitcoin OTS provenance, explicit `"not peer-reviewed"`, CRediT, COI, and AI-Contribution Disclosure.
+  - Upgraded `scripts/check_citations.py` (`schema: cellulogonic-citation-audit/v2`) to check **BOTH Crossref reachability AND title + author surname alignment** on all 36 DOIs in `paper/refs.bib` plus `paper/WHITE_PAPER.md` parity (`36/36` live OK, `title_aligned=36/36`, `author_aligned=36/36`, `0` retractions -> `results/citation-audit.json`).
+  - Recompiled `dist/Donahue_2026_cellulogonic_mecha.pdf` via Tectonic (`0` Overfull `\hbox`/`\vbox`, `0` undefined refs/citations) and clean-room verified `dist/arxiv_submission.tar.gz`.
+- **FAIR Metadata, Gebru Datasheet, Blueprint Audit & Dual Cryptographic Timestamps (`ABI 0x00010700`):**
+  - Added FAIR metadata manifests (`croissant.json`, `ro-crate-metadata.json`, `codemeta.json`) and Gebru et al. (2021) Datasheet (`docs/DATASHEET.md`); updated `REUSE.toml` and `README.md` (with explicit AI-Contribution Disclosure + CRediT alongside the verbatim `#print axioms` block).
+  - Fixed `scripts/build_blueprint.py` (`comparator.json` `theorem_names` key and `MembraneGeometry`=9 / `BioenergeticsEndosymbiosis`=8 counts, honest 6-kernel-check copy) and added `scripts/check_blueprint.py` wired into CI & Pages workflows.
+  - Added `scripts/stamp_timestamps.py` minting & verifying BOTH DigiCert RFC 3161 (`data/timestamps/CHECKSUMS.sha256.tsr`) AND 3-calendar Bitcoin OpenTimestamps (`data/timestamps/CHECKSUMS.sha256.ots`) binding LF-normalized `CHECKSUMS.sha256`, verified live in CI.
+  - Preserved all honest statement-audit tightenings from commits `40ec5dd` and `ea8700b` (`docs/benchmarks.md`, `docs/media/social-preview.svg`, `0/1,900` Mega-Atlas non-retirement, `"not peer-reviewed"`).
+
+## [1.6.0-audit] — 2026-11-26 statement audit (documentation & SVG only; commits `40ec5dd`, `ea8700b`)
 
 - Corrected `README.md`, `CLAIMS.md` (`C1`), `LIMITATIONS.md`, `CITATION.cff` (title), `lean/formalization.yaml` (descriptive text) and `docs/` to match the external statement audit of `d033ab0`: the 78 Lean theorems concern `Spec.lean` only; several are arithmetic bookkeeping identities or contain literal-only conjuncts (`T25`, `T27`, `T40`, `T41`, `T44`, `T54`, `C62`, `NV08`); `T16` is described as a polynomial inequality, not a "Global Minimax Theorem"; "6 independent kernels" is replaced by "six kernel checks" (two use the Lean reference kernel); module count is "10 proof modules + `Spec.lean` (15 `.lean` files)".
 - Updated the `lean/formalization.yaml` line of `CHECKSUMS.sha256`.

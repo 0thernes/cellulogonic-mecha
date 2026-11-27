@@ -1,0 +1,341 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.1/context",
+  "@graph": [
+    {
+      "@type": "CreativeWork",
+      "@id": "ro-crate-metadata.json",
+      "conformsTo": {
+        "@id": "https://w3id.org/ro/crate/1.1"
+      },
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "CELLULOGONIC MECHA (v1.7.0)",
+      "version": "1.7.0",
+      "datePublished": "2026-11-26",
+      "description": "CELLULOGONIC MECHA v1.7.0 (ABI 0x00010700): clean-room 3D off-lattice developmental embryogenesis, chemiosmotic, endosymbiotic, and xenocellular artificial life laboratory in portable zero-dependency C11 + isolated AVX2/Scalar/ARM64 kernels, paired with a 78-theorem zero-Mathlib Lean 4.35.0 specification model (Spec.lean, 10 proof modules + Spec.lean, 15 .lean files, verified in CI by 6 kernel checks), 26-gate/8-mutant falsification suite, 36/36 live Crossref title/author-aligned citation audit, AMS-LaTeX preprint (not peer-reviewed), FAIR metadata, Software Heritage snapshot swh:1:snp:8c1696436104a888897ce3b97867eda983d56160, and dual RFC 3161 (.tsr) + Bitcoin OpenTimestamps (.ots) cryptographic timestamps.",
+      "url": "https://0thernes.github.io/cellulogonic-mecha/",
+      "identifier": "swh:1:snp:8c1696436104a888897ce3b97867eda983d56160",
+      "sameAs": "https://github.com/0thernes/cellulogonic-mecha",
+      "license": [
+        {
+          "@id": "https://spdx.org/licenses/Apache-2.0"
+        },
+        {
+          "@id": "https://creativecommons.org/licenses/by/4.0/"
+        }
+      ],
+      "author": {
+        "@id": "https://orcid.org/0009-0006-8168-9648"
+      },
+      "hasPart": [
+        {
+          "@id": "dist/Donahue_2026_cellulogonic_mecha.pdf"
+        },
+        {
+          "@id": "dist/arxiv_submission.tar.gz"
+        },
+        {
+          "@id": "paper/main.tex"
+        },
+        {
+          "@id": "paper/refs.bib"
+        },
+        {
+          "@id": "paper/WHITE_PAPER.md"
+        },
+        {
+          "@id": "lean/CellulogonicProofs/Spec.lean"
+        },
+        {
+          "@id": "lean/Challenge.lean"
+        },
+        {
+          "@id": "lean/Solution.lean"
+        },
+        {
+          "@id": "lean/comparator.json"
+        },
+        {
+          "@id": "lean/formalization.yaml"
+        },
+        {
+          "@id": "results/lean4-audit.txt"
+        },
+        {
+          "@id": "results/citation-audit.json"
+        },
+        {
+          "@id": "results/08_castration_ablation_13vec.csv"
+        },
+        {
+          "@id": "results/09_paired_stats_n24.txt"
+        },
+        {
+          "@id": "CLAIMS.md"
+        },
+        {
+          "@id": "LIMITATIONS.md"
+        },
+        {
+          "@id": "ERRATA.md"
+        },
+        {
+          "@id": "docs/DATASHEET.md"
+        },
+        {
+          "@id": "docs/statement-fidelity.md"
+        },
+        {
+          "@id": "codemeta.json"
+        },
+        {
+          "@id": "croissant.json"
+        },
+        {
+          "@id": "CHECKSUMS.sha256"
+        },
+        {
+          "@id": "data/timestamps/CHECKSUMS.sha256.tsr"
+        },
+        {
+          "@id": "data/timestamps/CHECKSUMS.sha256.ots"
+        }
+      ]
+    },
+    {
+      "@id": "https://orcid.org/0009-0006-8168-9648",
+      "@type": "Person",
+      "name": "Alexander Stephen Donahue",
+      "email": "0_0@0thernes.art",
+      "affiliation": "Independent Researcher, Spokane, WA, USA",
+      "url": "https://0thernes.art"
+    },
+    {
+      "@id": "https://spdx.org/licenses/Apache-2.0",
+      "@type": "CreativeWork",
+      "name": "Apache License 2.0 (Code & Lean Proofs)",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0"
+    },
+    {
+      "@id": "https://creativecommons.org/licenses/by/4.0/",
+      "@type": "CreativeWork",
+      "name": "Creative Commons Attribution 4.0 International (Papers, Docs & Datasets)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+      "@id": "dist/Donahue_2026_cellulogonic_mecha.pdf",
+      "@type": "File",
+      "name": "Donahue_2026_cellulogonic_mecha.pdf",
+      "description": "Frozen AMS-LaTeX research preprint (v1.7.0, Tectonic, 0 overfull hboxes, not peer-reviewed)",
+      "encodingFormat": "application/pdf",
+      "sha256": "af22fee411635970d10a0d98a3be72e4c5af58dc719f54cc8f15ed60a8306074",
+      "contentSize": 252063
+    },
+    {
+      "@id": "dist/arxiv_submission.tar.gz",
+      "@type": "File",
+      "name": "arxiv_submission.tar.gz",
+      "description": "Deterministic clean-room arXiv source tarball (verified via fresh extraction compile)",
+      "encodingFormat": "application/gzip",
+      "sha256": "0cd67a56d800fa184f8ad2df41f156f808bb15e07d1b02767525d326b49b4bc9",
+      "contentSize": 32654
+    },
+    {
+      "@id": "paper/main.tex",
+      "@type": "File",
+      "name": "main.tex",
+      "description": "AMS-LaTeX source for the CELLULOGONIC MECHA v1.7.0 white paper",
+      "encodingFormat": "application/x-tex",
+      "sha256": "d93827d164852f569dd302433fd0b4eaee0800b6a5516f5e5f92caeadb56ca14",
+      "contentSize": 65443
+    },
+    {
+      "@id": "paper/refs.bib",
+      "@type": "File",
+      "name": "refs.bib",
+      "description": "BibTeX bibliography (36 live Crossref-audited DOIs, 36/36 title/author aligned, 0 retractions)",
+      "encodingFormat": "application/x-bibtex",
+      "sha256": "1f3fb4037d42b05dc59236de4701cd6512f39d92ab31fefaf539ceef61edf33b",
+      "contentSize": 14698
+    },
+    {
+      "@id": "paper/WHITE_PAPER.md",
+      "@type": "File",
+      "name": "WHITE_PAPER.md",
+      "description": "Markdown companion white paper matching paper/main.tex",
+      "encodingFormat": "text/markdown",
+      "sha256": "31366138023f04b44f621ec16ebb2dd2df0ef5541aeed26ebf3ad2e809c9ba4a",
+      "contentSize": 51288
+    },
+    {
+      "@id": "lean/CellulogonicProofs/Spec.lean",
+      "@type": "File",
+      "name": "Spec.lean",
+      "description": "Isolated pure Lean 4.35.0 specification definitions (0 proofs, 0 sorry, 12 pinned defs)",
+      "encodingFormat": "text/plain",
+      "sha256": "4d107f9152912e371441a65c476293e4ee6e1b52b06c3f8e02b8a5f26e7d1b96",
+      "contentSize": 15780
+    },
+    {
+      "@id": "lean/Challenge.lean",
+      "@type": "File",
+      "name": "Challenge.lean",
+      "description": "Palomar statement-only Lean 4.35.0 Challenge contract (78 theorem signatures)",
+      "encodingFormat": "text/plain",
+      "sha256": "87ca29cb2d9ccac78d4e1f145d9dfbda4808caf13a89bd74c7fca5d1bfada671",
+      "contentSize": 21940
+    },
+    {
+      "@id": "lean/Solution.lean",
+      "@type": "File",
+      "name": "Solution.lean",
+      "description": "Palomar sorry-free Lean 4.35.0 Solution proving all 78 theorems in 10 proof modules",
+      "encodingFormat": "text/plain",
+      "sha256": "b3b60762f4c876d64a623a320b64da9e85223177d78c6f8241f35e6150449f2a",
+      "contentSize": 600
+    },
+    {
+      "@id": "lean/comparator.json",
+      "@type": "File",
+      "name": "comparator.json",
+      "description": "Palomar comparator manifest (78 theorems + 12 pinned Spec definitions)",
+      "encodingFormat": "application/json",
+      "sha256": "886186730bd1d61b7380506d37eeebf456b81e0b1a6809b635594a4d7a551d58",
+      "contentSize": 7123
+    },
+    {
+      "@id": "lean/formalization.yaml",
+      "@type": "File",
+      "name": "formalization.yaml",
+      "description": "Formalization metadata manifest (v0.4 schema, 78 theorems, 15 .lean files)",
+      "encodingFormat": "application/yaml",
+      "sha256": "d2dd14a54f976d42a7b23b2e35be7b6fa352745a630c52b800418a59e155a4bc",
+      "contentSize": 8690
+    },
+    {
+      "@id": "results/lean4-audit.txt",
+      "@type": "File",
+      "name": "lean4-audit.txt",
+      "description": "Verbatim 78-theorem Lean 4.35.0 #print axioms audit transcript",
+      "encodingFormat": "text/plain",
+      "sha256": "46e3d323031af6a09f382d5d1b7cbe894977f0a359a74db050dc9cdcfe057e41",
+      "contentSize": 9219
+    },
+    {
+      "@id": "results/citation-audit.json",
+      "@type": "File",
+      "name": "citation-audit.json",
+      "description": "Live Crossref reachability, title/author alignment, and retraction audit JSON (36/36)",
+      "encodingFormat": "application/json",
+      "sha256": "f18df4f38018e028788daf10a774acdc480f198c76272018990809894db2b8cb",
+      "contentSize": 23773
+    },
+    {
+      "@id": "results/08_castration_ablation_13vec.csv",
+      "@type": "File",
+      "name": "08_castration_ablation_13vec.csv",
+      "description": "13-vector restraint ablation sweep CSV (29 rows x 15 columns)",
+      "encodingFormat": "text/csv",
+      "sha256": "1170128cb9cacca67c04dd9ae9ea9c2de8b0af887693b95191bda663b433145f",
+      "contentSize": 1636
+    },
+    {
+      "@id": "results/09_paired_stats_n24.txt",
+      "@type": "File",
+      "name": "09_paired_stats_n24.txt",
+      "description": "Locked N=24 paired statistical trials (96/96 wins, p_Holm=0.00040)",
+      "encodingFormat": "text/plain",
+      "sha256": "e3fdf02a0d5e52af719bde093a4d9aaf38008db5ea558c7d7c4638129913e647",
+      "contentSize": 1047
+    },
+    {
+      "@id": "CLAIMS.md",
+      "@type": "File",
+      "name": "CLAIMS.md",
+      "description": "Falsifiable Claims Ledger (C1-C8) with exact epistemic tags",
+      "encodingFormat": "text/markdown",
+      "sha256": "7bbaa1ff79b33462b281740b6a38f95aea2a3a350bcb6a1b5cec5f26b8723cbe",
+      "contentSize": 7719
+    },
+    {
+      "@id": "LIMITATIONS.md",
+      "@type": "File",
+      "name": "LIMITATIONS.md",
+      "description": "Real-vs-metaphor physical limitation & scope boundaries",
+      "encodingFormat": "text/markdown",
+      "sha256": "6a5fbc4458bff6793da2f5e7b04a42399dd778cf1cecae769a61f662cf6d3a9a",
+      "contentSize": 7301
+    },
+    {
+      "@id": "ERRATA.md",
+      "@type": "File",
+      "name": "ERRATA.md",
+      "description": "Append-only Errata ledger preserving 2026-11-26 audit and v1.7.0 resolutions",
+      "encodingFormat": "text/markdown",
+      "sha256": "f51c255c72e417a42f9eba57bcdbe4b77e917f267133164297957b82f74ade29",
+      "contentSize": 10206
+    },
+    {
+      "@id": "docs/DATASHEET.md",
+      "@type": "File",
+      "name": "DATASHEET.md",
+      "description": "Gebru et al. (2021) Datasheet for Datasets",
+      "encodingFormat": "text/markdown",
+      "sha256": "b3ff317065411cce3b2f0245f4681b295ed9bd229cc3d4e44101140cba8cc75a",
+      "contentSize": 7629
+    },
+    {
+      "@id": "docs/statement-fidelity.md",
+      "@type": "File",
+      "name": "statement-fidelity.md",
+      "description": "Lean 4 Spec.lean vs C11 fidelity, bookkeeping-helper, and divergence matrix",
+      "encodingFormat": "text/markdown",
+      "sha256": "8a7b4fc3830ae454657b612f8bef9b411e766fc8523fd520bf332294bc70d4b1",
+      "contentSize": 10217
+    },
+    {
+      "@id": "codemeta.json",
+      "@type": "File",
+      "name": "codemeta.json",
+      "description": "CodeMeta 2.0 software metadata",
+      "encodingFormat": "application/ld+json",
+      "sha256": "9b2c27d7de36a251b6058e759ac30cae5eaa1dbba998c7d23730328d3bcc056c",
+      "contentSize": 2963
+    },
+    {
+      "@id": "croissant.json",
+      "@type": "File",
+      "name": "croissant.json",
+      "description": "MLCommons Croissant 1.0 dataset metadata",
+      "encodingFormat": "application/ld+json",
+      "sha256": "6edb70807f7b2197c7e18314076f6d9c4c19a25125c90f371bebe5339a4d3d84",
+      "contentSize": 12126
+    },
+    {
+      "@id": "CHECKSUMS.sha256",
+      "@type": "File",
+      "name": "CHECKSUMS.sha256",
+      "description": "Cryptographic SHA-256 manifest of frozen deliverables (LF-normalized)",
+      "encodingFormat": "text/plain"
+    },
+    {
+      "@id": "data/timestamps/CHECKSUMS.sha256.tsr",
+      "@type": "File",
+      "name": "CHECKSUMS.sha256.tsr",
+      "description": "DigiCert RFC 3161 Trusted Timestamp token binding CHECKSUMS.sha256",
+      "encodingFormat": "application/timestamp-reply"
+    },
+    {
+      "@id": "data/timestamps/CHECKSUMS.sha256.ots",
+      "@type": "File",
+      "name": "CHECKSUMS.sha256.ots",
+      "description": "Multi-calendar Bitcoin OpenTimestamps proof binding CHECKSUMS.sha256",
+      "encodingFormat": "application/octet-stream"
+    }
+  ]
+}

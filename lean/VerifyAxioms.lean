@@ -3,7 +3,7 @@ module
 public import Solution
 
 /-!
-# CELLULOGONIC MECHA v1.6.0 — Standalone Strict Axiom Audit (`VerifyAxioms.lean`)
+# CELLULOGONIC MECHA v1.7.0 — Standalone Strict Axiom Audit (`VerifyAxioms.lean`)
 
 Runs `#print axioms` on all 78 machine-checked theorems (`T01`–`T58`, `C59`–`C62`, `NV01`–`NV08`,
 `AT01`–`AT08`) exported by `Solution.lean`. Every declaration MUST depend strictly on a subset of
@@ -26,7 +26,7 @@ SPDX-License-Identifier: Apache-2.0
 #print axioms Cellulogonic.StoichiometryThermo.T09_heat_sink_monotone
 #print axioms Cellulogonic.StoichiometryThermo.T10_fission_and_engulfment_exact_conservation
 
--- Theorem II: Discrete Canham-Helfrich Isoperimetric Fission Trichotomy & Minimax Law (T11–T19)
+-- Theorem II: Discrete Canham-Helfrich-Inspired Fission Trichotomy & Sextic Inequality (T11–T19)
 #print axioms Cellulogonic.MembraneGeometry.T11_symmetric_fission_doubles_Q
 #print axioms Cellulogonic.MembraneGeometry.T12_symmetric_fission_iff_half_threshold
 #print axioms Cellulogonic.MembraneGeometry.T13_high_Q_blocks_symmetric_fission

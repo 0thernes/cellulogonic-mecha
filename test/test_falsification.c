@@ -1,7 +1,7 @@
 #include "cellulogonic_internal.h"
 
 /* ============================================================================
- * CELLULOGONIC MECHA v1.6.0 — 26-Gate Lab-Grade Falsification & Mutant Suite
+ * CELLULOGONIC MECHA v1.7.0 — 26-Gate Lab-Grade Falsification & Mutant Suite
  * SPDX-License-Identifier: Apache-2.0
  * Includes 8 Planted Negative Mutants (M1..M8) Proven Caught!
  * ============================================================================ */
@@ -963,7 +963,7 @@ typedef int (*GateFn)(void);
 
 int main(void) {
     printf("==================================================================================\n");
-    printf(" CELLULOGONIC MECHA v1.6.0 — 26-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
+    printf(" CELLULOGONIC MECHA v1.7.0 — 26-GATE LAB-GRADE FALSIFICATION & MUTANT AUDIT SUITE\n");
     printf("==================================================================================\n");
 
     struct { const char* id; const char* name; GateFn fn; } gates[26] = {

@@ -3,9 +3,9 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.5.0 — Theorem II: Discrete Canham-Helfrich Isoperimetric Fission
-  Trichotomy, Symmetric Binary Fission Threshold (Q ≤ 1/2), & Exact Algebraic Proof of
-  Asymmetric Budding Minimax Optimality.
+  CELLULOGONIC MECHA v1.7.0 — Theorem II: Discrete Canham-Helfrich-Inspired Isoperimetric
+  Fission Trichotomy, Symmetric Binary Fission Threshold (Q ≤ 1/2), & Exact Algebraic
+  Polynomial Inequality for Strain-Matched Asymmetric Budding.
 
   Pure Lean 4.35.0 `module` (zero Mathlib, zero sorry, zero custom axioms).
   Copyright (c) 2026 Alexander Stephen Donahue <0_0@0thernes.art>.
@@ -119,21 +119,23 @@ public theorem T15_exosome_asymmetric_budding_escapes_half_barrier :
   unfold ValidBinarySplit IsIntact CanSymmetricFission C0
   decide
 
-private theorem vesicle_minimax_poly_identity (x y : Int) :
+private theorem vesicle_sextic_poly_identity (x y : Int) :
     2 * (x^3 + y^3)^2 - (x^2 + y^2)^3 =
     (x - y)^2 * (x^4 + 2 * x^3 * y + 2 * x * y^3 + y^4) := by
   grind
 
-/-- T16: Global Minimax Theorem of Vesicle Division (Exact Algebraic Form).
-    With daughter volumes V1 = x^3, V2 = y^3 (x, y > 0) and strain-matched minimal areas
-    L1 = x^2, L2 = y^2, total required area satisfies (L1 + L2)^3 ≤ 2 * (V1 + V2)^2,
-    with STRICT inequality whenever V1 ≠ V2 (x ≠ y), and equality iff V1 = V2.
-    Symmetric binary fission is therefore the unique global maximum of membrane area demand. -/
+/-- T16: Elementary Sextic Polynomial Inequality for Cube/Square Vesicle Splits.
+    With daughter volume proxies V1 = x^3, V2 = y^3 (x, y > 0) and minimal area proxies
+    L1 = x^2, L2 = y^2, total area satisfies (x^2 + y^2)^3 ≤ 2 * (x^3 + y^3)^2,
+    with STRICT inequality whenever x ≠ y, and exact equality 2 * (x^3 + y^3)^2 = (x^2 + y^2)^3
+    if and only if x = y. Proved from the elementary polynomial factorization
+    2(x^3 + y^3)^2 - (x^2 + y^2)^3 = (x - y)^2 (x^4 + 2x^3y + 2xy^3 + y^4). -/
 public theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
     (hx : x > 0) (hy : y > 0) :
     (x^2 + y^2)^3 ≤ 2 * (x^3 + y^3)^2 ∧
-    (x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2) := by
-  have hid := vesicle_minimax_poly_identity x y
+    (x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2) ∧
+    (2 * (x^3 + y^3)^2 = (x^2 + y^2)^3 ↔ x = y) := by
+  have hid := vesicle_sextic_poly_identity x y
   have hx2 : x^2 > 0 := by
     have : x^2 = x * x := by grind
     rw [this]; exact Int.mul_pos hx hx
@@ -165,11 +167,12 @@ public theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
       have heq : (x - y) * (x - y) = (-(x - y)) * (-(x - y)) := by grind
       rw [heq]
       exact Int.mul_nonneg hneg hneg
-  constructor
-  · have hProd : (x - y)^2 * (x^4 + 2 * x^3 * y + 2 * x * y^3 + y^4) ≥ 0 :=
+  have hLe : (x^2 + y^2)^3 ≤ 2 * (x^3 + y^3)^2 := by
+    have hProd : (x - y)^2 * (x^4 + 2 * x^3 * y + 2 * x * y^3 + y^4) ≥ 0 :=
       Int.mul_nonneg hSqNonneg (Int.le_of_lt hFactorPos)
     omega
-  · intro hne
+  have hStrict : x ≠ y → (x^2 + y^2)^3 < 2 * (x^3 + y^3)^2 := by
+    intro hne
     have hSqPos : (x - y)^2 > 0 := by
       have hsq : (x - y)^2 = (x - y) * (x - y) := by grind
       rw [hsq]
@@ -182,6 +185,16 @@ public theorem T16_optimal_area_partition_strictly_improves_budding (x y : Int)
     have hProd : (x - y)^2 * (x^4 + 2 * x^3 * y + 2 * x * y^3 + y^4) > 0 :=
       Int.mul_pos hSqPos hFactorPos
     omega
+  refine ⟨hLe, hStrict, ?_⟩
+  constructor
+  · intro hEq
+    by_cases hxy : x = y
+    · exact hxy
+    · have hlt := hStrict hxy
+      omega
+  · intro hxy
+    subst hxy
+    grind
 
 /-- T17: Increasing internal osmolyte volume V strictly raises osmotic turgor strain. -/
 public theorem T17_osmotic_lysis_monotone_in_volume (V1 V2 : Nat) (hLt : V1 < V2) :

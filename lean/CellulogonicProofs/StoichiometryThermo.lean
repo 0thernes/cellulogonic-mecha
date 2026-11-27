@@ -3,7 +3,7 @@ module
 public import CellulogonicProofs.Spec
 
 /-!
-  CELLULOGONIC MECHA v1.6.0 — Theorem I: Exact Multi-Solvent Stoichiometric Mass
+  CELLULOGONIC MECHA v1.7.0 — Theorem I: Exact Multi-Solvent Stoichiometric Mass
   Conservation, First-Law Energy Closure & Strict Second-Law Impossibility of
   Perpetual-Motion Cellular Cycles across ALL 4 Planetary Solvents.
 

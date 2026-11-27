@@ -1,0 +1,353 @@
+{
+  "@context": {
+    "@language": "en",
+    "@vocab": "https://schema.org/",
+    "citeAs": "cr:citeAs",
+    "column": "cr:column",
+    "conformsTo": "dct:conformsTo",
+    "cr": "http://mlcommons.org/croissant/",
+    "data": {
+      "@id": "cr:data",
+      "@type": "@json"
+    },
+    "dataType": {
+      "@id": "cr:dataType",
+      "@type": "@vocab"
+    },
+    "dct": "http://purl.org/dc/terms/",
+    "extract": "cr:extract",
+    "field": "cr:field",
+    "fileObject": "cr:fileObject",
+    "fileProperty": "cr:fileProperty",
+    "fileSet": "cr:fileSet",
+    "format": "cr:format",
+    "includes": "cr:includes",
+    "isLiveDataset": "cr:isLiveDataset",
+    "jsonPath": "cr:jsonPath",
+    "key": "cr:key",
+    "md5": "cr:md5",
+    "parentField": "cr:parentField",
+    "path": "cr:path",
+    "recordSet": "cr:recordSet",
+    "references": "cr:references",
+    "regex": "cr:regex",
+    "repeated": "cr:repeated",
+    "replace": "cr:replace",
+    "sc": "https://schema.org/",
+    "separator": "cr:separator",
+    "source": "cr:source",
+    "subField": "cr:subField",
+    "transform": "cr:transform"
+  },
+  "@type": "sc:Dataset",
+  "conformsTo": "http://mlcommons.org/croissant/1.0",
+  "name": "CELLULOGONIC MECHA Verification & Experimental Telemetry Dataset",
+  "alternateName": "CELLULOGONIC MECHA v1.7.0 Datasets",
+  "description": "Deterministic, zero-drift experimental telemetry, 13-vector restraint ablation matrix (29 conditions x 15 columns), locked N=24 paired statistical trials (96/96 wins, p_Holm=0.00040), live Crossref citation/retraction/title/author audit (36/36 DOIs, 0 retractions), and verbatim 78-theorem Pure Lean 4.35.0 Spec.lean #print axioms transcript from CELLULOGONIC MECHA v1.7.0. Independent research artifact (not peer-reviewed); zero (0/1,900) Mega-Atlas problems retired.",
+  "version": "1.7.0",
+  "datePublished": "2026-11-26",
+  "url": "https://0thernes.github.io/cellulogonic-mecha/",
+  "sameAs": "https://github.com/0thernes/cellulogonic-mecha",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "citeAs": "Donahue, Alexander Stephen (2026). CELLULOGONIC MECHA (v1.7.0). Independent Researcher, Spokane, WA, USA. ORCID: 0009-0006-8168-9648. https://github.com/0thernes/cellulogonic-mecha",
+  "creator": {
+    "@type": "sc:Person",
+    "name": "Alexander Stephen Donahue",
+    "identifier": "https://orcid.org/0009-0006-8168-9648",
+    "affiliation": "Independent Researcher, Spokane, WA, USA",
+    "url": "https://0thernes.art"
+  },
+  "keywords": [
+    "artificial-life",
+    "chemoton",
+    "autopoiesis",
+    "endosymbiosis",
+    "bioelectricity",
+    "embryogenesis",
+    "xenobiology",
+    "lean4",
+    "formal-verification",
+    "deterministic-simulation",
+    "restraint-ablation"
+  ],
+  "distribution": [
+    {
+      "@type": "cr:FileObject",
+      "@id": "ablation-13vec-csv",
+      "name": "08_castration_ablation_13vec.csv",
+      "description": "13-vector restraint ablation sweep table (29 experimental rows x 15 columns, seed 5000, 180 epochs, 0 conservation drift).",
+      "contentUrl": "https://raw.githubusercontent.com/0thernes/cellulogonic-mecha/main/results/08_castration_ablation_13vec.csv",
+      "encodingFormat": "text/csv",
+      "sha256": "1170128cb9cacca67c04dd9ae9ea9c2de8b0af887693b95191bda663b433145f",
+      "contentSize": "1636 B"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "citation-audit-json",
+      "name": "citation-audit.json",
+      "description": "Live Crossref REST API reachability, title alignment, author alignment, year parity, and retraction audit across all 36 primary DOIs.",
+      "contentUrl": "https://raw.githubusercontent.com/0thernes/cellulogonic-mecha/main/results/citation-audit.json",
+      "encodingFormat": "application/json",
+      "sha256": "f18df4f38018e028788daf10a774acdc480f198c76272018990809894db2b8cb",
+      "contentSize": "23773 B"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "lean4-audit-txt",
+      "name": "lean4-audit.txt",
+      "description": "Verbatim Lean 4.35.0 #print axioms audit transcript for all 78 audited theorems about Spec.lean (0 sorryAx, strictly [propext, Classical.choice, Quot.sound]).",
+      "contentUrl": "https://raw.githubusercontent.com/0thernes/cellulogonic-mecha/main/results/lean4-audit.txt",
+      "encodingFormat": "text/plain",
+      "sha256": "46e3d323031af6a09f382d5d1b7cbe894977f0a359a74db050dc9cdcfe057e41",
+      "contentSize": "9219 B"
+    },
+    {
+      "@type": "cr:FileObject",
+      "@id": "paired-stats-n24-txt",
+      "name": "09_paired_stats_n24.txt",
+      "description": "Locked N=24 paired sign-flip permutation tests (seeds 5000..5023, 180 epochs, H1-H4, 96/96 wins, p_Holm=0.00040).",
+      "contentUrl": "https://raw.githubusercontent.com/0thernes/cellulogonic-mecha/main/results/09_paired_stats_n24.txt",
+      "encodingFormat": "text/plain",
+      "sha256": "e3fdf02a0d5e52af719bde093a4d9aaf38008db5ea558c7d7c4638129913e647",
+      "contentSize": "1047 B"
+    }
+  ],
+  "recordSet": [
+    {
+      "@type": "cr:RecordSet",
+      "@id": "restraint_ablation_13vec",
+      "name": "restraint_ablation_13vec",
+      "description": "All 29 deterministic experimental arms of the 13-vector Omega restraint sweep (0%, 50%, 100%).",
+      "key": {
+        "@id": "restraint_ablation_13vec/condition"
+      },
+      "field": [
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/condition",
+          "name": "condition",
+          "description": "Restraint ablation experimental arm identifier (29 conditions: 3 global baselines + 13 vectors x 50%/100%)",
+          "dataType": "sc:Text",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "condition"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/restraint_pct",
+          "name": "restraint_pct",
+          "description": "Applied restraint intensity percentage (0, 50, or 100)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "restraint_pct"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/alive",
+          "name": "alive",
+          "description": "Final count of living cells at epoch 180",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "alive"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/eukaryotes",
+          "name": "eukaryotes",
+          "description": "Final count of eukaryotic cells carrying internalized organelles",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "eukaryotes"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/multicellular",
+          "name": "multicellular",
+          "description": "Final count of cells participating in bonded multicellular clusters",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "multicellular"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/covi",
+          "name": "covi",
+          "description": "Composite Open-Ended Vitality Index (0-100)",
+          "dataType": "sc:Float",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "covi"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/stage",
+          "name": "stage",
+          "description": "Highest reached vitality stage (0-6)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "stage"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/met",
+          "name": "met",
+          "description": "Count of crossed Major Evolutionary Transition thresholds (0-7)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "met"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/kill_del",
+          "name": "kill_del",
+          "description": "Cumulative kill-switch deletion escape events",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "kill_del"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/dorm_spores",
+          "name": "dorm_spores",
+          "description": "Cumulative dormancy/spore escape transitions",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "dorm_spores"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/hgt_smug",
+          "name": "hgt_smug",
+          "description": "Cumulative horizontal gene transfer smuggling events",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "hgt_smug"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/met_bypass",
+          "name": "met_bypass",
+          "description": "Cumulative metabolic bypass flux events",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "met_bypass"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/mass_res",
+          "name": "mass_res",
+          "description": "Exact integer atomic mass conservation residual in amu (must be 0)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "mass_res"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/energy_res",
+          "name": "energy_res",
+          "description": "Exact integer First-Law energy conservation residual in uq (must be 0)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "energy_res"
+            }
+          }
+        },
+        {
+          "@type": "cr:Field",
+          "@id": "restraint_ablation_13vec/second_law_viol",
+          "name": "second_law_viol",
+          "description": "Exact count of Second-Law dissipation violations (must be 0)",
+          "dataType": "sc:Integer",
+          "source": {
+            "fileObject": {
+              "@id": "ablation-13vec-csv"
+            },
+            "extract": {
+              "column": "second_law_viol"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

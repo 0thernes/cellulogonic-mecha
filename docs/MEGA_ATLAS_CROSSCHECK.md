@@ -2,18 +2,18 @@
 # Unsolved Problems Mega-Atlas Non-Retirement Cross-Check (`v2.6.0`)
 
 **Companion Registry:** [`0thernes/unsolved-problems-mega-atlas`](https://github.com/0thernes/unsolved-problems-mega-atlas) (**`v2.6.0`**, commit `d23b4d7`, `1,900` cataloged open scientific and mathematical problems verified against `outputs/MegaAtlas_Unsolved_Problems_V2.json.gz`)  
-**Repository:** `0thernes/cellulogonic-mecha` (`v1.6.0`)  
+**Repository:** `0thernes/cellulogonic-mecha` (`v1.7.0`)  
 **Audit Date:** 2026-11-26  
 
-> **Headline Epistemic Verdict:** **`0 / 1,900` overarching Mega-Atlas `v2.6.0` open problems are solved or retired by `CELLULOGONIC MECHA v1.6.0`.** Every overarching biological, neurobiological, artificial-life, cybernetic, and geochemical problem listed below remains strictly **OPEN**.
+> **Headline Epistemic Verdict:** **`0 / 1,900` overarching Mega-Atlas `v2.6.0` open problems are solved or retired by `CELLULOGONIC MECHA v1.7.0`.** Every overarching biological, neurobiological, artificial-life, cybernetic, and geochemical problem listed below remains strictly **OPEN**.
 
 ---
 
 ## Scoped Sub-Hypothesis & Formal Invariant Cross-Map (13 Directly Adjacent Atlas IDs)
 
-While retiring zero overarching open problems, `CELLULOGONIC MECHA v1.6.0` constructs machine-checked statements about its discrete `Spec.lean` model (**78 Lean 4.35.0 theorems** under six kernel checks, including 8 non-vacuity witnesses `NV01`–`NV08` and 8 adversarial false-variant refutations `AT01`–`AT08`; several are arithmetic bookkeeping identities) and controlled, conservation-exact computational probes touching **13 directly adjacent cataloged Mega-Atlas IDs** (titles, pillars, superdomains, and `status_2026` verified verbatim from `MegaAtlas_Unsolved_Problems_V2.json.gz`):
+While retiring zero overarching open problems, `CELLULOGONIC MECHA v1.7.0` constructs machine-checked statements about its discrete `Spec.lean` model (**78 Lean 4.35.0 theorems** under 6 kernel checks, including 5 annotated bookkeeping helpers, 8 non-vacuity witnesses `NV01`–`NV08`, and 8 adversarial false-variant refutations `AT01`–`AT08`) and controlled, conservation-exact computational probes touching **13 directly adjacent cataloged Mega-Atlas IDs** (titles, pillars, superdomains, and `status_2026` verified verbatim from `MegaAtlas_Unsolved_Problems_V2.json.gz`):
 
-| Atlas ID | Overarching Mega-Atlas `v2.6.0` Problem Title (Verbatim) | Macro-Pillar / Superdomain | `status_2026` | Scoped Construction in `cellulogonic-mecha v1.6.0` | Parent Problem Status |
+| Atlas ID | Overarching Mega-Atlas `v2.6.0` Problem Title (Verbatim) | Macro-Pillar / Superdomain | `status_2026` | Scoped Construction in `cellulogonic-mecha v1.7.0` | Parent Problem Status |
 |---|---|---|---|---|---|
 | **`BIO-001`** | *Abiogenesis: Origin of Life & RNA-to-Ribosome Genetic Code Transition* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Exact 8-species 19-reaction Chemoton closure (`T01`–`T10`, `NV01`, `AT01`), Canham–Helfrich-inspired integer fission and budding inequalities (`T11`–`T19`, `NV02`, `AT02`), zero-seed spontaneous CMC vesicle condensation (`G11`, `results/03`) | **OPEN (0% retired)** — coarse-grained discrete quanta; does not establish wet-lab prebiotic RNA-to-ribosome origin |
 | **`BIO-006`** | *Origin of Eukaryogenesis (Asgard Archaea to Complex Nucleated Cells)* | Life, Mind & Medicine / Biology, Evolution, Origin of Life & Ecology | Active Breakthroughs / Frontier | Lane $1/R$ prokaryotic power ceiling & endosymbiotic $O(1)$ scaling liberation (`T20`–`T27`, `NV03`, `AT03`), primary + secondary nested chimera capture, EGT, and heteroplasmy purifying selection (`G13`, `H2`: `9.90×` max volume across `24/24` pairs) | **OPEN (0% retired)** — abstract organelle-compartment model; does not resolve historical Asgard–alphaproteobacterial symbiogenesis |
